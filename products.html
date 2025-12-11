@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArteBarte Products</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+
+/* ---- HEADER ---- */
+header {
+  text-align: center;
+  padding: 30px 20px 10px;
+}
+
+header h1 {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+/* ---- GRID SELECTOR ---- */
+.grid-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px auto 30px;
+}
+
+.grid-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.grid-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.banner-2col {
+  grid-column: span 2;
+  position: relative; /* ensure bubbles in banner don’t interfere */
+  z-index: 1;         /* behind product cards */
+}
+
+.banner-1col {
+  grid-column: span 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- PRODUCT GRID ---- */
+.products-grid {
+  display: grid;
+  gap: 20px;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* default: 3 columns */
+.products-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* if user clicks 4-grid */
+.products-grid.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ---- PRODUCT CARD ---- */
+.product-card {
+  transition: none;
+  position: relative; /* ensures bubbles and labels are positioned correctly */
+  z-index: 3;         /* stay above banners */
+}
+
+.product-card:hover {
+  transform: none;
+}
+
+/* ---- BANNERS ---- */
+.banner-card {
+  background: #f7f7f7;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  text-align: center;
+  padding: 10px;
+}
+
+/* If banners ever have labels or bubbles */
+.banner-card .top-label {
+  top: 12px;
+  left: 12px;
+  position: absolute;
+  font-size: 10px;
+  padding: 4px 8px;
+}
+
+.banner-card .top-bubbles {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.banner-card .top-bubbles div {
+  padding: 3px 6px;
+  font-size: 9px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+/* ---- IMAGE GALLERY (square) ---- */
+.product-images {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+}
+
+.product-images::-webkit-scrollbar {
+  display: none;
+}
+
+.img-wrapper {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- HOT LABEL ---- */
+.top-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ff5e5e;
+  color: white;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  z-index: 2;
+}
+
+/* ---- TAG BUBBLES ---- */
+.top-bubbles {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.top-bubbles div {
+  padding: 3px 8px;
+  font-size: 9px;
+  font-weight: 500;
+  color: #333;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  border: 1px solid #eee;
+  backdrop-filter: blur(6px);
+}
+
+/* ---- + OVERLAY ---- */
+.plus-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: 0.2s ease;
+}
+
+.product-card:hover .plus-overlay {
+  opacity: 1;
+}
+
+/* ---- PRODUCT INFO ---- */
+.product-info {
+  padding: 14px 15px;
+}
+
+.product-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- NEW PRICE STYLE ---- */
+.price-container {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.price-line {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.original-price {
+  font-size: 10px;
+  text-decoration: line-through;
+  color: #999;
+}
+
+.price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <h1>Gallery Walls</h1>
+</header>
+
+<!-- GRID LAYOUT TOGGLE -->
+<div class="grid-selector">
+  <button class="grid-btn active" data-cols="3">3 in row</button>
+  <button class="grid-btn" data-cols="4">4 in row</button>
+</div>
+
+<!-- PRODUCT GRID -->
+<div class="products-grid cols-3" id="productGrid">
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+  <!-- PRODUCT CARD -->
+  <div class="product-card">
+
+    <div class="top-label">Hot Seller</div>
+
+    <div class="top-bubbles">
+      <div>cozy</div><div>warm</div><div>modern</div>
+    </div>
+
+    <div class="product-images">
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+      <div class="img-wrapper">
+        <img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg">
+      </div>
+    </div>
+
+    <div class="product-info">
+
+      <div class="product-bottom">
+        <h3>Digital Art Print #1</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="plus-overlay">+</div>
+
+  </div>
+
+  <!-- DUPLICATE FOR DEMO -->
+  <div class="product-card">
+    <div class="top-label">Hot Seller</div>
+    <div class="top-bubbles"><div>cozy</div><div>warm</div><div>modern</div></div>
+
+    <div class="product-images">
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+      <div class="img-wrapper"><img src="https://static.wixstatic.com/media/1799ca_5062c3600e6741b8a89813a9d428c575~mv2.jpg"></div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-bottom">
+        <h3>Digital Art Print #2</h3>
+        <div class="price-container">
+          <div class="price-line">
+            <span class="original-price">$149</span>
+            <span class="price">$99.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plus-overlay">+</div>
+  </div>
+
+</div>
+
+<script>
+const grid = document.getElementById("productGrid");
+const buttons = document.querySelectorAll(".grid-btn");
+
+/* ---- GRID SWITCH LOGIC ---- */
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    // Update active button
+    buttons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Update grid columns
+    const cols = btn.dataset.cols;
+    grid.classList.remove("cols-3", "cols-4");
+    grid.classList.add(`cols-${cols}`);
+
+    // Update banners
+    insertBanners();
+  });
+});
+
+// Insert banners on page load
+window.addEventListener("DOMContentLoaded", insertBanners);
+
+/* ---- INSERT BANNERS ---- */
+function insertBanners() {
+  const grid = document.getElementById("productGrid");
+
+  // Remove existing banners
+  grid.querySelectorAll(".banner-card").forEach(b => b.remove());
+
+  const isFourGrid = grid.classList.contains("cols-4");
+  const step = isFourGrid ? 10 : 9;
+  const startIndex = isFourGrid ? 9 : 8;
+
+  let i = startIndex;
+
+  while (true) {
+    const cards = [...grid.querySelectorAll(".product-card")]; // fresh list each time
+    if (i >= cards.length) break;
+
+    const banner = document.createElement("div");
+    banner.className = isFourGrid ? "banner-card banner-2col" : "banner-card banner-1col";
+    banner.innerText = isFourGrid
+      ? "🔥 Special Deal – Limited Time!"
+      : "✨ New Collection Drop!";
+
+    grid.insertBefore(banner, cards[i]); // always insert before a real node
+    i += step;
+  }
+}
+
+</script>
+
+</body>
+</html>
