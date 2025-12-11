@@ -271,6 +271,7 @@ header h1 {
 <header>
   <h1>Gallery Walls</h1>
 </header>
+  
 
 <!-- GRID LAYOUT TOGGLE -->
 <div class="grid-selector">
@@ -655,6 +656,10 @@ header h1 {
 
 </div>
 
+  <div style="text-align:center; margin:20px;">
+  <input type="file" id="csvUpload" accept=".csv">
+</div>
+
 <script>
 const grid = document.getElementById("productGrid");
 const buttons = document.querySelectorAll(".grid-btn");
@@ -706,8 +711,89 @@ function insertBanners() {
     i += step;
   }
 }
+<script>
+let allProducts = [];
 
+// Listen for CSV upload
+document.getElementById("csvUpload").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      allProducts = results.data;
+      renderProducts(allProducts);
+    }
+  });
+});
+
+// Render products dynamically from CSV
+function renderProducts(products) {
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = ""; // clear hardcoded cards
+
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    // Ribbon label
+    const label = document.createElement("div");
+    label.className = "top-label";
+    label.innerText = p.ribbon || "";
+    card.appendChild(label);
+
+    // Keyword / feel bubbles
+    const bubbles = document.createElement("div");
+    bubbles.className = "top-bubbles";
+    if(p.keyword) bubbles.innerHTML = `<div>${p.keyword}</div>`;
+    if(p.feel) bubbles.innerHTML += `<div>${p.feel}</div>`;
+    card.appendChild(bubbles);
+
+    // Product images
+    const imagesDiv = document.createElement("div");
+    imagesDiv.className = "product-images";
+    if(p.productImageUrl){
+      const imgWrapper = document.createElement("div");
+      imgWrapper.className = "img-wrapper";
+      const img = document.createElement("img");
+      img.src = p.productImageUrl;
+      imgWrapper.appendChild(img);
+      imagesDiv.appendChild(imgWrapper);
+    }
+    card.appendChild(imagesDiv);
+
+    // Info section
+    const info = document.createElement("div");
+    info.className = "product-info";
+    info.innerHTML = `<div class="product-bottom">
+                        <h3>${p.name}</h3>
+                        <div class="price-container">
+                          <div class="price-line">
+                            ${p.surcharge ? `<span class="original-price">$${p.surcharge}</span>` : ""}
+                            <span class="price">$${p.price}</span>
+                          </div>
+                        </div>
+                      </div>`;
+    card.appendChild(info);
+
+    // Plus overlay
+    const plus = document.createElement("div");
+    plus.className = "plus-overlay";
+    plus.innerText = "+";
+    card.appendChild(plus);
+
+    grid.appendChild(card);
+  });
+
+  // Re-insert banners after rendering products
+  insertBanners();
+}
 </script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 </body>
 </html>
