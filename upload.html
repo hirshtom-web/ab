@@ -6,7 +6,7 @@
 <script>
 let allProducts = [];
 
-// Listen for CSV upload
+// --- CSV UPLOAD ---
 document.getElementById("csvUpload").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -27,13 +27,20 @@ function setupFilters() {
   const filtersDiv = document.getElementById("filters");
   filtersDiv.innerHTML = "";
 
-  const filterFields = ["color", "price", "keyword", "feel", "category", "ribbon", "bundle"];
-  
-  filterFields.forEach(field => {
+  const filterFields = [
+    {label:"Collection", field:"collection"},
+    {label:"Price", field:"price"},
+    {label:"Keyword", field:"productOptionName1"},
+    {label:"Feel", field:"customTextField1"},
+    {label:"Ribbon", field:"ribbon"},
+    {label:"Bundle", field:"customTextField2"}
+  ];
+
+  filterFields.forEach(f => {
     const label = document.createElement("label");
-    label.innerText = field.charAt(0).toUpperCase() + field.slice(1) + ": ";
+    label.innerText = f.label + ": ";
     const input = document.createElement("input");
-    input.setAttribute("data-field", field);
+    input.setAttribute("data-field", f.field);
     input.addEventListener("input", applyFilters);
     label.appendChild(input);
     filtersDiv.appendChild(label);
@@ -50,39 +57,45 @@ function renderProducts(products) {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Product label
-    const label = document.createElement("div");
-    label.className = "top-label";
-    label.innerText = p.ribbon || ""; 
-    card.appendChild(label);
+    // Ribbon
+    if (p.ribbon) {
+      const label = document.createElement("div");
+      label.className = "top-label";
+      label.innerText = p.ribbon;
+      card.appendChild(label);
+    }
 
-    // Keyword bubbles
+    // Keyword / Feel bubbles
     const bubbles = document.createElement("div");
     bubbles.className = "top-bubbles";
-    if (p.keyword) bubbles.innerHTML = `<div>${p.keyword}</div>`;
-    if (p.feel) bubbles.innerHTML += `<div>${p.feel}</div>`;
+    if (p.productOptionName1) bubbles.innerHTML += `<div>${p.productOptionName1}</div>`;
+    if (p.customTextField1) bubbles.innerHTML += `<div>${p.customTextField1}</div>`;
     card.appendChild(bubbles);
 
     // Image
-    const imagesDiv = document.createElement("div");
-    imagesDiv.className = "product-images";
     if (p.productImageUrl) {
+      const imagesDiv = document.createElement("div");
+      imagesDiv.className = "product-images";
       const imgWrapper = document.createElement("div");
       imgWrapper.className = "img-wrapper";
       const img = document.createElement("img");
       img.src = p.productImageUrl;
       imgWrapper.appendChild(img);
       imagesDiv.appendChild(imgWrapper);
+      card.appendChild(imagesDiv);
     }
-    card.appendChild(imagesDiv);
 
     // Info
     const info = document.createElement("div");
     info.className = "product-info";
-    info.innerHTML = `<div class="product-bottom"><h3>${p.name}</h3>
-                      <div class="price-container"><div class="price-line">
-                      <span class="price">$${p.price}</span>
-                      </div></div></div>`;
+    info.innerHTML = `<div class="product-bottom">
+                        <h3>${p.name}</h3>
+                        <div class="price-container">
+                          <div class="price-line">
+                            <span class="price">$${p.price}</span>
+                          </div>
+                        </div>
+                      </div>`;
     card.appendChild(info);
 
     grid.appendChild(card);
