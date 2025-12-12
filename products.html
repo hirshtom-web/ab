@@ -7,7 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; }
-body { font-family: 'Poppins', sans-serif; margin:0; background:#fff; color:#111; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+
 header { text-align:center; padding:30px 20px 10px; }
 header h1 { font-weight:600; font-size:20px; }
 
@@ -28,22 +35,23 @@ header h1 { font-weight:600; font-size:20px; }
 
 @media(max-width:600px){ .products-grid{ grid-template-columns: repeat(2,1fr) !important;} }
 
-.product-card { position:relative; z-index:3; }
-.product-images { display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; }
-.product-images::-webkit-scrollbar { display:none; }
-.img-wrapper { flex:0 0 auto; width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; scroll-snap-align:start; position:relative; }
+.product-card { position:relative; z-index:3; transition:none; }
+.img-wrapper { aspect-ratio:1/1; width:100%; overflow:hidden; border-radius:16px; }
 .img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; border-radius:16px; }
 
-.plus-overlay { position:absolute; bottom:20px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease; }
-.product-card:hover .plus-overlay { opacity:1; }
-
-.product-info { padding:8px 0; text-align:right; }
+.product-info { padding:14px 15px; text-align:center; }
 .product-info h3 { margin:0; font-size:14px; font-weight:500; }
-.price { font-size:13px; font-weight:600; color:#333; }
 
-.top-label { position:absolute; top:12px; left:12px; background:#ff5e5e; color:white; font-size:10px; padding:4px 8px; border-radius:12px; z-index:2; }
+.price-container { margin-top:5px; }
+.price { font-size:13px; font-weight:600; color:#333; }
+.original-price { font-size:10px; text-decoration:line-through; color:#999; }
+
+.top-label { position:absolute; top:12px; left:12px; background:#ff5e5e; color:#fff; font-size:10px; padding:4px 8px; border-radius:12px; z-index:2; }
 .top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
 .top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px); }
+
+.plus-overlay { position:absolute; bottom:12px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease;}
+.product-card:hover .plus-overlay{opacity:1;}
 
 .banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; text-align:center; padding:10px; }
 </style>
@@ -57,13 +65,20 @@ header h1 { font-weight:600; font-size:20px; }
   <button class="grid-btn" data-cols="4">4 in row</button>
 </div>
 
+<div class="image-selector">
+  <button class="img-btn active" data-index="0">Cover Image</button>
+  <button class="img-btn" data-index="1">Lifestyle Image</button>
+</div>
+
 <div class="products-grid cols-3" id="productGrid"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
+const imgButtons = document.querySelectorAll(".img-btn");
 let allProducts = [];
+let selectedImgIndex = 0;
 
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   download:true, header:true, skipEmptyLines:true,
@@ -73,59 +88,50 @@ Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
 function renderProducts(){
   grid.innerHTML="";
   allProducts.forEach(p=>{
-    const images=(p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
-    if(!images.length) return; // hide product if no image
-
     const card=document.createElement("div"); card.className="product-card";
 
-    const imgContainer=document.createElement("div"); imgContainer.className="product-images";
-    images.forEach(url=>{
+    const images=(p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
+    images.forEach((url,i)=>{
       const wrapper=document.createElement("div"); wrapper.className="img-wrapper";
       const img=document.createElement("img");
       img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
-      wrapper.appendChild(img);
-      imgContainer.appendChild(wrapper);
+      img.loading="lazy"; wrapper.appendChild(img); card.appendChild(wrapper);
     });
-    card.appendChild(imgContainer);
 
-    const plus=document.createElement("div"); plus.className="plus-overlay"; plus.innerText="+"; card.appendChild(plus);
+    showSelectedImage(card,selectedImgIndex);
 
     const info=document.createElement("div"); info.className="product-info";
     const h3=document.createElement("h3"); h3.innerText=p.name||p.Name||"Unnamed product"; info.appendChild(h3);
+
+    const priceDiv=document.createElement("div"); priceDiv.className="price-container";
     const priceSpan=document.createElement("span"); priceSpan.className="price";
-    priceSpan.innerText=p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
-    info.appendChild(priceSpan);
+    priceSpan.innerText=p.price && p.price.trim()!==""? "$"+p.price : "$1"; 
+    priceDiv.appendChild(priceSpan); info.appendChild(priceDiv);
+
     card.appendChild(info);
 
     if(p.ribbon){ const label=document.createElement("div"); label.className="top-label"; label.innerText=p.ribbon; card.appendChild(label);}
     const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
     if(bubbles.length){ const bubbleDiv=document.createElement("div"); bubbleDiv.className="top-bubbles"; bubbles.forEach(b=>{const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);}); card.appendChild(bubbleDiv);}
+    const plus=document.createElement("div"); plus.className="plus-overlay"; plus.innerText="+"; card.appendChild(plus);
 
     grid.appendChild(card);
   });
+  insertBanners();
+}
 
-  // Insert banners after images load
-  const imagesLoaded = Array.from(document.querySelectorAll(".img-wrapper img"));
-  let loadedCount=0;
-  imagesLoaded.forEach(img=>{
-    img.onload = img.onerror = ()=>{
-      loadedCount++;
-      if(loadedCount===imagesLoaded.length) insertBanners();
-    };
+function showSelectedImage(card,index){
+  const wrappers=card.querySelectorAll(".img-wrapper");
+  wrappers.forEach((w,i)=>w.style.display=(i===index)?"block":"none");
+}
+
+imgButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+    selectedImgIndex=parseInt(btn.dataset.index);
+    document.querySelectorAll(".product-card").forEach(card=> showSelectedImage(card,selectedImgIndex));
   });
-}
-
-// Banner insertion
-function insertBanners(){
-  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
-  const cards=[...grid.querySelectorAll(".product-card")];
-  for(let i=8;i<cards.length;i+=9){
-    const banner=document.createElement("div"); banner.className="banner-card"; banner.innerText="✨ New Collection Drop!";
-    const firstImg=cards[i].querySelector(".img-wrapper img");
-    if(firstImg) banner.style.height=firstImg.clientHeight+"px";
-    grid.insertBefore(banner,cards[i]);
-  }
-}
+});
 
 gridButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
@@ -134,6 +140,17 @@ gridButtons.forEach(btn=>{
     insertBanners();
   });
 });
+
+function insertBanners(){
+  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
+  const cards=[...grid.querySelectorAll(".product-card")];
+  for(let i=8;i<cards.length;i+=9){
+    const banner=document.createElement("div"); banner.className="banner-card"; 
+    banner.innerText="✨ New Collection Drop!";
+    grid.insertBefore(banner,cards[i]);
+  }
+}
 </script>
+
 </body>
 </html>
