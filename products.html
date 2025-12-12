@@ -34,7 +34,7 @@ header h1 { font-weight:600; font-size:20px; }
 .img-wrapper { flex:0 0 auto; width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; scroll-snap-align:start; position:relative; }
 .img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; border-radius:16px; }
 
-.plus-overlay { position:absolute; bottom:20px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; transition:0.2s ease; }
+.plus-overlay { position:absolute; bottom:20px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease; }
 .product-card:hover .plus-overlay { opacity:1; }
 
 .product-info { padding:8px 0; text-align:right; }
@@ -45,7 +45,7 @@ header h1 { font-weight:600; font-size:20px; }
 .top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
 .top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px); }
 
-.banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; text-align:center; padding:10px; height:auto; }
+.banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; text-align:center; padding:10px; }
 </style>
 </head>
 <body>
@@ -57,20 +57,13 @@ header h1 { font-weight:600; font-size:20px; }
   <button class="grid-btn" data-cols="4">4 in row</button>
 </div>
 
-<div class="image-selector">
-  <button class="img-btn active" data-index="0">Cover Image</button>
-  <button class="img-btn" data-index="1">Lifestyle Image</button>
-</div>
-
 <div class="products-grid cols-3" id="productGrid"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
-const imgButtons = document.querySelectorAll(".img-btn");
 let allProducts = [];
-let selectedImgIndex = 0;
 
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   download:true, header:true, skipEmptyLines:true,
@@ -90,7 +83,8 @@ function renderProducts(){
       const wrapper=document.createElement("div"); wrapper.className="img-wrapper";
       const img=document.createElement("img");
       img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
-      img.loading="lazy"; wrapper.appendChild(img); imgContainer.appendChild(wrapper);
+      wrapper.appendChild(img);
+      imgContainer.appendChild(wrapper);
     });
     card.appendChild(imgContainer);
 
@@ -109,29 +103,19 @@ function renderProducts(){
 
     grid.appendChild(card);
   });
-  insertBanners();
+
+  // Insert banners after images load
+  const imagesLoaded = Array.from(document.querySelectorAll(".img-wrapper img"));
+  let loadedCount=0;
+  imagesLoaded.forEach(img=>{
+    img.onload = img.onerror = ()=>{
+      loadedCount++;
+      if(loadedCount===imagesLoaded.length) insertBanners();
+    };
+  });
 }
 
-imgButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    selectedImgIndex=parseInt(btn.dataset.index);
-    document.querySelectorAll(".product-card").forEach(card=>{
-      const wrappers=card.querySelectorAll(".img-wrapper");
-      wrappers.forEach((w,i)=> w.style.display=(i===selectedImgIndex)?"block":"none");
-    });
-  });
-});
-
-gridButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    grid.classList.remove("cols-3","cols-4"); grid.classList.add(`cols-${btn.dataset.cols}`);
-    insertBanners();
-  });
-});
-
-// Insert banner (1-cell size, same height as first product image)
+// Banner insertion
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const cards=[...grid.querySelectorAll(".product-card")];
@@ -142,7 +126,14 @@ function insertBanners(){
     grid.insertBefore(banner,cards[i]);
   }
 }
-</script>
 
+gridButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+    grid.classList.remove("cols-3","cols-4"); grid.classList.add(`cols-${btn.dataset.cols}`);
+    insertBanners();
+  });
+});
+</script>
 </body>
 </html>
