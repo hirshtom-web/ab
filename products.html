@@ -27,24 +27,32 @@ header h1 { font-weight:600; font-size:20px; }
 .img-btn.active { background:#111; color:#fff; border-color:#111; }
 
 .products-grid {
-  display:grid;
-  gap:20px;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 10px;
-  grid-template-columns: repeat(var(--cols, 4), 1fr);
+  display: grid;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
 }
 
-.products-grid.cols-1 { --cols: 1; }
-.products-grid.cols-2 { --cols: 2; }
-.products-grid.cols-3 { --cols: 3; }
-.products-grid.cols-4 { --cols: 4; }
+/* Default grid columns */
+.products-grid.cols-1 { grid-template-columns: repeat(1, 1fr); }
+.products-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
 
-@media(max-width:900px){
-  .products-grid { grid-template-columns: repeat(var(--mobile-cols, 2), 1fr); }
+/* Mobile overrides */
+@media(max-width: 900px) {
+  .products-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+  .products-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
 }
-@media(max-width:600px){
-  .products-grid { grid-template-columns: repeat(var(--mobile-cols, 2), 1fr); }
+@media(max-width: 600px) {
+  /* Mobile default is 2 per row */
+  .products-grid.cols-1,
+  .products-grid.cols-2,
+  .products-grid.cols-3,
+  .products-grid.cols-4 {
+    grid-template-columns: repeat(var(--mobile-cols, 2), 1fr);
+  }
 }
 
 
@@ -98,17 +106,6 @@ header h1 { font-weight:600; font-size:20px; }
 .top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
 .top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px); }
 
-.banner-card { 
-  background:#f7f7f7; 
-  border-radius:16px; 
-  display:flex; 
-  justify-content:center; 
-  align-items:center; 
-  font-weight:600; 
-  color:#333; 
-  text-align:center; 
-  padding:0; 
-}
 
 .banner-card .img-wrapper {
   position: relative;
@@ -116,11 +113,26 @@ header h1 { font-weight:600; font-size:20px; }
   aspect-ratio: 1/1; 
 }
 
+  /* Banner fix */
+.banner-card {
+  background: #f7f7f7;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  padding: 20px 10px;
+  height: auto;
+  min-height: 150px; /* ensures banner always has height */
+}
+  
 .banner-card span {
-  position:absolute;
+  position:static;
   top:50%;
   left:50%;
-  transform:translate(-50%,-50%);
+  transform: none;
   font-size:14px;
   font-weight:600;
   text-align:center;
