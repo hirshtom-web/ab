@@ -138,13 +138,35 @@ header h1 { font-weight:600; font-size:20px; }
 }
 
 
-/* Mobile layouts */
 @media(max-width:900px){
-  .products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .products-grid.cols-4 { grid-template-columns: repeat(2,1fr); }
+  .products-grid.cols-3 { grid-template-columns: repeat(2,1fr); }
 }
 @media(max-width:600px){
-  .products-grid { grid-template-columns: repeat(1, 1fr) !important; }
+  .products-grid.cols-4, .products-grid.cols-3, .products-grid.cols-2, .products-grid.cols-1 {
+    grid-template-columns: repeat(1,1fr);
+  }
 }
+.slider-arrow {
+  position:absolute;
+  top:50%;
+  transform: translateY(-50%);
+  font-size:20px;
+  color:#fff;
+  background: rgba(0,0,0,0.4);
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  z-index:2;
+  user-select:none;
+}
+.slider-arrow.left { left:8px; }
+.slider-arrow.right { right:8px; }
+
 .pagination { text-align:center; margin:20px 0; }
 .pagination button { padding:6px 12px; margin:0 5px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
 .pagination button:disabled { opacity:0.5; cursor:default; }
@@ -185,11 +207,11 @@ const nextBtn = document.getElementById("nextPage");
 const pageNumber = document.getElementById("pageNumber");
 
 let allProducts = [];
-let selectedImgIndex = 0;
 let currentPage = 1;
 const productsPerPage = 72;
+let defaultCols = window.innerWidth <= 600 ? 2 : 4; // mobile 2 cols, desktop 4
 
-// Show placeholders while loading
+// --- Show placeholders while loading ---
 function showLoadingPlaceholders(count) {
   grid.innerHTML = "";
   for(let i=0; i<count; i++){
@@ -199,8 +221,8 @@ function showLoadingPlaceholders(count) {
   }
 }
 
-// Load CSV
-showLoadingPlaceholders(12); // initial placeholders
+// --- Load CSV ---
+showLoadingPlaceholders(12);
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   download:true,
   header:true,
@@ -211,6 +233,7 @@ Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   }
 });
 
+// --- Render page ---
 function renderPage(page){
   grid.innerHTML = "";
   const start = (page-1)*productsPerPage;
@@ -220,16 +243,33 @@ function renderPage(page){
   pageProducts.forEach(p=>{
     const card = document.createElement("div");
     card.className = "product-card";
+    card.dataset.currentImage = 0; // per-product image index
 
     const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
 
     const wrapper = document.createElement("div");
     wrapper.className = "img-wrapper";
+
     const img = document.createElement("img");
-    img.src = images[selectedImgIndex] || "";
+    const firstImage = images[0] || "";
+    img.src = firstImage.includes("http") ? firstImage : "https://static.wixstatic.com/media/"+firstImage;
     img.loading = "lazy";
     wrapper.appendChild(img);
+
+    // --- Add arrows for per-product slider ---
+    if(images.length > 1){
+      const prevArrow = document.createElement("div");
+      prevArrow.className = "slider-arrow left";
+      prevArrow.innerHTML = "&#10094;"; // left arrow
+      prevArrow.onclick = ()=> switchImage(card, -1);
+      const nextArrow = document.createElement("div");
+      nextArrow.className = "slider-arrow right";
+      nextArrow.innerHTML = "&#10095;"; // right arrow
+      nextArrow.onclick = ()=> switchImage(card, 1);
+      wrapper.appendChild(prevArrow);
+      wrapper.appendChild(nextArrow);
+    }
 
     const plus = document.createElement("div");
     plus.className="plus-overlay"; plus.innerText="+";
@@ -237,11 +277,12 @@ function renderPage(page){
 
     card.appendChild(wrapper);
 
-    // Product info
+    // --- Product info ---
     const info = document.createElement("div");
     info.className = "product-info";
     const h3 = document.createElement("h3"); h3.innerText = p.name || p.Name || "Unnamed product";
     info.appendChild(h3);
+
     const priceDiv = document.createElement("div"); priceDiv.className="price-container";
     const priceSpan = document.createElement("span"); priceSpan.className="price";
     priceSpan.innerText = p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
@@ -252,51 +293,52 @@ function renderPage(page){
     if(p.ribbon){ const label=document.createElement("div"); label.className="top-label"; label.innerText=p.ribbon; card.appendChild(label);}
     // Bubbles
     const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
-    if(bubbles.length){ const bubbleDiv=document.createElement("div"); bubbleDiv.className="top-bubbles"; bubbles.forEach(b=>{const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);}); card.appendChild(bubbleDiv); }
+    if(bubbles.length){ 
+      const bubbleDiv=document.createElement("div"); bubbleDiv.className="top-bubbles"; 
+      bubbles.forEach(b=>{const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);}); 
+      card.appendChild(bubbleDiv); 
+    }
 
     grid.appendChild(card);
   });
 
   insertBanners();
 
+  // --- Pagination ---
   pageNumber.innerText = currentPage;
   prevBtn.disabled = currentPage === 1;
   nextBtn.disabled = end >= allProducts.length;
+
+  // --- Apply default cols ---
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+  grid.classList.add(`cols-${defaultCols}`);
 }
 
-function showSelectedImage(index){
-  document.querySelectorAll(".product-card").forEach(card=>{
-    const images = JSON.parse(card.dataset.images || "[]");
-    const img = card.querySelector(".img-wrapper img");
-    if(images.length>0){
-      const idx = Math.min(index, images.length-1);
-      img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
-    }
-  });
+// --- Switch per-product image ---
+function switchImage(card, direction){
+  let images = JSON.parse(card.dataset.images || "[]");
+  let idx = parseInt(card.dataset.currentImage) + direction;
+  if(idx < 0) idx = images.length -1;
+  if(idx >= images.length) idx = 0;
+  card.dataset.currentImage = idx;
+  const img = card.querySelector(".img-wrapper img");
+  const newSrc = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
+  img.src = newSrc;
 }
 
-// Image buttons
-imgButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    selectedImgIndex = parseInt(btn.dataset.index);
-    showSelectedImage(selectedImgIndex);
-  });
-});
-
-// Grid buttons
+// --- Grid buttons ---
 gridButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     gridButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    grid.classList.remove("cols-3","cols-4");
-    grid.classList.add(`cols-${btn.dataset.cols}`);
+    defaultCols = parseInt(btn.dataset.cols);
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+    grid.classList.add(`cols-${defaultCols}`);
     insertBanners();
   });
 });
 
-// Pagination buttons
+// --- Pagination buttons ---
 prevBtn.addEventListener("click",()=>{
   if(currentPage>1){ currentPage--; renderPage(currentPage); }
 });
@@ -304,18 +346,45 @@ nextBtn.addEventListener("click",()=>{
   if(currentPage*productsPerPage<allProducts.length){ currentPage++; renderPage(currentPage); }
 });
 
-// Insert banners
+// --- Insert banners ---
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const cards = [...grid.querySelectorAll(".product-card")];
   for(let i=8;i<cards.length;i+=9){
-    const banner = document.createElement("div"); banner.className="banner-card";
-    const wrapper = document.createElement("div"); wrapper.className="img-wrapper";
+    const banner = document.createElement("div"); 
+    banner.className="banner-card";
     const span = document.createElement("span"); span.innerText="✨ New Collection Drop!";
-    wrapper.appendChild(span); banner.appendChild(wrapper);
+    banner.appendChild(span);
     grid.insertBefore(banner, cards[i]);
   }
 }
+
+// --- Image selection buttons (cover/lifestyle) ---
+imgButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    imgButtons.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    // update all cards to selected image
+    document.querySelectorAll(".product-card").forEach(card=>{
+      const images = JSON.parse(card.dataset.images || "[]");
+      const index = parseInt(btn.dataset.index);
+      card.dataset.currentImage = Math.min(index, images.length-1);
+      const img = card.querySelector(".img-wrapper img");
+      if(images.length>0){
+        img.src = images[card.dataset.currentImage].includes("http") ? 
+          images[card.dataset.currentImage] : 
+          "https://static.wixstatic.com/media/" + images[card.dataset.currentImage];
+      }
+    });
+  });
+});
+
+// --- Responsive default ---
+window.addEventListener("resize", ()=>{
+  defaultCols = window.innerWidth <= 600 ? 2 : 4;
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+  grid.classList.add(`cols-${defaultCols}`);
+});
 </script>
 
 
