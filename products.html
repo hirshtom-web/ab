@@ -114,6 +114,29 @@ header h1 { font-weight:600; font-size:20px; }
   font-weight:600;
   text-align:center;
 }
+  /* Shimmer loading effect */
+.product-card.loading {
+  background: #f0f0f0;
+  border-radius: 16px;
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card.loading::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -150px;
+  width: 150px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+  0% { left: -150px; }
+  100% { left: 100%; }
+}
+
 
 /* Mobile layouts */
 @media(max-width:900px){
@@ -126,7 +149,9 @@ header h1 { font-weight:600; font-size:20px; }
 .pagination button { padding:6px 12px; margin:0 5px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
 .pagination button:disabled { opacity:0.5; cursor:default; }
 </style>
+  
 </head>
+  
 <body>
 
 <header><h1>Gallery Walls</h1></header>
@@ -150,6 +175,7 @@ header h1 { font-weight:600; font-size:20px; }
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <script>
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
@@ -163,6 +189,18 @@ let selectedImgIndex = 0;
 let currentPage = 1;
 const productsPerPage = 72;
 
+// Show placeholders while loading
+function showLoadingPlaceholders(count) {
+  grid.innerHTML = "";
+  for(let i=0; i<count; i++){
+    const placeholder = document.createElement("div");
+    placeholder.className = "product-card loading";
+    grid.appendChild(placeholder);
+  }
+}
+
+// Load CSV
+showLoadingPlaceholders(12); // initial placeholders
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   download:true,
   header:true,
@@ -279,6 +317,7 @@ function insertBanners(){
   }
 }
 </script>
+
 
 </body>
 </html>
