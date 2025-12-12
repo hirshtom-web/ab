@@ -32,10 +32,21 @@ header h1 { font-weight:600; font-size:20px; }
   max-width:1200px;
   margin:0 auto;
   padding:0 10px;
+  grid-template-columns: repeat(var(--cols, 4), 1fr);
 }
 
-.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.products-grid.cols-1 { --cols: 1; }
+.products-grid.cols-2 { --cols: 2; }
+.products-grid.cols-3 { --cols: 3; }
+.products-grid.cols-4 { --cols: 4; }
+
+@media(max-width:900px){
+  .products-grid { grid-template-columns: repeat(var(--mobile-cols, 2), 1fr); }
+}
+@media(max-width:600px){
+  .products-grid { grid-template-columns: repeat(var(--mobile-cols, 2), 1fr); }
+}
+
 
 .product-card { position:relative; z-index:3; }
 
@@ -186,9 +197,12 @@ header h1 { font-weight:600; font-size:20px; }
 <header><h1>Gallery Walls</h1></header>
 
 <div class="grid-selector">
+  <button class="grid-btn" data-cols="1">1 per row</button>
+  <button class="grid-btn active" data-cols="2">2 per row</button>
   <button class="grid-btn" data-cols="3">3 in row</button>
-  <button class="grid-btn active" data-cols="4">4 in row</button>
+  <button class="grid-btn" data-cols="4">4 in row</button>
 </div>
+
 
 <div class="image-selector">
   <button class="img-btn active" data-index="0">Cover Image</button>
@@ -359,13 +373,23 @@ function switchImage(card, direction){
 }
 
 // --- Grid buttons ---
-gridButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    gridButtons.forEach(b=>b.classList.remove("active"));
+gridButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    gridButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    defaultCols = parseInt(btn.dataset.cols);
+
+    const cols = parseInt(btn.dataset.cols);
+
+    // Update desktop columns
+    defaultCols = window.innerWidth > 600 ? cols : defaultCols;
+
+    // Update mobile columns via CSS variable
+    document.documentElement.style.setProperty('--mobile-cols', cols);
+
+    // Update grid class
     grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-    grid.classList.add(`cols-${defaultCols}`);
+    grid.classList.add(`cols-${cols}`);
+
     insertBanners();
   });
 });
@@ -411,12 +435,15 @@ imgButtons.forEach(btn=>{
   });
 });
 
-// --- Responsive ---
+
+  // --- Responsive ---
 window.addEventListener("resize", ()=>{
-  defaultCols = window.innerWidth <= 600 ? 2 : 4;
+  const mobileCols = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-cols')) || 2;
+  defaultCols = window.innerWidth <= 600 ? mobileCols : defaultCols;
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
   grid.classList.add(`cols-${defaultCols}`);
 });
+
 </script>
 
 
