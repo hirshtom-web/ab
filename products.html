@@ -5,46 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArteBarte Products</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-/* --- Keep all your existing CSS --- */
 body { font-family: 'Poppins', sans-serif; margin: 0; background: #fff; color: #111; }
 header { text-align: center; padding: 30px 20px 10px; }
 header h1 { font-weight: 600; font-size: 20px; }
-
-.grid-selector { display: flex; justify-content: center; gap: 10px; margin: 10px auto 30px; }
+.grid-selector { display: flex; justify-content: center; gap: 10px; margin: 10px auto 10px; }
 .grid-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; background: #fff; font-size: 12px; cursor: pointer; transition: 0.2s ease; }
 .grid-btn.active { background: #111; color: #fff; border-color: #111; }
-
+.image-selector { display:flex; justify-content:center; gap:10px; margin-bottom:20px;}
 .products-grid { display: grid; gap: 20px; max-width: 95%; margin: 0 auto; padding: 0 20px; }
 .products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
 .products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-@media (max-width: 600px) { .products-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+@media(max-width:600px){ .products-grid{ grid-template-columns: repeat(2,1fr) !important;} }
 
-.product-card { transition: none; position: relative; z-index: 3; }
-.product-card:hover { transform: none; }
-.product-images { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; }
-.product-images::-webkit-scrollbar { display: none; }
-.img-wrapper { aspect-ratio: 1 / 1; width: 100%; flex-shrink: 0; scroll-snap-align: start; border-radius: 16px; overflow: hidden; }
-.img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-.top-label { position: absolute; top: 12px; left: 12px; background: #ff5e5e; color: white; font-size: 10px; padding: 4px 8px; border-radius: 12px; z-index: 2; }
-.top-bubbles { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; z-index: 2; }
-.top-bubbles div { padding: 3px 8px; font-size: 9px; font-weight: 500; color: #333; background: rgba(255,255,255,0.85); border-radius: 10px; border: 1px solid #eee; backdrop-filter: blur(6px); }
-.plus-overlay { position: absolute; bottom: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: #111; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s ease; }
-.product-card:hover .plus-overlay { opacity: 1; }
-.product-info { padding: 14px 15px; }
-.product-bottom { display: flex; justify-content: space-between; align-items: center; }
-.product-info h3 { margin: 0; font-size: 14px; font-weight: 500; }
-.price-container { display: flex; flex-direction: column; text-align: right; }
-.price-line { display: flex; gap: 6px; align-items: center; }
-.original-price { font-size: 10px; text-decoration: line-through; color: #999; }
-.price { font-size: 13px; font-weight: 600; color: #333; }
+.product-card { position: relative; z-index:3; display:flex; flex-direction:column; align-items:center;}
+.product-images { display:flex; overflow:hidden; position:relative; width:100%; border-radius:16px; aspect-ratio:1/1;}
+.img-wrapper { flex-shrink:0; width:100%; height:100%; overflow:hidden; scroll-snap-align:start; border-radius:16px; }
+.img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; transition:0.3s;}
+.product-info { width:100%; padding:8px 0; text-align:center;}
+.product-info h3{ margin:0; font-size:14px; font-weight:500;}
 
-.banner-card { background: #f7f7f7; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-weight: 600; color: #333; aspect-ratio: 1 / 1; overflow: hidden; text-align: center; padding: 10px; }
-.banner-card.banner-2col { grid-column: span 2; position: relative; z-index: 1; }
-.banner-card.banner-1col { grid-column: span 1; position: relative; z-index: 1; }
+.top-label { position:absolute; top:12px; left:12px; background:#ff5e5e; color:white; font-size:10px; padding:4px 8px; border-radius:12px; z-index:2; }
+.top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
+.top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px);}
+.plus-overlay { position:absolute; bottom:12px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease;}
+.product-card:hover .plus-overlay{opacity:1;}
+
+.banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; aspect-ratio:1/1; text-align:center; padding:10px;}
+.banner-card.banner-2col{ grid-column:span 2; }
+.banner-card.banner-1col{ grid-column:span 1; }
 </style>
-
 </head>
 <body>
 
@@ -57,163 +47,138 @@ header h1 { font-weight: 600; font-size: 20px; }
   <button class="grid-btn" data-cols="4">4 in row</button>
 </div>
 
-<div class="products-grid cols-3" id="productGrid"></div>
+<div class="image-selector">
+  <button class="img-btn active" data-index="0">Cover Image</button>
+  <button class="img-btn" data-index="1">Lifestyle Image</button>
+</div>
 
-<div id="pagination" style="text-align:center; margin:20px;"></div>
+<div class="products-grid cols-3" id="productGrid"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
-const buttons = document.querySelectorAll(".grid-btn");
+const gridButtons = document.querySelectorAll(".grid-btn");
+const imgButtons = document.querySelectorAll(".img-btn");
 let allProducts = [];
-let currentPage = 1;
-const productsPerPage = 36;
+let selectedImgIndex = 0;
 
-// --- Fetch CSV from GitHub ---
+// Fetch CSV
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
-  complete: function(results) {
-    allProducts = results.data;
-    renderProducts(allProducts, currentPage);
-  }
+  download: true, header: true, skipEmptyLines:true,
+  complete: results => { allProducts = results.data; renderProducts(); }
 });
 
-// --- Render Products ---
-function renderProducts(products, page = 1) {
+function renderProducts(){
   grid.innerHTML = "";
-  const start = (page-1)*productsPerPage;
-  const end = start + productsPerPage;
-  const pageProducts = products.slice(start,end);
-
-  pageProducts.forEach(p => {
+  allProducts.forEach((p, idx)=>{
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className="product-card";
 
-    // Name
-    const name = p.name || p.Name || "Unnamed product";
-    const h3 = document.createElement("h3");
-    h3.innerText = name;
-    card.appendChild(h3);
+    // Image
+    const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
+    const imgDiv = document.createElement("div");
+    imgDiv.className="product-images";
 
-    // Top label (ribbon)
-    if (p.ribbon) {
-      const label = document.createElement("div");
-      label.className = "top-label";
-      label.innerText = p.ribbon;
+    if(images.length){
+      const loopImages = [...images, ...images]; // duplicate for infinite effect
+      loopImages.forEach(url=>{
+        const wrapper=document.createElement("div");
+        wrapper.className="img-wrapper";
+        const img=document.createElement("img");
+        img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
+        img.loading="lazy"; // faster loading
+        wrapper.appendChild(img);
+        imgDiv.appendChild(wrapper);
+      });
+    }
+
+    card.appendChild(imgDiv);
+
+    // Product Name
+    const infoDiv=document.createElement("div");
+    infoDiv.className="product-info";
+    const h3=document.createElement("h3");
+    h3.innerText=p.name||p.Name||"Unnamed product";
+    infoDiv.appendChild(h3);
+    card.appendChild(infoDiv);
+
+    // Top label
+    if(p.ribbon){
+      const label=document.createElement("div");
+      label.className="top-label";
+      label.innerText=p.ribbon;
       card.appendChild(label);
     }
 
-    // Top bubbles (you can customize)
-    const bubbles = ["category","color"].map(k => p[k]).filter(Boolean);
-    if (bubbles.length) {
-      const bubbleContainer = document.createElement("div");
-      bubbleContainer.className = "top-bubbles";
-      bubbles.forEach(b => {
-        const div = document.createElement("div");
-        div.innerText = b;
-        bubbleContainer.appendChild(div);
+    // Bubbles
+    const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
+    if(bubbles.length){
+      const bubbleDiv=document.createElement("div");
+      bubbleDiv.className="top-bubbles";
+      bubbles.forEach(b=>{
+        const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);
       });
-      card.appendChild(bubbleContainer);
+      card.appendChild(bubbleDiv);
     }
-
-    // Images
-    const imageField = p.productImageUrl || "";
-    const imageUrls = imageField.split(";").map(u => u.trim()).filter(Boolean);
-    if (imageUrls.length) {
-      const imagesDiv = document.createElement("div");
-      imagesDiv.className = "product-images";
-      imageUrls.forEach(url => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "img-wrapper";
-        const img = document.createElement("img");
-        img.src = url.includes("http") ? url : "https://static.wixstatic.com/media/"+url;
-        img.alt = name;
-        wrapper.appendChild(img);
-        imagesDiv.appendChild(wrapper);
-      });
-      card.appendChild(imagesDiv);
-    }
-
-    // Price
-    const infoDiv = document.createElement("div");
-    infoDiv.className = "product-info";
-    const bottomDiv = document.createElement("div");
-    bottomDiv.className = "product-bottom";
-
-    const priceContainer = document.createElement("div");
-    priceContainer.className = "price-container";
-    const priceLine = document.createElement("div");
-    priceLine.className = "price-line";
-
-    const originalPrice = document.createElement("span");
-    originalPrice.className = "original-price";
-    originalPrice.innerText = p.price || "";
-
-    const discountedPrice = document.createElement("span");
-    discountedPrice.className = "price";
-    discountedPrice.innerText = p.discountValue || originalPrice.innerText;
-
-    priceLine.appendChild(originalPrice);
-    priceLine.appendChild(discountedPrice);
-    priceContainer.appendChild(priceLine);
-    bottomDiv.appendChild(priceContainer);
-
-    infoDiv.appendChild(bottomDiv);
-    card.appendChild(infoDiv);
 
     // Plus overlay
-    const plus = document.createElement("div");
-    plus.className = "plus-overlay";
-    plus.innerText = "+";
+    const plus=document.createElement("div");
+    plus.className="plus-overlay"; plus.innerText="+";
     card.appendChild(plus);
 
     grid.appendChild(card);
-  });
 
-  renderPagination(products);
+    // Show selected image
+    showSelectedImage(card, selectedImgIndex);
+  });
   insertBanners();
 }
 
-// --- Pagination ---
-function renderPagination(products) {
-  const totalPages = Math.ceil(products.length/productsPerPage);
-  const paginationDiv = document.getElementById("pagination");
-  paginationDiv.innerHTML = "";
-  for(let i=1;i<=totalPages;i++){
-    const btn = document.createElement("button");
-    btn.innerText = i;
-    btn.className = (i===currentPage)?"active":"";
-    btn.addEventListener("click",()=>{currentPage=i; renderProducts(products,currentPage);});
-    paginationDiv.appendChild(btn);
-  }
+// Show first/second image
+function showSelectedImage(card, index){
+  const wrappers=card.querySelectorAll(".img-wrapper");
+  wrappers.forEach((w,i)=>{
+    w.style.display=(i===index)?"block":"none";
+  });
 }
 
-// --- Grid toggle ---
-buttons.forEach(btn => {
+// Image selector
+imgButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
-    buttons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+    imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+    selectedImgIndex=parseInt(btn.dataset.index);
+    document.querySelectorAll(".product-card").forEach(card=>{
+      showSelectedImage(card, selectedImgIndex);
+    });
+  });
+});
+
+// Grid toggle
+gridButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
     grid.classList.remove("cols-3","cols-4");
     grid.classList.add(`cols-${btn.dataset.cols}`);
     insertBanners();
   });
 });
 
-// --- Insert banners ---
-function insertBanners() {
-  grid.querySelectorAll(".banner-card").forEach(b => b.remove());
+// Insert banners (same size as images)
+function insertBanners(){
+  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const isFourGrid = grid.classList.contains("cols-4");
   const step = isFourGrid ? 10 : 9;
   let i = isFourGrid ? 9 : 8;
   const cards = [...grid.querySelectorAll(".product-card")];
   while(i<cards.length){
-    const banner = document.createElement("div");
-    banner.className = isFourGrid ? "banner-card banner-2col" : "banner-card banner-1col";
-    banner.innerText = isFourGrid ? "🔥 Special Deal – Limited Time!" : "✨ New Collection Drop!";
+    const banner=document.createElement("div");
+    banner.className=isFourGrid?"banner-card banner-2col":"banner-card banner-1col";
+    banner.innerText=isFourGrid?"🔥 Special Deal – Limited Time!":"✨ New Collection Drop!";
+    // Match size of image
+    const imgH=cards[i].querySelector(".img-wrapper")?.clientHeight || 200;
+    banner.style.height=imgH+"px";
     grid.insertBefore(banner,cards[i]);
-    i += step;
+    i+=step;
   }
 }
 </script>
