@@ -238,36 +238,30 @@ function renderProducts(products, page = 1) {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Top label
-    const labelText = p.ribbon || p.Label || p["Custom Text 1"];
-    if (labelText) {
-      const topLabel = document.createElement("div");
-      topLabel.className = "top-label";
-      topLabel.innerText = labelText;
-      card.appendChild(topLabel);
+    // Show product name clearly
+    const name = p.name || p.Name || "Unnamed product";
+    const h3 = document.createElement("h3");
+    h3.innerText = name;
+    h3.style.marginBottom = "10px";
+    card.appendChild(h3);
+
+    // Debug: log product name
+    console.log("Rendering product:", name);
+
+    // Parse image URLs from productImageUrl field only
+    const imageField = p.productImageUrl || "";
+    if (!imageField) {
+      console.warn(`No image URLs found for product: ${name}`);
     }
 
-    // Top bubbles
-    const bubbleKeys = ["productOptionName1","productOptionName2","productOptionName3","Bubble1","Bubble2","customTextField1"];
-    const bubbles = bubbleKeys.map(k => p[k]).filter(Boolean);
-    if (bubbles.length > 0) {
-      const bubbleContainer = document.createElement("div");
-      bubbleContainer.className = "top-bubbles";
-      bubbles.forEach(b => {
-        const div = document.createElement("div");
-        div.innerText = b;
-        bubbleContainer.appendChild(div);
-      });
-      card.appendChild(bubbleContainer);
-    }
-
-    // Images from productImageUrl or others
-    let imageField = p.productImageUrl || p.ImageURLs || p.Images || p["Image Urls"] || p["Image URL"] || p.image || p.imageURLs || "";
-
+    // Split only by semicolon since your CSV uses that
     const imageUrls = imageField
-      .split(/[;,|]/)               // split by semicolon, comma or pipe
+      .split(";")
       .map(u => u.trim().replace(/^"|"$/g, ""))
       .filter(Boolean);
+
+    // Debug: show extracted image URLs
+    console.log(`Product: ${name} — Image URLs:`, imageUrls);
 
     if (imageUrls.length > 0) {
       const imagesDiv = document.createElement("div");
@@ -278,57 +272,19 @@ function renderProducts(products, page = 1) {
         wrapper.className = "img-wrapper";
         const img = document.createElement("img");
 
-        // Prepend Wix base URL if relative URL
+        // Prepend Wix base URL if URL is relative
         if (!url.match(/^https?:\/\//)) {
           img.src = "https://static.wixstatic.com/media/" + url;
         } else {
           img.src = url;
         }
+        img.alt = name;
 
         wrapper.appendChild(img);
         imagesDiv.appendChild(wrapper);
       });
-
       card.appendChild(imagesDiv);
     }
-
-    // Product info
-    const infoDiv = document.createElement("div");
-    infoDiv.className = "product-info";
-
-    const bottomDiv = document.createElement("div");
-    bottomDiv.className = "product-bottom";
-
-    const h3 = document.createElement("h3");
-    h3.innerText = p.name || p.Name || "Product";
-    bottomDiv.appendChild(h3);
-
-    const priceContainer = document.createElement("div");
-    priceContainer.className = "price-container";
-
-    const priceLine = document.createElement("div");
-    priceLine.className = "price-line";
-
-    const originalPrice = document.createElement("span");
-    originalPrice.className = "original-price";
-    originalPrice.innerText = p.price || p.Price || "";
-
-    const discountedPrice = document.createElement("span");
-    discountedPrice.className = "price";
-    discountedPrice.innerText = p.discountValue || p.DiscountedPrice || originalPrice.innerText;
-
-    priceLine.appendChild(originalPrice);
-    priceLine.appendChild(discountedPrice);
-    priceContainer.appendChild(priceLine);
-    bottomDiv.appendChild(priceContainer);
-    infoDiv.appendChild(bottomDiv);
-    card.appendChild(infoDiv);
-
-    // Plus overlay
-    const plus = document.createElement("div");
-    plus.className = "plus-overlay";
-    plus.innerText = "+";
-    card.appendChild(plus);
 
     grid.appendChild(card);
   });
