@@ -248,6 +248,23 @@ header h1 {
   font-weight: 600;
   color: #333;
 }
+
+/* ---- PAGINATION BUTTONS ---- */
+#pagination button {
+  margin: 0 5px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #fff;
+  color: #111;
+}
+
+#pagination button.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
 </style>
 </head>
 
@@ -266,6 +283,9 @@ header h1 {
 <!-- PRODUCT GRID -->
 <div class="products-grid cols-3" id="productGrid"></div>
 
+<!-- PAGINATION -->
+<div id="pagination" style="text-align:center; margin:20px;"></div>
+
 <div style="text-align:center; margin:20px;">
   <input type="file" id="csvUpload" accept=".csv">
 </div>
@@ -273,6 +293,8 @@ header h1 {
 <script>
 const grid = document.getElementById("productGrid");
 let allProducts = [];
+let currentPage = 1;
+const productsPerPage = 36;
 
 document.getElementById("csvUpload").addEventListener("change", function(e) {
   const file = e.target.files[0];
@@ -283,16 +305,19 @@ document.getElementById("csvUpload").addEventListener("change", function(e) {
     skipEmptyLines: true,
     complete: function(results) {
       allProducts = results.data;
-      renderProducts(allProducts);
-      insertBanners();
+      currentPage = 1;
+      renderProducts(allProducts, currentPage);
     }
   });
 });
 
-function renderProducts(products) {
+function renderProducts(products, page = 1) {
   grid.innerHTML = ""; // clear grid
+  const start = (page - 1) * productsPerPage;
+  const end = start + productsPerPage;
+  const pageProducts = products.slice(start, end);
 
-  products.forEach(p => {
+  pageProducts.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
 
@@ -319,30 +344,26 @@ function renderProducts(products) {
       card.appendChild(bubbleContainer);
     }
 
-// Images
-const baseUrl = "https://static.wixstatic.com/media/";
-const imageField = p.images || p.ImageURLs || p.Images || p["Image Urls"] || "";
-const imageUrls = imageField.split(",").map(u => u.trim()).filter(Boolean);
+    // Images
+    const baseUrl = "https://static.wixstatic.com/media/";
+    const imageField = p.images || p.ImageURLs || p.Images || p["Image Urls"] || "";
+    const imageUrls = imageField.split(",").map(u => u.trim()).filter(Boolean);
 
-if (imageUrls.length > 0) {
-  const imagesDiv = document.createElement("div");
-  imagesDiv.className = "product-images";
+    if (imageUrls.length > 0) {
+      const imagesDiv = document.createElement("div");
+      imagesDiv.className = "product-images";
 
-  imageUrls.forEach(url => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";
-    const img = document.createElement("img");
+      imageUrls.forEach(url => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "img-wrapper";
+        const img = document.createElement("img");
+        img.src = url.startsWith("http") ? url : baseUrl + url;
+        wrapper.appendChild(img);
+        imagesDiv.appendChild(wrapper);
+      });
 
-    // Prepend the base URL if the URL doesn't already start with http
-    img.src = url.startsWith("http") ? url : baseUrl + url;
-
-    wrapper.appendChild(img);
-    imagesDiv.appendChild(wrapper);
-  });
-
-  card.appendChild(imagesDiv);
-}
-
+      card.appendChild(imagesDiv);
+    }
 
     // Product info
     const infoDiv = document.createElement("div");
@@ -384,9 +405,36 @@ if (imageUrls.length > 0) {
 
     grid.appendChild(card);
   });
-}
-</script>
 
+  renderPagination(products);
+}
+
+function renderPagination(products) {
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  const paginationDiv = document.getElementById("pagination");
+  paginationDiv.innerHTML = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.innerText = i;
+    btn.className = (i === currentPage) ? "active" : "";
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      renderProducts(products, currentPage);
+    });
+    paginationDiv.appendChild(btn);
+  }
+}
+
+// GRID TOGGLE
+document.querySelectorAll(".grid-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".grid-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    grid.className = `products-grid cols-${btn.dataset.cols}`;
+  });
+});
+</script>
 
 </body>
 </html>
