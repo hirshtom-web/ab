@@ -345,11 +345,10 @@ function renderProducts(products, page = 1) {
     }
 
    // Images
-const baseUrl = "https://static.wixstatic.com/media/";
 const imageField = p.images || p.ImageURLs || p.Images || p["Image Urls"] || "";
 const imageUrls = imageField
-  .split(/[,\|]/)           // split by comma or pipe
-  .map(u => u.trim())        // remove spaces
+  .split(/[,\|]/)          // split by comma or pipe
+  .map(u => u.trim().replace(/^"|"$/g, ""))  // remove spaces and surrounding quotes
   .filter(Boolean);
 
 if (imageUrls.length > 0) {
@@ -361,8 +360,12 @@ if (imageUrls.length > 0) {
     wrapper.className = "img-wrapper";
     const img = document.createElement("img");
 
-    // If URL doesn't start with http, prepend baseUrl
-    img.src = url.match(/^https?:\/\//) ? url : baseUrl + url;
+    // Only prepend base URL if it looks like a relative Wix path
+    if (!url.match(/^https?:\/\//)) {
+      img.src = "https://static.wixstatic.com/media/" + url;
+    } else {
+      img.src = url;
+    }
 
     wrapper.appendChild(img);
     imagesDiv.appendChild(wrapper);
