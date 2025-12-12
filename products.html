@@ -271,26 +271,13 @@ header h1 {
 </div>
 
 <script>
-let allProducts = [];
 const grid = document.getElementById("productGrid");
-const buttons = document.querySelectorAll(".grid-btn");
+let allProducts = [];
 
-/* ---- GRID SWITCH LOGIC ---- */
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    buttons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    const cols = btn.dataset.cols;
-    grid.classList.remove("cols-3", "cols-4");
-    grid.classList.add(`cols-${cols}`);
-    insertBanners();
-  });
-});
-
-/* ---- CSV UPLOAD ---- */
 document.getElementById("csvUpload").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if (!file) return;
+
   Papa.parse(file, {
     header: true,
     skipEmptyLines: true,
@@ -302,59 +289,84 @@ document.getElementById("csvUpload").addEventListener("change", function(e) {
   });
 });
 
-/* ---- RENDER PRODUCTS ---- */
 function renderProducts(products) {
-  grid.innerHTML = "";
+  grid.innerHTML = ""; // clear grid
+
   products.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Ribbon / Top label
-    if (p.ribbon) {
-      const label = document.createElement("div");
-      label.className = "top-label";
-      label.innerText = p.ribbon;
-      card.appendChild(label);
+    // Top label
+    const labelText = p.ribbon || p.Label || p["Custom Text 1"];
+    if (labelText) {
+      const topLabel = document.createElement("div");
+      topLabel.className = "top-label";
+      topLabel.innerText = labelText;
+      card.appendChild(topLabel);
     }
 
     // Top bubbles
-    const bubbles = document.createElement("div");
-    bubbles.className = "top-bubbles";
-    if (p.productOptionName1) bubbles.innerHTML += `<div>${p.productOptionName1}</div>`;
-    if (p.customTextField1) bubbles.innerHTML += `<div>${p.customTextField1}</div>`;
-    card.appendChild(bubbles);
+    const bubbleKeys = ["productOptionName1","productOptionName2","productOptionName3","Bubble1","Bubble2","customTextField1"];
+    const bubbles = bubbleKeys.map(k => p[k]).filter(Boolean);
+    if (bubbles.length > 0) {
+      const bubbleContainer = document.createElement("div");
+      bubbleContainer.className = "top-bubbles";
+      bubbles.forEach(b => {
+        const div = document.createElement("div");
+        div.innerText = b;
+        bubbleContainer.appendChild(div);
+      });
+      card.appendChild(bubbleContainer);
+    }
 
-    // Images (multi-image gallery)
-    if (p.images) {
+    // Images
+    const imageField = p.images || p.ImageURLs || p.Images || "";
+    const imageUrls = imageField.split(",").map(u => u.trim()).filter(Boolean);
+    if (imageUrls.length > 0) {
       const imagesDiv = document.createElement("div");
       imagesDiv.className = "product-images";
-      const imgs = p.images.split(",");
-      imgs.forEach(src => {
+      imageUrls.forEach(url => {
         const wrapper = document.createElement("div");
         wrapper.className = "img-wrapper";
         const img = document.createElement("img");
-        img.src = src.trim();
+        img.src = url;
         wrapper.appendChild(img);
         imagesDiv.appendChild(wrapper);
       });
       card.appendChild(imagesDiv);
     }
 
-    // Product Info
-    const info = document.createElement("div");
-    info.className = "product-info";
-    info.innerHTML = `
-      <div class="product-bottom">
-        <h3>${p.name || ""}</h3>
-        <div class="price-container">
-          <div class="price-line">
-            ${p.discountValue ? `<span class="original-price">$${p.price}</span>` : ""}
-            <span class="price">$${p.discountValue || p.price}</span>
-          </div>
-        </div>
-      </div>
-    `;
-    card.appendChild(info);
+    // Product info
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "product-info";
+
+    const bottomDiv = document.createElement("div");
+    bottomDiv.className = "product-bottom";
+
+    const h3 = document.createElement("h3");
+    h3.innerText = p.name || p.Name || "Product";
+    bottomDiv.appendChild(h3);
+
+    const priceContainer = document.createElement("div");
+    priceContainer.className = "price-container";
+
+    const priceLine = document.createElement("div");
+    priceLine.className = "price-line";
+
+    const originalPrice = document.createElement("span");
+    originalPrice.className = "original-price";
+    originalPrice.innerText = p.price || p.Price || "";
+
+    const discountedPrice = document.createElement("span");
+    discountedPrice.className = "price";
+    discountedPrice.innerText = p.discountValue || p.DiscountedPrice || originalPrice.innerText;
+
+    priceLine.appendChild(originalPrice);
+    priceLine.appendChild(discountedPrice);
+    priceContainer.appendChild(priceLine);
+    bottomDiv.appendChild(priceContainer);
+    infoDiv.appendChild(bottomDiv);
+    card.appendChild(infoDiv);
 
     // Plus overlay
     const plus = document.createElement("div");
@@ -365,24 +377,8 @@ function renderProducts(products) {
     grid.appendChild(card);
   });
 }
-
-/* ---- INSERT BANNERS ---- */
-function insertBanners() {
-  grid.querySelectorAll(".banner-card").forEach(b => b.remove());
-  const isFourGrid = grid.classList.contains("cols-4");
-  const step = isFourGrid ? 10 : 9;
-  const startIndex = isFourGrid ? 9 : 8;
-  let i = startIndex;
-  const cards = [...grid.querySelectorAll(".product-card")];
-  while (i < cards.length) {
-    const banner = document.createElement("div");
-    banner.className = isFourGrid ? "banner-card banner-2col" : "banner-card banner-1col";
-    banner.innerText = isFourGrid ? "🔥 Special Deal – Limited Time!" : "✨ New Collection Drop!";
-    grid.insertBefore(banner, cards[i]);
-    i += step;
-  }
-}
 </script>
+
 
 </body>
 </html>
