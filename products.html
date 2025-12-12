@@ -206,12 +206,14 @@ header h1 {
   <input type="file" id="csvUpload" accept=".csv">
 </div>
 
+
 <script>
 const grid = document.getElementById("productGrid");
 let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 36;
 
+// CSV upload
 document.getElementById("csvUpload").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -220,9 +222,18 @@ document.getElementById("csvUpload").addEventListener("change", function(e) {
     header: true,
     skipEmptyLines: true,
     complete: function(results) {
-      allProducts = results.data;
+      // Trim all keys to avoid " name" issues
+      allProducts = results.data.map(item => {
+        const fixed = {};
+        for (const key in item) {
+          fixed[key.trim()] = item[key];
+        }
+        return fixed;
+      });
+
       currentPage = 1;
       console.log("Loaded products:", allProducts.length);
+      console.log("First product:", allProducts[0]);
       renderProducts(allProducts, currentPage);
     }
   });
@@ -238,30 +249,19 @@ function renderProducts(products, page = 1) {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Show product name clearly
-    const name = p.name || p.Name || "Unnamed product";
+    // Product name
+    const name = p.name || "Unnamed product";
     const h3 = document.createElement("h3");
     h3.innerText = name;
     h3.style.marginBottom = "10px";
     card.appendChild(h3);
 
-    // Debug: log product name
-    console.log("Rendering product:", name);
-
-    // Parse image URLs from productImageUrl field only
+    // Product images
     const imageField = p.productImageUrl || "";
-    if (!imageField) {
-      console.warn(`No image URLs found for product: ${name}`);
-    }
-
-    // Split only by semicolon since your CSV uses that
     const imageUrls = imageField
       .split(";")
       .map(u => u.trim().replace(/^"|"$/g, ""))
       .filter(Boolean);
-
-    // Debug: show extracted image URLs
-    console.log(`Product: ${name} — Image URLs:`, imageUrls);
 
     if (imageUrls.length > 0) {
       const imagesDiv = document.createElement("div");
@@ -272,7 +272,6 @@ function renderProducts(products, page = 1) {
         wrapper.className = "img-wrapper";
         const img = document.createElement("img");
 
-        // Prepend Wix base URL if URL is relative
         if (!url.match(/^https?:\/\//)) {
           img.src = "https://static.wixstatic.com/media/" + url;
         } else {
@@ -283,6 +282,7 @@ function renderProducts(products, page = 1) {
         wrapper.appendChild(img);
         imagesDiv.appendChild(wrapper);
       });
+
       card.appendChild(imagesDiv);
     }
 
@@ -317,8 +317,9 @@ document.querySelectorAll(".grid-btn").forEach(btn => {
     grid.className = `products-grid cols-${btn.dataset.cols}`;
   });
 });
-
 </script>
+
+
 
 
 </body>
