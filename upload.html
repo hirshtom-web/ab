@@ -1,8 +1,11 @@
 <input type="file" id="csvUpload" accept=".csv">
-<div id="filters"></div>
+
+<div id="filters" style="margin: 15px 0;"></div>
+
 <div class="products-grid cols-3" id="productGrid"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <script>
 let allProducts = [];
 
@@ -22,6 +25,7 @@ document.getElementById("csvUpload").addEventListener("change", function(e) {
   });
 });
 
+
 // --- FILTERS ---
 function setupFilters() {
   const filtersDiv = document.getElementById("filters");
@@ -29,6 +33,9 @@ function setupFilters() {
 
   const filterFields = [
     {label:"Collection", field:"collection"},
+    {label:"Category", field:"category"},
+    {label:"Color", field:"color"},
+    {label:"SKU", field:"sku"},
     {label:"Price", field:"price"},
     {label:"Keyword", field:"productOptionName1"},
     {label:"Feel", field:"customTextField1"},
@@ -47,6 +54,7 @@ function setupFilters() {
     filtersDiv.appendChild(document.createTextNode(" "));
   });
 }
+
 
 // --- RENDER PRODUCTS ---
 function renderProducts(products) {
@@ -76,31 +84,52 @@ function renderProducts(products) {
     if (p.productImageUrl) {
       const imagesDiv = document.createElement("div");
       imagesDiv.className = "product-images";
+
       const imgWrapper = document.createElement("div");
       imgWrapper.className = "img-wrapper";
+
       const img = document.createElement("img");
       img.src = p.productImageUrl;
+
       imgWrapper.appendChild(img);
       imagesDiv.appendChild(imgWrapper);
       card.appendChild(imagesDiv);
     }
 
-    // Info
+    // Product Info
     const info = document.createElement("div");
     info.className = "product-info";
-    info.innerHTML = `<div class="product-bottom">
-                        <h3>${p.name}</h3>
-                        <div class="price-container">
-                          <div class="price-line">
-                            <span class="price">$${p.price}</span>
-                          </div>
-                        </div>
-                      </div>`;
-    card.appendChild(info);
 
+    info.innerHTML = `
+      <div class="product-bottom">
+        <h3>${p.name}</h3>
+
+        <div class="price-container">
+          <div class="price-line">
+            <span class="price">$${p.price}</span>
+          </div>
+        </div>
+
+        <div class="extra-fields">
+          ${p.sku ? `<div><strong>SKU:</strong> ${p.sku}</div>` : ""}
+          ${p.collection ? `<div><strong>Collection:</strong> ${p.collection}</div>` : ""}
+          ${p.category ? `<div><strong>Category:</strong> ${p.category}</div>` : ""}
+          ${p.color ? `<div><strong>Color:</strong> ${p.color}</div>` : ""}
+          ${p.cost ? `<div><strong>Cost:</strong> $${p.cost}</div>` : ""}
+          ${p.discountMode ? `<div><strong>Discount Mode:</strong> ${p.discountMode}</div>` : ""}
+          ${p.discountValue ? `<div><strong>Discount Value:</strong> ${p.discountValue}</div>` : ""}
+          ${p.visible ? `<div><strong>Visible:</strong> ${p.visible}</div>` : ""}
+          ${p.digitalFile ? `<div><strong>Digital File:</strong> ${p.digitalFile}</div>` : ""}
+          ${p.fieldType ? `<div><strong>Field Type:</strong> ${p.fieldType}</div>` : ""}
+        </div>
+      </div>
+    `;
+
+    card.appendChild(info);
     grid.appendChild(card);
   });
 }
+
 
 // --- APPLY FILTERS ---
 function applyFilters() {
@@ -118,3 +147,67 @@ function applyFilters() {
   renderProducts(filtered);
 }
 </script>
+
+<style>
+/* Minimal CSS for layout */
+.product-card {
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.img-wrapper {
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.top-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff4b4b;
+  padding: 4px 10px;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.top-bubbles {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.top-bubbles div {
+  background: rgba(255,255,255,0.85);
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  border: 1px solid #ddd;
+}
+
+.extra-fields {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #444;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+</style>
