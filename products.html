@@ -6,24 +6,25 @@
 <title>ArteBarte Products</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: 'Poppins', sans-serif; margin: 0; background: #fff; color: #111; }
-header { text-align: center; padding: 30px 20px 10px; }
-header h1 { font-weight: 600; font-size: 20px; }
-.grid-selector { display: flex; justify-content: center; gap: 10px; margin: 10px auto 10px; }
-.grid-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; background: #fff; font-size: 12px; cursor: pointer; transition: 0.2s ease; }
-.grid-btn.active { background: #111; color: #fff; border-color: #111; }
-.image-selector { display:flex; justify-content:center; gap:10px; margin-bottom:20px;}
-.products-grid { display: grid; gap: 20px; max-width: 95%; margin: 0 auto; padding: 0 20px; }
-.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-@media(max-width:600px){ .products-grid{ grid-template-columns: repeat(2,1fr) !important;} }
+body { font-family: 'Poppins', sans-serif; margin:0; background:#fff; color:#111; }
+header { text-align:center; padding:30px 20px 10px; }
+header h1 { font-weight:600; font-size:20px; }
+.grid-selector, .image-selector { display:flex; justify-content:center; gap:10px; margin:10px auto; }
+.grid-btn, .img-btn { padding:6px 14px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:12px; cursor:pointer; transition:0.2s ease; }
+.grid-btn.active, .img-btn.active { background:#111; color:#fff; border-color:#111; }
 
-.product-card { position: relative; z-index:3; display:flex; flex-direction:column; align-items:center;}
-.product-images { display:flex; overflow:hidden; position:relative; width:100%; border-radius:16px; aspect-ratio:1/1;}
-.img-wrapper { flex-shrink:0; width:100%; height:100%; overflow:hidden; scroll-snap-align:start; border-radius:16px; }
-.img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; transition:0.3s;}
-.product-info { width:100%; padding:8px 0; text-align:center;}
-.product-info h3{ margin:0; font-size:14px; font-weight:500;}
+.products-grid { display:grid; gap:20px; max-width:95%; margin:0 auto; padding:0 20px; }
+.products-grid.cols-3 { grid-template-columns:repeat(3, 1fr); }
+.products-grid.cols-4 { grid-template-columns:repeat(4, 1fr); }
+@media(max-width:600px){ .products-grid{ grid-template-columns:repeat(2,1fr)!important; } }
+
+.product-card { position:relative; z-index:3; display:flex; flex-direction:column; }
+.product-images { width:100%; border-radius:16px; overflow:hidden; }
+.img-wrapper { width:100%; aspect-ratio:1/1; overflow:hidden; display:none; }
+.img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.product-info { width:100%; padding:8px 0; text-align:center; }
+.product-info h3{ margin:0; font-size:14px; font-weight:500; }
 
 .top-label { position:absolute; top:12px; left:12px; background:#ff5e5e; color:white; font-size:10px; padding:4px 8px; border-radius:12px; z-index:2; }
 .top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
@@ -64,37 +65,32 @@ let selectedImgIndex = 0;
 
 // Fetch CSV
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download: true, header: true, skipEmptyLines:true,
+  download:true, header:true, skipEmptyLines:true,
   complete: results => { allProducts = results.data; renderProducts(); }
 });
 
 function renderProducts(){
-  grid.innerHTML = "";
-  allProducts.forEach((p, idx)=>{
-    const card = document.createElement("div");
+  grid.innerHTML="";
+  allProducts.forEach(p=>{
+    const card=document.createElement("div");
     card.className="product-card";
 
-    // Image
-    const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
-    const imgDiv = document.createElement("div");
-    imgDiv.className="product-images";
+    // Images
+    const images=(p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
+    images.forEach((url,i)=>{
+      const wrapper=document.createElement("div");
+      wrapper.className="img-wrapper";
+      const img=document.createElement("img");
+      img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
+      img.loading="lazy";
+      wrapper.appendChild(img);
+      card.appendChild(wrapper);
+    });
 
-    if(images.length){
-      const loopImages = [...images, ...images]; // duplicate for infinite effect
-      loopImages.forEach(url=>{
-        const wrapper=document.createElement("div");
-        wrapper.className="img-wrapper";
-        const img=document.createElement("img");
-        img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
-        img.loading="lazy"; // faster loading
-        wrapper.appendChild(img);
-        imgDiv.appendChild(wrapper);
-      });
-    }
+    // Show selected image
+    showSelectedImage(card, selectedImgIndex);
 
-    card.appendChild(imgDiv);
-
-    // Product Name
+    // Product name
     const infoDiv=document.createElement("div");
     infoDiv.className="product-info";
     const h3=document.createElement("h3");
@@ -105,19 +101,16 @@ function renderProducts(){
     // Top label
     if(p.ribbon){
       const label=document.createElement("div");
-      label.className="top-label";
-      label.innerText=p.ribbon;
+      label.className="top-label"; label.innerText=p.ribbon;
       card.appendChild(label);
     }
 
-    // Bubbles
+    // Top bubbles
     const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
     if(bubbles.length){
       const bubbleDiv=document.createElement("div");
       bubbleDiv.className="top-bubbles";
-      bubbles.forEach(b=>{
-        const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);
-      });
+      bubbles.forEach(b=>{ const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d); });
       card.appendChild(bubbleDiv);
     }
 
@@ -127,19 +120,13 @@ function renderProducts(){
     card.appendChild(plus);
 
     grid.appendChild(card);
-
-    // Show selected image
-    showSelectedImage(card, selectedImgIndex);
   });
   insertBanners();
 }
 
-// Show first/second image
-function showSelectedImage(card, index){
+function showSelectedImage(card,index){
   const wrappers=card.querySelectorAll(".img-wrapper");
-  wrappers.forEach((w,i)=>{
-    w.style.display=(i===index)?"block":"none";
-  });
+  wrappers.forEach((w,i)=> w.style.display=(i===index)?"block":"none");
 }
 
 // Image selector
@@ -147,9 +134,7 @@ imgButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
     selectedImgIndex=parseInt(btn.dataset.index);
-    document.querySelectorAll(".product-card").forEach(card=>{
-      showSelectedImage(card, selectedImgIndex);
-    });
+    document.querySelectorAll(".product-card").forEach(card=> showSelectedImage(card,selectedImgIndex));
   });
 });
 
@@ -157,30 +142,27 @@ imgButtons.forEach(btn=>{
 gridButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    grid.classList.remove("cols-3","cols-4");
-    grid.classList.add(`cols-${btn.dataset.cols}`);
+    grid.classList.remove("cols-3","cols-4"); grid.classList.add(`cols-${btn.dataset.cols}`);
     insertBanners();
   });
 });
 
-// Insert banners (same size as images)
+// Banners
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const isFourGrid = grid.classList.contains("cols-4");
   const step = isFourGrid ? 10 : 9;
   let i = isFourGrid ? 9 : 8;
-  const cards = [...grid.querySelectorAll(".product-card")];
+  const cards=[...grid.querySelectorAll(".product-card")];
   while(i<cards.length){
     const banner=document.createElement("div");
     banner.className=isFourGrid?"banner-card banner-2col":"banner-card banner-1col";
     banner.innerText=isFourGrid?"🔥 Special Deal – Limited Time!":"✨ New Collection Drop!";
-    // Match size of image
-    const imgH=cards[i].querySelector(".img-wrapper")?.clientHeight || 200;
-    banner.style.height=imgH+"px";
     grid.insertBefore(banner,cards[i]);
     i+=step;
   }
 }
 </script>
+
 </body>
 </html>
