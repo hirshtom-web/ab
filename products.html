@@ -270,6 +270,7 @@ function renderPage(page){
     const card = document.createElement("div");
     card.className = "product-card";
     card.dataset.currentImage = 0;
+    card.dataset.id = p.id;
 
     const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
@@ -287,12 +288,12 @@ function renderPage(page){
       const prevArrow = document.createElement("div");
       prevArrow.className = "slider-arrow left";
       prevArrow.innerHTML = "&#10094;";
-      prevArrow.onclick = () => switchImage(card, -1);
+      prevArrow.onclick = e => { e.stopPropagation(); switchImage(card, -1); }
 
       const nextArrow = document.createElement("div");
       nextArrow.className = "slider-arrow right";
       nextArrow.innerHTML = "&#10095;";
-      nextArrow.onclick = () => switchImage(card, 1);
+      nextArrow.onclick = e => { e.stopPropagation(); switchImage(card, 1); }
 
       wrapper.appendChild(prevArrow);
       wrapper.appendChild(nextArrow);
@@ -351,7 +352,12 @@ function renderPage(page){
       card.appendChild(bubbleDiv); 
     }
 
-    grid.appendChild(card);
+    // --- Wrap card in link to product page ---
+    const productLink = document.createElement("a");
+    productLink.href = `product-page.html?id=${encodeURIComponent(p.id)}`;
+    productLink.appendChild(card);
+
+    grid.appendChild(productLink);
   });
 
   insertBanners();
@@ -362,8 +368,7 @@ function renderPage(page){
   nextBtn.disabled = end >= allProducts.length;
 
   // --- Apply default cols ---
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-  grid.classList.add(`cols-${defaultCols}`);
+  updateGridColumns();
 }
 
 // --- Switch per-product image ---
@@ -392,10 +397,7 @@ gridButtons.forEach(btn => {
     const mobileCols = window.innerWidth <= 600 ? cols : 2;
     document.documentElement.style.setProperty('--mobile-cols', mobileCols);
 
-    // Update grid class
-    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-    grid.classList.add(`cols-${cols}`);
-
+    updateGridColumns();
     insertBanners();
   });
 });
@@ -441,16 +443,20 @@ imgButtons.forEach(btn=>{
   });
 });
 
-
-  // --- Responsive ---
+// --- Responsive ---
 window.addEventListener("resize", ()=>{
-  const mobileCols = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-cols')) || 2;
-  defaultCols = window.innerWidth <= 600 ? mobileCols : defaultCols;
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-  grid.classList.add(`cols-${defaultCols}`);
+  updateGridColumns();
 });
 
+// --- Update grid columns ---
+function updateGridColumns(){
+  const mobileCols = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-cols')) || 2;
+  const cols = window.innerWidth <= 600 ? mobileCols : defaultCols;
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+  grid.classList.add(`cols-${cols}`);
+}
 </script>
+
 
 
 </body>
