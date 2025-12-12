@@ -39,7 +39,7 @@ header h1 { font-weight:600; font-size:20px; }
 
 .img-wrapper {
   position: relative;   /* needed for overlay positioning */
-  aspect-ratio: 1/1;    /* square container */
+  aspect-ratio: 1/1;    /* keeps container square like product image */
   width: 100%;
   overflow: hidden;
   border-radius: 16px;
@@ -52,6 +52,18 @@ header h1 { font-weight:600; font-size:20px; }
   display: block;
   border-radius: 16px;  /* matches container for rounded corners */
 }
+
+  .banner-card .img-wrapper span {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:14px;
+  font-weight:600;
+  text-align:center;
+  color:#333;
+}
+
 
   
 .product-info { padding:14px 15px; text-align:center; }
@@ -99,6 +111,7 @@ header h1 { font-weight:600; font-size:20px; }
 @media(max-width:600px){ 
   .products-grid { grid-template-columns: repeat(1, 1fr) !important; } 
 }
+
 
 /* Banner card same height as image */
 .banner-card { 
@@ -237,9 +250,13 @@ function showSelectedImage(index){
   document.querySelectorAll(".product-card").forEach(card => {
     const images = JSON.parse(card.dataset.images || "[]");
     const img = card.querySelector(".img-wrapper img");
-    if(images[index]) img.src = images[index].includes("http") ? images[index] : "https://static.wixstatic.com/media/" + images[index];
+    if(images.length > 0){
+      const idx = Math.min(index, images.length - 1);
+      img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/" + images[idx];
+    }
   });
 }
+
 
 // Image buttons
 imgButtons.forEach(btn => {
@@ -269,10 +286,19 @@ function insertBanners(){
   for(let i = 8; i < cards.length; i += 9){
     const banner = document.createElement("div");
     banner.className = "banner-card";
-    banner.innerText = "✨ New Collection Drop!";
+
+    // Use inner img-wrapper to match product image height
+    const wrapper = document.createElement("div");
+    wrapper.className = "img-wrapper";  // same as product image
+    const span = document.createElement("span");
+    span.innerText = "✨ New Collection Drop!";
+    wrapper.appendChild(span);
+    banner.appendChild(wrapper);
+
     grid.insertBefore(banner, cards[i]);
   }
 }
+
 </script>
 
 
