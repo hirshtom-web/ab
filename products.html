@@ -36,9 +36,24 @@ header h1 { font-weight:600; font-size:20px; }
 @media(max-width:600px){ .products-grid{ grid-template-columns: repeat(2,1fr) !important;} }
 
 .product-card { position:relative; z-index:3; transition:none; }
-.img-wrapper { aspect-ratio:1/1; width:100%; overflow:hidden; border-radius:16px; }
-.img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; border-radius:16px; }
 
+.img-wrapper {
+  position: relative;   /* needed for overlay positioning */
+  aspect-ratio: 1/1;    /* square container */
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 16px;  /* matches container for rounded corners */
+}
+
+  
 .product-info { padding:14px 15px; text-align:center; }
 .product-info h3 { margin:0; font-size:14px; font-weight:500; }
 
@@ -50,9 +65,30 @@ header h1 { font-weight:600; font-size:20px; }
 .top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
 .top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px); }
 
-.plus-overlay { position:absolute; bottom:12px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease;}
-.product-card:hover .plus-overlay{opacity:1;}
+.plus-overlay { 
+  position:absolute; 
+  bottom:8px; 
+  right:8px; 
+  width:32px; 
+  height:32px; 
+  border-radius:50%; 
+  background:#111; 
+  color:#fff; 
+  font-size:18px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  opacity:0; 
+  transition:0.2s ease;
+  z-index:2; /* make sure it's above the image */
+}
+/* Show plus when hovering the card OR the image */
+.product-card:hover .plus-overlay,
+.img-wrapper:hover .plus-overlay {
+  opacity: 1;
+}
 
+  
 .banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; text-align:center; padding:10px; }
 </style>
 </head>
@@ -80,77 +116,133 @@ const imgButtons = document.querySelectorAll(".img-btn");
 let allProducts = [];
 let selectedImgIndex = 0;
 
+// Load CSV
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download:true, header:true, skipEmptyLines:true,
-  complete: results => { allProducts = results.data; renderProducts(); }
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  complete: results => { 
+    allProducts = results.data; 
+    renderProducts(); 
+  }
 });
 
+// Render products
 function renderProducts(){
-  grid.innerHTML="";
-  allProducts.forEach(p=>{
-    const card=document.createElement("div"); card.className="product-card";
+  grid.innerHTML = "";
 
-    const images=(p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
-    images.forEach((url,i)=>{
-      const wrapper=document.createElement("div"); wrapper.className="img-wrapper";
-      const img=document.createElement("img");
-      img.src=url.includes("http")?url:"https://static.wixstatic.com/media/"+url;
-      img.loading="lazy"; wrapper.appendChild(img); card.appendChild(wrapper);
-    });
+  allProducts.forEach((p, prodIndex) => {
+    const card = document.createElement("div");
+    card.className = "product-card";
 
-    showSelectedImage(card,selectedImgIndex);
+    // Images wrapper
+    const images = (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
+    const wrapper = document.createElement("div");
+    wrapper.className = "img-wrapper";
 
-    const info=document.createElement("div"); info.className="product-info";
-    const h3=document.createElement("h3"); h3.innerText=p.name||p.Name||"Unnamed product"; info.appendChild(h3);
+    const img = document.createElement("img");
+    img.src = images[selectedImgIndex] ? (images[selectedImgIndex].includes("http") ? images[selectedImgIndex] : "https://static.wixstatic.com/media/" + images[selectedImgIndex]) : "";
+    img.loading = "lazy";
+    wrapper.appendChild(img);
 
-    const priceDiv=document.createElement("div"); priceDiv.className="price-container";
-    const priceSpan=document.createElement("span"); priceSpan.className="price";
-    priceSpan.innerText=p.price && p.price.trim()!==""? "$"+p.price : "$1"; 
-    priceDiv.appendChild(priceSpan); info.appendChild(priceDiv);
+    // Plus overlay
+    const plus = document.createElement("div");
+    plus.className = "plus-overlay";
+    plus.innerText = "+";
+    wrapper.appendChild(plus);
+
+    card.appendChild(wrapper);
+
+    // Product info
+    const info = document.createElement("div");
+    info.className = "product-info";
+
+    const h3 = document.createElement("h3");
+    h3.innerText = p.name || p.Name || "Unnamed product";
+    info.appendChild(h3);
+
+    const priceDiv = document.createElement("div");
+    priceDiv.className = "price-container";
+
+    const priceSpan = document.createElement("span");
+    priceSpan.className = "price";
+    priceSpan.innerText = p.price && p.price.trim() !== "" ? "$" + p.price : "$1";
+    priceDiv.appendChild(priceSpan);
+    info.appendChild(priceDiv);
 
     card.appendChild(info);
 
-    if(p.ribbon){ const label=document.createElement("div"); label.className="top-label"; label.innerText=p.ribbon; card.appendChild(label);}
-    const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
-    if(bubbles.length){ const bubbleDiv=document.createElement("div"); bubbleDiv.className="top-bubbles"; bubbles.forEach(b=>{const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);}); card.appendChild(bubbleDiv);}
-    const plus=document.createElement("div"); plus.className="plus-overlay"; plus.innerText="+"; card.appendChild(plus);
+    // Ribbon
+    if(p.ribbon){
+      const label = document.createElement("div");
+      label.className = "top-label";
+      label.innerText = p.ribbon;
+      card.appendChild(label);
+    }
+
+    // Bubbles
+    const bubbles = ["category","color"].map(k => p[k]).filter(Boolean);
+    if(bubbles.length){
+      const bubbleDiv = document.createElement("div");
+      bubbleDiv.className = "top-bubbles";
+      bubbles.forEach(b => {
+        const d = document.createElement("div");
+        d.innerText = b;
+        bubbleDiv.appendChild(d);
+      });
+      card.appendChild(bubbleDiv);
+    }
 
     grid.appendChild(card);
   });
+
   insertBanners();
 }
 
-function showSelectedImage(card,index){
-  const wrappers=card.querySelectorAll(".img-wrapper");
-  wrappers.forEach((w,i)=>w.style.display=(i===index)?"block":"none");
+// Swap image
+function showSelectedImage(card, index){
+  const img = card.querySelector(".img-wrapper img");
+  const prodIndex = Array.from(grid.children).indexOf(card);
+  const images = (allProducts[prodIndex].productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
+  if(images[index]){
+    img.src = images[index].includes("http") ? images[index] : "https://static.wixstatic.com/media/" + images[index];
+  }
 }
 
-imgButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    selectedImgIndex=parseInt(btn.dataset.index);
-    document.querySelectorAll(".product-card").forEach(card=> showSelectedImage(card,selectedImgIndex));
+// Image buttons
+imgButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    imgButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedImgIndex = parseInt(btn.dataset.index);
+    document.querySelectorAll(".product-card").forEach(card => showSelectedImage(card, selectedImgIndex));
   });
 });
 
-gridButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    grid.classList.remove("cols-3","cols-4"); grid.classList.add(`cols-${btn.dataset.cols}`);
+// Grid buttons
+gridButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    gridButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    grid.classList.remove("cols-3","cols-4");
+    grid.classList.add(`cols-${btn.dataset.cols}`);
     insertBanners();
   });
 });
 
+// Insert banners
 function insertBanners(){
-  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
-  const cards=[...grid.querySelectorAll(".product-card")];
-  for(let i=8;i<cards.length;i+=9){
-    const banner=document.createElement("div"); banner.className="banner-card"; 
-    banner.innerText="✨ New Collection Drop!";
-    grid.insertBefore(banner,cards[i]);
+  grid.querySelectorAll(".banner-card").forEach(b => b.remove());
+  const cards = [...grid.querySelectorAll(".product-card")];
+  for(let i = 8; i < cards.length; i += 9){
+    const banner = document.createElement("div");
+    banner.className = "banner-card";
+    banner.innerText = "✨ New Collection Drop!";
+    grid.insertBefore(banner, cards[i]);
   }
 }
 </script>
+
 
 </body>
 </html>
