@@ -5,36 +5,264 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArteBarte Products</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-body { font-family: 'Poppins', sans-serif; margin:0; background:#fff; color:#111; }
-header { text-align:center; padding:30px 20px 10px; }
-header h1 { font-weight:600; font-size:20px; }
-.grid-selector, .image-selector { display:flex; justify-content:center; gap:10px; margin:10px auto; }
-.grid-btn, .img-btn { padding:6px 14px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:12px; cursor:pointer; transition:0.2s ease; }
-.grid-btn.active, .img-btn.active { background:#111; color:#fff; border-color:#111; }
 
-.products-grid { display:grid; gap:20px; max-width:95%; margin:0 auto; padding:0 20px; }
-.products-grid.cols-3 { grid-template-columns:repeat(3, 1fr); }
-.products-grid.cols-4 { grid-template-columns:repeat(4, 1fr); }
-@media(max-width:600px){ .products-grid{ grid-template-columns:repeat(2,1fr)!important; } }
+  <style>
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
 
-.product-card { position:relative; z-index:3; display:flex; flex-direction:column; }
-.product-images { width:100%; border-radius:16px; overflow:hidden; }
-.img-wrapper { width:100%; aspect-ratio:1/1; overflow:hidden; display:none; }
-.img-wrapper img { width:100%; height:100%; object-fit:cover; display:block; }
+/* ---- HEADER ---- */
+header {
+  text-align: center;
+  padding: 30px 20px 10px;
+}
 
-.product-info { width:100%; padding:8px 0; text-align:center; }
-.product-info h3{ margin:0; font-size:14px; font-weight:500; }
+header h1 {
+  font-weight: 600;
+  font-size: 20px;
+}
 
-.top-label { position:absolute; top:12px; left:12px; background:#ff5e5e; color:white; font-size:10px; padding:4px 8px; border-radius:12px; z-index:2; }
-.top-bubbles { position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2; }
-.top-bubbles div { padding:3px 8px; font-size:9px; font-weight:500; color:#333; background: rgba(255,255,255,0.85); border-radius:10px; border:1px solid #eee; backdrop-filter:blur(6px);}
-.plus-overlay { position:absolute; bottom:12px; right:12px; width:32px; height:32px; border-radius:50%; background:#111; color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; opacity:0; transition:0.2s ease;}
-.product-card:hover .plus-overlay{opacity:1;}
+/* ---- GRID SELECTOR ---- */
+.grid-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px auto 30px;
+}
 
-.banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; aspect-ratio:1/1; text-align:center; padding:10px;}
-.banner-card.banner-2col{ grid-column:span 2; }
-.banner-card.banner-1col{ grid-column:span 1; }
+.grid-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.grid-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.banner-2col {
+  grid-column: span 2;
+  position: relative; /* ensure bubbles in banner don’t interfere */
+  z-index: 1;         /* behind product cards */
+}
+
+.banner-1col {
+  grid-column: span 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- PRODUCT GRID ---- */
+.products-grid {
+  display: grid;
+  gap: 20px;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* default: 3 columns */
+.products-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* if user clicks 4-grid */
+.products-grid.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ---- PRODUCT CARD ---- */
+.product-card {
+  transition: none;
+  position: relative; /* ensures bubbles and labels are positioned correctly */
+  z-index: 3;         /* stay above banners */
+}
+
+.product-card:hover {
+  transform: none;
+}
+
+/* ---- BANNERS ---- */
+.banner-card {
+  background: #f7f7f7;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  text-align: center;
+  padding: 10px;
+}
+
+/* If banners ever have labels or bubbles */
+.banner-card .top-label {
+  top: 12px;
+  left: 12px;
+  position: absolute;
+  font-size: 10px;
+  padding: 4px 8px;
+}
+
+.banner-card .top-bubbles {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.banner-card .top-bubbles div {
+  padding: 3px 6px;
+  font-size: 9px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+/* ---- IMAGE GALLERY (square) ---- */
+.product-images {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+}
+
+.product-images::-webkit-scrollbar {
+  display: none;
+}
+
+.img-wrapper {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- HOT LABEL ---- */
+.top-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ff5e5e;
+  color: white;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  z-index: 2;
+}
+
+/* ---- TAG BUBBLES ---- */
+.top-bubbles {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.top-bubbles div {
+  padding: 3px 8px;
+  font-size: 9px;
+  font-weight: 500;
+  color: #333;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  border: 1px solid #eee;
+  backdrop-filter: blur(6px);
+}
+
+/* ---- + OVERLAY ---- */
+.plus-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: 0.2s ease;
+}
+
+.product-card:hover .plus-overlay {
+  opacity: 1;
+}
+
+/* ---- PRODUCT INFO ---- */
+.product-info {
+  padding: 14px 15px;
+}
+
+.product-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- NEW PRICE STYLE ---- */
+.price-container {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.price-line {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.original-price {
+  font-size: 10px;
+  text-decoration: line-through;
+  color: #999;
+}
+
+.price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
 </style>
 </head>
 <body>
@@ -65,12 +293,17 @@ let selectedImgIndex = 0;
 
 // Fetch CSV
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download:true, header:true, skipEmptyLines:true,
-  complete: results => { allProducts = results.data; renderProducts(); }
+  download:true,
+  header:true,
+  skipEmptyLines:true,
+  complete: results => {
+    allProducts = results.data;
+    renderProducts();
+  }
 });
 
 function renderProducts(){
-  grid.innerHTML="";
+  grid.innerHTML = "";
   allProducts.forEach(p=>{
     const card=document.createElement("div");
     card.className="product-card";
@@ -90,7 +323,7 @@ function renderProducts(){
     // Show selected image
     showSelectedImage(card, selectedImgIndex);
 
-    // Product name
+    // Product info
     const infoDiv=document.createElement("div");
     infoDiv.className="product-info";
     const h3=document.createElement("h3");
@@ -98,14 +331,14 @@ function renderProducts(){
     infoDiv.appendChild(h3);
     card.appendChild(infoDiv);
 
-    // Top label
+    // Ribbon label
     if(p.ribbon){
       const label=document.createElement("div");
       label.className="top-label"; label.innerText=p.ribbon;
       card.appendChild(label);
     }
 
-    // Top bubbles
+    // Bubbles
     const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
     if(bubbles.length){
       const bubbleDiv=document.createElement("div");
@@ -132,7 +365,8 @@ function showSelectedImage(card,index){
 // Image selector
 imgButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+    imgButtons.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
     selectedImgIndex=parseInt(btn.dataset.index);
     document.querySelectorAll(".product-card").forEach(card=> showSelectedImage(card,selectedImgIndex));
   });
@@ -141,13 +375,15 @@ imgButtons.forEach(btn=>{
 // Grid toggle
 gridButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
-    gridButtons.forEach(b=>b.classList.remove("active")); btn.classList.add("active");
-    grid.classList.remove("cols-3","cols-4"); grid.classList.add(`cols-${btn.dataset.cols}`);
+    gridButtons.forEach(b=>b.classList.remove("active")); 
+    btn.classList.add("active");
+    grid.classList.remove("cols-3","cols-4"); 
+    grid.classList.add(`cols-${btn.dataset.cols}`);
     insertBanners();
   });
 });
 
-// Banners
+// Insert banners
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const isFourGrid = grid.classList.contains("cols-4");
