@@ -75,52 +75,12 @@ header h1 {
 
 /* ---- PRODUCT CARD ---- */
 .product-card {
-  transition: none;
   position: relative;
   z-index: 3;
 }
 
 .product-card:hover {
   transform: none;
-}
-
-/* ---- BANNERS ---- */
-.banner-card {
-  background: #f7f7f7;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  color: #333;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  text-align: center;
-  padding: 10px;
-}
-
-.banner-card .top-label {
-  top: 12px;
-  left: 12px;
-  position: absolute;
-  font-size: 10px;
-  padding: 4px 8px;
-}
-
-.banner-card .top-bubbles {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  gap: 6px;
-}
-
-.banner-card .top-bubbles div {
-  padding: 3px 6px;
-  font-size: 9px;
-  background: rgba(255,255,255,0.85);
-  border-radius: 10px;
-  border: 1px solid #eee;
 }
 
 /* ---- IMAGE GALLERY ---- */
@@ -344,35 +304,33 @@ function renderProducts(products, page = 1) {
       card.appendChild(bubbleContainer);
     }
 
-   // Images
-const imageField = p.images || p.ImageURLs || p.Images || p["Image Urls"] || "";
-const imageUrls = imageField
-  .split(/[,\|]/)          // split by comma or pipe
-  .map(u => u.trim().replace(/^"|"$/g, ""))  // remove spaces and surrounding quotes
-  .filter(Boolean);
+    // Images
+    const imageField = p.images || p.ImageURLs || p.Images || p["Image Urls"] || "";
+    const imageUrls = imageField
+      .split(/[,\|]/)
+      .map(u => u.trim().replace(/^"|"$/g, ""))
+      .filter(Boolean);
 
-if (imageUrls.length > 0) {
-  const imagesDiv = document.createElement("div");
-  imagesDiv.className = "product-images";
+    console.log('DEBUG URLs for', p.Name || p.name, imageUrls);
 
-  imageUrls.forEach(url => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";
-    const img = document.createElement("img");
+    if (imageUrls.length > 0) {
+      const imagesDiv = document.createElement("div");
+      imagesDiv.className = "product-images";
 
-    // Only prepend base URL if it looks like a relative Wix path
-    if (!url.match(/^https?:\/\//)) {
-      img.src = "https://static.wixstatic.com/media/" + url;
-    } else {
-      img.src = url;
+      imageUrls.forEach(url => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "img-wrapper";
+        const img = document.createElement("img");
+
+        // Prepend Wix base URL only for relative paths
+        img.src = url.match(/^https?:\/\//) ? url : "https://static.wixstatic.com/media/" + url;
+
+        wrapper.appendChild(img);
+        imagesDiv.appendChild(wrapper);
+      });
+
+      card.appendChild(imagesDiv);
     }
-
-    wrapper.appendChild(img);
-    imagesDiv.appendChild(wrapper);
-  });
-
-  card.appendChild(imagesDiv);
-}
 
     // Product info
     const infoDiv = document.createElement("div");
