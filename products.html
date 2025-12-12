@@ -148,24 +148,31 @@ header h1 { font-weight:600; font-size:20px; }
   }
 }
 .slider-arrow {
-  position:absolute;
-  top:50%;
+  position: absolute;
+  top: 50%;
   transform: translateY(-50%);
-  font-size:20px;
-  color:#fff;
+  font-size: 20px;
+  color: #fff;
   background: rgba(0,0,0,0.4);
-  border-radius:50%;
-  width:28px;
-  height:28px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  z-index:2;
-  user-select:none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
-.slider-arrow.left { left:8px; }
-.slider-arrow.right { right:8px; }
+
+.img-wrapper:hover .slider-arrow {
+  opacity: 1;
+}
+
+.slider-arrow.left { left: 8px; }
+.slider-arrow.right { right: 8px; }
 
 .pagination { text-align:center; margin:20px 0; }
 .pagination button { padding:6px 12px; margin:0 5px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
@@ -209,7 +216,7 @@ const pageNumber = document.getElementById("pageNumber");
 let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 72;
-let defaultCols = window.innerWidth <= 600 ? 2 : 4; // mobile 2 cols, desktop 4
+let defaultCols = window.innerWidth <= 600 ? 2 : 4;
 
 // --- Show placeholders while loading ---
 function showLoadingPlaceholders(count) {
@@ -243,7 +250,7 @@ function renderPage(page){
   pageProducts.forEach(p=>{
     const card = document.createElement("div");
     card.className = "product-card";
-    card.dataset.currentImage = 0; // per-product image index
+    card.dataset.currentImage = 0;
 
     const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
@@ -252,50 +259,76 @@ function renderPage(page){
     wrapper.className = "img-wrapper";
 
     const img = document.createElement("img");
-    const firstImage = images[0] || "";
-    img.src = firstImage.includes("http") ? firstImage : "https://static.wixstatic.com/media/"+firstImage;
+    img.src = images[0] ? (images[0].includes("http") ? images[0] : "https://static.wixstatic.com/media/"+images[0]) : "";
     img.loading = "lazy";
     wrapper.appendChild(img);
 
-    // --- Add arrows for per-product slider ---
+    // --- Arrows ---
     if(images.length > 1){
       const prevArrow = document.createElement("div");
       prevArrow.className = "slider-arrow left";
-      prevArrow.innerHTML = "&#10094;"; // left arrow
-      prevArrow.onclick = ()=> switchImage(card, -1);
+      prevArrow.innerHTML = "&#10094;";
+      prevArrow.onclick = () => switchImage(card, -1);
+
       const nextArrow = document.createElement("div");
       nextArrow.className = "slider-arrow right";
-      nextArrow.innerHTML = "&#10095;"; // right arrow
-      nextArrow.onclick = ()=> switchImage(card, 1);
+      nextArrow.innerHTML = "&#10095;";
+      nextArrow.onclick = () => switchImage(card, 1);
+
       wrapper.appendChild(prevArrow);
       wrapper.appendChild(nextArrow);
     }
 
+    // --- Plus overlay ---
     const plus = document.createElement("div");
     plus.className="plus-overlay"; plus.innerText="+";
     wrapper.appendChild(plus);
+
+    // --- Swipe support ---
+    let startX = 0;
+    wrapper.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+    wrapper.addEventListener('touchend', e => {
+      const endX = e.changedTouches[0].clientX;
+      if(endX - startX > 30) switchImage(card, -1);
+      if(startX - endX > 30) switchImage(card, 1);
+    });
 
     card.appendChild(wrapper);
 
     // --- Product info ---
     const info = document.createElement("div");
     info.className = "product-info";
-    const h3 = document.createElement("h3"); h3.innerText = p.name || p.Name || "Unnamed product";
+    const h3 = document.createElement("h3"); 
+    h3.innerText = p.name || p.Name || "Unnamed product";
     info.appendChild(h3);
 
-    const priceDiv = document.createElement("div"); priceDiv.className="price-container";
-    const priceSpan = document.createElement("span"); priceSpan.className="price";
+    const priceDiv = document.createElement("div"); 
+    priceDiv.className="price-container";
+    const priceSpan = document.createElement("span"); 
+    priceSpan.className="price";
     priceSpan.innerText = p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
-    priceDiv.appendChild(priceSpan); info.appendChild(priceDiv);
+    priceDiv.appendChild(priceSpan); 
+    info.appendChild(priceDiv); 
     card.appendChild(info);
 
     // Ribbon
-    if(p.ribbon){ const label=document.createElement("div"); label.className="top-label"; label.innerText=p.ribbon; card.appendChild(label);}
+    if(p.ribbon){ 
+      const label=document.createElement("div"); 
+      label.className="top-label"; 
+      label.innerText=p.ribbon; 
+      card.appendChild(label);
+    }
+
     // Bubbles
     const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
     if(bubbles.length){ 
-      const bubbleDiv=document.createElement("div"); bubbleDiv.className="top-bubbles"; 
-      bubbles.forEach(b=>{const d=document.createElement("div"); d.innerText=b; bubbleDiv.appendChild(d);}); 
+      const bubbleDiv=document.createElement("div"); 
+      bubbleDiv.className="top-bubbles"; 
+      bubbles.forEach(b=>{ 
+        const d=document.createElement("div"); 
+        d.innerText=b; 
+        bubbleDiv.appendChild(d);
+      }); 
       card.appendChild(bubbleDiv); 
     }
 
@@ -322,8 +355,7 @@ function switchImage(card, direction){
   if(idx >= images.length) idx = 0;
   card.dataset.currentImage = idx;
   const img = card.querySelector(".img-wrapper img");
-  const newSrc = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
-  img.src = newSrc;
+  img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
 }
 
 // --- Grid buttons ---
@@ -353,7 +385,8 @@ function insertBanners(){
   for(let i=8;i<cards.length;i+=9){
     const banner = document.createElement("div"); 
     banner.className="banner-card";
-    const span = document.createElement("span"); span.innerText="✨ New Collection Drop!";
+    const span = document.createElement("span"); 
+    span.innerText="✨ New Collection Drop!";
     banner.appendChild(span);
     grid.insertBefore(banner, cards[i]);
   }
@@ -364,7 +397,6 @@ imgButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     imgButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    // update all cards to selected image
     document.querySelectorAll(".product-card").forEach(card=>{
       const images = JSON.parse(card.dataset.images || "[]");
       const index = parseInt(btn.dataset.index);
@@ -379,7 +411,7 @@ imgButtons.forEach(btn=>{
   });
 });
 
-// --- Responsive default ---
+// --- Responsive ---
 window.addEventListener("resize", ()=>{
   defaultCols = window.innerWidth <= 600 ? 2 : 4;
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
