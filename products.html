@@ -212,21 +212,6 @@ let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 36;
 
-// Helper function to get image URLs dynamically from any column
-function getImageUrls(product) {
-  const urlRegex = /(https?:\/\/[^\s]+|\.(jpg|jpeg|png|gif|webp))/i;
-  for (let key in product) {
-    if (product[key] && urlRegex.test(product[key])) {
-      return product[key]
-        .split(/[,\|]/)                       // split by comma or pipe
-        .map(u => u.trim().replace(/^"|"$/g, ""))  // remove surrounding quotes
-        .filter(Boolean);
-    }
-  }
-  return [];
-}
-
-// CSV upload
 document.getElementById("csvUpload").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -243,7 +228,6 @@ document.getElementById("csvUpload").addEventListener("change", function(e) {
   });
 });
 
-// Render products on the page
 function renderProducts(products, page = 1) {
   grid.innerHTML = "";
   const start = (page - 1) * productsPerPage;
@@ -277,9 +261,13 @@ function renderProducts(products, page = 1) {
       card.appendChild(bubbleContainer);
     }
 
-    // Images
-    const imageUrls = getImageUrls(p);
-    console.log("DEBUG URLs for", p.Name || p.name, imageUrls);
+    // Images from productImageUrl or others
+    let imageField = p.productImageUrl || p.ImageURLs || p.Images || p["Image Urls"] || p["Image URL"] || p.image || p.imageURLs || "";
+
+    const imageUrls = imageField
+      .split(/[;,|]/)               // split by semicolon, comma or pipe
+      .map(u => u.trim().replace(/^"|"$/g, ""))
+      .filter(Boolean);
 
     if (imageUrls.length > 0) {
       const imagesDiv = document.createElement("div");
@@ -290,12 +278,13 @@ function renderProducts(products, page = 1) {
         wrapper.className = "img-wrapper";
         const img = document.createElement("img");
 
-        // Prepend Wix base URL if it's a relative path
+        // Prepend Wix base URL if relative URL
         if (!url.match(/^https?:\/\//)) {
           img.src = "https://static.wixstatic.com/media/" + url;
         } else {
           img.src = url;
         }
+
         wrapper.appendChild(img);
         imagesDiv.appendChild(wrapper);
       });
@@ -347,7 +336,6 @@ function renderProducts(products, page = 1) {
   renderPagination(products);
 }
 
-// Pagination
 function renderPagination(products) {
   const totalPages = Math.ceil(products.length / productsPerPage);
   const paginationDiv = document.getElementById("pagination");
@@ -373,6 +361,7 @@ document.querySelectorAll(".grid-btn").forEach(btn => {
     grid.className = `products-grid cols-${btn.dataset.cols}`;
   });
 });
+
 </script>
 
 
