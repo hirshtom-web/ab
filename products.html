@@ -136,6 +136,28 @@ header h1 { font-weight:600; font-size:20px; }
   left:50%;
   transform:translate(-50%,-50%);
 }
+  }
+  .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 </style>
 </head>
 <body>
@@ -154,13 +176,26 @@ header h1 { font-weight:600; font-size:20px; }
 
 <div class="products-grid cols-3" id="productGrid"></div>
 
+  <div class="pagination">
+  <button id="prevPage">Prev</button>
+  <span id="pageNumber">1</span>
+  <button id="nextPage">Next</button>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
 const imgButtons = document.querySelectorAll(".img-btn");
+const prevPageBtn = document.getElementById("prevPage");
+const nextPageBtn = document.getElementById("nextPage");
+const pageNumberSpan = document.getElementById("pageNumber");
+
 let allProducts = [];
 let selectedImgIndex = 0;
+let currentPage = 1;
+const productsPerPage = 72;
 
 // Load CSV
 Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
@@ -169,20 +204,25 @@ Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   skipEmptyLines: true,
   complete: results => { 
     allProducts = results.data; 
-    renderProducts(); 
+    renderPage();
   }
 });
 
-function renderProducts(){
+// Render current page
+function renderPage(){
   grid.innerHTML = "";
 
-  allProducts.forEach(p => {
+  const start = (currentPage - 1) * productsPerPage;
+  const end = start + productsPerPage;
+  const productsToShow = allProducts.slice(start, end);
+
+  productsToShow.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
 
     // Images
     const images = (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
-    card.dataset.images = JSON.stringify(images); // store images in the card
+    card.dataset.images = JSON.stringify(images);
 
     const wrapper = document.createElement("div");
     wrapper.className = "img-wrapper";
@@ -243,6 +283,8 @@ function renderProducts(){
   });
 
   insertBanners();
+  updatePaginationButtons();
+  showSelectedImage(selectedImgIndex);
 }
 
 // Show selected image for each card
@@ -256,7 +298,6 @@ function showSelectedImage(index){
     }
   });
 }
-
 
 // Image buttons
 imgButtons.forEach(btn => {
@@ -279,24 +320,48 @@ gridButtons.forEach(btn => {
   });
 });
 
-// Insert banners
+// Insert banners (same height as product images)
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b => b.remove());
   const cards = [...grid.querySelectorAll(".product-card")];
+
   for(let i = 8; i < cards.length; i += 9){
     const banner = document.createElement("div");
     banner.className = "banner-card";
 
     // Use inner img-wrapper to match product image height
     const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";  // same as product image
+    wrapper.className = "img-wrapper";
+
     const span = document.createElement("span");
     span.innerText = "✨ New Collection Drop!";
     wrapper.appendChild(span);
-    banner.appendChild(wrapper);
 
+    banner.appendChild(wrapper);
     grid.insertBefore(banner, cards[i]);
   }
+}
+
+// Pagination buttons
+prevPageBtn.addEventListener("click", () => {
+  if(currentPage > 1){
+    currentPage--;
+    renderPage();
+  }
+});
+
+nextPageBtn.addEventListener("click", () => {
+  if(currentPage * productsPerPage < allProducts.length){
+    currentPage++;
+    renderPage();
+  }
+});
+
+// Update pagination buttons state
+function updatePaginationButtons(){
+  pageNumberSpan.innerText = currentPage;
+  prevPageBtn.disabled = currentPage === 1;
+  nextPageBtn.disabled = currentPage * productsPerPage >= allProducts.length;
 }
 
 </script>
