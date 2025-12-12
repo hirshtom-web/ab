@@ -89,7 +89,40 @@ header h1 { font-weight:600; font-size:20px; }
 }
 
   
-.banner-card { background:#f7f7f7; border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:600; color:#333; text-align:center; padding:10px; }
+/* Responsive grid */
+.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media(max-width:900px){ 
+  .products-grid { grid-template-columns: repeat(2, 1fr) !important; } 
+}
+@media(max-width:600px){ 
+  .products-grid { grid-template-columns: repeat(1, 1fr) !important; } 
+}
+
+/* Banner card same height as image */
+.banner-card { 
+  background:#f7f7f7; 
+  border-radius:16px; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  font-weight:600; 
+  color:#333; 
+  text-align:center; 
+  padding:0; 
+}
+.banner-card::before {
+  content:"";
+  display:block;
+  padding-top:100%; /* keeps square like product images */
+}
+.banner-card span {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
 </style>
 </head>
 <body>
@@ -127,25 +160,25 @@ Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   }
 });
 
-// Render products
 function renderProducts(){
   grid.innerHTML = "";
 
-  allProducts.forEach((p, prodIndex) => {
+  allProducts.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Images wrapper
+    // Images
     const images = (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
+    card.dataset.images = JSON.stringify(images); // store images in the card
+
     const wrapper = document.createElement("div");
     wrapper.className = "img-wrapper";
 
     const img = document.createElement("img");
-    img.src = images[selectedImgIndex] ? (images[selectedImgIndex].includes("http") ? images[selectedImgIndex] : "https://static.wixstatic.com/media/" + images[selectedImgIndex]) : "";
+    img.src = images[selectedImgIndex] || "";
     img.loading = "lazy";
     wrapper.appendChild(img);
 
-    // Plus overlay
     const plus = document.createElement("div");
     plus.className = "plus-overlay";
     plus.innerText = "+";
@@ -199,14 +232,13 @@ function renderProducts(){
   insertBanners();
 }
 
-// Swap image
-function showSelectedImage(card, index){
-  const img = card.querySelector(".img-wrapper img");
-  const prodIndex = Array.from(grid.children).indexOf(card);
-  const images = (allProducts[prodIndex].productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
-  if(images[index]){
-    img.src = images[index].includes("http") ? images[index] : "https://static.wixstatic.com/media/" + images[index];
-  }
+// Show selected image for each card
+function showSelectedImage(index){
+  document.querySelectorAll(".product-card").forEach(card => {
+    const images = JSON.parse(card.dataset.images || "[]");
+    const img = card.querySelector(".img-wrapper img");
+    if(images[index]) img.src = images[index].includes("http") ? images[index] : "https://static.wixstatic.com/media/" + images[index];
+  });
 }
 
 // Image buttons
@@ -215,7 +247,7 @@ imgButtons.forEach(btn => {
     imgButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     selectedImgIndex = parseInt(btn.dataset.index);
-    document.querySelectorAll(".product-card").forEach(card => showSelectedImage(card, selectedImgIndex));
+    showSelectedImage(selectedImgIndex);
   });
 });
 
