@@ -32,28 +32,21 @@ header h1 { font-weight:600; font-size:20px; }
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 10px;
+  grid-template-columns: repeat(var(--cols, 4), 1fr);
 }
 
-/* Default grid columns */
-.products-grid.cols-1 { grid-template-columns: repeat(1, 1fr); }
-.products-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+/* Desktop columns */
+.products-grid.cols-1 { --cols: 1; }
+.products-grid.cols-2 { --cols: 2; }
+.products-grid.cols-3 { --cols: 3; }
+.products-grid.cols-4 { --cols: 4; }
 
-/* Mobile overrides */
-@media(max-width: 900px) {
-  .products-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
-  .products-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+/* Mobile override */
+@media (max-width: 600px) {
+  /* Use mobileCols set via JS, default 2 */
+  .products-grid { --cols: var(--mobile-cols, 2); }
 }
-@media(max-width: 600px) {
-  /* Mobile default is 2 per row */
-  .products-grid.cols-1,
-  .products-grid.cols-2,
-  .products-grid.cols-3,
-  .products-grid.cols-4 {
-    grid-template-columns: repeat(var(--mobile-cols, 2), 1fr);
   }
-}
 
 
 .product-card { position:relative; z-index:3; }
@@ -387,20 +380,21 @@ function switchImage(card, direction){
 // --- Grid buttons ---
 gridButtons.forEach(btn => {
   btn.addEventListener("click", () => {
+    // Remove active state from all buttons
     gridButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
     const cols = parseInt(btn.dataset.cols);
 
     // Update desktop columns
-    defaultCols = window.innerWidth > 600 ? cols : defaultCols;
+    if (window.innerWidth > 600) {
+      defaultCols = cols;
+      grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+      grid.classList.add(`cols-${cols}`);
+    }
 
     // Update mobile columns via CSS variable
     document.documentElement.style.setProperty('--mobile-cols', cols);
-
-    // Update grid class
-    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-    grid.classList.add(`cols-${cols}`);
 
     insertBanners();
   });
