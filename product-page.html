@@ -4,126 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Product</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:#fff;
-  color:#111;
-}
-
-.container{
-  max-width:1200px;
-  margin:0 auto;
-  padding:24px;
-}
-
-.back-link{
-  display:inline-block;
-  margin-bottom:20px;
-  text-decoration:none;
-  color:#111;
-  font-weight:500;
-}
-
-/* --- Layout --- */
-.product-layout{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:40px;
-}
-
-@media(max-width:900px){
-  .product-layout{
-    grid-template-columns:1fr;
-  }
-}
-
-/* --- Images --- */
-.gallery{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-.main-image{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:18px;
-  object-fit:cover;
-  background:#f3f3f3;
-}
-
-.thumbnails{
-  display:flex;
-  gap:10px;
-}
-
-.thumbnails img{
-  width:72px;
-  height:72px;
-  object-fit:cover;
-  border-radius:12px;
-  cursor:pointer;
-  opacity:.6;
-  border:2px solid transparent;
-}
-
-.thumbnails img.active{
-  opacity:1;
-  border-color:#111;
-}
-
-/* --- Info --- */
-.product-info h1{
-  font-size:32px;
-  margin:0 0 10px;
-}
-
-.price{
-  font-size:24px;
-  font-weight:600;
-  margin:10px 0 20px;
-}
-
-.ribbon{
-  display:inline-block;
-  background:#111;
-  color:#fff;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:12px;
-  margin-bottom:12px;
-}
-
-.description{
-  font-size:15px;
-  line-height:1.6;
-  color:#444;
-  margin-top:20px;
-}
-
-/* --- CTA --- */
-.cta{
-  margin-top:30px;
-}
-
-.cta button{
-  padding:14px 26px;
-  border-radius:999px;
-  border:none;
-  background:#111;
-  color:#fff;
-  font-size:14px;
-  cursor:pointer;
-}
+body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
+.container{max-width:1200px;margin:0 auto;padding:24px;}
+.back-link{display:inline-block;margin-bottom:20px;text-decoration:none;color:#111;font-weight:500;}
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+@media(max-width:900px){.product-layout{grid-template-columns:1fr;}}
+.gallery{display:flex;flex-direction:column;gap:14px;position:relative;}
+.main-image{width:100%;aspect-ratio:1/1;border-radius:18px;object-fit:cover;background:#f3f3f3;transition:opacity 0.3s ease;}
+.thumbnails{display:flex;gap:10px;}
+.thumbnails img{width:72px;height:72px;object-fit:cover;border-radius:12px;cursor:pointer;opacity:.6;border:2px solid transparent;transition:all 0.2s;}
+.thumbnails img.active{opacity:1;border-color:#111;}
+.product-info h1{font-size:32px;margin:0 0 10px;}
+.price-container{display:flex;align-items:center;gap:12px;}
+.price{font-size:24px;font-weight:600;margin:10px 0 20px;}
+.old-price{font-size:18px;text-decoration:line-through;color:#999;}
+.ribbon{display:inline-block;background:#111;color:#fff;padding:6px 12px;border-radius:999px;font-size:12px;margin-bottom:12px;}
+.description{font-size:15px;line-height:1.6;color:#444;margin-top:20px;}
+.cta{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
+.cta button{padding:14px 26px;border-radius:999px;border:none;background:#111;color:#fff;font-size:14px;cursor:pointer;}
+.license-options{display:flex;gap:10px;margin-top:10px;}
+.license-options label{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.license-options input[type="radio"]{cursor:pointer;}
+.related-products{margin-top:50px;}
+.related-products h2{font-size:24px;margin-bottom:20px;}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;}
+.related-card{border:1px solid #eee;border-radius:12px;padding:12px;text-align:center;transition:transform 0.2s;}
+.related-card:hover{transform:scale(1.05);}
+.related-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;}
+.related-card h4{margin:10px 0 4px;font-size:16px;}
+.related-card .price{font-size:14px;font-weight:600;color:#111;}
 </style>
 </head>
-
 <body>
 
 <div class="container">
@@ -138,26 +52,48 @@ body{
     <div class="product-info">
       <div id="ribbon" class="ribbon" style="display:none"></div>
       <h1 id="title">Loading...</h1>
-      <div id="price" class="price"></div>
+      <div class="price-container">
+        <span id="price" class="price"></span>
+        <span id="oldPrice" class="old-price"></span>
+      </div>
+
       <div id="description" class="description"></div>
 
       <div class="cta">
-        <button>Add to cart</button>
+        <div class="license-options">
+          <label><input type="radio" name="license" value="personal" checked> Personal</label>
+          <label><input type="radio" name="license" value="commercial"> Commercial</label>
+          <label><input type="radio" name="license" value="extended"> Extended</label>
+        </div>
+        <button id="addToCart">Add to Cart</button>
       </div>
     </div>
+  </div>
+
+  <div class="related-products">
+    <h2>Related Products</h2>
+    <div id="relatedGrid" class="related-grid"></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
+// --- Utilities ---
+function slugify(str){ return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+
+// --- Elements ---
 const titleEl = document.getElementById("title");
 const priceEl = document.getElementById("price");
+const oldPriceEl = document.getElementById("oldPrice");
 const ribbonEl = document.getElementById("ribbon");
 const descEl = document.getElementById("description");
 const mainImage = document.getElementById("mainImage");
 const thumbsEl = document.getElementById("thumbnails");
+const relatedGrid = document.getElementById("relatedGrid");
+const addToCartBtn = document.getElementById("addToCart");
+const licenseInputs = document.querySelectorAll('input[name="license"]');
 
-/* --- Get ID --- */
+// --- Get ID ---
 const productId = new URLSearchParams(location.search).get("id");
 
 if(!productId){
@@ -170,60 +106,63 @@ if(!productId){
     skipEmptyLines:true,
     complete: res => {
 
-      const product = res.data.find(p => p.id?.toString() === productId);
+      // --- Find product ---
+      const product = res.data.find(p => slugify(p.name || "") === productId);
+      if(!product){ titleEl.innerText = "Product not found"; return; }
 
-      if(!product){
-        titleEl.innerText = "Product not found";
-        return;
-      }
-
-      /* --- Fill content --- */
+      // --- Fill content ---
       titleEl.innerText = product.name;
       priceEl.innerText = product.price ? "$" + product.price : "";
-
-      if(product.ribbon){
-        ribbonEl.style.display = "inline-block";
-        ribbonEl.innerText = product.ribbon;
+      if(product.discountValue && product.discountMode === "PERCENT"){
+        oldPriceEl.innerText = "$" + product.price;
+        const discounted = (parseFloat(product.price) * (1 - parseFloat(product.discountValue)/100)).toFixed(2);
+        priceEl.innerText = "$" + discounted;
       }
-
+      if(product.ribbon){ ribbonEl.style.display = "inline-block"; ribbonEl.innerText = product.ribbon; }
       descEl.innerHTML = product.description || "";
 
-      /* --- Images --- */
-      const images = (product.productImageUrl || "")
-        .split(";")
-        .map(u => u.trim())
-        .filter(Boolean)
-        .map(u => u.includes("http") ? u : "https://static.wixstatic.com/media/" + u);
-
-      if(images.length){
-        mainImage.src = images[0];
-      }
-
+      // --- Images ---
+      const images = (product.productImageUrl || "").split(";").map(u=>u.trim()).filter(Boolean).map(u=>u.includes("http")?u:"https://static.wixstatic.com/media/"+u);
+      if(images.length) mainImage.src = images[0];
       thumbsEl.innerHTML = "";
-      images.forEach((src, i) => {
+      images.forEach((src,i)=>{
         const t = document.createElement("img");
         t.src = src;
-        if(i === 0) t.classList.add("active");
-
+        if(i===0) t.classList.add("active");
         t.onclick = () => {
-          mainImage.src = src;
-          document.querySelectorAll(".thumbnails img")
-            .forEach(img => img.classList.remove("active"));
+          mainImage.style.opacity = 0;
+          setTimeout(()=>{ mainImage.src=src; mainImage.style.opacity=1; }, 200);
+          document.querySelectorAll(".thumbnails img").forEach(img=>img.classList.remove("active"));
           t.classList.add("active");
         };
-
         thumbsEl.appendChild(t);
       });
+
+      // --- Related products ---
+      const related = res.data.filter(p => slugify(p.name || "") !== productId).slice(0,4);
+      relatedGrid.innerHTML="";
+      related.forEach(r=>{
+        const card = document.createElement("div"); card.className="related-card";
+        const img = document.createElement("img"); img.src=(r.productImageUrl||"").split(";")[0]; if(!img.src.includes("http")) img.src="https://static.wixstatic.com/media/"+img.src;
+        const h4 = document.createElement("h4"); h4.innerText=r.name;
+        const pEl = document.createElement("div"); pEl.className="price"; pEl.innerText=r.price?"$"+r.price:"$1";
+        card.appendChild(img); card.appendChild(h4); card.appendChild(pEl);
+        card.onclick = () => location.href=`product-page.html?id=${slugify(r.name||"")}`;
+        relatedGrid.appendChild(card);
+      });
+
+      // --- Add to Cart ---
+      addToCartBtn.onclick = () => {
+        const selectedLicense = document.querySelector('input[name="license"]:checked').value;
+        alert(`Added ${product.name} (${selectedLicense}) to cart!`);
+        // Here you could integrate with real cart logic
+      };
     }
   });
 }
 
-/* --- Back --- */
-document.getElementById("backBtn").onclick = e => {
-  e.preventDefault();
-  history.length > 1 ? history.back() : location.href = "index.html";
-};
+// --- Back ---
+document.getElementById("backBtn").onclick = e => { e.preventDefault(); history.length>1 ? history.back() : location.href="index.html"; };
 </script>
-
 </body>
 </html>
