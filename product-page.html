@@ -35,51 +35,68 @@ const ribbonEl = document.getElementById('ribbon');
 const imagesEl = document.getElementById('images');
 const descEl = document.getElementById('description');
 
+// --- slug helper (MUST match grid page) ---
+function slugify(str){
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // --- Get product ID from URL ---
 const params = new URLSearchParams(window.location.search);
-const productId = params.get('id')?.trim();
+const productId = params.get('id');
 
 if(!productId){
   titleEl.innerText = "Product not found";
 } else {
+
   Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
+
     complete: results => {
-      // --- Find product by ID ---
-      const product = results.data.find(p => p.id?.trim() === productId);
 
-      if(product){
-        titleEl.innerText = product.name || "Unnamed Product";
-        priceEl.innerText = product.price ? "$" + product.price : "$1";
+      const product = results.data.find(p =>
+        slugify(p.name || "") === productId
+      );
 
-        if(product.ribbon){
-          ribbonEl.style.display = "inline-block";
-          ribbonEl.innerText = product.ribbon;
-        }
-
-        // --- Images ---
-        imagesEl.innerHTML = "";
-        const images = (product.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
-        images.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url.includes("http") ? url : "https://static.wixstatic.com/media/" + url;
-          img.style.width = "200px";
-          img.style.height = "200px";
-          img.style.objectFit = "cover";
-          img.style.borderRadius = "12px";
-          imagesEl.appendChild(img);
-        });
-
-        // --- Description ---
-        descEl.innerHTML = product.description || "";
-
-      } else {
+      if(!product){
         titleEl.innerText = "Product not found";
-        priceEl.innerText = "";
+        return;
       }
+
+      // --- Populate page ---
+      titleEl.innerText = product.name || "Unnamed Product";
+      priceEl.innerText = product.price ? "$" + product.price : "$1";
+
+      if(product.ribbon){
+        ribbonEl.style.display = "inline-block";
+        ribbonEl.innerText = product.ribbon;
+      }
+
+      // --- Images ---
+      imagesEl.innerHTML = "";
+      const images = (product.productImageUrl || "")
+        .split(";")
+        .map(u => u.trim())
+        .filter(Boolean);
+
+      images.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url.includes("http")
+          ? url
+          : "https://static.wixstatic.com/media/" + url;
+        imagesEl.appendChild(img);
+      });
+
+      // --- Description ---
+      descEl.innerHTML = product.description || "";
     },
+
     error: err => {
       console.error("CSV load error:", err);
       titleEl.innerText = "Error loading product";
@@ -88,15 +105,12 @@ if(!productId){
 }
 
 // --- Back button ---
-document.getElementById('backBtn').addEventListener('click', e => {
+document.getElementById("backBtn").addEventListener("click", e => {
   e.preventDefault();
-  if(window.history.length > 1){
-    window.history.back();
-  } else {
-    window.location.href = 'index.html';
-  }
+  history.length > 1 ? history.back() : location.href = "index.html";
 });
 </script>
+
 
 
 
