@@ -409,18 +409,32 @@ function closePopup() {
   document.getElementById('itemPopup').style.display = 'none';
 }
 
-// Desktop search
-document.querySelector('.header-right .material-symbols-outlined.search-icon')?.addEventListener('click', function() {
-  const searchBar = document.getElementById('searchBar');
-  searchBar.style.display = (searchBar.style.display === 'block') ? 'none' : 'block';
+// ---------- DESKTOP SEARCH ----------
+const desktopSearchIcon = document.getElementById('searchIcon');
+const desktopSearchBar  = document.getElementById('searchBar');
+
+desktopSearchIcon.addEventListener('click', () => {
+  const isOpen = desktopSearchBar.style.display === 'block';
+  desktopSearchBar.style.display = isOpen ? 'none' : 'block';
+
+  if (!isOpen) {
+    desktopSearchBar.focus();
+  }
 });
 
-// Mobile search
-document.querySelector('.mobile-header .material-symbols-outlined.search-icon')?.addEventListener('click', function() {
-  const searchContainer = document.querySelector('.mobile-search-container');
-  searchContainer.style.display = (searchContainer.style.display === 'block') ? 'none' : 'block';
-});
+// ---------- MOBILE SEARCH ----------
+const mobileSearchIcon = document.getElementById('mobileSearch');
+const mobileSearchContainer = document.querySelector('.mobile-search-container');
+const mobileSearchInput = document.getElementById('mobileSearchBar');
 
+mobileSearchIcon.addEventListener('click', () => {
+  const isOpen = mobileSearchContainer.style.display === 'block';
+  mobileSearchContainer.style.display = isOpen ? 'none' : 'block';
+
+  if (!isOpen) {
+    mobileSearchInput.focus();
+  }
+});
 
 // ---------- MOBILE HAMBURGER MENU ----------
 document.getElementById('hamburger').addEventListener('click', function() {
