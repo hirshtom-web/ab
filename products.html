@@ -347,6 +347,122 @@ header h1 {
   opacity:0.5;
   cursor:default;
 }
+  /* ===============================
+   CONTROLS BAR
+   LEFT | CENTER | RIGHT
+================================ */
+.controls-bar {
+  max-width: 1200px;
+  margin: 10px auto 20px;
+  padding: 0 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+/* Left / Center / Right alignment */
+.controls-left,
+.controls-center,
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls-left {
+  justify-content: flex-start;
+}
+
+.controls-center {
+  justify-content: center;
+}
+
+.controls-right {
+  justify-content: flex-end;
+}
+
+/* ===============================
+   UNIFIED BUTTON HEIGHT
+================================ */
+.control-btn,
+.grid-btn,
+.img-btn {
+  height: 32px;                 /* SAME HEIGHT */
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.control-btn:hover,
+.grid-btn:hover,
+.img-btn:hover {
+  border-color: #999;
+}
+
+.control-btn.active,
+.grid-btn.active,
+.img-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Icons inside buttons */
+.control-btn .material-icons-outlined,
+.grid-btn .material-icons-outlined {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* SVG icons inherit color */
+.grid-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* ===============================
+   MOBILE BEHAVIOR
+================================ */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: inline-flex;
+}
+
+@media (max-width: 768px) {
+  .controls-bar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .controls-left,
+  .controls-center,
+  .controls-right {
+    justify-content: center;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-flex;
+  }
+}
+
 
 </style>
   
@@ -357,42 +473,66 @@ header h1 {
   <h1>Gallery Walls</h1>
 </header>
 
-<div class="grid-selector">
+<div class="controls-bar">
 
-  <div class="image-selector">
-  <button class="img-btn active" data-index="0">Cover Image</button>
-  <button class="img-btn" data-index="1">Lifestyle Image</button>
+  <!-- LEFT: GRID LAYOUT -->
+  <div class="controls-left">
+
+    <!-- DESKTOP -->
+    <button class="grid-btn active desktop-only" data-grid="week">
+      <span class="material-icons-outlined">calendar_view_week</span>
+    </button>
+
+    <button class="grid-btn desktop-only" data-grid="month">
+      <span class="material-icons-outlined">calendar_view_month</span>
+    </button>
+
+    <!-- MOBILE -->
+    <button class="grid-btn mobile-only" data-grid="one">
+      <span class="material-icons-outlined">splitscreen</span>
+    </button>
+
+    <button class="grid-btn mobile-only" data-grid="two">
+      <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 8h-6V5h6v6zm-8-6v6H5V5h6zm-6 8h6v6H5v-6zm8 6v-6h6v6h-6z"/>
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- CENTER: IMAGE TYPE -->
+  <div class="controls-center image-selector">
+    <button class="img-btn active" data-index="0">Cover Image</button>
+    <button class="img-btn" data-index="1">Lifestyle Image</button>
+  </div>
+
+  <!-- RIGHT: SORT / SHUFFLE -->
+  <div class="controls-right">
+    <button class="control-btn" title="Sort">
+      <span class="material-icons-outlined">sort</span>
+    </button>
+
+    <button class="control-btn" title="Shuffle">
+      <span class="material-icons-outlined">shuffle</span>
+    </button>
+  </div>
+
 </div>
 
-  <!-- DESKTOP -->
-  <button class="grid-btn active desktop-only" data-grid="week">
-    <span class="material-icons-outlined">calendar_view_week</span>
-  </button>
-
-  <button class="grid-btn desktop-only" data-grid="month">
-    <span class="material-icons-outlined">calendar_view_month</span>
-  </button>
-
-  <!-- MOBILE -->
-  <button class="grid-btn mobile-only" data-grid="one">
-    <span class="material-icons-outlined">splitscreen</span>
-  </button>
-
-  <button class="grid-btn mobile-only" data-grid="two">
-    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
-      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 8h-6V5h6v6zm-8-6v6H5V5h6zm-6 8h6v6H5v-6zm8 6v-6h6v6h-6z"/>
-    </svg>
-  </button>
-
-</div>
-
+<!-- ===============================
+     PRODUCTS GRID
+================================ -->
 <div class="products-grid week-view" id="productGrid"></div>
 
+<!-- ===============================
+     PAGINATION
+================================ -->
 <div class="pagination">
   <button id="prevPage">Prev</button>
   <span id="pageNumber">1</span>
   <button id="nextPage">Next</button>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
