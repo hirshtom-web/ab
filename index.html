@@ -264,13 +264,34 @@ nav a:hover { color: #FF5E5E; }
     <span class="material-symbols-outlined" id="hamburger">menu</span>
     <span class="material-symbols-outlined" id="mobileSearch">search</span>
   </div>
+
   <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+
   <div class="right">
     <span class="material-symbols-outlined" id="mobileGift">card_giftcard</span>
     <span class="material-symbols-outlined" id="mobileHelp">help_outline</span>
     <span class="material-symbols-outlined" id="mobileCart">shopping_cart</span>
   </div>
 </div>
+
+<!-- Mobile Search under header -->
+<div class="mobile-search-container">
+  <input type="text" placeholder="Search..." id="mobileSearchBar">
+</div>
+
+<!-- Mobile Hamburger Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenu">
+  <span class="close-menu" id="closeMenu">×</span>
+  <nav class="mobile-nav-links">
+    <a href="#">Art Prints</a>
+    <a href="#">Categories</a>
+    <a href="#">Perfect Pair</a>
+    <a href="#">Gallery Walls</a>
+    <a href="#">How It Works</a>
+    <a href="#">Inspiration</a>
+  </nav>
+</div>
+
 
 <!-- ---------- ITEM POPUP ---------- -->
 <div class="item-popup" id="itemPopup">
@@ -289,7 +310,7 @@ nav a:hover { color: #FF5E5E; }
 </div>
 
 <script>
-// Gift card popup
+// ---------- GIFT CARD POPUP ----------
 document.getElementById('giftIcon').addEventListener('click', function() {
   openPopup(
     'https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png',
@@ -315,32 +336,41 @@ function openPopup(imgSrc, title, description, price) {
   popup.querySelector('.popup-text p.price').innerHTML = `<strong>Price: ${price}</strong>`;
   popup.style.display = 'flex';
 }
-function closePopup() { document.getElementById('itemPopup').style.display = 'none'; }
 
-// Toggle desktop search
+function closePopup() {
+  document.getElementById('itemPopup').style.display = 'none';
+}
+
+// ---------- DESKTOP SEARCH TOGGLE ----------
 document.getElementById('searchIcon').addEventListener('click', function() {
   const searchBar = document.getElementById('searchBar');
   searchBar.style.display = searchBar.style.display === 'inline-block' ? 'none' : 'inline-block';
-  if(searchBar.style.display === 'inline-block') searchBar.focus();
+  if (searchBar.style.display === 'inline-block') searchBar.focus();
 });
 
-// Toggle mobile search
+// ---------- MOBILE SEARCH TOGGLE ----------
 document.getElementById('mobileSearch').addEventListener('click', function() {
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.placeholder = 'Search...';
-  input.style.position = 'absolute';
-  input.style.top = '60px';
-  input.style.left = '10px';
-  input.style.right = '10px';
-  input.style.padding = '8px';
-  input.style.fontSize = '14px';
-  input.style.borderRadius = '5px';
-  input.style.border = '1px solid #ccc';
-  input.id = 'tempMobileSearch';
-  document.body.appendChild(input);
-  input.focus();
-  input.addEventListener('blur', ()=>{ input.remove(); });
+  const container = document.querySelector('.mobile-search-container');
+  if (container.style.display === 'block') {
+    container.style.display = 'none';
+  } else {
+    container.style.display = 'block';
+    document.getElementById('mobileSearchBar').focus();
+  }
+});
+
+// ---------- MOBILE HAMBURGER MENU ----------
+document.getElementById('hamburger').addEventListener('click', function() {
+  document.getElementById('mobileMenu').style.display = 'flex';
+});
+
+document.getElementById('closeMenu').addEventListener('click', function() {
+  document.getElementById('mobileMenu').style.display = 'none';
+});
+
+// Optional: close menu when clicking outside links
+document.getElementById('mobileMenu').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
 });
 </script>
 
