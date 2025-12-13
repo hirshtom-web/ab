@@ -126,6 +126,12 @@ nav a:hover { color: #FF5E5E; }
   gap: 10px;
 }
 
+/* Hide mobile elements by default (desktop) */
+.mobile-search-container,
+.mobile-menu-overlay {
+  display: none; 
+}
+
 .mobile-header .logo {
   height: 20px;
 }
@@ -163,7 +169,7 @@ nav a:hover { color: #FF5E5E; }
 
   /* Mobile logo: smaller and centered */
   .mobile-header .logo {
-    height: 25px; /* adjust size */
+    height: 15px; /* adjust size */
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -174,23 +180,13 @@ nav a:hover { color: #FF5E5E; }
     font-size:16px;
   }
 
-  /* Mobile search & menu */
-  .mobile-search-container,
-  .mobile-menu-overlay {
-    display: none; 
-  }
-
-  .mobile-search-container input {
-    width: calc(100% - 30px); 
-    margin: 0 15px 10px 15px;
-    padding: 8px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  /* Show mobile search & menu only on mobile */
+  .mobile-search-container {
+    display: block;
   }
 
   .mobile-menu-overlay {
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -224,6 +220,17 @@ nav a:hover { color: #FF5E5E; }
     font-weight: 600;
     font-size: 16px;
     color: #111;
+  }
+
+  /* Mobile search input */
+  .mobile-search-container input {
+    width: calc(100% - 30px); 
+    margin: 0 15px 10px 15px;
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
   }
 }
 
@@ -265,6 +272,7 @@ nav a:hover { color: #FF5E5E; }
   .popup-text { padding:20px; } 
 }
 </style>
+
 </head>
 <body>
 
