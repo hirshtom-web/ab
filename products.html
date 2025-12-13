@@ -582,7 +582,7 @@ Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
   header:true,
   skipEmptyLines:true,
   complete: results => {
-    allProducts = results.data;
+    allProducts = results.data.filter(p => p.id && p.id.trim() !== ""); // only products with valid ID
     renderPage(currentPage);
   }
 });
@@ -595,10 +595,13 @@ function renderPage(page){
   const pageProducts = allProducts.slice(start,end);
 
   pageProducts.forEach(p=>{
+    const productId = (p.id || "").trim();
+    if(!productId) return; // skip products with invalid ID
+
     const card = document.createElement("div");
     card.className = "product-card";
     card.dataset.currentImage = 0;
-    card.dataset.id = p.id;
+    card.dataset.id = productId;
 
     const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
@@ -683,7 +686,7 @@ function renderPage(page){
 
     // Wrap card in link
     const productLink = document.createElement("a");
-    productLink.href = `product-page.html?id=${encodeURIComponent(p.id)}`;
+    productLink.href = `product-page.html?id=${encodeURIComponent(productId)}`;
     productLink.appendChild(card);
 
     grid.appendChild(productLink);
@@ -718,10 +721,8 @@ function applyDefaultGrid() {
   const isMobile = window.innerWidth <= 768; // mobile breakpoint
   const defaultCols = isMobile ? 2 : 4;
 
-  // Remove previous column classes
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
 
-  // Find active grid button that is visible
   const activeBtn = Array.from(gridButtons)
                          .find(btn => btn.classList.contains("active") && btn.offsetParent !== null);
 
@@ -730,7 +731,6 @@ function applyDefaultGrid() {
     cols = parseInt(activeBtn.dataset.cols);
   }
 
-  // Apply columns class
   grid.classList.add(`cols-${cols}`);
 }
 
@@ -743,18 +743,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- Grid buttons ---
 gridButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    // Remove active state from all buttons
     gridButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
-    // Recalculate grid columns
     applyDefaultGrid();
   });
-});
-
-// --- Recalculate on window resize ---
-window.addEventListener("resize", () => {
-  applyDefaultGrid();
 });
 
 // --- Image selection buttons ---
@@ -803,6 +795,7 @@ window.addEventListener("resize", () => {
   applyDefaultGrid();
 });
 </script>
+
 
 
 
