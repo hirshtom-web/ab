@@ -123,12 +123,30 @@ header h1 {
 .products-grid.cols-2 { grid-template-columns: repeat(2,1fr); }
 .products-grid.cols-1 { grid-template-columns: repeat(1,1fr); }
 
-/* Mobile */
-@media (max-width: 600px) {
-  .products-grid {
-    grid-template-columns: repeat(2,1fr);
+/* Mobile default for all grids */
+@media (max-width: 768px) {
+  /* For 4, 3, 2 columns on desktop, show 2 on mobile */
+  .products-grid.cols-2,
+  .products-grid.cols-3,
+  .products-grid.cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* 1 column remains 1 */
+  .products-grid.cols-1 {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
+
+/* Extra small devices (optional) */
+@media (max-width: 480px) {
+  .products-grid.cols-2,
+  .products-grid.cols-3,
+  .products-grid.cols-4,
+  .products-grid.cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 
 /* ===============================
    PRODUCT CARD
@@ -690,45 +708,53 @@ function switchImage(card, direction){
   if(idx >= images.length) idx = 0;
   card.dataset.currentImage = idx;
   const img = card.querySelector(".img-wrapper img");
-  img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
+  img.src = images[idx].includes("http") 
+            ? images[idx] 
+            : "https://static.wixstatic.com/media/" + images[idx];
 }
 
-// --- Apply default grid columns ---
+// --- Apply default or active grid columns ---
 function applyDefaultGrid() {
-  const isMobile = window.innerWidth <= 600;
+  const isMobile = window.innerWidth <= 768; // mobile breakpoint
   const defaultCols = isMobile ? 2 : 4;
 
-  // Remove all previous column classes
+  // Remove previous column classes
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
 
-  // Check if any grid button is active, otherwise use default
-  const activeBtn = document.querySelector(".grid-btn.active");
-  let cols = defaultCols;
-  if(activeBtn && activeBtn.dataset.cols) cols = parseInt(activeBtn.dataset.cols);
+  // Find active grid button that is visible
+  const activeBtn = Array.from(gridButtons)
+                         .find(btn => btn.classList.contains("active") && btn.offsetParent !== null);
 
-  // Apply columns
+  let cols = defaultCols;
+  if(activeBtn && activeBtn.dataset.cols){
+    cols = parseInt(activeBtn.dataset.cols);
+  }
+
+  // Apply columns class
   grid.classList.add(`cols-${cols}`);
 }
 
-// --- On page load, force default desktop/mobile cols ---
+// --- On page load ---
 document.addEventListener("DOMContentLoaded", () => {
   applyDefaultGrid();
-  renderPage(currentPage);  // render after default grid applied
+  renderPage(currentPage);
 });
 
 // --- Grid buttons ---
 gridButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    const cols = parseInt(btn.dataset.cols);
-
     // Remove active state from all buttons
     gridButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // Apply column class
-    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-    grid.classList.add(`cols-${cols}`);
+    // Recalculate grid columns
+    applyDefaultGrid();
   });
+});
+
+// --- Recalculate on window resize ---
+window.addEventListener("resize", () => {
+  applyDefaultGrid();
 });
 
 // --- Image selection buttons ---
