@@ -706,8 +706,15 @@ function applyDefaultGrid() {
   let cols = defaultCols;
   if(activeBtn && activeBtn.dataset.cols) cols = parseInt(activeBtn.dataset.cols);
 
+  // Apply columns
   grid.classList.add(`cols-${cols}`);
 }
+
+// --- On page load, force default desktop/mobile cols ---
+document.addEventListener("DOMContentLoaded", () => {
+  applyDefaultGrid();
+  renderPage(currentPage);  // render after default grid applied
+});
 
 // --- Grid buttons ---
 gridButtons.forEach(btn => {
