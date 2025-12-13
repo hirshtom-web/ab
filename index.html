@@ -98,14 +98,23 @@ nav a:hover { color: #FF5E5E; }
 
 .header-right .material-symbols-outlined:hover { color: #FF5E5E; }
 
-/* Search input */
+/* ---------- DESKTOP SEARCH ---------- */
 #searchBar {
-  display: none;
-  padding:5px 10px;
-  font-size:12px;
-  border-radius:5px;
+  display: none; /* hidden by default */
+  position: absolute;
+  top: 50%;
+  right: 60px; /* adjust if needed */
+  transform: translateY(-50%);
+  width: 150px; /* fixed smaller width */
+  height: 28px;
+  padding: 0 10px;
+  font-size: 14px; /* prevents mobile zoom */
+  border-radius: 5px;
   border:1px solid #ccc;
   outline:none;
+  box-sizing: border-box;
+  background: #fff;
+  z-index: 10;
 }
 
 /* ---------- MOBILE HEADER ---------- */
@@ -132,7 +141,6 @@ nav a:hover { color: #FF5E5E; }
   height: 25px;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -142,20 +150,56 @@ nav a:hover { color: #FF5E5E; }
   font-size:16px;
 }
 
-/* Hide mobile elements by default */
-.mobile-search-container,
-.mobile-menu-overlay {
-  display: none; 
+/* ---------- MOBILE SEARCH ---------- */
+.mobile-search-container {
+  display: none; /* hidden by default */
+  width: 100%;
+  box-sizing: border-box;
 }
-
 .mobile-search-container input {
-  width: calc(100% - 30px); 
-  margin: 0 15px 10px 15px;
-  padding: 8px 10px;
-  font-size: 14px;
+  width: calc(100% - 30px);
+  margin: 10px 15px;
+  padding: 10px;
+  font-size: 16px; /* prevents zoom on mobile */
   border-radius: 5px;
   border: 1px solid #ccc;
+  outline: none;
   box-sizing: border-box;
+}
+
+/* Hide mobile menu by default */
+.mobile-menu-overlay {
+  display: none; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  flex-direction: column;
+  padding: 60px 20px 20px 20px;
+  box-sizing: border-box;
+  z-index: 9999;
+  overflow-y: auto;
+}
+.mobile-menu-overlay .close-menu {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+}
+.mobile-menu-overlay .mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+.mobile-menu-overlay .mobile-nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
 }
 
 /* ---------- RESPONSIVE ---------- */
@@ -166,52 +210,8 @@ nav a:hover { color: #FF5E5E; }
 @media(max-width:700px){
   #desktop-bar, header, nav.header-center { display:none; }
   #mobile-bar { display:block; }
-
   .mobile-header { display:flex; }
-
-  /* Mobile logo */
-.mobile-header .logo {
-  height: 15px;}
-
-  .mobile-menu-overlay {
-    display: none; /* default hidden */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff;
-    flex-direction: column;
-    padding: 60px 20px 20px 20px;
-    box-sizing: border-box;
-    z-index: 9999;
-    overflow-y: auto;
-  }
-
-  .mobile-menu-overlay .close-menu {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-  }
-
-  .mobile-menu-overlay .mobile-nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 20px;
-  }
-
-  .mobile-menu-overlay .mobile-nav-links a {
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    color: #111;
-  }
-
-  /* mobile search container default hidden */
-  .mobile-search-container { display: none; }
+  .mobile-header .logo { height: 15px; }
 }
 
 /* ---------- ITEM POPUP ---------- */
@@ -409,20 +409,18 @@ function closePopup() {
   document.getElementById('itemPopup').style.display = 'none';
 }
 
-// ---------- DESKTOP SEARCH TOGGLE ----------
-document.getElementById('searchIcon').addEventListener('click', function() {
+// Desktop search
+document.querySelector('.header-right .material-symbols-outlined.search-icon')?.addEventListener('click', function() {
   const searchBar = document.getElementById('searchBar');
-  searchBar.style.display = searchBar.style.display === 'inline-block' ? 'none' : 'inline-block';
-  if (searchBar.style.display === 'inline-block') searchBar.focus();
+  searchBar.style.display = (searchBar.style.display === 'block') ? 'none' : 'block';
 });
 
-// ---------- MOBILE SEARCH TOGGLE ----------
-document.getElementById('mobileSearch').addEventListener('click', function() {
-  if (window.innerWidth > 700) return;
-  const container = document.querySelector('.mobile-search-container');
-  container.style.display = container.style.display === 'block' ? 'none' : 'block';
-  if (container.style.display === 'block') document.getElementById('mobileSearchBar').focus();
+// Mobile search
+document.querySelector('.mobile-header .material-symbols-outlined.search-icon')?.addEventListener('click', function() {
+  const searchContainer = document.querySelector('.mobile-search-container');
+  searchContainer.style.display = (searchContainer.style.display === 'block') ? 'none' : 'block';
 });
+
 
 // ---------- MOBILE HAMBURGER MENU ----------
 document.getElementById('hamburger').addEventListener('click', function() {
