@@ -554,6 +554,16 @@ let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 72;
 
+// --- fix link ---
+  function slugify(str){
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // --- Show placeholders while loading ---
 function showLoadingPlaceholders(count) {
   grid.innerHTML = "";
@@ -583,11 +593,15 @@ function renderPage(page){
   const end = start + productsPerPage;
   const pageProducts = allProducts.slice(start,end);
 
-  pageProducts.forEach(p=>{
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.dataset.currentImage = 0;
-    card.dataset.id = p.id;
+pageProducts.forEach(p=>{
+  const card = document.createElement("div");
+  card.className = "product-card";
+  card.dataset.currentImage = 0;
+
+  const productSlug = slugify(p.name || "");
+  card.dataset.id = productSlug;
+
+
 
     const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
@@ -672,10 +686,16 @@ function renderPage(page){
 
     // Wrap card in link
     const productLink = document.createElement("a");
-    productLink.href = `product-page.html?id=${encodeURIComponent(p.id)}`;
-    productLink.appendChild(card);
 
-    grid.appendChild(productLink);
+if(productSlug){
+  productLink.href = `product-page.html?id=${productSlug}`;
+} else {
+  productLink.href = "#";
+}
+
+productLink.appendChild(card);
+grid.appendChild(productLink);
+
   });
 
   insertBanners();
