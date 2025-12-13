@@ -354,20 +354,29 @@ function renderPage(page){
     wrapper.appendChild(img);
 
     // --- Arrows ---
-    if(images.length > 1){
-      const prevArrow = document.createElement("div");
-      prevArrow.className = "slider-arrow left";
-      prevArrow.innerHTML = "&#10094;";
-      prevArrow.onclick = e => { e.stopPropagation(); switchImage(card, -1); }
+  if(images.length > 1){
+  const prevArrow = document.createElement("div");
+  prevArrow.className = "slider-arrow left";
+  prevArrow.innerHTML = "&#10094;";
+  prevArrow.onclick = e => { 
+    e.preventDefault();   // stop link navigation
+    e.stopPropagation();  // stop bubbling to parent
+    switchImage(card, -1); 
+  }
 
-      const nextArrow = document.createElement("div");
-      nextArrow.className = "slider-arrow right";
-      nextArrow.innerHTML = "&#10095;";
-      nextArrow.onclick = e => { e.stopPropagation(); switchImage(card, 1); }
+  const nextArrow = document.createElement("div");
+  nextArrow.className = "slider-arrow right";
+  nextArrow.innerHTML = "&#10095;";
+  nextArrow.onclick = e => { 
+    e.preventDefault(); 
+    e.stopPropagation(); 
+    switchImage(card, 1); 
+  }
 
-      wrapper.appendChild(prevArrow);
-      wrapper.appendChild(nextArrow);
-    }
+  wrapper.appendChild(prevArrow);
+  wrapper.appendChild(nextArrow);
+}
+
 
     // --- Plus overlay ---
     const plus = document.createElement("div");
