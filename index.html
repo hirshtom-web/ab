@@ -118,6 +118,7 @@ nav a:hover { color: #FF5E5E; }
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative;
 }
 
 .mobile-header .left, .mobile-header .right {
@@ -126,67 +127,50 @@ nav a:hover { color: #FF5E5E; }
   gap: 10px;
 }
 
-/* Hide mobile elements by default (desktop) */
+/* Mobile logo */
+.mobile-header .logo {
+  height: 25px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Mobile icons */
+.mobile-header .material-symbols-outlined {
+  font-size:16px;
+}
+
+/* Hide mobile elements by default */
 .mobile-search-container,
 .mobile-menu-overlay {
   display: none; 
 }
 
-.mobile-header .logo {
-  height: 20px;
-}
-
-.mobile-header input {
-  display: none;
-  padding:5px 10px;
-  font-size:12px;
-  border-radius:5px;
-  border:1px solid #ccc;
-  outline:none;
+.mobile-search-container input {
+  width: calc(100% - 30px); 
+  margin: 0 15px 10px 15px;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:900px){
-  nav { 
-    flex-wrap:wrap; 
-    gap:15px; 
-  } 
+  nav { flex-wrap:wrap; gap:15px; } 
 }
 
 @media(max-width:700px){
-  /* Hide desktop header & top bar */
   #desktop-bar, header, nav.header-center { display:none; }
   #mobile-bar { display:block; }
 
-  /* Mobile header */
-  .mobile-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative; /* for centering logo */
-    width: 100%;
-  }
-
-  /* Mobile logo: smaller and centered */
-  .mobile-header .logo {
-    height: 15px; /* adjust size */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* Mobile icons */
-  .mobile-header .material-symbols-outlined {
-    font-size:16px;
-  }
-
-  /* Show mobile search & menu only on mobile */
-  .mobile-search-container {
-    display: block;
-  }
+  .mobile-header { display:flex; }
 
   .mobile-menu-overlay {
-    display: flex;
+    display: none; /* default hidden */
     position: fixed;
     top: 0;
     left: 0;
@@ -222,16 +206,8 @@ nav a:hover { color: #FF5E5E; }
     color: #111;
   }
 
-  /* Mobile search input */
-  .mobile-search-container input {
-    width: calc(100% - 30px); 
-    margin: 0 15px 10px 15px;
-    padding: 8px 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
+  /* mobile search container default hidden */
+  .mobile-search-container { display: none; }
 }
 
 /* ---------- ITEM POPUP ---------- */
@@ -271,6 +247,9 @@ nav a:hover { color: #FF5E5E; }
   .popup-image, .popup-text { min-width:100%; } 
   .popup-text { padding:20px; } 
 }
+
+/* Prevent zoom on input focus on iOS */
+input, textarea, select { font-size:16px; }
 </style>
 
 </head>
