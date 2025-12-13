@@ -19,7 +19,7 @@
 <body>
 
 <div class="container">
-  <a href="index.html" class="back-link">← Back to Products</a>
+<a href="#" class="back-link" id="backBtn">← Back</a>
   <div id="ribbon" class="ribbon" style="display:none;"></div>
   <h1 id="title" class="product-title">Loading...</h1>
   <div id="price" class="product-price"></div>
@@ -68,6 +68,19 @@
       }
     });
   }
+  const backBtn = document.getElementById('backBtn');
+
+  backBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      // fallback if user landed directly on product page
+      window.location.href = 'index.html';
+    }
+  });
+
 </script>
 
 </body>
