@@ -1,0 +1,126 @@
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+<style>
+    .icon-slider {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 20px 10px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+
+    .icon-slider::-webkit-scrollbar {
+        display: none;
+    }
+
+    .icon-card {
+        flex: 0 0 auto;
+        width: 110px;
+        padding: 18px 10px;
+        border-radius: 12px;
+        background: #eee;
+        text-align: center;
+        scroll-snap-align: start;
+        color: #000;
+        font-family: 'Poppins', sans-serif;
+        transition: transform 0.25s ease;
+    }
+
+    .icon-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .icon-card .material-symbols-outlined {
+        font-size: 18px;
+        margin-bottom: 8px;
+        display: block;
+        color: #000;
+        font-variation-settings: 'wght' 300;
+    }
+
+    .icon-card .label {
+        font-size: 15px;
+        font-weight: 400;
+        color: #000;
+    }
+
+    /* flowing color tones */
+    .c1  { background: #FFE6E6; }
+    .c2  { background: #FFEED9; }
+    .c3  { background: #FFF6CC; }
+    .c4  { background: #F4FFD6; }
+    .c5  { background: #DFFFE7; }
+    .c6  { background: #D8FFF9; }
+    .c7  { background: #DEEDFF; }
+    .c8  { background: #E5DEFF; }
+    .c9  { background: #F2DEFF; }
+    .c10 { background: #FFDEF4; }
+    .c11 { background: #FFDDE5; }
+    .c12 { background: #FFE8E8; }
+</style>
+
+<div class="icon-slider">
+
+    <div class="icon-card c1">
+        <span class="material-symbols-outlined">brush</span>
+        <span class="label">Creative Flow</span>
+    </div>
+
+    <div class="icon-card c2">
+        <span class="material-symbols-outlined">wallpaper</span>
+        <span class="label">Art Ready</span>
+    </div>
+
+    <div class="icon-card c3">
+        <span class="material-symbols-outlined">download</span>
+        <span class="label">Instant Files</span>
+    </div>
+
+    <div class="icon-card c4">
+        <span class="material-symbols-outlined">print</span>
+        <span class="label">Easy Printing</span>
+    </div>
+
+    <div class="icon-card c5">
+        <span class="material-symbols-outlined">photo_size_select_large</span>
+        <span class="label">Any Size</span>
+    </div>
+
+    <div class="icon-card c6">
+        <span class="material-symbols-outlined">frame_person</span>
+        <span class="label">Frame Ready</span>
+    </div>
+
+    <div class="icon-card c7">
+        <span class="material-symbols-outlined">palette</span>
+        <span class="label">Modern Style</span>
+    </div>
+
+    <div class="icon-card c8">
+        <span class="material-symbols-outlined">home</span>
+        <span class="label">Fresh Decor</span>
+    </div>
+
+    <div class="icon-card c9">
+        <span class="material-symbols-outlined">star</span>
+        <span class="label">Premium Look</span>
+    </div>
+
+    <div class="icon-card c10">
+        <span class="material-symbols-outlined">reorder</span>
+        <span class="label">Easy Setup</span>
+    </div>
+
+    <div class="icon-card c11">
+        <span class="material-symbols-outlined">collections</span>
+        <span class="label">Curated Art</span>
+    </div>
+
+    <div class="icon-card c12">
+        <span class="material-symbols-outlined">thumb_up</span>
+        <span class="label">Loved by All</span>
+    </div>
+
+</div>
