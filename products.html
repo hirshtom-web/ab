@@ -554,245 +554,187 @@ header h1 {
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-const grid = document.getElementById("productGrid");
-const gridButtons = document.querySelectorAll(".grid-btn");
-const imgButtons = document.querySelectorAll(".img-btn");
-const prevBtn = document.getElementById("prevPage");
-const nextBtn = document.getElementById("nextPage");
-const pageNumber = document.getElementById("pageNumber");
-
-let allProducts = [];
-let currentPage = 1;
-const productsPerPage = 72;
-
-// --- Show placeholders while loading ---
-function showLoadingPlaceholders(count) {
-  grid.innerHTML = "";
-  for(let i=0; i<count; i++){
-    const placeholder = document.createElement("div");
-    placeholder.className = "product-card loading";
-    grid.appendChild(placeholder);
-  }
-}
-
-// --- Load CSV ---
-showLoadingPlaceholders(12);
-Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download:true,
-  header:true,
-  skipEmptyLines:true,
-  complete: results => {
-    allProducts = results.data.filter(p => p.id && p.id.trim() !== ""); // only products with valid ID
-    renderPage(currentPage);
-  }
-});
-
-// --- Render page ---
-function renderPage(page){
-  grid.innerHTML = "";
-  const start = (page-1)*productsPerPage;
-  const end = start + productsPerPage;
-  const pageProducts = allProducts.slice(start,end);
-
-  pageProducts.forEach(p=>{
-    const productId = (p.id || "").trim();
-    if(!productId) return; // skip products with invalid ID
-
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.dataset.currentImage = 0;
-    card.dataset.id = productId;
-
-    const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
-    card.dataset.images = JSON.stringify(images);
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";
-
-    const img = document.createElement("img");
-    img.src = images[0] ? (images[0].includes("http") ? images[0] : "https://static.wixstatic.com/media/"+images[0]) : "";
-    img.loading = "lazy";
-    wrapper.appendChild(img);
-
-    // --- Arrows ---
-    if(images.length > 1){
-      const prevArrow = document.createElement("div");
-      prevArrow.className = "slider-arrow left";
-      prevArrow.innerHTML = "&#10094;";
-      prevArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, -1); }
-
-      const nextArrow = document.createElement("div");
-      nextArrow.className = "slider-arrow right";
-      nextArrow.innerHTML = "&#10095;";
-      nextArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, 1); }
-
-      wrapper.appendChild(prevArrow);
-      wrapper.appendChild(nextArrow);
-    }
-
-    // --- Plus overlay ---
-    const plus = document.createElement("div");
-    plus.className="plus-overlay"; 
-    plus.innerText="+";
-    wrapper.appendChild(plus);
-
-    // --- Swipe support ---
-    let startX = 0;
-    wrapper.addEventListener('touchstart', e => startX = e.touches[0].clientX);
-    wrapper.addEventListener('touchend', e => {
-      const endX = e.changedTouches[0].clientX;
-      if(endX - startX > 30) switchImage(card, -1);
-      if(startX - endX > 30) switchImage(card, 1);
-    });
-
-    card.appendChild(wrapper);
-
-    // --- Product info ---
-    const info = document.createElement("div");
-    info.className = "product-info";
-    const h3 = document.createElement("h3"); 
-    h3.innerText = p.name || p.Name || "Unnamed product";
-    info.appendChild(h3);
-
-    const priceDiv = document.createElement("div"); 
-    priceDiv.className="price-container";
-    const priceSpan = document.createElement("span"); 
-    priceSpan.className="price";
-    priceSpan.innerText = p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
-    priceDiv.appendChild(priceSpan); 
-    info.appendChild(priceDiv); 
-    card.appendChild(info);
-
-    // Ribbon
-    if(p.ribbon){ 
-      const label=document.createElement("div"); 
-      label.className="top-label"; 
-      label.innerText=p.ribbon; 
-      card.appendChild(label);
-    }
-
-    // Bubbles
-    const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
-    if(bubbles.length){ 
-      const bubbleDiv=document.createElement("div"); 
-      bubbleDiv.className="top-bubbles"; 
-      bubbles.forEach(b=>{ 
-        const d=document.createElement("div"); 
-        d.innerText=b; 
-        bubbleDiv.appendChild(d);
-      }); 
-      card.appendChild(bubbleDiv); 
-    }
-
-    // Wrap card in link
-    const productLink = document.createElement("a");
-    productLink.href = `product-page.html?id=${encodeURIComponent(productId)}`;
-    productLink.appendChild(card);
-
-    grid.appendChild(productLink);
-  });
-
-  insertBanners();
-
-  // --- Pagination ---
-  pageNumber.innerText = currentPage;
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = end >= allProducts.length;
-
-  // --- Apply default or selected cols ---
-  applyDefaultGrid();
-}
-
-// --- Switch per-product image ---
-function switchImage(card, direction){
-  let images = JSON.parse(card.dataset.images || "[]");
-  let idx = parseInt(card.dataset.currentImage) + direction;
-  if(idx < 0) idx = images.length -1;
-  if(idx >= images.length) idx = 0;
-  card.dataset.currentImage = idx;
-  const img = card.querySelector(".img-wrapper img");
-  img.src = images[idx].includes("http") 
-            ? images[idx] 
-            : "https://static.wixstatic.com/media/" + images[idx];
-}
-
-// --- Apply default or active grid columns ---
-function applyDefaultGrid() {
-  const isMobile = window.innerWidth <= 768; // mobile breakpoint
-  const defaultCols = isMobile ? 2 : 4;
-
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-
-  const activeBtn = Array.from(gridButtons)
-                         .find(btn => btn.classList.contains("active") && btn.offsetParent !== null);
-
-  let cols = defaultCols;
-  if(activeBtn && activeBtn.dataset.cols){
-    cols = parseInt(activeBtn.dataset.cols);
-  }
-
-  grid.classList.add(`cols-${cols}`);
-}
-
-// --- On page load ---
 document.addEventListener("DOMContentLoaded", () => {
-  applyDefaultGrid();
-  renderPage(currentPage);
-});
+  const grid = document.getElementById("productGrid");
+  const gridButtons = document.querySelectorAll(".grid-btn");
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  const pageNumber = document.getElementById("pageNumber");
 
-// --- Grid buttons ---
-gridButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    gridButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    applyDefaultGrid();
+  let allProducts = [];
+  let currentPage = 1;
+  const productsPerPage = 72;
+
+  // --- Show placeholders ---
+  function showLoadingPlaceholders(count){
+    grid.innerHTML = "";
+    for(let i=0;i<count;i++){
+      const placeholder = document.createElement("div");
+      placeholder.className = "product-card loading";
+      grid.appendChild(placeholder);
+    }
+  }
+
+  showLoadingPlaceholders(12);
+
+  // --- Load CSV ---
+  Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
+    download:true,
+    header:true,
+    skipEmptyLines:true,
+    complete: results => {
+      allProducts = results.data.filter(p => p.id && p.id.trim() !== "");
+      renderPage(currentPage);
+    }
   });
-});
 
-// --- Image selection buttons ---
-imgButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".product-card").forEach(card=>{
-      const images = JSON.parse(card.dataset.images || "[]");
-      const index = parseInt(btn.dataset.index);
-      card.dataset.currentImage = Math.min(index, images.length-1);
-      const img = card.querySelector(".img-wrapper img");
-      if(images.length>0){
-        img.src = images[card.dataset.currentImage].includes("http") ? 
-          images[card.dataset.currentImage] : 
-          "https://static.wixstatic.com/media/" + images[card.dataset.currentImage];
+  // --- Render page ---
+  function renderPage(page){
+    grid.innerHTML = "";
+    const start = (page-1)*productsPerPage;
+    const end = start + productsPerPage;
+    const pageProducts = allProducts.slice(start,end);
+
+    pageProducts.forEach(p=>{
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.dataset.currentImage = 0;
+      card.dataset.id = p.id.trim();
+
+      const images = (p.productImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean);
+      card.dataset.images = JSON.stringify(images);
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "img-wrapper";
+
+      const img = document.createElement("img");
+      img.src = images[0] ? (images[0].includes("http") ? images[0] : "https://static.wixstatic.com/media/"+images[0]) : "";
+      img.loading = "lazy";
+      wrapper.appendChild(img);
+
+      // --- Arrows ---
+      if(images.length > 1){
+        const prevArrow = document.createElement("div");
+        prevArrow.className = "slider-arrow left";
+        prevArrow.innerHTML = "&#10094;";
+        prevArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, -1); }
+
+        const nextArrow = document.createElement("div");
+        nextArrow.className = "slider-arrow right";
+        nextArrow.innerHTML = "&#10095;";
+        nextArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, 1); }
+
+        wrapper.appendChild(prevArrow);
+        wrapper.appendChild(nextArrow);
       }
+
+      card.appendChild(wrapper);
+
+      // --- Product info ---
+      const info = document.createElement("div");
+      info.className = "product-info";
+      const h3 = document.createElement("h3"); 
+      h3.innerText = p.name || "Unnamed product";
+      info.appendChild(h3);
+
+      const priceDiv = document.createElement("div"); 
+      priceDiv.className="price-container";
+      const priceSpan = document.createElement("span"); 
+      priceSpan.className="price";
+      priceSpan.innerText = p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
+      priceDiv.appendChild(priceSpan); 
+      info.appendChild(priceDiv); 
+      card.appendChild(info);
+
+      // --- Ribbon ---
+      if(p.ribbon){ 
+        const label=document.createElement("div"); 
+        label.className="top-label"; 
+        label.innerText=p.ribbon; 
+        card.appendChild(label);
+      }
+
+      // --- Bubbles ---
+      const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
+      if(bubbles.length){ 
+        const bubbleDiv=document.createElement("div"); 
+        bubbleDiv.className="top-bubbles"; 
+        bubbles.forEach(b=>{ 
+          const d=document.createElement("div"); 
+          d.innerText=b; 
+          bubbleDiv.appendChild(d);
+        }); 
+        card.appendChild(bubbleDiv); 
+      }
+
+      // --- Wrap card in link ---
+      const productLink = document.createElement("a");
+      productLink.href = `product-page.html?id=${encodeURIComponent(p.id)}`;
+      productLink.appendChild(card);
+
+      grid.appendChild(productLink);
+    });
+
+    insertBanners();
+    pageNumber.innerText = currentPage;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = end >= allProducts.length;
+
+    applyDefaultGrid();
+  }
+
+  // --- Switch images ---
+  function switchImage(card, direction){
+    let images = JSON.parse(card.dataset.images || "[]");
+    let idx = parseInt(card.dataset.currentImage) + direction;
+    if(idx < 0) idx = images.length -1;
+    if(idx >= images.length) idx = 0;
+    card.dataset.currentImage = idx;
+    const img = card.querySelector(".img-wrapper img");
+    img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
+  }
+
+  // --- Grid columns ---
+  function applyDefaultGrid(){
+    const isMobile = window.innerWidth <= 768;
+    const defaultCols = isMobile ? 2 : 4;
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+    const activeBtn = Array.from(gridButtons).find(btn => btn.classList.contains("active") && btn.offsetParent!==null);
+    let cols = defaultCols;
+    if(activeBtn && activeBtn.dataset.cols) cols = parseInt(activeBtn.dataset.cols);
+    grid.classList.add(`cols-${cols}`);
+  }
+
+  gridButtons.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      gridButtons.forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      applyDefaultGrid();
     });
   });
-});
 
-// --- Pagination buttons ---
-prevBtn.addEventListener("click",()=>{
-  if(currentPage>1){ currentPage--; renderPage(currentPage); }
-});
-nextBtn.addEventListener("click",()=>{
-  if(currentPage*productsPerPage<allProducts.length){ currentPage++; renderPage(currentPage); }
-});
+  window.addEventListener("resize", applyDefaultGrid);
 
-// --- Insert banners ---
-function insertBanners(){
-  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
-  const cards = [...grid.querySelectorAll(".product-card")];
-  for(let i=8;i<cards.length;i+=9){
-    const banner = document.createElement("div"); 
-    banner.className="banner-card";
-    const span = document.createElement("span"); 
-    span.innerText="✨ New Collection Drop!";
-    banner.appendChild(span);
-    grid.insertBefore(banner, cards[i]);
+  prevBtn.addEventListener("click",()=>{
+    if(currentPage>1){ currentPage--; renderPage(currentPage); }
+  });
+  nextBtn.addEventListener("click",()=>{
+    if(currentPage*productsPerPage<allProducts.length){ currentPage++; renderPage(currentPage); }
+  });
+
+  // --- Banners ---
+  function insertBanners(){
+    grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
+    const cards = [...grid.querySelectorAll(".product-card")];
+    for(let i=8;i<cards.length;i+=9){
+      const banner = document.createElement("div"); 
+      banner.className="banner-card";
+      const span = document.createElement("span"); 
+      span.innerText="✨ New Collection Drop!";
+      banner.appendChild(span);
+      grid.insertBefore(banner, cards[i]);
+    }
   }
-}
-
-// --- Responsive: recalc on resize ---
-window.addEventListener("resize", () => {
-  applyDefaultGrid();
 });
 </script>
 
