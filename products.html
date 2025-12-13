@@ -478,25 +478,25 @@ header h1 {
   <!-- LEFT: GRID LAYOUT -->
   <div class="controls-left">
 
-    <!-- DESKTOP -->
-    <button class="grid-btn active desktop-only" data-grid="week">
-      <span class="material-icons-outlined">calendar_view_week</span>
-    </button>
+   <!-- DESKTOP -->
+<button class="grid-btn active desktop-only" data-cols="4">
+  <span class="material-icons-outlined">calendar_view_week</span>
+</button>
 
-    <button class="grid-btn desktop-only" data-grid="month">
-      <span class="material-icons-outlined">calendar_view_month</span>
-    </button>
+<button class="grid-btn desktop-only" data-cols="3">
+  <span class="material-icons-outlined">calendar_view_month</span>
+</button>
 
-    <!-- MOBILE -->
-    <button class="grid-btn mobile-only" data-grid="one">
-      <span class="material-icons-outlined">splitscreen</span>
-    </button>
+<!-- MOBILE -->
+<button class="grid-btn active mobile-only" data-cols="2">
+  <span class="material-icons-outlined">splitscreen</span>
+</button>
 
-    <button class="grid-btn mobile-only" data-grid="two">
-      <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 8h-6V5h6v6zm-8-6v6H5V5h6zm-6 8h6v6H5v-6zm8 6v-6h6v6h-6z"/>
-      </svg>
-    </button>
+<button class="grid-btn mobile-only" data-cols="1">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5z"/>
+  </svg>
+</button>
 
   </div>
 
@@ -535,7 +535,6 @@ header h1 {
 
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
 <script>
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
@@ -547,7 +546,6 @@ const pageNumber = document.getElementById("pageNumber");
 let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 72;
-let defaultCols = window.innerWidth <= 600 ? 2 : 4;
 
 // --- Show placeholders while loading ---
 function showLoadingPlaceholders(count) {
@@ -596,33 +594,25 @@ function renderPage(page){
     wrapper.appendChild(img);
 
     // --- Arrows ---
-  if(images.length > 1){
-  const prevArrow = document.createElement("div");
-  prevArrow.className = "slider-arrow left";
-  prevArrow.innerHTML = "&#10094;";
-  prevArrow.onclick = e => { 
-    e.preventDefault();   // stop link navigation
-    e.stopPropagation();  // stop bubbling to parent
-    switchImage(card, -1); 
-  }
+    if(images.length > 1){
+      const prevArrow = document.createElement("div");
+      prevArrow.className = "slider-arrow left";
+      prevArrow.innerHTML = "&#10094;";
+      prevArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, -1); }
 
-  const nextArrow = document.createElement("div");
-  nextArrow.className = "slider-arrow right";
-  nextArrow.innerHTML = "&#10095;";
-  nextArrow.onclick = e => { 
-    e.preventDefault(); 
-    e.stopPropagation(); 
-    switchImage(card, 1); 
-  }
+      const nextArrow = document.createElement("div");
+      nextArrow.className = "slider-arrow right";
+      nextArrow.innerHTML = "&#10095;";
+      nextArrow.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, 1); }
 
-  wrapper.appendChild(prevArrow);
-  wrapper.appendChild(nextArrow);
-}
-
+      wrapper.appendChild(prevArrow);
+      wrapper.appendChild(nextArrow);
+    }
 
     // --- Plus overlay ---
     const plus = document.createElement("div");
-    plus.className="plus-overlay"; plus.innerText="+";
+    plus.className="plus-overlay"; 
+    plus.innerText="+";
     wrapper.appendChild(plus);
 
     // --- Swipe support ---
@@ -673,7 +663,7 @@ function renderPage(page){
       card.appendChild(bubbleDiv); 
     }
 
-    // --- Wrap card in link to product page ---
+    // Wrap card in link
     const productLink = document.createElement("a");
     productLink.href = `product-page.html?id=${encodeURIComponent(p.id)}`;
     productLink.appendChild(card);
@@ -688,8 +678,8 @@ function renderPage(page){
   prevBtn.disabled = currentPage === 1;
   nextBtn.disabled = end >= allProducts.length;
 
-  // --- Apply default cols ---
-  updateGridColumns();
+  // --- Apply default or selected cols ---
+  applyDefaultGrid();
 }
 
 // --- Switch per-product image ---
@@ -703,25 +693,53 @@ function switchImage(card, direction){
   img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
 }
 
+// --- Apply default grid columns ---
+function applyDefaultGrid() {
+  const isMobile = window.innerWidth <= 600;
+  const defaultCols = isMobile ? 2 : 4;
+
+  // Remove all previous column classes
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+
+  // Check if any grid button is active, otherwise use default
+  const activeBtn = document.querySelector(".grid-btn.active");
+  let cols = defaultCols;
+  if(activeBtn && activeBtn.dataset.cols) cols = parseInt(activeBtn.dataset.cols);
+
+  grid.classList.add(`cols-${cols}`);
+}
+
 // --- Grid buttons ---
-
-const layouts = ['week-view', 'month-view', 'one-view', 'two-view'];
-
 gridButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    gridButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  btn.addEventListener("click", () => {
+    const cols = parseInt(btn.dataset.cols);
 
-    productGrid.classList.remove(...layouts);
+    // Remove active state from all buttons
+    gridButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
 
-    const layoutMap = {
-      week: 'week-view',
-      month: 'month-view',
-      one: 'one-view',
-      two: 'two-view'
-    };
+    // Apply column class
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+    grid.classList.add(`cols-${cols}`);
+  });
+});
 
-    productGrid.classList.add(layoutMap[btn.dataset.grid]);
+// --- Image selection buttons ---
+imgButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    imgButtons.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".product-card").forEach(card=>{
+      const images = JSON.parse(card.dataset.images || "[]");
+      const index = parseInt(btn.dataset.index);
+      card.dataset.currentImage = Math.min(index, images.length-1);
+      const img = card.querySelector(".img-wrapper img");
+      if(images.length>0){
+        img.src = images[card.dataset.currentImage].includes("http") ? 
+          images[card.dataset.currentImage] : 
+          "https://static.wixstatic.com/media/" + images[card.dataset.currentImage];
+      }
+    });
   });
 });
 
@@ -747,38 +765,12 @@ function insertBanners(){
   }
 }
 
-// --- Image selection buttons (cover/lifestyle) ---
-imgButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".product-card").forEach(card=>{
-      const images = JSON.parse(card.dataset.images || "[]");
-      const index = parseInt(btn.dataset.index);
-      card.dataset.currentImage = Math.min(index, images.length-1);
-      const img = card.querySelector(".img-wrapper img");
-      if(images.length>0){
-        img.src = images[card.dataset.currentImage].includes("http") ? 
-          images[card.dataset.currentImage] : 
-          "https://static.wixstatic.com/media/" + images[card.dataset.currentImage];
-      }
-    });
-  });
+// --- Responsive: recalc on resize ---
+window.addEventListener("resize", () => {
+  applyDefaultGrid();
 });
-
-// --- Responsive ---
-window.addEventListener("resize", ()=>{
-  updateGridColumns();
-});
-
-// --- Update grid columns ---
-function updateGridColumns(){
-  const mobileCols = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-cols')) || 2;
-  const cols = window.innerWidth <= 600 ? mobileCols : defaultCols;
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-  grid.classList.add(`cols-${cols}`);
-}
 </script>
+
 
 
 
