@@ -29,99 +29,75 @@
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get('id')?.trim();
+const titleEl = document.getElementById('title');
+const priceEl = document.getElementById('price');
+const ribbonEl = document.getElementById('ribbon');
+const imagesEl = document.getElementById('images');
+const descEl = document.getElementById('description');
 
-  const titleEl = document.getElementById('title');
-  const priceEl = document.getElementById('price');
-  const ribbonEl = document.getElementById('ribbon');
-  const imagesEl = document.getElementById('images');
-  const descEl = document.getElementById('description');
+// --- Get product ID from URL ---
+const params = new URLSearchParams(window.location.search);
+const productId = params.get('id')?.trim();
 
-  if (!productId) {
-    titleEl.innerText = "Product not found";
-    return;
-  }
-
+if(!productId){
+  titleEl.innerText = "Product not found";
+} else {
   Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: results => {
+      // --- Find product by ID ---
       const product = results.data.find(p => p.id?.trim() === productId);
-      if (!product) {
-        titleEl.innerText = "Product not found";
-        return;
-      }
 
-      titleEl.innerText = product.name || "Unnamed Product";
-      priceEl.innerText = product.price ? "$" + product.price : "$1";
+      if(product){
+        titleEl.innerText = product.name || "Unnamed Product";
+        priceEl.innerText = product.price ? "$" + product.price : "$1";
 
-      if (product.ribbon) {
-        ribbonEl.style.display = "inline-block";
-        ribbonEl.innerText = product.ribbon;
-      }
+        if(product.ribbon){
+          ribbonEl.style.display = "inline-block";
+          ribbonEl.innerText = product.ribbon;
+        }
 
-      // --- Images ---
-      imagesEl.innerHTML = "";
-      const images = (product.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
-      if (images.length) {
-        images.forEach((url, idx) => {
-          const wrapper = document.createElement("div");
-          wrapper.className = "img-wrapper";
-
-          const img = document.createElement("img");
+        // --- Images ---
+        imagesEl.innerHTML = "";
+        const images = (product.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean);
+        images.forEach(url => {
+          const img = document.createElement('img');
           img.src = url.includes("http") ? url : "https://static.wixstatic.com/media/" + url;
-          img.loading = "lazy";
-          wrapper.appendChild(img);
-
-          // Arrows if multiple images
-          if (images.length > 1) {
-            if (idx > 0) {
-              const prev = document.createElement("div");
-              prev.className = "slider-arrow left";
-              prev.innerHTML = "&#10094;";
-              prev.onclick = e => { e.preventDefault(); switchSingleImage(-1); };
-              wrapper.appendChild(prev);
-            }
-            if (idx < images.length - 1) {
-              const next = document.createElement("div");
-              next.className = "slider-arrow right";
-              next.innerHTML = "&#10095;";
-              next.onclick = e => { e.preventDefault(); switchSingleImage(1); };
-              wrapper.appendChild(next);
-            }
-          }
-
-          imagesEl.appendChild(wrapper);
+          img.style.width = "200px";
+          img.style.height = "200px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "12px";
+          imagesEl.appendChild(img);
         });
 
-        // --- Single product slider logic ---
-        let currentImage = 0;
-        function switchSingleImage(dir) {
-          currentImage += dir;
-          if (currentImage < 0) currentImage = images.length - 1;
-          if (currentImage >= images.length) currentImage = 0;
-          const imgEl = imagesEl.querySelector("img");
-          imgEl.src = images[currentImage].includes("http") ? images[currentImage] : "https://static.wixstatic.com/media/" + images[currentImage];
-        }
-      }
+        // --- Description ---
+        descEl.innerHTML = product.description || "";
 
-      // --- Description ---
-      descEl.innerHTML = product.description || "";
+      } else {
+        titleEl.innerText = "Product not found";
+        priceEl.innerText = "";
+      }
+    },
+    error: err => {
+      console.error("CSV load error:", err);
+      titleEl.innerText = "Error loading product";
     }
   });
+}
 
-  // --- Back button ---
-  const backBtn = document.getElementById('backBtn');
-  backBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) window.history.back();
-    else window.location.href = 'index.html';
-  });
+// --- Back button ---
+document.getElementById('backBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if(window.history.length > 1){
+    window.history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
 });
 </script>
+
 
 
 
