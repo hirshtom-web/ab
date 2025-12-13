@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Header + Top Bar</title>
+<title>Header + Gift Card Popup + Search + Mobile Hamburger</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
 <style>
-body { margin:0; padding:0; font-family:"Poppins", sans-serif; }
+body { margin:0; padding:0; font-family:"Poppins", sans-serif; background:#f9f9f9; }
 
 /* ---------- TOP BAR ---------- */
 .top-bar {
@@ -19,8 +19,6 @@ body { margin:0; padding:0; font-family:"Poppins", sans-serif; }
   color:#30362C;
   overflow:hidden;
 }
-
-/* DESKTOP TOP BAR */
 #desktop-bar {
   display:flex;
   justify-content:center;
@@ -34,118 +32,161 @@ body { margin:0; padding:0; font-family:"Poppins", sans-serif; }
   font-weight:600;
   font-size:10px;
 }
-.material-symbols-outlined {
-  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+.material-symbols-outlined { 
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; 
   color:#30362C;
   font-size:15px;
 }
 
 /* MOBILE TOP BAR */
 #mobile-bar { display:none; }
-.mobile-track {
-  display:flex;
-  width:max-content;
-  animation: scroll-left 25s linear infinite;
-}
-.mobile-item {
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:0 25px;
-  white-space:nowrap;
-  font-size: 8px;
-  font-weight: 600;
-}
-@keyframes scroll-left {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+.mobile-track { display:flex; width:max-content; animation: scroll-left 25s linear infinite; }
+.mobile-item { display:flex; align-items:center; gap:6px; padding:0 25px; white-space:nowrap; font-size: 8px; font-weight: 600; }
+@keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* ---------- HEADER / NAV ---------- */
 header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:15px 30px;
-  background:#fff;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* equal spacing on sides */
+  align-items: center;
+  padding: 15px 30px;
+  background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  flex-wrap:wrap;
 }
 
-/* Left: Logo */
-header .logo {
-  height:15px;
-  display:flex;
-  align-items:center;
+.header-left {
+  justify-self: start;
 }
 
-/* Center: Navigation links */
-nav {
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  flex:1;
+.header-left .logo {
+  height: 15px;
+  display: flex;
+  align-items: center;
+}
+
+nav.header-center {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
 }
 
 nav a {
-  text-decoration:none;
-  color:#111;
-  font-weight:500;
-  font-size:12px;
-  transition:0.2s;
-}
-nav a:hover {
-  color:#FF5E5E;
+  text-decoration: none;
+  color: #111;
+  font-weight: 500;
+  font-size: 12px;
+  transition: 0.2s;
 }
 
-/* Right: Icons */
+nav a:hover { color: #FF5E5E; }
+
 .header-right {
-  display:flex;
-  align-items:center;
-  gap:15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+  position: relative;
 }
+
 .header-right .material-symbols-outlined {
-  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
-  font-size:20px;
-  cursor:pointer;
-  color:#111;
-  transition:0.2s;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 20px;
+  cursor: pointer;
+  color: #111;
+  transition: 0.2s;
 }
-.header-right .material-symbols-outlined:hover {
-  color:#FF5E5E;
+
+.header-right .material-symbols-outlined:hover { color: #FF5E5E; }
+
+/* Search input */
+#searchBar {
+  display: none;
+  padding:5px 10px;
+  font-size:12px;
+  border-radius:5px;
+  border:1px solid #ccc;
+  outline:none;
+}
+
+/* ---------- MOBILE HEADER ---------- */
+.mobile-header {
+  display: none; /* only on mobile */
+  width: 100%;
+  background: #fff;
+  padding: 10px 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-header .left, .mobile-header .right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-header .logo {
+  height: 20px;
+}
+
+.mobile-header input {
+  display: none;
+  padding:5px 10px;
+  font-size:12px;
+  border-radius:5px;
+  border:1px solid #ccc;
+  outline:none;
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media(max-width:900px){
-  nav {
-    flex-wrap:wrap;
-    gap:15px;
-  }
-}
+@media(max-width:900px){ nav { flex-wrap:wrap; gap:15px; } }
 
-@media(max-width:600px){
-  header {
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
-  nav {
-    justify-content:flex-start;
-    gap:10px;
-  }
-  header .logo { height:40px; }
-}
-
-/* Top Bar mobile breakpoint */
 @media(max-width:700px){
-  #desktop-bar { display:none; }
+  #desktop-bar, header, nav.header-center { display:none; }
   #mobile-bar { display:block; }
-  .material-symbols-outlined { font-size:10px; }
+  .mobile-header { display:flex; }
+  .material-symbols-outlined { font-size:16px; }
+}
+
+/* ---------- ITEM POPUP ---------- */
+.item-popup {
+  position: fixed;
+  top:0; left:0;
+  width:100vw; height:100vh;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.popup-content {
+  background: #fff;
+  width: 80%;
+  max-width: 700px;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+.popup-image { flex:1; min-width:50%; max-height:400px; overflow:hidden; }
+.popup-image img { width:100%; height:100%; object-fit:cover; }
+.popup-text { flex:1; padding:30px; display:flex; flex-direction:column; justify-content:center; gap:15px; }
+.popup-text h2 { margin:0; font-size:24px; font-weight:600; }
+.popup-text p { font-size:14px; line-height:1.5; color:#333; }
+.popup-text p.price { font-weight:600; }
+.popup-btn { padding:12px 25px; background-color:#FF5E5E; color:#fff; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; transition:0.2s; }
+.popup-btn:hover { background-color:#ff3b3b; }
+.popup-close { position:absolute; top:15px; right:20px; font-size:28px; color:#fff; cursor:pointer; }
+@keyframes fadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+
+@media(max-width:800px){ 
+  .popup-content { flex-direction:column; width:90%; } 
+  .popup-image, .popup-text { min-width:100%; } 
+  .popup-text { padding:20px; } 
 }
 </style>
-
 </head>
-
 <body>
 
 <!-- ---------- TOP BAR DESKTOP ---------- -->
@@ -195,14 +236,11 @@ nav a:hover {
   </div>
 </div>
 
-<!-- ---------- HEADER / NAV ---------- -->
+<!-- ---------- DESKTOP HEADER ---------- -->
 <header>
-  <!-- Left: Logo -->
   <div class="header-left">
-    <img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo">
+    <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
   </div>
-
-  <!-- Center: Navigation -->
   <nav class="header-center">
     <a href="#">Art Prints</a>
     <a href="#">Categories</a>
@@ -211,16 +249,100 @@ nav a:hover {
     <a href="#">How It Works</a>
     <a href="#">Inspiration</a>
   </nav>
-
-  <!-- Right: Icons -->
   <div class="header-right">
-    <span class="material-symbols-outlined">shopping_cart</span>
-    <span class="material-symbols-outlined">search</span>
-    <span class="material-symbols-outlined">card_giftcard</span>
+    <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+    <span class="material-symbols-outlined" id="searchIcon">search</span>
+    <input type="text" id="searchBar" placeholder="Search...">
+    <span class="material-symbols-outlined" id="giftIcon">card_giftcard</span>
     <span class="material-symbols-outlined">help_outline</span>
   </div>
 </header>
 
+<!-- ---------- MOBILE HEADER ---------- -->
+<div class="mobile-header">
+  <div class="left">
+    <span class="material-symbols-outlined" id="hamburger">menu</span>
+    <span class="material-symbols-outlined" id="mobileSearch">search</span>
+  </div>
+  <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+  <div class="right">
+    <span class="material-symbols-outlined" id="mobileGift">card_giftcard</span>
+    <span class="material-symbols-outlined" id="mobileHelp">help_outline</span>
+    <span class="material-symbols-outlined" id="mobileCart">shopping_cart</span>
+  </div>
+</div>
+
+<!-- ---------- ITEM POPUP ---------- -->
+<div class="item-popup" id="itemPopup">
+  <div class="popup-content">
+    <div class="popup-image">
+      <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" alt="Gift Card Image">
+    </div>
+    <div class="popup-text">
+      <h2>Christmas Gift Card</h2>
+      <p>Send this beautiful Christmas gift card to someone special and make their holidays joyful!</p>
+      <p class="price"><strong>Price: $25</strong></p>
+      <button class="popup-btn">Send Gift</button>
+    </div>
+  </div>
+  <span class="popup-close" onclick="closePopup()">×</span>
+</div>
+
+<script>
+// Gift card popup
+document.getElementById('giftIcon').addEventListener('click', function() {
+  openPopup(
+    'https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png',
+    'Christmas Gift Card',
+    'Send this beautiful Christmas gift card to someone special and make their holidays joyful!',
+    '$25'
+  );
+});
+document.getElementById('mobileGift').addEventListener('click', function() {
+  openPopup(
+    'https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png',
+    'Christmas Gift Card',
+    'Send this beautiful Christmas gift card to someone special and make their holidays joyful!',
+    '$25'
+  );
+});
+
+function openPopup(imgSrc, title, description, price) {
+  const popup = document.getElementById('itemPopup');
+  popup.querySelector('.popup-image img').src = imgSrc;
+  popup.querySelector('.popup-text h2').textContent = title;
+  popup.querySelector('.popup-text p:nth-of-type(1)').textContent = description;
+  popup.querySelector('.popup-text p.price').innerHTML = `<strong>Price: ${price}</strong>`;
+  popup.style.display = 'flex';
+}
+function closePopup() { document.getElementById('itemPopup').style.display = 'none'; }
+
+// Toggle desktop search
+document.getElementById('searchIcon').addEventListener('click', function() {
+  const searchBar = document.getElementById('searchBar');
+  searchBar.style.display = searchBar.style.display === 'inline-block' ? 'none' : 'inline-block';
+  if(searchBar.style.display === 'inline-block') searchBar.focus();
+});
+
+// Toggle mobile search
+document.getElementById('mobileSearch').addEventListener('click', function() {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Search...';
+  input.style.position = 'absolute';
+  input.style.top = '60px';
+  input.style.left = '10px';
+  input.style.right = '10px';
+  input.style.padding = '8px';
+  input.style.fontSize = '14px';
+  input.style.borderRadius = '5px';
+  input.style.border = '1px solid #ccc';
+  input.id = 'tempMobileSearch';
+  document.body.appendChild(input);
+  input.focus();
+  input.addEventListener('blur', ()=>{ input.remove(); });
+});
+</script>
+
 </body>
 </html>
-
