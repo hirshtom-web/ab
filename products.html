@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArteBarte Products</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 <style>
 * { box-sizing: border-box; }
 
@@ -190,6 +192,57 @@ header h1 { font-weight:600; font-size:20px; }
 .slider-arrow.left { left: 8px; }
 .slider-arrow.right { right: 8px; }
 
+  /* Layout selector */
+.grid-selector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px auto 20px;
+}
+
+.grid-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.grid-btn svg {
+  fill: currentColor;
+}
+
+/* Grid */
+.products-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.week-view  { grid-template-columns: repeat(4, 1fr); }
+.month-view { grid-template-columns: repeat(3, 1fr); }
+.one-view   { grid-template-columns: 1fr; }
+.two-view   { grid-template-columns: repeat(2, 1fr); }
+
+/* Responsive buttons */
+.mobile-only { display: none; }
+.desktop-only { display: flex; }
+
+@media (max-width: 768px) {
+  .mobile-only { display: flex; }
+  .desktop-only { display: none; }
+}
+
+
 .pagination { text-align:center; margin:20px 0; }
 .pagination button { padding:6px 12px; margin:0 5px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
 .pagination button:disabled { opacity:0.5; cursor:default; }
@@ -198,23 +251,40 @@ header h1 { font-weight:600; font-size:20px; }
 </head>
   
 <body>
-
-<header><h1>Gallery Walls</h1></header>
+<header>
+  <h1>Gallery Walls</h1>
+</header>
 
 <div class="grid-selector">
-  <button class="grid-btn" data-cols="1">1 per row</button>
-  <button class="grid-btn active" data-cols="2">2 per row</button>
-  <button class="grid-btn" data-cols="3">3 in row</button>
-  <button class="grid-btn" data-cols="4">4 in row</button>
+
+  <!-- DESKTOP -->
+  <button class="grid-btn active desktop-only" data-grid="week">
+    <span class="material-icons-outlined">calendar_view_week</span>
+  </button>
+
+  <button class="grid-btn desktop-only" data-grid="month">
+    <span class="material-icons-outlined">calendar_view_month</span>
+  </button>
+
+  <!-- MOBILE -->
+  <button class="grid-btn mobile-only" data-grid="one">
+    <span class="material-icons-outlined">splitscreen</span>
+  </button>
+
+  <button class="grid-btn mobile-only" data-grid="two">
+    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 8h-6V5h6v6zm-8-6v6H5V5h6zm-6 8h6v6H5v-6zm8 6v-6h6v6h-6z"/>
+    </svg>
+  </button>
+
 </div>
 
+<div class="products-grid week-view" id="productGrid"></div>
 
 <div class="image-selector">
   <button class="img-btn active" data-index="0">Cover Image</button>
   <button class="img-btn" data-index="1">Lifestyle Image</button>
 </div>
-
-<div class="products-grid cols-4" id="productGrid"></div>
 
 <div class="pagination">
   <button id="prevPage">Prev</button>
@@ -383,22 +453,26 @@ function switchImage(card, direction){
 }
 
 // --- Grid buttons ---
+const gridButtons = document.querySelectorAll('.grid-btn');
+const productGrid = document.getElementById('productGrid');
+
+const layouts = ['week-view', 'month-view', 'one-view', 'two-view'];
+
 gridButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    gridButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+  btn.addEventListener('click', () => {
+    gridButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-    const cols = parseInt(btn.dataset.cols);
+    productGrid.classList.remove(...layouts);
 
-    // Update desktop columns
-    defaultCols = window.innerWidth > 600 ? cols : defaultCols;
+    const layoutMap = {
+      week: 'week-view',
+      month: 'month-view',
+      one: 'one-view',
+      two: 'two-view'
+    };
 
-    // Update mobile columns (2 by default, 1 if user chooses)
-    const mobileCols = window.innerWidth <= 600 ? cols : 2;
-    document.documentElement.style.setProperty('--mobile-cols', mobileCols);
-
-    updateGridColumns();
-    insertBanners();
+    productGrid.classList.add(layoutMap[btn.dataset.grid]);
   });
 });
 
