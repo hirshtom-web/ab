@@ -247,3 +247,43 @@ nav a:hover { color: #FF5E5E; }
 /* Prevent zoom on input focus on iOS */
 input, textarea, select { font-size:16px; }
 
+/* ===============================
+   HERO SECTION
+================================ */
+
+/* ---------- AB HOME HERO ---------- */
+.ab-home-hero {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  margin: 20px;                 /* 20px on all sides */
+  border-radius: 12px;
+  overflow: hidden;
+
+  background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ab-home-hero-overlap {
+  width: 500px;
+  max-width: 80%;
+  height: auto;
+  z-index: 2;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .ab-home-hero {
+    height: 500px;
+    margin: 20px;
+  }
+
+  .ab-home-hero-overlap {
+    width: 300px;
+  }
+}
