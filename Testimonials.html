@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testimonial Slider</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Add this in your <head> -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+}
+
+/* SLIDER CONTAINER */
+.slider-container {
+  max-width: 90%;
+  margin: 10px auto;
+  overflow-x: auto;
+  display: flex;
+  gap: 20px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 5px;
+}
+
+/* INDIVIDUAL SLIDE */
+.slide {
+  flex: 0 0 300px; /* width of each slide */
+  background: #F7F5ED;
+  border-radius: 15px;
+  padding: 40px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* NAME */
+.slide .name {
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+/* REVIEW TEXT */
+.slide .review {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* STARS */
+.slide .stars {
+  color: #000;
+  font-size: 12px;
+}
+  /* Hide default scrollbar for all browsers */
+.slider-container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.slider-container::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+
+/* MOBILE ADJUST */
+@media (max-width: 600px) {
+  .slide {
+    flex: 0 0 180px;
+    padding: 30px;
+  }
+  .slide .name {
+    font-size: 12px;
+  }
+  .slide .review {
+    font-size: 10px;
+  }
+  .slide .stars {
+    font-size: 12px;
+  }
+}
+  
+.name {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* space between name and bubble */
+  font-size: 14px; /* adjust as needed */
+}
+
+.verified-bubble {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background-color: #e0f7fa; /* bubble color */
+  color: #00796b; /* text & icon color */
+  padding: 0 4px;
+  border-radius: 6px; /* small bubble */
+  font-size: 6px; /* very small text */
+  height: 10px; /* ensures proper vertical alignment */
+}
+
+.verified-bubble .material-icons-round {
+  font-size: 4px; /* tiny icon */
+  line-height: 1;
+}
+
+
+
+/* ---------------- VERTICAL RATING ---------------- */
+.overall-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  border-radius: 20px;
+  gap: 5px;
+  text-align: center;
+}
+
+.overall-rating .rating-number {
+  font-size: 30px;
+  font-weight: 600;
+  color: #000;
+  line-height: 1;
+}
+
+.overall-rating .stars {
+  color: #FFD700; /* yellow stars */
+  font-size: 15px;
+}
+
+.overall-rating .title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.overall-rating .date {
+  font-size: 8px;
+  color: #777;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .overall-rating {
+    padding: 20px 15px;
+    gap: 5px;
+  }
+  .overall-rating .rating-number {
+    font-size: 20px;
+  }
+  .overall-rating .stars {
+    font-size: 10px;
+  }
+  .overall-rating .title {
+    font-size: 10px;
+  }
+  .overall-rating .date {
+    font-size: 8px;
+  }
+}
+
+/* ---------------- SCROLL INDICATOR ---------------- */
+.slider-indicator {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.slider-indicator span {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #F7F5ED;
+  border-radius: 50%;
+  margin: 0 5px;
+  transition: background 0.3s;
+}
+
+.slider-indicator span.active {
+  background: #F7F5ED;
+}
+  .slider-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 1px;
+  margin-top: 20px;
+}
+
+.slider-indicator span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: #F7F5ED;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.slider-indicator span.active {
+  width: 20px;      /* wider active dot */
+  border-radius: 4px; /* slightly rounded rectangle */
+  background: #F7F5ED;
+}
+
+</style>
+</head>
+<body>
+
+<div class="overall-rating">
+  <div class="rating-number">4.9</div>
+  <div class="stars">★★★★★</div>
+  <div class="title">Overall Rating</div>
+  <div class="date" id="rating-date"></div>
+</div>
+
+<div class="slider-container" id="slider">
+
+  <div class="slide">
+  <div class="name">
+    Emily Carter
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Print came out so clean and crisp. Colors are gorgeous—exactly what I hoped for!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Sarah Mitchell
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Super easy to print and it looks amazing on my wall. Love it!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Jessica Rivera
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Quality is chef’s kiss. Printed perfectly and the colors pop.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Chloe Nguyen
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Honestly surprised how good this looks printed. Totally worth it.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Olivia Brooks
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Great file quality—printed it at home and it looks pro!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Mia Thompson
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Such a cute piece! Printed beautifully and brightened up my space.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Ava Martinez
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Fast download, zero issues, and it printed like a dream.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Megan Allen
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">So happy with how this turned out! Clear, vibrant, and super easy.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Lily Harris
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Print quality is amazing—very crisp details. Would definitely buy again.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Grace Patel
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Looks even better in person after printing. Love the vibe!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<!-- ⭐ Walmart Printing -->
+<div class="slide">
+  <div class="name">
+    Hannah Foster
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Printed this at Walmart and it came out super crisp. Colors looked way better than I expected!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Natalie Grey
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Walmart print turned out perfect — bright, clean, and ready to frame.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Daniel Perez
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Honestly, Walmart did such a good job. My print looks professional!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<!-- ⭐ Kinko’s / FedEx Printing -->
+<div class="slide">
+  <div class="name">
+    Sophia Reed
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Printed at FedEx and it came out so sharp. Zero issues, super easy.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Madison Clark
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Kinko’s did a great job with the colors. It looks legit gallery-quality.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Anthony Carter
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Quick print at FedEx and it turned out amazing. Highly recommend.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<!-- ⭐ Printed at Home -->
+<div class="slide">
+  <div class="name">
+    Lauren Davis
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Printed this at home and it still looks gorgeous. Super clear and vibrant!</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Kayla Simmons
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Home print came out great — the file quality made it look pro.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Morgan Blake
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Surprisingly easy to print at home, and it looks amazing on my wall.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<!-- ⭐ Framed at Michaels -->
+<div class="slide">
+  <div class="name">
+    Rachel Young
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Framed it at Michaels and it looks so polished. Totally elevated the print.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Madison Shaw
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Michaels framing made it look like a custom piece — love how it turned out.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Jason Miller
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Got it framed at Michaels and now it looks like something from a boutique.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<!-- ⭐ IKEA Frames -->
+<div class="slide">
+  <div class="name">
+    Hailey Brooks
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Fit perfectly in my IKEA 2x3 frame — literally like it was made for it.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Bella Torres
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Dropped it right into an IKEA 2x3 frame and it looks flawless.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+<div class="slide">
+  <div class="name">
+    Ethan Ward
+    <span class="verified-bubble">
+      <span class="material-icons-round">verified</span>
+      Verified buyer
+    </span>
+  </div>
+  <div class="review">Perfect sizing! The IKEA 2x3 frame made it look super clean and modern.</div>
+  <div class="stars">★★★★★</div>
+</div>
+
+
+</div>
+
+<!-- Scroll Dots -->
+<div class="slider-indicator" id="slider-indicator"></div>
+
+<script>
+// ------------------ UPDATE DATE ------------------
+const today = new Date();
+const options = { year: 'numeric', month: 'short', day: 'numeric' };
+document.getElementById('rating-date').textContent = today.toLocaleDateString(undefined, options);
+
+// ------------------ SHUFFLE REVIEWS ------------------
+const slider = document.getElementById('slider');
+const slidesArray = Array.from(slider.children);
+
+// Fisher–Yates Shuffle
+for (let i = slidesArray.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [slidesArray[i], slidesArray[j]] = [slidesArray[j], slidesArray[i]];
+}
+
+// Re-append slides in randomized order
+slidesArray.forEach(slide => slider.appendChild(slide));
+
+
+// ------------------ SCROLL INDICATOR (5 DOTS ONLY) ------------------
+const indicator = document.getElementById('slider-indicator');
+const indicatorDots = 5;  // number of dots you want
+
+// create dots
+for (let i = 0; i < indicatorDots; i++) {
+  const dot = document.createElement('span');
+  if (i === 0) dot.classList.add('active');
+  indicator.appendChild(dot);
+}
+
+// sync dots with scroll position
+slider.addEventListener('scroll', () => {
+  const scrollLeft = slider.scrollLeft;
+  const maxScroll = slider.scrollWidth - slider.clientWidth;
+  const scrollPercent = scrollLeft / maxScroll;
+
+  const dots = indicator.children;
+  const activeIndex = Math.round(scrollPercent * (indicatorDots - 1));
+
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].classList.toggle('active', i === activeIndex);
+  }
+});
+</script>
+
+</body>
+</html>
