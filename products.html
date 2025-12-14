@@ -543,9 +543,6 @@ header h1 {
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-/* ===============================
-   GLOBAL STATE
-================================ */
 const grid = document.getElementById("productGrid");
 const gridButtons = document.querySelectorAll(".grid-btn");
 const imgButtons = document.querySelectorAll(".img-btn");
@@ -558,9 +555,20 @@ let currentPage = 1;
 const productsPerPage = 72;
 
 /* ===============================
-   HELPERS
+   🔒 HARD LOCK DEFAULT GRID
+   (THIS FIXES 1-COLUMN BUG)
 ================================ */
-function slugify(str = ""){
+(function lockDefaultGrid() {
+  const isMobile = window.innerWidth <= 768;
+
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+  grid.classList.add(isMobile ? "cols-2" : "cols-4");
+})();
+
+/* ===============================
+   UTIL
+================================ */
+function slugify(str){
   return str
     .toLowerCase()
     .trim()
@@ -570,51 +578,29 @@ function slugify(str = ""){
 }
 
 /* ===============================
-   GRID DEFAULT (FIX)
-================================ */
-function applyDefaultGrid(force = false) {
-  const isMobile = window.innerWidth <= 768;
-  const defaultCols = isMobile ? 2 : 4;
-
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-
-  let cols = defaultCols;
-
-  if (!force) {
-    const activeBtn = Array.from(gridButtons)
-      .find(btn => btn.classList.contains("active") && btn.offsetParent !== null);
-    if (activeBtn?.dataset.cols) {
-      cols = parseInt(activeBtn.dataset.cols);
-    }
-  }
-
-  grid.classList.add(`cols-${cols}`);
-}
-
-/* ===============================
-   PLACEHOLDERS
+   LOADING PLACEHOLDERS
 ================================ */
 function showLoadingPlaceholders(count) {
   grid.innerHTML = "";
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement("div");
-    p.className = "product-card loading";
+  for(let i=0;i<count;i++){
+    const p=document.createElement("div");
+    p.className="product-card loading";
     grid.appendChild(p);
   }
 }
 
+showLoadingPlaceholders(12);
+
 /* ===============================
    LOAD CSV
 ================================ */
-showLoadingPlaceholders(12);
-
-Papa.parse("product_catalog.csv", {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
+Papa.parse("https://hirshtom-web.github.io/ab/product_catalog.csv", {
+  download:true,
+  header:true,
+  skipEmptyLines:true,
   complete: results => {
     allProducts = results.data;
-    renderPage(1);
+    renderPage(currentPage);
   }
 });
 
@@ -624,193 +610,194 @@ Papa.parse("product_catalog.csv", {
 function renderPage(page){
   grid.innerHTML = "";
 
-  const start = (page - 1) * productsPerPage;
-  const end   = start + productsPerPage;
-  const items = allProducts.slice(start, end);
+  const start = (page-1)*productsPerPage;
+  const end = start + productsPerPage;
+  const pageProducts = allProducts.slice(start,end);
 
-  items.forEach(p => {
+  pageProducts.forEach(p=>{
     const card = document.createElement("div");
-    card.className = "product-card";
-    card.dataset.currentImage = 0;
+    card.className="product-card";
+    card.dataset.currentImage=0;
 
-    const slug = slugify(p.name || p.Name || "");
-    card.dataset.id = slug;
+    const productSlug = slugify(p.name || p.Name || "");
+    card.dataset.id = productSlug;
 
-    const images = (p.productImageUrl || "")
+    /* --- Images --- */
+    const images=(p.productImageUrl||"")
       .split(";")
-      .map(i => i.trim())
+      .map(u=>u.trim())
       .filter(Boolean);
 
-    card.dataset.images = JSON.stringify(images);
+    card.dataset.images=JSON.stringify(images);
 
-    /* IMAGE WRAPPER */
-    const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";
+    const wrapper=document.createElement("div");
+    wrapper.className="img-wrapper";
 
-    const img = document.createElement("img");
-    img.loading = "lazy";
+    const img=document.createElement("img");
+    img.loading="lazy";
     img.src = images[0]
-      ? (images[0].includes("http") ? images[0] : "https://static.wixstatic.com/media/" + images[0])
+      ? (images[0].includes("http")
+          ? images[0]
+          : "https://static.wixstatic.com/media/"+images[0])
       : "";
     wrapper.appendChild(img);
 
-    /* IMAGE ARROWS */
-    if (images.length > 1) {
-      ["left","right"].forEach(dir => {
-        const a = document.createElement("div");
-        a.className = `slider-arrow ${dir}`;
-        a.innerHTML = dir === "left" ? "&#10094;" : "&#10095;";
-        a.onclick = e => {
-          e.preventDefault();
-          e.stopPropagation();
-          switchImage(card, dir === "left" ? -1 : 1);
+    /* --- Arrows --- */
+    if(images.length>1){
+      ["left","right"].forEach(dir=>{
+        const a=document.createElement("div");
+        a.className=`slider-arrow ${dir}`;
+        a.innerHTML=dir==="left"?"&#10094;":"&#10095;";
+        a.onclick=e=>{
+          e.preventDefault();e.stopPropagation();
+          switchImage(card,dir==="left"?-1:1);
         };
         wrapper.appendChild(a);
       });
     }
 
-    /* PLUS OVERLAY */
-    const plus = document.createElement("div");
-    plus.className = "plus-overlay";
-    plus.innerText = "+";
+    /* --- Plus --- */
+    const plus=document.createElement("div");
+    plus.className="plus-overlay";
+    plus.innerText="+";
     wrapper.appendChild(plus);
 
-    /* TOUCH SWIPE */
-    let startX = 0;
-    wrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-    wrapper.addEventListener("touchend", e => {
-      const diff = e.changedTouches[0].clientX - startX;
-      if (diff > 30) switchImage(card, -1);
-      if (diff < -30) switchImage(card, 1);
+    /* --- Swipe --- */
+    let startX=0;
+    wrapper.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+    wrapper.addEventListener("touchend",e=>{
+      const dx=e.changedTouches[0].clientX-startX;
+      if(dx>30) switchImage(card,-1);
+      if(dx<-30) switchImage(card,1);
     });
 
     card.appendChild(wrapper);
 
-    /* INFO */
-    const info = document.createElement("div");
-    info.className = "product-info";
+    /* --- Info --- */
+    const info=document.createElement("div");
+    info.className="product-info";
 
-    const h3 = document.createElement("h3");
-    h3.innerText = p.name || p.Name || "Untitled";
+    const h3=document.createElement("h3");
+    h3.innerText=p.name||p.Name||"Unnamed product";
     info.appendChild(h3);
 
-    const price = document.createElement("div");
-    price.className = "price";
-    price.innerText = p.price ? `$${p.price}` : "$1";
+    const price=document.createElement("div");
+    price.className="price";
+    price.innerText=p.price?.trim()?`$${p.price}`:"$1";
     info.appendChild(price);
 
     card.appendChild(info);
 
-    /* RIBBON */
-    if (p.ribbon) {
-      const r = document.createElement("div");
-      r.className = "top-label";
-      r.innerText = p.ribbon;
+    /* --- Ribbon --- */
+    if(p.ribbon){
+      const r=document.createElement("div");
+      r.className="top-label";
+      r.innerText=p.ribbon;
       card.appendChild(r);
     }
 
-    /* BUBBLES */
-    const bubbleVals = ["category","color"].map(k => p[k]).filter(Boolean);
-    if (bubbleVals.length) {
-      const bWrap = document.createElement("div");
-      bWrap.className = "top-bubbles";
-      bubbleVals.forEach(v => {
-        const b = document.createElement("div");
-        b.innerText = v;
-        bWrap.appendChild(b);
+    /* --- Bubbles --- */
+    const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
+    if(bubbles.length){
+      const b=document.createElement("div");
+      b.className="top-bubbles";
+      bubbles.forEach(t=>{
+        const d=document.createElement("div");
+        d.innerText=t;
+        b.appendChild(d);
       });
-      card.appendChild(bWrap);
+      card.appendChild(b);
     }
 
-    /* LINK */
-    const link = document.createElement("a");
-    link.href = slug ? `product-page.html?id=${slug}` : "#";
+    /* --- Link --- */
+    const link=document.createElement("a");
+    link.href=productSlug?`product-page.html?id=${productSlug}`:"#";
     link.appendChild(card);
+
     grid.appendChild(link);
   });
 
   insertBanners();
 
-  currentPage = page;
-  pageNumber.innerText = page;
-  prevBtn.disabled = page === 1;
-  nextBtn.disabled = end >= allProducts.length;
+  pageNumber.innerText=currentPage;
+  prevBtn.disabled=currentPage===1;
+  nextBtn.disabled=end>=allProducts.length;
 
-  applyDefaultGrid(true); // 🔒 FORCE correct default
+  applyDefaultGrid();
 }
 
 /* ===============================
    IMAGE SWITCH
 ================================ */
-function switchImage(card, dir){
-  const images = JSON.parse(card.dataset.images || "[]");
-  let idx = (+card.dataset.currentImage || 0) + dir;
-  if (idx < 0) idx = images.length - 1;
-  if (idx >= images.length) idx = 0;
-  card.dataset.currentImage = idx;
+function switchImage(card,dir){
+  const images=JSON.parse(card.dataset.images||"[]");
+  let i=parseInt(card.dataset.currentImage)+dir;
+  if(i<0)i=images.length-1;
+  if(i>=images.length)i=0;
+  card.dataset.currentImage=i;
 
-  const img = card.querySelector("img");
-  img.src = images[idx].includes("http")
-    ? images[idx]
-    : "https://static.wixstatic.com/media/" + images[idx];
+  const img=card.querySelector("img");
+  img.src=images[i].includes("http")
+    ? images[i]
+    : "https://static.wixstatic.com/media/"+images[i];
 }
 
 /* ===============================
-   GRID BUTTONS
+   GRID CONTROL (SAFE)
 ================================ */
-gridButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    gridButtons.forEach(b => b.classList.remove("active"));
+function applyDefaultGrid(){
+  const isMobile=window.innerWidth<=768;
+  const defaultCols=isMobile?2:4;
+
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+
+  const activeBtn=[...gridButtons].find(b=>b.classList.contains("active")&&b.offsetParent!==null);
+  const cols=activeBtn?.dataset.cols||defaultCols;
+
+  grid.classList.add(`cols-${cols}`);
+}
+
+/* ===============================
+   CONTROLS
+================================ */
+gridButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    gridButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     applyDefaultGrid();
   });
 });
 
-/* ===============================
-   IMAGE TYPE BUTTONS
-================================ */
-imgButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    imgButtons.forEach(b => b.classList.remove("active"));
+imgButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    imgButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-
-    document.querySelectorAll(".product-card").forEach(card => {
-      const images = JSON.parse(card.dataset.images || "[]");
-      const idx = Math.min(+btn.dataset.index, images.length - 1);
-      card.dataset.currentImage = idx;
-      const img = card.querySelector("img");
-      img.src = images[idx].includes("http")
-        ? images[idx]
-        : "https://static.wixstatic.com/media/" + images[idx];
-    });
   });
 });
 
 /* ===============================
    PAGINATION
 ================================ */
-prevBtn.onclick = () => currentPage > 1 && renderPage(currentPage - 1);
-nextBtn.onclick = () => currentPage * productsPerPage < allProducts.length && renderPage(currentPage + 1);
+prevBtn.onclick=()=>{ if(currentPage>1){currentPage--;renderPage(currentPage);} };
+nextBtn.onclick=()=>{ if(currentPage*productsPerPage<allProducts.length){currentPage++;renderPage(currentPage);} };
 
 /* ===============================
    BANNERS
 ================================ */
 function insertBanners(){
-  grid.querySelectorAll(".banner-card").forEach(b => b.remove());
-  const cards = [...grid.querySelectorAll(".product-card")];
-  for (let i = 8; i < cards.length; i += 9) {
-    const b = document.createElement("div");
-    b.className = "banner-card";
-    b.innerHTML = "<span>✨ New Collection Drop!</span>";
-    grid.insertBefore(b, cards[i]);
+  grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
+  const cards=[...grid.querySelectorAll(".product-card")];
+  for(let i=8;i<cards.length;i+=9){
+    const b=document.createElement("div");
+    b.className="banner-card";
+    b.innerHTML="<span>✨ New Collection Drop!</span>";
+    grid.insertBefore(b,cards[i]);
   }
 }
 
-/* ===============================
-   RESIZE FIX
-================================ */
-window.addEventListener("resize", () => applyDefaultGrid(true));
+window.addEventListener("resize",applyDefaultGrid);
 </script>
+
 
 
 
