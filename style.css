@@ -343,10 +343,11 @@ Section 1 Standalone
     height: 200px;
   }
   .section-standalone {
-    padding: 50px 20px;
+    padding: 30px 20px;
     
   .section-standalone h2 {
-  font-weight: 500;
-  font-size: 18px;
+   font-weight: 500;
+   font-size: 15px;
+   margin-bottom: 30px;
   }
 }
