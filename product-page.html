@@ -343,19 +343,26 @@ if(!productId){
       });
 
       // -------- RELATED PRODUCTS --------
-      const related = res.data.filter(p => slugify(p.name || "") !== productId).slice(0,4);
-      relatedGrid.innerHTML="";
-      related.forEach(r=>{
-        const card = document.createElement("div"); card.className="related-card";
-        const img = document.createElement("img"); 
-        img.src = (r.productImageUrl||"").split(";")[0]; 
-        if(!img.src.includes("http")) img.src="https://static.wixstatic.com/media/"+img.src;
-        const h4 = document.createElement("h4"); h4.innerText=r.name;
-        const pEl = document.createElement("div"); pEl.className="price"; pEl.innerText=r.price?"$"+r.price:"$1";
-        card.appendChild(img); card.appendChild(h4); card.appendChild(pEl);
-        card.onclick = () => location.href=`product-page.html?id=${slugify(r.name||"")}`;
-        relatedGrid.appendChild(card);
-      });
+const related = res.data.filter(p => slugify(p.name || p.Name || "") !== productId).slice(0,4);
+relatedGrid.innerHTML = "";
+related.forEach(r => {
+  const card = document.createElement("div"); card.className="related-card";
+
+  // Image with fallback
+  let imgSrc = (r.productImageUrl || r.ImageURL || "").split(";")[0];
+  if(imgSrc && !imgSrc.includes("http")) imgSrc = "https://static.wixstatic.com/media/" + imgSrc;
+  const img = document.createElement("img");
+  img.src = imgSrc || "https://via.placeholder.com/300";
+
+  const h4 = document.createElement("h4"); h4.innerText = r.name || r.Name || "Unnamed";
+  const pEl = document.createElement("div"); pEl.className="price"; pEl.innerText = r.price ? "$" + r.price : "$1";
+
+  card.appendChild(img); card.appendChild(h4); card.appendChild(pEl);
+  card.onclick = () => location.href=`product-page.html?id=${slugify(r.name || r.Name || "")}`;
+
+  relatedGrid.appendChild(card);
+});
+
 
       // -------- ADD TO CART --------
       addToCartBtn.onclick = () => {
