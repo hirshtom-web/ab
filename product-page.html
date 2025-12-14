@@ -271,6 +271,7 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 </div>
 
 <div id="testimonials-placeholder"></div>
+  <div id="artist_card-placeholder"></div>
 
   
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -282,6 +283,15 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
       document.getElementById("testimonials-placeholder").innerHTML = html;
     })
     .catch(err => console.error("Failed to load testimonials:", err));
+</script>
+
+   <script>
+  fetch("artist_card.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("artist_card-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Failed to load artist_card:", err));
 </script>
 
 <script>
