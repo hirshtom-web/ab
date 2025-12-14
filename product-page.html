@@ -5,7 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Product</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+  <style>
+
+/* ---------- LAYOUT WRAPPER ---------- */
+.wrapper {
+  max-width: 1200px;
+  margin: 35px auto;
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+/* LEFT SIDE = ACCORDION */
+.accordion {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* RIGHT SIDE = MEDIA BOX */
+.media-box {
+  width: 40%;
+  background: #F7F5ED;
+  border: 1px solid #f0ede4;
+  border-radius: 14px;
+  padding: 12px;
+  display: block;
+}
+
+.media-box video,
+.media-box img {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* ---------------- ACCORDION ---------------- */
+
+.accordion-item {
+  background: #F7F5ED;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: 0.3s ease;
+  border: 1px solid #f0ede4;
+}
+
+.accordion-header {
+  width: 100%;
+  height: 60px;                /* fixed tab height */
+  padding: 0 22px;             /* remove top/bottom padding */
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  color: #111;
+  display: flex;
+  align-items: center;         /* vertical center */
+  justify-content: space-between;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.accordion-header h2,
+.accordion-header span,
+.accordion-header p {
+  margin: 0;                   /* remove default top/bottom margin */
+  line-height: 1.2;            /* optional: adjust spacing */
+}
+
+
+.accordion-item.active .icon {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 22px;
+  line-height: 1.5;
+  font-size: 13px;
+  color: #444;
+  transition: max-height 0.35s ease;
+}
+
+.accordion-item.active .accordion-content {
+  padding: 12px 22px 20px;
+}
+
+@media (max-width: 900px) {
+
+  /* Accordion tabs */
+  .accordion-header {
+    height: 50px;               /* fixed mobile tab height */
+    padding: 0 16px;            /* horizontal padding only */
+    font-size: 13px;            /* smaller header text */
+    display: flex;
+    align-items: center;        /* vertically center text */
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+
+  .accordion-header h2,
+  .accordion-header span,
+  .accordion-header p {
+    margin: 0;                  /* remove default margins */
+    line-height: 1.2;           /* tight line spacing */
+    font-size: 13px;
+  }
+
+  /* Accordion content */
+  .accordion-content {
+    font-size: 12px;            /* smaller text */
+    line-height: 1.4;
+    padding: 6px 16px 10px;     /* reduced padding for minimal gap */
+    margin-top: 0;               /* remove extra top spacing */
+  }
+
+  /* Wrapper adjustments for mobile */
+  .wrapper {
+    flex-direction: column;
+    max-width: 90%;
+    margin: 30px auto;
+    gap: 20px;                   /* spacing between accordion and media box */
+  }
+
+  .accordion {
+    width: 100%;
+  }
+
+  .media-box {
+    width: 100%;
+    margin-top: 12px;
+    padding: 0;
+  }
+
+}
+
 *{box-sizing:border-box}
 body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 .container{max-width:1200px;margin:0 auto;padding:24px;}
@@ -76,6 +216,63 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
   </div>
 </div>
 
+<div class="wrapper">
+
+  <!-- LEFT SIDE ACCORDION -->
+  <div class="accordion">
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        High-Resolution Digital Art Prints
+        <span class="icon">+</span>
+      </button>
+      <div class="accordion-content">
+        <p>You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing, so you can print them in any size at home or through a local or online printing service. Perfect for framing, gifts, or decorating your space.</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        Instant Download Via Email
+        <span class="icon">+</span>
+      </button>
+      <div class="accordion-content">
+        <p>Your files will be sent straight to your email after purchase for quick and easy access.</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        Easy To Print & Frame
+        <span class="icon">+</span>
+      </button>
+      <div class="accordion-content">
+        <p>Print effortlessly at home, online, or through a professional print shop. Once printed, your design is ready to frame and hang, instantly adding beauty to your space.</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        Usage License
+        <span class="icon">+</span>
+      </button>
+      <div class="accordion-content">
+        <p>For personal use only — perfect for home décor or thoughtful gifting.<br>For commercial licensing requests, contact us at info@artebarte.com.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE MEDIA BOX -->
+  <div class="media-box">
+    <video autoplay muted loop playsinline id="randomMedia"></video>
+  </div>
+
+</div>
+
+
+
+  
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 // --- Utilities ---
@@ -163,6 +360,43 @@ if(!productId){
 
 // --- Back ---
 document.getElementById("backBtn").onclick = e => { e.preventDefault(); history.length>1 ? history.back() : location.href="index.html"; };
+
+  <script>
+/* -------- ACCORDION LOGIC -------- */
+const accordionItems = document.querySelectorAll('.accordion-item');
+
+accordionItems.forEach(item => {
+  const header = item.querySelector('.accordion-header');
+
+  header.addEventListener('click', () => {
+
+    accordionItems.forEach(i => {
+      if (i !== item) i.classList.remove('active');
+      if (i !== item) i.querySelector('.accordion-content').style.maxHeight = null;
+    });
+
+    item.classList.toggle('active');
+
+    const content = item.querySelector('.accordion-content');
+    if (item.classList.contains('active')) {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+      content.style.maxHeight = null;
+    }
+  });
+});
+
+
+/* -------- RANDOM MEDIA (VIDEOS + IMAGES) -------- */
+const mediaList = [
+  "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4",
+  "https://video.wixstatic.com/video/1799ca_4a4a7105ce284ce5928b811120fef2fc/1080p/mp4/file.mp4",
+  "https://video.wixstatic.com/video/1799ca_9ac7f684c40e4b1db1cb7d8f644c1d77/1080p/mp4/file.mp4"
+];
+
+const selected = mediaList[Math.floor(Math.random() * mediaList.length)];
+
+document.getElementById("randomMedia").src = selected;
 </script>
 </body>
 </html>
