@@ -274,11 +274,17 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 
   
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script>
-// --- Utilities ---
-function slugify(str){ return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
 
-// --- Elements ---
+<script>
+// ---------------- UTILITIES ----------------
+function slugify(str){
+  return str.toLowerCase().trim()
+    .replace(/&/g,'and')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+}
+
+// ---------------- ELEMENTS ----------------
 const titleEl = document.getElementById("title");
 const priceEl = document.getElementById("price");
 const oldPriceEl = document.getElementById("oldPrice");
@@ -290,9 +296,8 @@ const relatedGrid = document.getElementById("relatedGrid");
 const addToCartBtn = document.getElementById("addToCart");
 const licenseInputs = document.querySelectorAll('input[name="license"]');
 
-// --- Get ID ---
+// ---------------- GET PRODUCT ID ----------------
 const productId = new URLSearchParams(location.search).get("id");
-
 if(!productId){
   titleEl.innerText = "Product not found";
 } else {
@@ -303,11 +308,11 @@ if(!productId){
     skipEmptyLines:true,
     complete: res => {
 
-      // --- Find product ---
+      // -------- FIND PRODUCT --------
       const product = res.data.find(p => slugify(p.name || "") === productId);
       if(!product){ titleEl.innerText = "Product not found"; return; }
 
-      // --- Fill content ---
+      // -------- FILL PRODUCT INFO --------
       titleEl.innerText = product.name;
       priceEl.innerText = product.price ? "$" + product.price : "";
       if(product.discountValue && product.discountMode === "PERCENT"){
@@ -318,8 +323,10 @@ if(!productId){
       if(product.ribbon){ ribbonEl.style.display = "inline-block"; ribbonEl.innerText = product.ribbon; }
       descEl.innerHTML = product.description || "";
 
-      // --- Images ---
-      const images = (product.productImageUrl || "").split(";").map(u=>u.trim()).filter(Boolean).map(u=>u.includes("http")?u:"https://static.wixstatic.com/media/"+u);
+      // -------- IMAGES --------
+      const images = (product.productImageUrl || "")
+        .split(";").map(u=>u.trim()).filter(Boolean)
+        .map(u=>u.includes("http") ? u : "https://static.wixstatic.com/media/"+u);
       if(images.length) mainImage.src = images[0];
       thumbsEl.innerHTML = "";
       images.forEach((src,i)=>{
@@ -335,12 +342,14 @@ if(!productId){
         thumbsEl.appendChild(t);
       });
 
-      // --- Related products ---
+      // -------- RELATED PRODUCTS --------
       const related = res.data.filter(p => slugify(p.name || "") !== productId).slice(0,4);
       relatedGrid.innerHTML="";
       related.forEach(r=>{
         const card = document.createElement("div"); card.className="related-card";
-        const img = document.createElement("img"); img.src=(r.productImageUrl||"").split(";")[0]; if(!img.src.includes("http")) img.src="https://static.wixstatic.com/media/"+img.src;
+        const img = document.createElement("img"); 
+        img.src = (r.productImageUrl||"").split(";")[0]; 
+        if(!img.src.includes("http")) img.src="https://static.wixstatic.com/media/"+img.src;
         const h4 = document.createElement("h4"); h4.innerText=r.name;
         const pEl = document.createElement("div"); pEl.className="price"; pEl.innerText=r.price?"$"+r.price:"$1";
         card.appendChild(img); card.appendChild(h4); card.appendChild(pEl);
@@ -348,55 +357,52 @@ if(!productId){
         relatedGrid.appendChild(card);
       });
 
-      // --- Add to Cart ---
+      // -------- ADD TO CART --------
       addToCartBtn.onclick = () => {
         const selectedLicense = document.querySelector('input[name="license"]:checked').value;
         alert(`Added ${product.name} (${selectedLicense}) to cart!`);
-        // Here you could integrate with real cart logic
+        // Real cart logic can go here
       };
     }
   });
 }
 
-// --- Back ---
-document.getElementById("backBtn").onclick = e => { e.preventDefault(); history.length>1 ? history.back() : location.href="index.html"; };
+// ---------------- BACK BUTTON ----------------
+document.getElementById("backBtn").onclick = e => {
+  e.preventDefault(); 
+  history.length>1 ? history.back() : location.href="index.html";
+};
 
-  <script>
-/* -------- ACCORDION LOGIC -------- */
+// ---------------- ACCORDION LOGIC ----------------
 const accordionItems = document.querySelectorAll('.accordion-item');
-
 accordionItems.forEach(item => {
   const header = item.querySelector('.accordion-header');
-
   header.addEventListener('click', () => {
 
     accordionItems.forEach(i => {
-      if (i !== item) i.classList.remove('active');
-      if (i !== item) i.querySelector('.accordion-content').style.maxHeight = null;
+      if(i !== item){
+        i.classList.remove('active');
+        i.querySelector('.accordion-content').style.maxHeight = null;
+      }
     });
 
     item.classList.toggle('active');
-
     const content = item.querySelector('.accordion-content');
-    if (item.classList.contains('active')) {
-      content.style.maxHeight = content.scrollHeight + "px";
-    } else {
-      content.style.maxHeight = null;
-    }
+    content.style.maxHeight = item.classList.contains('active')
+      ? content.scrollHeight + "px"
+      : null;
   });
 });
 
-
-/* -------- RANDOM MEDIA (VIDEOS + IMAGES) -------- */
+// ---------------- RANDOM MEDIA ----------------
 const mediaList = [
   "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4",
   "https://video.wixstatic.com/video/1799ca_4a4a7105ce284ce5928b811120fef2fc/1080p/mp4/file.mp4",
   "https://video.wixstatic.com/video/1799ca_9ac7f684c40e4b1db1cb7d8f644c1d77/1080p/mp4/file.mp4"
 ];
 
-const selected = mediaList[Math.floor(Math.random() * mediaList.length)];
-
-document.getElementById("randomMedia").src = selected;
+document.getElementById("randomMedia").src = mediaList[Math.floor(Math.random() * mediaList.length)];
 </script>
+
 </body>
 </html>
