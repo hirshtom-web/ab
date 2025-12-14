@@ -287,29 +287,6 @@ input, textarea, select { font-size:16px; }
 Section 1 Standalone
 ================================ */
 
-.section-standalone {
-  padding: 30px 20px;
-  text-align: center;
-  background: #f9f6f0;
-  border-radius: 12px;
-  overflow: hidden;
-  max-width: 100%;
-  margin: 0 auto;
-  font-family: 'Poppins', sans-serif;
-  color: #111111;
-}
-
-.section-standalone h2 {
-  font-weight: 500;
-  font-size: 24px;
-  margin-bottom: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-
 /* --- Slider --- */
 .slider-container {
   display: flex;
@@ -325,50 +302,75 @@ Section 1 Standalone
 
 .slider-item {
   flex: 0 0 300px;
-  height: 400px;
   background: #ffffff;
   border-radius: 12px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column; /* stack image and info */
+  align-items: stretch;   /* image fills width */
+  justify-content: flex-start;
   font-weight: 500;
   font-size: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  padding: 10px;
+  overflow: hidden;
+}
+
+.slider-item img {
+  width: 100%;
+  height: auto; /* keeps aspect ratio */
+  object-fit: cover;
+  display: block;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.slider-item .info {
+  padding: 12px;
+  text-align: center;
+}
+
+.slider-item .info h3 {
+  font-size: 14px;
+  margin: 0 0 6px 0;
+}
+
+.slider-item .info .price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
 }
 
 /* --- Responsive --- */
 @media (max-width: 900px) {
   .slider-item {
     flex: 0 0 150px;
-    height: 200px;
   }
-  .section-standalone {
-    padding: 30px 20px;
-    
-  .section-standalone h2 {
-   font-weight: 500;
-   font-size: 15px;
-   margin-bottom: 30px;
+
+  .slider-item .info h3 {
+    font-size: 12px;
+  }
+
+  .slider-item .info .price {
+    font-size: 12px;
   }
 }
 
-.slider-item img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 10px;
+/* Bubble container */
+.slider-item .bubbles {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
 }
 
-.slider-item h3 {
-  font-size: 14px;
-  margin: 0;
+.slider-item .bubbles div {
+  background: rgba(255,255,255,0.85);
+  color: #111;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  backdrop-filter: blur(4px);
 }
-
-.slider-item .price {
-  font-size: 13px;
-  font-weight: 600;
-  color: #333;
-}
-   
