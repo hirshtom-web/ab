@@ -283,3 +283,70 @@ input, textarea, select { font-size:16px; }
   .ab-hero-title { width: 260px; }
 }
 
+/* ===============================
+Section 1 Standalone
+================================ */
+
+.section-standalone {
+  padding: 30px 20px;
+  text-align: center;
+  background: #f9f6f0;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  color: #111111;
+}
+
+.section-standalone h2 {
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+/* --- Slider --- */
+.slider-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none; /* Firefox */
+}
+
+.slider-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.slider-item {
+  flex: 0 0 300px;
+  height: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .slider-item {
+    flex: 0 0 150px;
+    height: 200px;
+  }
+  .section-standalone {
+    padding: 50px 20px;
+    
+  .section-standalone h2 {
+  font-weight: 500;
+  font-size: 18px;
+  }
+}
