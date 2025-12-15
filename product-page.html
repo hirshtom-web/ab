@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
   <style>
-
+*{box-sizing:border-box}
+body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 /* ---------- LAYOUT WRAPPER ---------- */
 .wrapper {
   max-width: 1200px;
@@ -146,8 +147,7 @@
 
 }
 
-*{box-sizing:border-box}
-body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
+
 .container{max-width:1200px;margin:0 auto;padding:24px;}
 .back-link{display:inline-block;margin-bottom:20px;text-decoration:none;color:#111;font-weight:500;}
 .product-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
@@ -168,7 +168,10 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 .license-options{display:flex;gap:10px;margin-top:10px;}
 .license-options label{display:flex;align-items:center;gap:6px;cursor:pointer;}
 .license-options input[type="radio"]{cursor:pointer;}
-.related-products{margin-top:50px;}
+
+    /* ---------- Related Section ---------- */
+  
+    .related-products{margin-top:50px;}
 .related-products h2{font-size:24px;margin-bottom:20px;}
 .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;}
 .related-card{border:1px solid #eee;border-radius:12px;padding:12px;text-align:center;transition:transform 0.2s;}
@@ -176,6 +179,8 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 .related-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;}
 .related-card h4{margin:10px 0 4px;font-size:16px;}
 .related-card .price{font-size:14px;font-weight:600;color:#111;}
+
+    
 </style>
 </head>
 <body>
