@@ -304,107 +304,165 @@ section h2 { font-size: 28px; margin-bottom: 20px; text-align: center; }
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-// ---------------- ELEMENTS ----------------
-const titleEl = document.getElementById("title");
-const priceEl = document.getElementById("price");
-const oldPriceEl = document.getElementById("oldPrice");
-const descEl = document.getElementById("description");
-const mainImage = document.getElementById("mainImage");
-const thumbsEl = document.getElementById("thumbnails");
-const relatedGrid = document.getElementById("relatedGrid");
-const addToCartBtn = document.getElementById("addToCart");
+document.addEventListener("DOMContentLoaded", () => {
+  // ---------------- ELEMENTS ----------------
+  const titleEl = document.getElementById("title");
+  const priceEl = document.getElementById("price");
+  const oldPriceEl = document.getElementById("oldPrice");
+  const descEl = document.getElementById("description");
+  const mainImage = document.getElementById("mainImage");
+  const thumbsEl = document.getElementById("thumbnails");
+  const relatedGrid = document.getElementById("relatedGrid");
+  const addToCartBtn = document.getElementById("addToCart");
 
-// ---------------- GET PRODUCT ID ----------------
-const productId = new URLSearchParams(location.search).get("id");
+  // ---------------- GET PRODUCT ID ----------------
+  const productId = new URLSearchParams(location.search).get("id");
 
-// ---------------- LOAD CSV ----------------
-fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
-  .then(r => r.text())
-  .then(csvText => {
-    Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function(res) {
-        const allProducts = res.data.map(p => ({
-          id: (p.productId || "").trim(),
-          name: (p.name || "").trim(),
-          price: (p.price || "").trim(),
-          discount: (p.discountValue || "").trim(),
-          description: p.description || "",
-          images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
-        }));
+  // ---------------- UTILITIES ----------------
+  function slugify(str){
+    return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
 
-        // Find product by ID OR by name
-        const product = allProducts.find(p => p.id === productId || p.name.toLowerCase() === productId?.toLowerCase());
-        if(!product) { console.warn("Product not found!"); return; }
+  function switchMainImage(imgEl, src, thumbsContainer) {
+    imgEl.src = src;
+    thumbsContainer.querySelectorAll("img").forEach(t => t.classList.remove("active"));
+    thumbsContainer.querySelector(`img[src='${src}']`)?.classList.add("active");
+  }
 
-        // --- TEXT ---
-        titleEl.innerText = product.name;
-        priceEl.innerText = "$" + product.price;
-        oldPriceEl.innerText = product.discount ? "$" + product.discount : "";
-        descEl.innerHTML = product.description;
+  function createThumbnail(src, mainImgEl, thumbsContainer){
+    const t = document.createElement("img");
+    t.src = src;
+    t.onclick = () => switchMainImage(mainImgEl, src, thumbsContainer);
+    return t;
+  }
 
-        // --- IMAGES ---
-        const images = product.images.map(src => src.includes("http") ? src : "https://static.wixstatic.com/media/" + src);
-        if(images.length) mainImage.src = images[0];
+  // ---------------- LOAD CSV ----------------
+  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(res) {
+      const allProducts = res.data.map(p => ({
+        id: (p.productId || p.ProductId || "").trim(),
+        name: (p.name || p.Name || "").trim(),
+        price: (p.price || p.Price || "$1").trim(),
+        discount: (p.discountValue || "").trim(),
+        ribbon: (p.ribbon || p.Ribbon || "").trim(),
+        category: (p.category || p.Category || "").trim(),
+        color: (p.color || p.Color || "").trim(),
+        description: p.description || "",
+        images: (p.productImageUrl || p.ProductImageUrl || "").split(";").map(u=>u.trim()).filter(Boolean)
+      }));
 
-        thumbsEl.innerHTML = "";
-        images.forEach((src,i) => {
-          const t = document.createElement("img");
-          t.src = src;
-          if(i===0) t.classList.add("active");
-          t.onclick = () => {
-            mainImage.src = src;
-            thumbsEl.querySelectorAll("img").forEach(img=>img.classList.remove("active"));
-            t.classList.add("active");
-          };
-          thumbsEl.appendChild(t);
+      // Find product
+      const product = allProducts.find(p => p.id === productId || slugify(p.name) === productId?.toLowerCase());
+      if(!product){ console.warn("Product not found!"); return; }
+
+      // --- TEXT ---
+      titleEl.innerText = product.name;
+      priceEl.innerText = "$" + product.price;
+      oldPriceEl.innerText = product.discount ? "$" + product.discount : "";
+      descEl.innerHTML = product.description;
+
+      // --- MAIN IMAGE & THUMBNAILS ---
+      const images = product.images.map(src => src.includes("http") ? src : "https://static.wixstatic.com/media/" + src);
+      if(images.length) mainImage.src = images[0];
+
+      thumbsEl.innerHTML = "";
+      images.forEach(src => thumbsEl.appendChild(createThumbnail(src, mainImage, thumbsEl)));
+
+      // --- IMAGE SLIDER (arrows + swipe) ---
+      let currentImageIndex = 0;
+      function switchImage(dir){
+        if(!images.length) return;
+        currentImageIndex = (currentImageIndex + dir + images.length) % images.length;
+        switchMainImage(mainImage, images[currentImageIndex], thumbsEl);
+      }
+
+      mainImage.parentElement.querySelectorAll(".slider-arrow").forEach(arrow => arrow.remove());
+      if(images.length > 1){
+        ["left","right"].forEach(dir => {
+          const a = document.createElement("div");
+          a.className = `slider-arrow ${dir}`;
+          a.innerHTML = dir==="left"?"&#10094;":"&#10095;";
+          a.onclick = e => { e.preventDefault(); switchImage(dir==="left"?-1:1); };
+          mainImage.parentElement.appendChild(a);
         });
 
-        // --- RELATED ---
-        const related = allProducts.filter(p => p.id !== product.id).slice(0, 10);
-        relatedGrid.innerHTML = "";
-        related.forEach(r => {
-          const card = document.createElement("div");
-          card.className = "related-card";
-          const img = document.createElement("img");
-          img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/" + r.images[0]) : "https://via.placeholder.com/300";
-          const h4 = document.createElement("h4");
-          h4.innerText = r.name;
-          card.appendChild(img);
-          card.appendChild(h4);
-          card.onclick = () => location.href = `product-page.html?id=${r.id}`;
-          relatedGrid.appendChild(card);
+        let startX=0;
+        mainImage.parentElement.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+        mainImage.parentElement.addEventListener("touchend", e => {
+          const dx = e.changedTouches[0].clientX - startX;
+          if(dx>30) switchImage(-1);
+          if(dx<-30) switchImage(1);
         });
-    }});
-  })
-  .catch(err => console.error("CSV load error:", err));
+      }
 
-// ---------------- ADD TO CART ----------------
-addToCartBtn.onclick = () => {
-  const selectedLicense = document.querySelector('input[name="license"]:checked').value;
-  alert(`Added ${titleEl.innerText} (${selectedLicense}) to cart!`);
-};
+      // --- RIBBON & BUBBLES ---
+      if(product.ribbon){
+        const rEl = document.createElement("div");
+        rEl.className="top-label";
+        rEl.innerText = product.ribbon;
+        mainImage.parentElement.appendChild(rEl);
+      }
 
-// ---------------- ACCORDION ----------------
-document.querySelectorAll(".accordion-header").forEach(header => {
-  header.onclick = () => {
-    const item = header.parentElement;
-    item.classList.toggle("active");
-    const content = header.nextElementSibling;
-    content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
+      const bubbles = [product.category, product.color].filter(Boolean);
+      if(bubbles.length){
+        const bEl = document.createElement("div");
+        bEl.className="top-bubbles";
+        bubbles.forEach(t=>{
+          const d = document.createElement("div");
+          d.innerText = t;
+          bEl.appendChild(d);
+        });
+        mainImage.parentElement.appendChild(bEl);
+      }
+
+      // --- RELATED PRODUCTS ---
+      const related = allProducts.filter(p => p.id !== product.id).slice(0, 10);
+      relatedGrid.innerHTML = "";
+      related.forEach(r => {
+        const card = document.createElement("div");
+        card.className = "related-card";
+        const img = document.createElement("img");
+        img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/"+r.images[0]) : "https://via.placeholder.com/300";
+        const h4 = document.createElement("h4");
+        h4.innerText = r.name;
+        card.appendChild(img);
+        card.appendChild(h4);
+        card.onclick = () => location.href = `product-page.html?id=${r.id}`;
+        relatedGrid.appendChild(card);
+      });
+    }
+  });
+
+  // ---------------- ADD TO CART ----------------
+  addToCartBtn.onclick = () => {
+    const selectedLicense = document.querySelector('input[name="license"]:checked')?.value || "default";
+    alert(`Added ${titleEl.innerText} (${selectedLicense}) to cart!`);
   };
+
+  // ---------------- ACCORDION ----------------
+  document.querySelectorAll(".accordion-header").forEach(header => {
+    header.onclick = () => {
+      const item = header.parentElement;
+      item.classList.toggle("active");
+      const content = header.nextElementSibling;
+      content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
+    };
+  });
+
+  // ---------------- RELATED SLIDER ----------------
+  const slider = relatedGrid;
+  document.querySelectorAll(".slider-btn.next").forEach(btn => btn.onclick = () => slider.scrollBy({left:240,behavior:'smooth'}));
+  document.querySelectorAll(".slider-btn.prev").forEach(btn => btn.onclick = () => slider.scrollBy({left:-240,behavior:'smooth'}));
+
+  // ---------------- LOAD EXTERNAL ----------------
+  fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
+  fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
 });
-
-// ---------------- RELATED SLIDER ----------------
-const slider = document.getElementById("relatedGrid");
-document.querySelector(".slider-btn.next").onclick = () => slider.scrollBy({left:240,behavior:'smooth'});
-document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({left:-240,behavior:'smooth'});
-
-// ---------------- LOAD EXTERNAL ----------------
-fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
-fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
 </script>
+
 
 
 
