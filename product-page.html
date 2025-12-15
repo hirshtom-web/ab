@@ -321,9 +321,12 @@ const productId = new URLSearchParams(location.search).get("id");
 fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
   .then(r => r.text())
   .then(csvText => {
-    Papa.parse(csvText, { header: true, skipEmptyLines: true, complete: function(res) {
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function(res) {
         const allProducts = res.data.map(p => ({
-          id: (p.id || "").trim(),
+          id: (p.productId || "").trim(),
           name: (p.name || "").trim(),
           price: (p.price || "").trim(),
           discount: (p.discountValue || "").trim(),
@@ -331,8 +334,8 @@ fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
           images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
         }));
 
-        // Find product by id
-        const product = allProducts.find(p => p.id === productId);
+        // Find product by ID OR by name
+        const product = allProducts.find(p => p.id === productId || p.name.toLowerCase() === productId?.toLowerCase());
         if(!product) { console.warn("Product not found!"); return; }
 
         // --- TEXT ---
