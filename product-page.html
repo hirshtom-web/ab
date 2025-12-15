@@ -189,26 +189,38 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
       <div id="thumbnails" class="thumbnails"></div>
     </div>
 
-    <div class="product-info">
-      <div id="ribbon" class="ribbon" style="display:none"></div>
-      <h1 id="title">Loading...</h1>
-      <div class="price-container">
-        <span id="price" class="price"></span>
-        <span id="oldPrice" class="old-price"></span>
-      </div>
-
-      <div id="description" class="description"></div>
-
-      <div class="cta">
-        <div class="license-options">
-          <label><input type="radio" name="license" value="personal" checked> Personal</label>
-          <label><input type="radio" name="license" value="commercial"> Commercial</label>
-          <label><input type="radio" name="license" value="extended"> Extended</label>
-        </div>
-        <button id="addToCart">Add to Cart</button>
-      </div>
+    <!-- ---------- PRODUCT INFO ---------- -->
+<div class="product-info">
+  <div id="ribbon" class="ribbon" style="display:none"></div>
+  <h1 id="title">Demo Product Title</h1>
+  <div class="price-container">
+    <span id="price" class="price">$19.99</span>
+    <span id="oldPrice" class="old-price">$29.99</span>
+  </div>
+  <div id="category" class="category" style="margin-bottom:10px;">Category: Digital Art</div>
+  <div id="keywords" class="keywords" style="margin-bottom:20px;">Keywords: Art, Poster, Wall Decor</div>
+  <div id="description" class="description">
+    <p><strong>Markdown Demo:</strong> This is a <em>demo product</em> description. It includes <strong>bold</strong>, <em>italic</em>, and <u>underlined</u> text. You can also add lists:</p>
+    <ul>
+      <li>High resolution</li>
+      <li>Easy to download</li>
+      <li>Printable in various sizes</li>
+    </ul>
+  </div>
+  
+  <div class="cta">
+    <div class="license-options-vertical" style="display:flex; flex-direction:column; gap:10px;">
+      <label><input type="radio" name="license" value="personal" checked> Personal</label>
+      <label><input type="radio" name="license" value="commercial"> Commercial</label>
+      <label><input type="radio" name="license" value="extended"> Extended</label>
+    </div>
+    <div style="display:flex; gap:12px; margin-top:12px;">
+      <button id="addToCart">Add to Cart</button>
+      <button id="buyNow" style="background:#ff4500;">Buy Now</button>
     </div>
   </div>
+</div>
+
 
   <div class="related-products">
     <h2>Related Products</h2>
@@ -275,6 +287,18 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 
   
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+// Demo JS for Add to Cart and Buy Now
+document.getElementById("addToCart").onclick = () => {
+  const selectedLicense = document.querySelector('input[name="license"]:checked').value;
+  alert(`Added Demo Product (${selectedLicense}) to cart!`);
+};
+
+document.getElementById("buyNow").onclick = () => {
+  const selectedLicense = document.querySelector('input[name="license"]:checked').value;
+  alert(`Proceeding to checkout for Demo Product (${selectedLicense})`);
+};
+</script>
 
   <script>
   fetch("Testimonials.html")
