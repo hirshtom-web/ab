@@ -709,13 +709,14 @@ function renderPage(page){
       card.appendChild(b);
     }
 
-    /* --- Link --- */
-    const link=document.createElement("a");
-    link.href=productSlug?`product-page.html?id=${productSlug}`:"#";
-    link.appendChild(card);
+  
+/* --- Link --- */
+const link = document.createElement("a");
+link.href = p.productId ? `product-page.html?id=${p.productId}` : "#";
+link.appendChild(card);
 
-    grid.appendChild(link);
-  });
+grid.appendChild(link);
+
 
   insertBanners();
 
