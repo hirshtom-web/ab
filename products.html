@@ -732,18 +732,63 @@ function switchImage(card, delta) {
   const images = JSON.parse(card.dataset.images || "[]");
   if (!images.length) return;
 
-  let current = parseInt(card.dataset.currentImage || 0, 10);
-  current = (current + delta + images.length) % images.length; // wrap around
-  card.dataset.currentImage = current;
+  let index = parseInt(card.dataset.currentImage || 0);
+  index = (index + delta + images.length) % images.length; // wrap around
+  card.dataset.currentImage = index;
 
   const img = card.querySelector("img");
-  if (img) {
-    img.src = images[current].includes("http")
-      ? images[current]
-      : "https://static.wixstatic.com/media/" + images[current];
-  }
+  img.src = images[index].includes("http")
+    ? images[index]
+    : "https://static.wixstatic.com/media/" + images[index];
 }
 
+// Global top buttons (Cover / Lifestyle)
+imgButtons.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    imgButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    document.querySelectorAll(".product-card").forEach(card => {
+      const images = JSON.parse(card.dataset.images || "[]");
+      if (images.length > index) {
+        card.dataset.currentImage = index;
+        const img = card.querySelector("img");
+        img.src = images[index].includes("http")
+          ? images[index]
+          : "https://static.wixstatic.com/media/" + images[index];
+      }
+    });
+  });
+});
+
+/* ===============================
+   SORTING CONTROL
+================================ */
+  
+  const sortBtn = document.querySelector(".control-btn[title='Sort']");
+let sortAscending = true;
+
+sortBtn.addEventListener("click", () => {
+  allProducts.sort((a, b) => {
+    const nameA = (a.name || a.Name || "").toLowerCase();
+    const nameB = (b.name || b.Name || "").toLowerCase();
+    return sortAscending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+  });
+  sortAscending = !sortAscending; // toggle for next click
+  currentPage = 1;
+  renderPage(currentPage);
+});
+
+/* ===============================
+   SHUFFLE CONTROL
+================================ */
+const shuffleBtn = document.querySelector(".control-btn[title='Shuffle']");
+
+shuffleBtn.addEventListener("click", () => {
+  allProducts.sort(() => Math.random() - 0.5);
+  currentPage = 1;
+  renderPage(currentPage);
+});
 
 /* ===============================
    GRID CONTROL
