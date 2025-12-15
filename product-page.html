@@ -174,9 +174,10 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
    RELATED PRODUCTS
 ================================ */
 .related-products {
-  margin: 50px auto 0;      /* center the section horizontally */
-  max-width: 1200px;        /* limits the width on large screens */
-  padding: 0 10px;          /* some horizontal padding on small screens */
+  max-width: 100% !important;
+  margin: 50px 0 0; /* keep vertical spacing */
+  padding: 0 20px;   /* optional horizontal padding */
+  box-sizing: border-box;
 }
 
 .related-products h2 {
@@ -185,12 +186,13 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
   text-align: center;       /* center the heading */
 }
 
+
 .related-grid {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
-  justify-content: center;  /* center grid items if there’s extra space */
+  justify-content: center;
 }
+
 
 .related-card {
   border: 1px solid #eee;
