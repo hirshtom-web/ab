@@ -314,18 +314,10 @@ const thumbsEl = document.getElementById("thumbnails");
 const relatedGrid = document.getElementById("relatedGrid");
 const addToCartBtn = document.getElementById("addToCart");
 
-// ---------------- UTIL ----------------
-function slugify(str){
-  return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-}
-
-function fixImageUrl(src){
-  return src.includes("http") ? src : "https://static.wixstatic.com/media/" + src;
-}
-
-// ---------------- PRODUCT DATA ----------------
+// ---------------- GET PRODUCT ID ----------------
 const productId = new URLSearchParams(location.search).get("id");
 
+// ---------------- LOAD CSV ----------------
 fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
   .then(response => {
     if (!response.ok) throw new Error("CSV file not found or CORS blocked");
@@ -336,30 +328,38 @@ fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
       header: true,
       skipEmptyLines: true,
       complete: function(res) {
-        console.log("CSV Parsed:", res.data);
+        const allProducts = res.data.map(p => ({
+          name: (p.name || "").trim(),
+          productId: (p.productId || "").trim(),
+          price: (p.price || "1").trim(),
+          discountValue: (p.discountValue || "").trim(),
+          description: p.description || "",
+          images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
+        }));
 
-        // MATCH PRODUCT USING SLUG
-        const product = res.data.find(p => slugify(p.name || "") === productId);
-        if(!product) {
+        const product = allProducts.find(p => p.productId === productId || (p.name || "").toLowerCase() === productId);
+        if (!product) {
           console.warn("Product not found in CSV!");
           return;
         }
 
-        // ---------------- TEXT ----------------
+        // --- SET TEXT ---
         titleEl.innerText = product.name;
         priceEl.innerText = "$" + product.price;
         oldPriceEl.innerText = product.discountValue ? "$" + product.discountValue : "";
         descEl.innerHTML = product.description || "";
 
-        // ---------------- IMAGES ----------------
-        const images = (product.productImageUrl||"").split(";").filter(Boolean).map(fixImageUrl);
-        if(images.length) mainImage.src = images[0];
+        // --- IMAGES ---
+        const images = product.images.map(src =>
+          src.includes("http") ? src : "https://static.wixstatic.com/media/" + src
+        );
+        if (images.length) mainImage.src = images[0];
 
         thumbsEl.innerHTML = "";
         images.forEach((src, i) => {
           const t = document.createElement("img");
           t.src = src;
-          if(i === 0) t.classList.add("active");
+          if (i === 0) t.classList.add("active");
           t.onclick = () => {
             mainImage.src = src;
             thumbsEl.querySelectorAll("img").forEach(img => img.classList.remove("active"));
@@ -368,39 +368,41 @@ fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
           thumbsEl.appendChild(t);
         });
 
-        // ---------------- RELATED ITEMS ----------------
-        const related = res.data.filter(p => p.name !== product.name).slice(0, 10);
+        // --- RELATED ITEMS ---
+        const related = allProducts.filter(p => p.productId !== product.productId).slice(0, 10);
         related.forEach(r => {
           const card = document.createElement("div");
           card.className = "related-card";
           const img = document.createElement("img");
-          const rImages = (r.productImageUrl||"").split(";").filter(Boolean).map(fixImageUrl);
-          img.src = rImages[0] || "https://via.placeholder.com/300";
+          const rImage = (r.images[0] || "https://via.placeholder.com/300");
+          img.src = rImage.includes("http") ? rImage : "https://static.wixstatic.com/media/" + rImage;
           const h4 = document.createElement("h4");
           h4.innerText = r.name || "Unnamed";
           card.appendChild(img);
           card.appendChild(h4);
-          card.onclick = () => location.href = `product-page.html?id=${slugify(r.name||"")}`;
+          card.onclick = () => location.href = `product-page.html?id=${r.productId}`;
           relatedGrid.appendChild(card);
         });
       }
     });
   })
-  .catch(err => console.error("CSV load error:", err));
+  .catch(err => {
+    console.error("CSV load error:", err);
+  });
 
 // ---------------- ADD TO CART ----------------
-addToCartBtn.onclick = ()=>{
+addToCartBtn.onclick = () => {
   const selectedLicense = document.querySelector('input[name="license"]:checked').value;
   alert(`Added ${titleEl.innerText} (${selectedLicense}) to cart!`);
 };
 
 // ---------------- ACCORDION ----------------
-document.querySelectorAll(".accordion-header").forEach(header=>{
-  header.onclick = ()=>{
+document.querySelectorAll(".accordion-header").forEach(header => {
+  header.onclick = () => {
     const item = header.parentElement;
     item.classList.toggle("active");
     const content = header.nextElementSibling;
-    if(item.classList.contains("active")) content.style.maxHeight = content.scrollHeight + "px";
+    if (item.classList.contains("active")) content.style.maxHeight = content.scrollHeight + "px";
     else content.style.maxHeight = null;
   };
 });
@@ -411,9 +413,10 @@ document.querySelector(".slider-btn.next").onclick = () => slider.scrollBy({ lef
 document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({ left: -240, behavior: 'smooth' });
 
 // ---------------- LOAD EXTERNAL SECTIONS ----------------
-fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
-fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
+fetch("artist-card.html").then(r => r.text()).then(html => document.getElementById("artist-card-placeholder").innerHTML = html);
+fetch("testimonials.html").then(r => r.text()).then(html => document.getElementById("testimonials-placeholder").innerHTML = html);
 </script>
+
 
 
 </body>
