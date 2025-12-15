@@ -91,12 +91,13 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
   line-height: 1.5;
   font-size: 13px;
   color: #444;
-  transition: max-height 0.35s ease;
+  transition: max-height 0.35s ease, padding 0.35s ease; /* animate padding too */
+}
+.accordion-item.active .accordion-content {
+  padding: 12px 22px 20px; /* only applied when active */
 }
 
-.accordion-item.active .accordion-content {
-  padding: 12px 22px 20px;
-}
+
 
 @media (max-width: 900px) {
 
@@ -487,24 +488,43 @@ document.getElementById("backBtn").onclick = e => {
 
 // ---------------- ACCORDION LOGIC ----------------
 const accordionItems = document.querySelectorAll('.accordion-item');
+
+function updateAccordionHeights() {
+  accordionItems.forEach(item => {
+    const content = item.querySelector('.accordion-content');
+    if (item.classList.contains('active')) {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } else {
+      content.style.maxHeight = null;
+    }
+  });
+}
+
+// Initialize: recalc heights for any pre-active items
+updateAccordionHeights();
+
+// Click logic
 accordionItems.forEach(item => {
   const header = item.querySelector('.accordion-header');
   header.addEventListener('click', () => {
 
+    // Close all other items
     accordionItems.forEach(i => {
-      if(i !== item){
+      if (i !== item) {
         i.classList.remove('active');
-        i.querySelector('.accordion-content').style.maxHeight = null;
       }
     });
 
+    // Toggle clicked item
     item.classList.toggle('active');
-    const content = item.querySelector('.accordion-content');
-    content.style.maxHeight = item.classList.contains('active')
-      ? content.scrollHeight + "px"
-      : null;
+
+    // Recalculate all heights
+    updateAccordionHeights();
   });
 });
+
+// Optional: if you dynamically insert content later (e.g., via JS), 
+// call updateAccordionHeights() after updating the DOM
 
 // ---------------- RANDOM MEDIA ----------------
 const mediaList = [
