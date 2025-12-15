@@ -629,7 +629,12 @@ function renderPage(page){
 
     const img = document.createElement("img");
     img.loading = "lazy";
-    img.src = p.images[currentImageType] || "";
+const firstImage = p.images[currentImageType] || p.images[0] || "";
+img.src = firstImage
+  ? (firstImage.includes("http")
+      ? firstImage
+      : "https://static.wixstatic.com/media/" + firstImage)
+  : "";
     wrapper.appendChild(img);
 
     /* --- Arrows --- */
