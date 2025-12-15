@@ -543,9 +543,6 @@ header h1 {
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-/* ===============================
-   DOM ELEMENTS
-================================ */
 const grid = document.getElementById("productGrid");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
@@ -556,70 +553,54 @@ const imgButtons = document.querySelectorAll(".img-btn");
 let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 72;
-let globalImageIndex = 0; // 0 = main, 1 = lifestyle, etc.
-let sortAscending = true;
+let globalImageIndex = 0; // main=0, lifestyle=1, etc.
 
-/* ===============================
-   LOCK DEFAULT GRID
-================================ */
+/* LOCK DEFAULT GRID */
 (function lockDefaultGrid() {
   const isMobile = window.innerWidth <= 768;
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
   grid.classList.add(isMobile ? "cols-2" : "cols-4");
 })();
 
-/* ===============================
-   UTIL
-================================ */
+/* UTIL */
 function slugify(str){
-  return str
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+  return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
 
-function showLoadingPlaceholders(count) {
-  grid.innerHTML = "";
+function showLoadingPlaceholders(count){
+  grid.innerHTML="";
   for(let i=0;i<count;i++){
     const p=document.createElement("div");
     p.className="product-card loading";
     grid.appendChild(p);
   }
 }
-
 showLoadingPlaceholders(12);
 
-/* ===============================
-   LOAD CSV
-================================ */
+/* LOAD CSV */
 Papa.parse("https://hirshtom-web.github.io/ab/product_catalog.csv", {
   download:true,
   header:true,
   skipEmptyLines:true,
-  complete: results => {
+  complete: results=>{
     allProducts = results.data;
     renderPage(currentPage, globalImageIndex);
   }
 });
 
-/* ===============================
-   RENDER PAGE
-================================ */
-function renderPage(page, imgIndex = 0){
+/* RENDER PAGE */
+function renderPage(page, imgIndex=0){
   grid.innerHTML = "";
 
   const start = (page-1)*productsPerPage;
-  const end = start + productsPerPage;
+  const end = start+productsPerPage;
   const pageProducts = allProducts.slice(start,end);
 
   pageProducts.forEach(p=>{
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className="product-card";
     card.dataset.currentImage = imgIndex;
 
-    // Handle CSV headers
     const name = (p.name || p.Name || "").trim();
     const productId = (p.productId || p.ProductId || "").trim();
     const priceValue = (p.price || p.Price || "").trim();
@@ -631,26 +612,26 @@ function renderPage(page, imgIndex = 0){
     const productSlug = slugify(name);
     card.dataset.id = productSlug;
 
-    /* --- Images --- */
+    /* Images */
     const images = imageUrls.split(";").map(u=>u.trim()).filter(Boolean);
     card.dataset.images = JSON.stringify(images);
 
     const wrapper = document.createElement("div");
-    wrapper.className = "img-wrapper";
+    wrapper.className="img-wrapper";
 
     const img = document.createElement("img");
-    img.loading = "lazy";
-    const indexToUse = Math.min(imgIndex, images.length-1);
-    img.src = images[indexToUse] ? (images[indexToUse].includes("http") ? images[indexToUse] : "https://static.wixstatic.com/media/"+images[indexToUse]) : "";
+    img.loading="lazy";
+    const idxToUse = Math.min(imgIndex, images.length-1);
+    img.src = images[idxToUse] ? (images[idxToUse].includes("http") ? images[idxToUse] : "https://static.wixstatic.com/media/"+images[idxToUse]) : "";
     wrapper.appendChild(img);
 
-    /* --- Arrows --- */
-    if(images.length > 1){
+    /* Arrows */
+    if(images.length>1){
       ["left","right"].forEach(dir=>{
         const a = document.createElement("div");
-        a.className = `slider-arrow ${dir}`;
+        a.className=`slider-arrow ${dir}`;
         a.innerHTML = dir==="left" ? "&#10094;" : "&#10095;";
-        a.onclick = e => {
+        a.onclick = e=>{
           e.preventDefault(); e.stopPropagation();
           switchImage(card, dir==="left" ? -1 : 1);
         };
@@ -658,48 +639,51 @@ function renderPage(page, imgIndex = 0){
       });
     }
 
-    /* --- Plus Overlay --- */
+    /* Plus overlay */
     const plus = document.createElement("div");
-    plus.className = "plus-overlay";
-    plus.innerText = "+";
+    plus.className="plus-overlay";
+    plus.innerText="+";
     wrapper.appendChild(plus);
 
-    /* --- Swipe --- */
-    let startX = 0;
-    wrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-    wrapper.addEventListener("touchend", e => {
-      const dx = e.changedTouches[0].clientX - startX;
+    /* Swipe */
+    let startX=0;
+    wrapper.addEventListener("touchstart", e=>startX=e.touches[0].clientX);
+    wrapper.addEventListener("touchend", e=>{
+      const dx=e.changedTouches[0].clientX-startX;
       if(dx>30) switchImage(card,-1);
       if(dx<-30) switchImage(card,1);
     });
 
     card.appendChild(wrapper);
 
-    /* --- Info --- */
+    /* Info */
     const info = document.createElement("div");
-    info.className = "product-info";
+    info.className="product-info";
+
     const h3 = document.createElement("h3");
     h3.innerText = name || "Unnamed product";
     info.appendChild(h3);
+
     const priceDiv = document.createElement("div");
-    priceDiv.className = "price";
+    priceDiv.className="price";
     priceDiv.innerText = priceValue ? `$${priceValue}` : "$1";
     info.appendChild(priceDiv);
+
     card.appendChild(info);
 
-    /* --- Ribbon --- */
+    /* Ribbon */
     if(ribbon){
       const r = document.createElement("div");
-      r.className = "top-label";
+      r.className="top-label";
       r.innerText = ribbon;
       card.appendChild(r);
     }
 
-    /* --- Bubbles --- */
+    /* Bubbles */
     const bubbles = [category,color].filter(Boolean);
     if(bubbles.length){
       const b = document.createElement("div");
-      b.className = "top-bubbles";
+      b.className="top-bubbles";
       bubbles.forEach(t=>{
         const d = document.createElement("div");
         d.innerText = t;
@@ -708,27 +692,25 @@ function renderPage(page, imgIndex = 0){
       card.appendChild(b);
     }
 
-    /* --- Link --- */
+    /* Link */
     const link = document.createElement("a");
     link.href = productId ? `product-page.html?id=${productId}` : "#";
     link.appendChild(card);
     grid.appendChild(link);
   });
 
-  /* --- Banners --- */
+  /* Banners */
   insertBanners();
 
-  /* --- Pagination --- */
-  pageNumber.innerText = currentPage;
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = end >= allProducts.length;
+  /* Pagination */
+  pageNumber.innerText=currentPage;
+  prevBtn.disabled=currentPage===1;
+  nextBtn.disabled=end>=allProducts.length;
 
   applyDefaultGrid();
 }
 
-/* ===============================
-   IMAGE SWITCH
-================================ */
+/* IMAGE SWITCH */
 function switchImage(card, delta){
   const images = JSON.parse(card.dataset.images || "[]");
   let idx = parseInt(card.dataset.currentImage || "0");
@@ -740,9 +722,9 @@ function switchImage(card, delta){
   img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/" + images[idx];
 }
 
-/* Global image button switch */
+/* Main/Lifestyle buttons */
 imgButtons.forEach((btn,index)=>{
-  btn.addEventListener("click",()=>{
+  btn.addEventListener("click", ()=>{
     imgButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     globalImageIndex = index;
@@ -757,9 +739,7 @@ imgButtons.forEach((btn,index)=>{
   });
 });
 
-/* ===============================
-   GRID CONTROL
-================================ */
+/* GRID CONTROL */
 function applyDefaultGrid(){
   const isMobile=window.innerWidth<=768;
   const defaultCols=isMobile?2:4;
@@ -777,15 +757,11 @@ gridButtons.forEach(btn=>{
   });
 });
 
-/* ===============================
-   PAGINATION
-================================ */
-prevBtn.onclick = ()=>{if(currentPage>1){currentPage--;renderPage(currentPage, globalImageIndex);}};
-nextBtn.onclick = ()=>{if(currentPage*productsPerPage<allProducts.length){currentPage++;renderPage(currentPage, globalImageIndex);}};
+/* PAGINATION */
+prevBtn.onclick=()=>{ if(currentPage>1){currentPage--; renderPage(currentPage, globalImageIndex); } };
+nextBtn.onclick=()=>{ if(currentPage*productsPerPage<allProducts.length){ currentPage++; renderPage(currentPage, globalImageIndex); } };
 
-/* ===============================
-   BANNERS
-================================ */
+/* BANNERS */
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
   const cards=[...grid.querySelectorAll(".product-card")];
@@ -799,68 +775,66 @@ function insertBanners(){
 
 window.addEventListener("resize",applyDefaultGrid);
 
-/* ===============================
-   SHUFFLE & SORT
-================================ */
-// Shuffle
+/* SHUFFLE */
 const shuffleBtn = document.getElementById("shuffleBtn");
-shuffleBtn.title = "Shuffle to see more!";
-shuffleBtn.addEventListener("click", () => {
-  allProducts.sort(()=>Math.random()-0.5);
-  currentPage = 1;
-  renderPage(currentPage, globalImageIndex);
-});
+if(shuffleBtn){
+  shuffleBtn.title="Shuffle to see more!";
+  shuffleBtn.addEventListener("click", ()=>{
+    allProducts.sort(()=>Math.random()-0.5);
+    currentPage=1;
+    renderPage(currentPage, globalImageIndex);
+  });
+}
 
-// Sort bubble
+/* SORT */
 const sortBtn = document.getElementById("sortBtn");
-const sortOptions = [
-  {label:"Best Selling", fn:(a,b)=>0},
-  {label:"Price, low to high", fn:(a,b)=>parseFloat(a.price||a.Price||0)-parseFloat(b.price||b.Price||0)},
-  {label:"Price, high to low", fn:(a,b)=>parseFloat(b.price||b.Price||0)-parseFloat(a.price||a.Price||0)},
-  {label:"Alphabetically, A-Z", fn:(a,b)=>((a.name||a.Name||"").toLowerCase()).localeCompare((b.name||b.Name||"").toLowerCase())},
-  {label:"Alphabetically, Z-A", fn:(a,b)=>((b.name||b.Name||"").toLowerCase()).localeCompare((a.name||a.Name||"").toLowerCase())},
-  {label:"New to old", fn:(a,b)=>0}, // implement if you have date field
-  {label:"Old to new", fn:(a,b)=>0}  // implement if you have date field
-];
+if(sortBtn){
+  const sortOptions = [
+    {label:"Best Selling", fn:(a,b)=>0},
+    {label:"Price, low to high", fn:(a,b)=>parseFloat(a.price||a.Price||0)-parseFloat(b.price||b.Price||0)},
+    {label:"Price, high to low", fn:(a,b)=>parseFloat(b.price||b.Price||0)-parseFloat(a.price||a.Price||0)},
+    {label:"Alphabetically, A-Z", fn:(a,b)=>((a.name||a.Name||"").toLowerCase()).localeCompare((b.name||b.Name||"").toLowerCase())},
+    {label:"Alphabetically, Z-A", fn:(a,b)=>((b.name||b.Name||"").toLowerCase()).localeCompare((a.name||a.Name||"").toLowerCase())},
+    {label:"New to old", fn:(a,b)=>0}, // use date field if available
+    {label:"Old to new", fn:(a,b)=>0}
+  ];
 
-sortBtn.addEventListener("click", e=>{
-  const bubble = document.createElement("div");
-  bubble.className="sort-bubble";
-  bubble.style.position="absolute";
-  bubble.style.top=sortBtn.offsetTop + sortBtn.offsetHeight + "px";
-  bubble.style.left=sortBtn.offsetLeft + "px";
-  bubble.style.background="#fff";
-  bubble.style.border="1px solid #ccc";
-  bubble.style.padding="8px";
-  bubble.style.zIndex=999;
-  sortOptions.forEach(opt=>{
-    const item = document.createElement("div");
-    item.innerText = opt.label;
-    item.style.cursor="pointer";
-    item.style.margin="4px 0";
-    item.onclick = ()=>{
-      allProducts.sort(opt.fn);
-      document.body.removeChild(bubble);
-      currentPage = 1;
-      renderPage(currentPage, globalImageIndex);
-    };
-    bubble.appendChild(item);
+  sortBtn.addEventListener("click", e=>{
+    const bubble = document.createElement("div");
+    bubble.className="sort-bubble";
+    bubble.style.position="absolute";
+    bubble.style.top=sortBtn.offsetTop + sortBtn.offsetHeight + "px";
+    bubble.style.left=sortBtn.offsetLeft + "px";
+    bubble.style.background="#fff";
+    bubble.style.border="1px solid #ccc";
+    bubble.style.padding="8px";
+    bubble.style.zIndex=999;
+
+    sortOptions.forEach(opt=>{
+      const item = document.createElement("div");
+      item.innerText = opt.label;
+      item.style.cursor="pointer";
+      item.style.margin="4px 0";
+      item.onclick = ()=>{
+        allProducts.sort(opt.fn);
+        document.body.removeChild(bubble);
+        currentPage=1;
+        renderPage(currentPage, globalImageIndex);
+      };
+      bubble.appendChild(item);
+    });
+
+    document.body.appendChild(bubble);
+
+    document.addEventListener("click", function handler(ev){
+      if(!bubble.contains(ev.target) && ev.target!==sortBtn){
+        bubble.remove();
+        document.removeEventListener("click", handler);
+      }
+    });
   });
-  document.body.appendChild(bubble);
-
-  // Close on click outside
-  document.addEventListener("click", function handler(ev){
-    if(!bubble.contains(ev.target) && ev.target !== sortBtn){
-      bubble.remove();
-      document.removeEventListener("click", handler);
-    }
-  });
-});
-
+}
 </script>
-
-
-
 
 
 
