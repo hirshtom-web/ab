@@ -170,37 +170,58 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 .license-options label{display:flex;align-items:center;gap:6px;cursor:pointer;}
 .license-options input[type="radio"]{cursor:pointer;}
 
+
 /* ===============================
-   RELATED PRODUCTS
+   RELATED PRODUCTS - FULL WIDTH SLIDER
 ================================ */
 .related-products {
+  width: 100%;
   max-width: 100% !important;
-  margin: 50px 0 0; /* keep vertical spacing */
-  padding: 0 20px;   /* optional horizontal padding */
+  margin: 50px 0 0;
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
 .related-products h2 {
   font-size: 24px;
   margin-bottom: 20px;
-  text-align: center;       /* center the heading */
+  text-align: center;
 }
 
+.related-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
 .related-grid {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  display: flex;
   gap: 20px;
-  justify-content: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 10px;
 }
 
+.related-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.related-grid::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
 
 .related-card {
+  flex: 0 0 auto; /* keep fixed width in horizontal scroll */
+  width: 220px;   /* adjust as needed */
+  scroll-snap-align: start;
   border: 1px solid #eee;
   border-radius: 12px;
   padding: 12px;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
-  background: #fff;         /* optional, looks cleaner */
+  background: #fff;
 }
 
 .related-card:hover {
@@ -226,16 +247,37 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
   color: #111;
 }
 
-/* ===============================
-   MOBILE ADJUSTMENTS
-================================ */
+/* Navigation buttons */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.slider-btn.prev { left: 0; }
+.slider-btn.next { right: 0; }
+
+/* MOBILE ADJUSTMENTS */
+@media (max-width: 900px) {
+  .related-card {
+    width: 180px;
+  }
+}
+
 @media (max-width: 480px) {
   .related-products h2 {
     font-size: 20px;
   }
   
-  .related-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  .related-card {
+    width: 140px;
   }
 }
 
@@ -287,11 +329,15 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 </div>
 
 
-  <div class="related-products">
-    <h2>Related Products</h2>
+<div class="related-products">
+  <h2>Related Products</h2>
+  <div class="related-slider-wrapper">
+    <button class="slider-btn prev">‹</button>
     <div id="relatedGrid" class="related-grid"></div>
+    <button class="slider-btn next">›</button>
   </div>
 </div>
+
 
 <div class="wrapper">
 
@@ -451,24 +497,65 @@ if(!productId){
       });
 
       // -------- RELATED PRODUCTS --------
-const related = res.data.filter(p => slugify(p.name || p.Name || "") !== productId).slice(0,4);
+// Limit to max 10 related products
+const related = res.data.filter(p => slugify(p.name || "") !== productId).slice(0, 10);
 relatedGrid.innerHTML = "";
-related.forEach(r => {
-  const card = document.createElement("div"); card.className="related-card";
 
-  // Image with fallback
-  let imgSrc = (r.productImageUrl || r.ImageURL || "").split(";")[0];
+related.forEach(r => {
+  const card = document.createElement("div");
+  card.className = "related-card";
+
+  let imgSrc = (r.productImageUrl || "").split(";")[0];
   if(imgSrc && !imgSrc.includes("http")) imgSrc = "https://static.wixstatic.com/media/" + imgSrc;
+
   const img = document.createElement("img");
   img.src = imgSrc || "https://via.placeholder.com/300";
 
-  const h4 = document.createElement("h4"); h4.innerText = r.name || r.Name || "Unnamed";
-  const pEl = document.createElement("div"); pEl.className="price"; pEl.innerText = r.price ? "$" + r.price : "$1";
+  const h4 = document.createElement("h4");
+  h4.innerText = r.name || "Unnamed";
 
-  card.appendChild(img); card.appendChild(h4); card.appendChild(pEl);
-  card.onclick = () => location.href=`product-page.html?id=${slugify(r.name || r.Name || "")}`;
+  const pEl = document.createElement("div");
+  pEl.className = "price";
+  pEl.innerText = r.price ? "$" + r.price : "$1";
+
+  card.appendChild(img);
+  card.appendChild(h4);
+  card.appendChild(pEl);
+
+  card.onclick = () => location.href=`product-page.html?id=${slugify(r.name || "")}`;
 
   relatedGrid.appendChild(card);
+});
+
+// Slider buttons
+const slider = document.getElementById("relatedGrid");
+document.querySelector(".slider-btn.next").onclick = () => slider.scrollBy({ left: 240, behavior: 'smooth' });
+document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({ left: -240, behavior: 'smooth' });
+
+// Touch support for mobile swipe
+let isDown = false, startX, scrollLeft;
+slider.addEventListener('mousedown', e => {
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+slider.addEventListener('mouseleave', () => isDown = false);
+slider.addEventListener('mouseup', () => isDown = false);
+slider.addEventListener('mousemove', e => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2; //scroll-fast
+  slider.scrollLeft = scrollLeft - walk;
+});
+
+// Touch events for mobile
+slider.addEventListener('touchstart', e => startX = e.touches[0].pageX);
+slider.addEventListener('touchmove', e => {
+  const x = e.touches[0].pageX;
+  slider.scrollLeft -= (x - startX);
+  startX = x;
 });
 
 
