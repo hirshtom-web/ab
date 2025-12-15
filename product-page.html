@@ -319,76 +319,63 @@ const productId = new URLSearchParams(location.search).get("id");
 
 // ---------------- LOAD CSV ----------------
 fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
-  .then(response => {
-    if (!response.ok) throw new Error("CSV file not found or CORS blocked");
-    return response.text();
-  })
+  .then(r => r.text())
   .then(csvText => {
-    Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function(res) {
+    Papa.parse(csvText, { header: true, skipEmptyLines: true, complete: function(res) {
         const allProducts = res.data.map(p => ({
+          id: (p.id || "").trim(),
           name: (p.name || "").trim(),
-          productId: (p.productId || "").trim(),
-          price: (p.price || "1").trim(),
-          discountValue: (p.discountValue || "").trim(),
+          price: (p.price || "").trim(),
+          discount: (p.discountValue || "").trim(),
           description: p.description || "",
           images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
         }));
 
-        const product = allProducts.find(p => p.productId === productId || (p.name || "").toLowerCase() === productId);
-        if (!product) {
-          console.warn("Product not found in CSV!");
-          return;
-        }
+        // Find product by id
+        const product = allProducts.find(p => p.id === productId);
+        if(!product) { console.warn("Product not found!"); return; }
 
-        // --- SET TEXT ---
+        // --- TEXT ---
         titleEl.innerText = product.name;
         priceEl.innerText = "$" + product.price;
-        oldPriceEl.innerText = product.discountValue ? "$" + product.discountValue : "";
-        descEl.innerHTML = product.description || "";
+        oldPriceEl.innerText = product.discount ? "$" + product.discount : "";
+        descEl.innerHTML = product.description;
 
         // --- IMAGES ---
-        const images = product.images.map(src =>
-          src.includes("http") ? src : "https://static.wixstatic.com/media/" + src
-        );
-        if (images.length) mainImage.src = images[0];
+        const images = product.images.map(src => src.includes("http") ? src : "https://static.wixstatic.com/media/" + src);
+        if(images.length) mainImage.src = images[0];
 
         thumbsEl.innerHTML = "";
-        images.forEach((src, i) => {
+        images.forEach((src,i) => {
           const t = document.createElement("img");
           t.src = src;
-          if (i === 0) t.classList.add("active");
+          if(i===0) t.classList.add("active");
           t.onclick = () => {
             mainImage.src = src;
-            thumbsEl.querySelectorAll("img").forEach(img => img.classList.remove("active"));
+            thumbsEl.querySelectorAll("img").forEach(img=>img.classList.remove("active"));
             t.classList.add("active");
           };
           thumbsEl.appendChild(t);
         });
 
-        // --- RELATED ITEMS ---
-        const related = allProducts.filter(p => p.productId !== product.productId).slice(0, 10);
+        // --- RELATED ---
+        const related = allProducts.filter(p => p.id !== product.id).slice(0, 10);
+        relatedGrid.innerHTML = "";
         related.forEach(r => {
           const card = document.createElement("div");
           card.className = "related-card";
           const img = document.createElement("img");
-          const rImage = (r.images[0] || "https://via.placeholder.com/300");
-          img.src = rImage.includes("http") ? rImage : "https://static.wixstatic.com/media/" + rImage;
+          img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/" + r.images[0]) : "https://via.placeholder.com/300";
           const h4 = document.createElement("h4");
-          h4.innerText = r.name || "Unnamed";
+          h4.innerText = r.name;
           card.appendChild(img);
           card.appendChild(h4);
-          card.onclick = () => location.href = `product-page.html?id=${r.productId}`;
+          card.onclick = () => location.href = `product-page.html?id=${r.id}`;
           relatedGrid.appendChild(card);
         });
-      }
-    });
+    }});
   })
-  .catch(err => {
-    console.error("CSV load error:", err);
-  });
+  .catch(err => console.error("CSV load error:", err));
 
 // ---------------- ADD TO CART ----------------
 addToCartBtn.onclick = () => {
@@ -402,19 +389,18 @@ document.querySelectorAll(".accordion-header").forEach(header => {
     const item = header.parentElement;
     item.classList.toggle("active");
     const content = header.nextElementSibling;
-    if (item.classList.contains("active")) content.style.maxHeight = content.scrollHeight + "px";
-    else content.style.maxHeight = null;
+    content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
   };
 });
 
-// ---------------- RELATED SLIDER BUTTONS ----------------
+// ---------------- RELATED SLIDER ----------------
 const slider = document.getElementById("relatedGrid");
-document.querySelector(".slider-btn.next").onclick = () => slider.scrollBy({ left: 240, behavior: 'smooth' });
-document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({ left: -240, behavior: 'smooth' });
+document.querySelector(".slider-btn.next").onclick = () => slider.scrollBy({left:240,behavior:'smooth'});
+document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({left:-240,behavior:'smooth'});
 
-// ---------------- LOAD EXTERNAL SECTIONS ----------------
-fetch("artist-card.html").then(r => r.text()).then(html => document.getElementById("artist-card-placeholder").innerHTML = html);
-fetch("testimonials.html").then(r => r.text()).then(html => document.getElementById("testimonials-placeholder").innerHTML = html);
+// ---------------- LOAD EXTERNAL ----------------
+fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
+fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
 </script>
 
 
