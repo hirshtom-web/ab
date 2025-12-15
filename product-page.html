@@ -283,7 +283,7 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 </div>
 
 <div id="testimonials-placeholder"></div>
-  <div id="artist_card-placeholder"></div>
+  <div id="artist-card-placeholder"></div>
 
   
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -301,7 +301,7 @@ document.getElementById("buyNow").onclick = () => {
 </script>
 
   <script>
-  fetch("Testimonials.html")
+  fetch("testimonials.html")
     .then(response => response.text())
     .then(html => {
       document.getElementById("testimonials-placeholder").innerHTML = html;
@@ -310,12 +310,12 @@ document.getElementById("buyNow").onclick = () => {
 </script>
 
    <script>
-  fetch("artist_card.html")
+  fetch("artist-card.html")
     .then(response => response.text())
     .then(html => {
-      document.getElementById("artist_card-placeholder").innerHTML = html;
+      document.getElementById("artist-card-placeholder").innerHTML = html;
     })
-    .catch(err => console.error("Failed to load artist_card:", err));
+    .catch(err => console.error("Failed to load artist-card:", err));
 </script>
 
 <script>
