@@ -729,18 +729,26 @@ function renderPage(page){
 /* ===============================
    IMAGE SWITCH
 ================================ */
-function switchImage(card,dir){
-  const images=JSON.parse(card.dataset.images||"[]");
-  let i=parseInt(card.dataset.currentImage)+dir;
-  if(i<0)i=images.length-1;
-  if(i>=images.length)i=0;
-  card.dataset.currentImage=i;
+imgButtons.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    // Update active button styling
+    imgButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
 
-  const img=card.querySelector("img");
-  img.src=images[i].includes("http")
-    ? images[i]
-    : "https://static.wixstatic.com/media/"+images[i];
-}
+    // Update all product cards to show the selected image
+    document.querySelectorAll(".product-card").forEach(card => {
+      const images = JSON.parse(card.dataset.images || "[]");
+      if (images.length > index) {
+        card.dataset.currentImage = index;
+        const img = card.querySelector("img");
+        img.src = images[index].includes("http")
+          ? images[index]
+          : "https://static.wixstatic.com/media/" + images[index];
+      }
+    });
+  });
+});
+
 
 /* ===============================
    GRID CONTROL (SAFE)
