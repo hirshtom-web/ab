@@ -543,147 +543,149 @@ header h1 {
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
 const grid = document.getElementById("productGrid");
+const gridButtons = document.querySelectorAll(".grid-btn");
+const imgButtons = document.querySelectorAll(".img-btn");
 const prevBtn = document.getElementById("prevPage");
 const nextBtn = document.getElementById("nextPage");
 const pageNumber = document.getElementById("pageNumber");
-const gridButtons = document.querySelectorAll(".grid-btn");
-const imgButtons = document.querySelectorAll(".img-btn");
 
 let allProducts = [];
 let currentPage = 1;
 const productsPerPage = 72;
-let globalImageIndex = 0; // main=0, lifestyle=1, etc.
+let currentImageType = 0; // 0 = main, 1 = lifestyle
 
-/* LOCK DEFAULT GRID */
-(function lockDefaultGrid() {
-  const isMobile = window.innerWidth <= 768;
-  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-  grid.classList.add(isMobile ? "cols-2" : "cols-4");
-})();
-
-/* UTIL */
+/* ===============================
+   UTIL FUNCTIONS
+================================ */
 function slugify(str){
-  return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return str.toLowerCase().trim().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
+function shuffleArray(array){
+  for(let i=array.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+/* ===============================
+   SHOW PLACEHOLDERS
+================================ */
 function showLoadingPlaceholders(count){
-  grid.innerHTML="";
+  grid.innerHTML = "";
   for(let i=0;i<count;i++){
-    const p=document.createElement("div");
-    p.className="product-card loading";
+    const p = document.createElement("div");
+    p.className = "product-card loading";
     grid.appendChild(p);
   }
 }
 showLoadingPlaceholders(12);
 
-/* LOAD CSV */
-Papa.parse("https://hirshtom-web.github.io/ab/product_catalog.csv", {
+/* ===============================
+   LOAD CSV
+================================ */
+Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
   download:true,
   header:true,
   skipEmptyLines:true,
-  complete: results=>{
-    allProducts = results.data;
-    renderPage(currentPage, globalImageIndex);
+  complete: results => {
+    allProducts = results.data.map(p=>{
+      return {
+        name: (p.name||p.Name||"").trim(),
+        productId: (p.productId||p.ProductId||"").trim(),
+        price: (p.price||p.Price||"$1").trim(),
+        ribbon: (p.ribbon||p.Ribbon||"").trim(),
+        category: (p.category||p.Category||"").trim(),
+        color: (p.color||p.Color||"").trim(),
+        images: (p.productImageUrl||p.ProductImageUrl||"").split(";").map(u=>u.trim()).filter(Boolean)
+      };
+    });
+    renderPage(currentPage);
   }
 });
 
-/* RENDER PAGE */
-function renderPage(page, imgIndex=0){
+/* ===============================
+   RENDER PAGE
+================================ */
+function renderPage(page){
   grid.innerHTML = "";
-
   const start = (page-1)*productsPerPage;
   const end = start+productsPerPage;
   const pageProducts = allProducts.slice(start,end);
 
   pageProducts.forEach(p=>{
     const card = document.createElement("div");
-    card.className="product-card";
-    card.dataset.currentImage = imgIndex;
+    card.className = "product-card";
+    card.dataset.currentImage = currentImageType;
+    card.dataset.id = slugify(p.name);
+    card.dataset.images = JSON.stringify(p.images);
 
-    const name = (p.name || p.Name || "").trim();
-    const productId = (p.productId || p.ProductId || "").trim();
-    const priceValue = (p.price || p.Price || "").trim();
-    const ribbon = (p.ribbon || p.Ribbon || "").trim();
-    const category = (p.category || p.Category || "").trim();
-    const color = (p.color || p.Color || "").trim();
-    const imageUrls = (p.productImageUrl || p.ProductImageUrl || "").trim();
-
-    const productSlug = slugify(name);
-    card.dataset.id = productSlug;
-
-    /* Images */
-    const images = imageUrls.split(";").map(u=>u.trim()).filter(Boolean);
-    card.dataset.images = JSON.stringify(images);
-
+    /* --- Image wrapper --- */
     const wrapper = document.createElement("div");
-    wrapper.className="img-wrapper";
+    wrapper.className = "img-wrapper";
 
     const img = document.createElement("img");
-    img.loading="lazy";
-    const idxToUse = Math.min(imgIndex, images.length-1);
-    img.src = images[idxToUse] ? (images[idxToUse].includes("http") ? images[idxToUse] : "https://static.wixstatic.com/media/"+images[idxToUse]) : "";
+    img.loading = "lazy";
+    img.src = p.images[currentImageType] || "";
     wrapper.appendChild(img);
 
-    /* Arrows */
-    if(images.length>1){
+    /* --- Arrows --- */
+    if(p.images.length>1){
       ["left","right"].forEach(dir=>{
         const a = document.createElement("div");
-        a.className=`slider-arrow ${dir}`;
-        a.innerHTML = dir==="left" ? "&#10094;" : "&#10095;";
-        a.onclick = e=>{
-          e.preventDefault(); e.stopPropagation();
-          switchImage(card, dir==="left" ? -1 : 1);
-        };
+        a.className = `slider-arrow ${dir}`;
+        a.innerHTML = dir==="left"?"&#10094;":"&#10095;";
+        a.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, dir==="left"?-1:1); };
         wrapper.appendChild(a);
+      });
+
+      /* --- Swipe --- */
+      let startX=0;
+      wrapper.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+      wrapper.addEventListener("touchend",e=>{
+        const dx = e.changedTouches[0].clientX - startX;
+        if(dx>30) switchImage(card,-1);
+        if(dx<-30) switchImage(card,1);
       });
     }
 
-    /* Plus overlay */
+    /* --- Plus overlay --- */
     const plus = document.createElement("div");
-    plus.className="plus-overlay";
-    plus.innerText="+";
+    plus.className = "plus-overlay";
+    plus.innerText = "+";
     wrapper.appendChild(plus);
-
-    /* Swipe */
-    let startX=0;
-    wrapper.addEventListener("touchstart", e=>startX=e.touches[0].clientX);
-    wrapper.addEventListener("touchend", e=>{
-      const dx=e.changedTouches[0].clientX-startX;
-      if(dx>30) switchImage(card,-1);
-      if(dx<-30) switchImage(card,1);
-    });
 
     card.appendChild(wrapper);
 
-    /* Info */
+    /* --- Info --- */
     const info = document.createElement("div");
-    info.className="product-info";
-
+    info.className = "product-info";
     const h3 = document.createElement("h3");
-    h3.innerText = name || "Unnamed product";
+    h3.innerText = p.name || "Unnamed product";
     info.appendChild(h3);
 
     const priceDiv = document.createElement("div");
-    priceDiv.className="price";
-    priceDiv.innerText = priceValue ? `$${priceValue}` : "$1";
+    priceDiv.className = "price";
+    priceDiv.innerText = p.price ? `$${p.price}` : "$1";
     info.appendChild(priceDiv);
-
     card.appendChild(info);
 
-    /* Ribbon */
-    if(ribbon){
+    /* --- Ribbon --- */
+    if(p.ribbon){
       const r = document.createElement("div");
-      r.className="top-label";
-      r.innerText = ribbon;
+      r.className = "top-label";
+      r.innerText = p.ribbon;
       card.appendChild(r);
     }
 
-    /* Bubbles */
-    const bubbles = [category,color].filter(Boolean);
+    /* --- Bubbles --- */
+    const bubbles = [p.category, p.color].filter(Boolean);
     if(bubbles.length){
       const b = document.createElement("div");
-      b.className="top-bubbles";
+      b.className = "top-bubbles";
       bubbles.forEach(t=>{
         const d = document.createElement("div");
         d.innerText = t;
@@ -692,63 +694,62 @@ function renderPage(page, imgIndex=0){
       card.appendChild(b);
     }
 
-    /* Link */
+    /* --- Link --- */
     const link = document.createElement("a");
-    link.href = productId ? `product-page.html?id=${productId}` : "#";
+    link.href = p.productId ? `product-page.html?id=${p.productId}` : "#";
     link.appendChild(card);
     grid.appendChild(link);
   });
 
-  /* Banners */
   insertBanners();
-
-  /* Pagination */
-  pageNumber.innerText=currentPage;
-  prevBtn.disabled=currentPage===1;
-  nextBtn.disabled=end>=allProducts.length;
+  pageNumber.innerText = currentPage;
+  prevBtn.disabled = currentPage===1;
+  nextBtn.disabled = end>=allProducts.length;
 
   applyDefaultGrid();
 }
 
-/* IMAGE SWITCH */
-function switchImage(card, delta){
-  const images = JSON.parse(card.dataset.images || "[]");
-  let idx = parseInt(card.dataset.currentImage || "0");
-  idx += delta;
-  if(idx<0) idx = images.length-1;
-  if(idx>=images.length) idx = 0;
+/* ===============================
+   IMAGE SWITCH FUNCTION
+================================ */
+function switchImage(card,dir){
+  const images = JSON.parse(card.dataset.images||"[]");
+  let idx = parseInt(card.dataset.currentImage) || 0;
+  idx = (idx + dir + images.length)%images.length;
   card.dataset.currentImage = idx;
   const img = card.querySelector("img");
-  img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/" + images[idx];
+  img.src = images[idx];
 }
 
-/* Main/Lifestyle buttons */
+/* ===============================
+   IMAGE TYPE SWITCH
+================================ */
 imgButtons.forEach((btn,index)=>{
-  btn.addEventListener("click", ()=>{
+  btn.addEventListener("click",()=>{
     imgButtons.forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    globalImageIndex = index;
-
+    currentImageType = index;
     document.querySelectorAll(".product-card").forEach(card=>{
       const images = JSON.parse(card.dataset.images||"[]");
-      const idx = Math.min(index, images.length-1);
+      const idx = Math.min(currentImageType, images.length-1);
       card.dataset.currentImage = idx;
       const img = card.querySelector("img");
-      img.src = images[idx].includes("http") ? images[idx] : "https://static.wixstatic.com/media/"+images[idx];
+      img.src = images[idx] || "";
     });
   });
 });
 
-/* GRID CONTROL */
+/* ===============================
+   GRID CONTROL
+================================ */
 function applyDefaultGrid(){
-  const isMobile=window.innerWidth<=768;
-  const defaultCols=isMobile?2:4;
+  const isMobile = window.innerWidth<=768;
+  const defaultCols = isMobile?2:4;
   grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-  const activeBtn=[...gridButtons].find(b=>b.classList.contains("active")&&b.offsetParent!==null);
-  const cols=activeBtn?.dataset.cols||defaultCols;
+  const activeBtn = [...gridButtons].find(b=>b.classList.contains("active") && b.offsetParent!==null);
+  const cols = activeBtn?.dataset.cols || defaultCols;
   grid.classList.add(`cols-${cols}`);
 }
-
 gridButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     gridButtons.forEach(b=>b.classList.remove("active"));
@@ -757,86 +758,93 @@ gridButtons.forEach(btn=>{
   });
 });
 
-/* PAGINATION */
-prevBtn.onclick=()=>{ if(currentPage>1){currentPage--; renderPage(currentPage, globalImageIndex); } };
-nextBtn.onclick=()=>{ if(currentPage*productsPerPage<allProducts.length){ currentPage++; renderPage(currentPage, globalImageIndex); } };
+/* ===============================
+   PAGINATION
+================================ */
+prevBtn.onclick = ()=>{ if(currentPage>1){currentPage--; renderPage(currentPage);} };
+nextBtn.onclick = ()=>{ if(currentPage*productsPerPage<allProducts.length){currentPage++; renderPage(currentPage);} };
 
-/* BANNERS */
+/* ===============================
+   BANNERS
+================================ */
 function insertBanners(){
   grid.querySelectorAll(".banner-card").forEach(b=>b.remove());
-  const cards=[...grid.querySelectorAll(".product-card")];
+  const cards = [...grid.querySelectorAll(".product-card")];
   for(let i=8;i<cards.length;i+=9){
-    const b=document.createElement("div");
-    b.className="banner-card";
-    b.innerHTML="<span>✨ New Collection Drop!</span>";
+    const b = document.createElement("div");
+    b.className = "banner-card";
+    b.innerHTML = "<span>✨ New Collection Drop!</span>";
     grid.insertBefore(b,cards[i]);
   }
 }
 
+/* ===============================
+   SHUFFLE BUTTON
+================================ */
+document.querySelector(".control-btn[title='Shuffle']").addEventListener("click",()=>{
+  shuffleArray(allProducts);
+  renderPage(currentPage);
+});
+
+/* ===============================
+   SORTING BUBBLE (example)
+================================ */
+const sortBtn = document.querySelector(".control-btn[title='Sort']");
+sortBtn.addEventListener("click",()=>{
+  const bubble = document.createElement("div");
+  bubble.style.position = "absolute";
+  bubble.style.top = "40px";
+  bubble.style.right = "0px";
+  bubble.style.background = "#fff";
+  bubble.style.border = "1px solid #ccc";
+  bubble.style.padding = "10px";
+  bubble.style.zIndex = "999";
+  bubble.innerHTML = `
+    <div data-sort="best">Best Selling</div>
+    <div data-sort="priceAsc">Price: Low → High</div>
+    <div data-sort="priceDesc">Price: High → Low</div>
+    <div data-sort="az">Alphabetically A-Z</div>
+    <div data-sort="za">Alphabetically Z-A</div>
+    <div data-sort="new">New → Old</div>
+    <div data-sort="old">Old → New</div>
+  `;
+  document.body.appendChild(bubble);
+
+  bubble.querySelectorAll("div").forEach(item=>{
+    item.addEventListener("click",()=>{
+      const sortType = item.dataset.sort;
+      switch(sortType){
+        case "priceAsc": allProducts.sort((a,b)=>parseFloat(a.price||0)-parseFloat(b.price||0)); break;
+        case "priceDesc": allProducts.sort((a,b)=>parseFloat(b.price||0)-parseFloat(a.price||0)); break;
+        case "az": allProducts.sort((a,b)=>a.name.localeCompare(b.name)); break;
+        case "za": allProducts.sort((a,b)=>b.name.localeCompare(a.name)); break;
+        case "new": allProducts.sort((a,b)=>a.productId.localeCompare(b.productId)); break;
+        case "old": allProducts.sort((a,b)=>b.productId.localeCompare(a.productId)); break;
+        case "best": /* implement your own */ break;
+      }
+      renderPage(currentPage);
+      bubble.remove();
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if(!bubble.contains(e.target) && e.target!==sortBtn) bubble.remove();
+  }, {once:true});
+});
+
+/* ===============================
+   INITIAL GRID LOCK
+================================ */
+(function lockDefaultGrid(){
+  const isMobile = window.innerWidth<=768;
+  grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+  grid.classList.add(isMobile? "cols-2":"cols-4");
+})();
+
 window.addEventListener("resize",applyDefaultGrid);
 
-/* SHUFFLE */
-const shuffleBtn = document.getElementById("shuffleBtn");
-if(shuffleBtn){
-  shuffleBtn.title="Shuffle to see more!";
-  shuffleBtn.addEventListener("click", ()=>{
-    allProducts.sort(()=>Math.random()-0.5);
-    currentPage=1;
-    renderPage(currentPage, globalImageIndex);
-  });
-}
-
-/* SORT */
-const sortBtn = document.getElementById("sortBtn");
-if(sortBtn){
-  const sortOptions = [
-    {label:"Best Selling", fn:(a,b)=>0},
-    {label:"Price, low to high", fn:(a,b)=>parseFloat(a.price||a.Price||0)-parseFloat(b.price||b.Price||0)},
-    {label:"Price, high to low", fn:(a,b)=>parseFloat(b.price||b.Price||0)-parseFloat(a.price||a.Price||0)},
-    {label:"Alphabetically, A-Z", fn:(a,b)=>((a.name||a.Name||"").toLowerCase()).localeCompare((b.name||b.Name||"").toLowerCase())},
-    {label:"Alphabetically, Z-A", fn:(a,b)=>((b.name||b.Name||"").toLowerCase()).localeCompare((a.name||a.Name||"").toLowerCase())},
-    {label:"New to old", fn:(a,b)=>0}, // use date field if available
-    {label:"Old to new", fn:(a,b)=>0}
-  ];
-
-  sortBtn.addEventListener("click", e=>{
-    const bubble = document.createElement("div");
-    bubble.className="sort-bubble";
-    bubble.style.position="absolute";
-    bubble.style.top=sortBtn.offsetTop + sortBtn.offsetHeight + "px";
-    bubble.style.left=sortBtn.offsetLeft + "px";
-    bubble.style.background="#fff";
-    bubble.style.border="1px solid #ccc";
-    bubble.style.padding="8px";
-    bubble.style.zIndex=999;
-
-    sortOptions.forEach(opt=>{
-      const item = document.createElement("div");
-      item.innerText = opt.label;
-      item.style.cursor="pointer";
-      item.style.margin="4px 0";
-      item.onclick = ()=>{
-        allProducts.sort(opt.fn);
-        document.body.removeChild(bubble);
-        currentPage=1;
-        renderPage(currentPage, globalImageIndex);
-      };
-      bubble.appendChild(item);
-    });
-
-    document.body.appendChild(bubble);
-
-    document.addEventListener("click", function handler(ev){
-      if(!bubble.contains(ev.target) && ev.target!==sortBtn){
-        bubble.remove();
-        document.removeEventListener("click", handler);
-      }
-    });
-  });
-}
+});
 </script>
-
-
 
   
 </body>
