@@ -320,7 +320,7 @@ const addToCartBtn = document.getElementById("addToCart");
 // ---------------- PRODUCT DATA ----------------
 
 // ---------------- PRODUCT DATA ----------------
-const productId = new URLSearchParams(location.search).get("id") || "demo";
+const productId = new URLSearchParams(location.search).get("id");
 
 fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
   .then(response => {
