@@ -318,42 +318,72 @@ const relatedGrid = document.getElementById("relatedGrid");
 const addToCartBtn = document.getElementById("addToCart");
 
 // ---------------- PRODUCT DATA ----------------
+
+// ---------------- PRODUCT DATA ----------------
 const productId = new URLSearchParams(location.search).get("id") || "demo";
-Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
-  download:true,
-  header:true,
-  skipEmptyLines:true,
-  complete: res => {
-    const product = res.data.find(p => (p.name||"").toLowerCase() === productId);
-    if(product){
-      titleEl.innerText = product.name;
-      priceEl.innerText = "$" + product.price;
-      oldPriceEl.innerText = "$" + (product.discountValue ? product.price : "");
-      descEl.innerHTML = product.description || "";
-      // Images
-      const images = (product.productImageUrl||"").split(";").filter(Boolean);
-      if(images.length){ mainImage.src = images[0]; }
-      thumbsEl.innerHTML = "";
-      images.forEach((src,i)=>{
-        const t = document.createElement("img"); t.src=src;
-        if(i===0) t.classList.add("active");
-        t.onclick = ()=>{ mainImage.src=src; thumbsEl.querySelectorAll("img").forEach(img=>img.classList.remove("active")); t.classList.add("active"); };
-        thumbsEl.appendChild(t);
-      });
-      // Related items
-      const related = res.data.filter(p=>p.name!==product.name).slice(0,10);
-      related.forEach(r=>{
-        const card = document.createElement("div");
-        card.className="related-card";
-        const img = document.createElement("img"); img.src=(r.productImageUrl||"").split(";")[0]||"https://via.placeholder.com/300";
-        const h4 = document.createElement("h4"); h4.innerText=r.name||"Unnamed";
-        card.appendChild(img); card.appendChild(h4);
-        card.onclick = ()=>location.href=`product-page.html?id=${(r.name||"").toLowerCase()}`;
-        relatedGrid.appendChild(card);
-      });
-    }
-  }
-});
+
+fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
+  .then(response => {
+    if (!response.ok) throw new Error("CSV file not found or CORS blocked");
+    return response.text();
+  })
+  .then(csvText => {
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function(res) {
+        console.log("CSV Parsed:", res.data); // debug
+
+        const product = res.data.find(p => (p.name||"").toLowerCase() === productId);
+        if(!product) {
+          console.warn("Product not found in CSV!");
+          return;
+        }
+
+        // set text
+        titleEl.innerText = product.name;
+        priceEl.innerText = "$" + product.price;
+        oldPriceEl.innerText = product.discountValue ? "$" + product.discountValue : "";
+        descEl.innerHTML = product.description || "";
+
+        // images
+        const images = (product.productImageUrl||"").split(";").filter(Boolean);
+        if(images.length) mainImage.src = images[0];
+
+        thumbsEl.innerHTML = "";
+        images.forEach((src, i) => {
+          const t = document.createElement("img");
+          t.src = src;
+          if(i === 0) t.classList.add("active");
+          t.onclick = () => {
+            mainImage.src = src;
+            thumbsEl.querySelectorAll("img").forEach(img => img.classList.remove("active"));
+            t.classList.add("active");
+          };
+          thumbsEl.appendChild(t);
+        });
+
+        // related items
+        const related = res.data.filter(p => p.name !== product.name).slice(0, 10);
+        related.forEach(r => {
+          const card = document.createElement("div");
+          card.className = "related-card";
+          const img = document.createElement("img");
+          img.src = (r.productImageUrl||"").split(";")[0] || "https://via.placeholder.com/300";
+          const h4 = document.createElement("h4");
+          h4.innerText = r.name || "Unnamed";
+          card.appendChild(img);
+          card.appendChild(h4);
+          card.onclick = () => location.href = `product-page.html?id=${(r.name||"").toLowerCase()}`;
+          relatedGrid.appendChild(card);
+        });
+      }
+    });
+  })
+  .catch(err => {
+    console.error("CSV load error:", err);
+  });
+
 
 // ---------------- ADD TO CART ----------------
 addToCartBtn.onclick = ()=>{
