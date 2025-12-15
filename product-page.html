@@ -302,9 +302,6 @@ section h2 { font-size: 28px; margin-bottom: 20px; text-align: center; }
   <div id="testimonials-placeholder"></div>
 </section>
 
-<!-- ===============================
-     SCRIPTS
-================================ -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 // ---------------- ELEMENTS ----------------
@@ -317,7 +314,14 @@ const thumbsEl = document.getElementById("thumbnails");
 const relatedGrid = document.getElementById("relatedGrid");
 const addToCartBtn = document.getElementById("addToCart");
 
-// ---------------- PRODUCT DATA ----------------
+// ---------------- UTIL ----------------
+function slugify(str){
+  return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function fixImageUrl(src){
+  return src.includes("http") ? src : "https://static.wixstatic.com/media/" + src;
+}
 
 // ---------------- PRODUCT DATA ----------------
 const productId = new URLSearchParams(location.search).get("id");
@@ -332,22 +336,23 @@ fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
       header: true,
       skipEmptyLines: true,
       complete: function(res) {
-        console.log("CSV Parsed:", res.data); // debug
+        console.log("CSV Parsed:", res.data);
 
-        const product = res.data.find(p => (p.name||"").toLowerCase() === productId);
+        // MATCH PRODUCT USING SLUG
+        const product = res.data.find(p => slugify(p.name || "") === productId);
         if(!product) {
           console.warn("Product not found in CSV!");
           return;
         }
 
-        // set text
+        // ---------------- TEXT ----------------
         titleEl.innerText = product.name;
         priceEl.innerText = "$" + product.price;
         oldPriceEl.innerText = product.discountValue ? "$" + product.discountValue : "";
         descEl.innerHTML = product.description || "";
 
-        // images
-        const images = (product.productImageUrl||"").split(";").filter(Boolean);
+        // ---------------- IMAGES ----------------
+        const images = (product.productImageUrl||"").split(";").filter(Boolean).map(fixImageUrl);
         if(images.length) mainImage.src = images[0];
 
         thumbsEl.innerHTML = "";
@@ -363,27 +368,25 @@ fetch("https://hirshtom-web.github.io/ab/product_catalog.csv")
           thumbsEl.appendChild(t);
         });
 
-        // related items
+        // ---------------- RELATED ITEMS ----------------
         const related = res.data.filter(p => p.name !== product.name).slice(0, 10);
         related.forEach(r => {
           const card = document.createElement("div");
           card.className = "related-card";
           const img = document.createElement("img");
-          img.src = (r.productImageUrl||"").split(";")[0] || "https://via.placeholder.com/300";
+          const rImages = (r.productImageUrl||"").split(";").filter(Boolean).map(fixImageUrl);
+          img.src = rImages[0] || "https://via.placeholder.com/300";
           const h4 = document.createElement("h4");
           h4.innerText = r.name || "Unnamed";
           card.appendChild(img);
           card.appendChild(h4);
-          card.onclick = () => location.href = `product-page.html?id=${(r.name||"").toLowerCase()}`;
+          card.onclick = () => location.href = `product-page.html?id=${slugify(r.name||"")}`;
           relatedGrid.appendChild(card);
         });
       }
     });
   })
-  .catch(err => {
-    console.error("CSV load error:", err);
-  });
-
+  .catch(err => console.error("CSV load error:", err));
 
 // ---------------- ADD TO CART ----------------
 addToCartBtn.onclick = ()=>{
@@ -411,5 +414,6 @@ document.querySelector(".slider-btn.prev").onclick = () => slider.scrollBy({ lef
 fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
 fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
 </script>
+
 </body>
 </html>
