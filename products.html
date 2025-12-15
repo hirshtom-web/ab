@@ -728,21 +728,22 @@ function renderPage(page){
 /* ===============================
    IMAGE SWITCH
 ================================ */
-imgButtons.forEach((btn,index)=>{
-  btn.addEventListener("click",()=>{
-    imgButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
+function switchImage(card, delta) {
+  const images = JSON.parse(card.dataset.images || "[]");
+  if (!images.length) return;
 
-    document.querySelectorAll(".product-card").forEach(card=>{
-      const images = JSON.parse(card.dataset.images || "[]");
-      if(images.length > index){
-        card.dataset.currentImage = index;
-        const img = card.querySelector("img");
-        img.src = images[index].includes("http") ? images[index] : "https://static.wixstatic.com/media/"+images[index];
-      }
-    });
-  });
-});
+  let current = parseInt(card.dataset.currentImage || 0, 10);
+  current = (current + delta + images.length) % images.length; // wrap around
+  card.dataset.currentImage = current;
+
+  const img = card.querySelector("img");
+  if (img) {
+    img.src = images[current].includes("http")
+      ? images[current]
+      : "https://static.wixstatic.com/media/" + images[current];
+  }
+}
+
 
 /* ===============================
    GRID CONTROL
