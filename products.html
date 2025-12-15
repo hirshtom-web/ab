@@ -616,113 +616,107 @@ function renderPage(page){
 
   pageProducts.forEach(p=>{
     const card = document.createElement("div");
-    card.className="product-card";
-    card.dataset.currentImage=0;
+    card.className = "product-card";
+    card.dataset.currentImage = 0;
 
-    const productSlug = slugify(p.name || p.Name || "");
+    // Handle CSV header variations
+    const name = (p.name || p.Name || "").trim();
+    const productId = (p.productId || p.ProductId || "").trim();
+    const priceValue = (p.price || p.Price || "").trim();
+    const ribbon = (p.ribbon || p.Ribbon || "").trim();
+    const category = (p.category || p.Category || "").trim();
+    const color = (p.color || p.Color || "").trim();
+    const imageUrls = (p.productImageUrl || p.ProductImageUrl || "").trim();
+
+    const productSlug = slugify(name);
     card.dataset.id = productSlug;
 
     /* --- Images --- */
-    const images=(p.productImageUrl||"")
+    const images = imageUrls
       .split(";")
       .map(u=>u.trim())
       .filter(Boolean);
+    card.dataset.images = JSON.stringify(images);
 
-    card.dataset.images=JSON.stringify(images);
+    const wrapper = document.createElement("div");
+    wrapper.className = "img-wrapper";
 
-    const wrapper=document.createElement("div");
-    wrapper.className="img-wrapper";
-
-    const img=document.createElement("img");
-    img.loading="lazy";
+    const img = document.createElement("img");
+    img.loading = "lazy";
     img.src = images[0]
-      ? (images[0].includes("http")
-          ? images[0]
-          : "https://static.wixstatic.com/media/"+images[0])
+      ? (images[0].includes("http") ? images[0] : "https://static.wixstatic.com/media/"+images[0])
       : "";
     wrapper.appendChild(img);
 
     /* --- Arrows --- */
-    if(images.length>1){
+    if(images.length > 1){
       ["left","right"].forEach(dir=>{
-        const a=document.createElement("div");
-        a.className=`slider-arrow ${dir}`;
-        a.innerHTML=dir==="left"?"&#10094;":"&#10095;";
-        a.onclick=e=>{
-          e.preventDefault();e.stopPropagation();
-          switchImage(card,dir==="left"?-1:1);
-        };
+        const a = document.createElement("div");
+        a.className = `slider-arrow ${dir}`;
+        a.innerHTML = dir==="left" ? "&#10094;" : "&#10095;";
+        a.onclick = e => { e.preventDefault(); e.stopPropagation(); switchImage(card, dir==="left" ? -1 : 1); };
         wrapper.appendChild(a);
       });
     }
 
-    /* --- Plus --- */
-    const plus=document.createElement("div");
-    plus.className="plus-overlay";
-    plus.innerText="+";
+    /* --- Plus Overlay --- */
+    const plus = document.createElement("div");
+    plus.className = "plus-overlay";
+    plus.innerText = "+";
     wrapper.appendChild(plus);
-
-    /* --- Swipe --- */
-    let startX=0;
-    wrapper.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-    wrapper.addEventListener("touchend",e=>{
-      const dx=e.changedTouches[0].clientX-startX;
-      if(dx>30) switchImage(card,-1);
-      if(dx<-30) switchImage(card,1);
-    });
 
     card.appendChild(wrapper);
 
     /* --- Info --- */
-    const info=document.createElement("div");
-    info.className="product-info";
+    const info = document.createElement("div");
+    info.className = "product-info";
 
-    const h3=document.createElement("h3");
-    h3.innerText=p.name||p.Name||"Unnamed product";
+    const h3 = document.createElement("h3");
+    h3.innerText = name || "Unnamed product";
     info.appendChild(h3);
 
-    const price=document.createElement("div");
-    price.className="price";
-    price.innerText=p.price?.trim()?`$${p.price}`:"$1";
-    info.appendChild(price);
+    const priceDiv = document.createElement("div");
+    priceDiv.className = "price";
+    priceDiv.innerText = priceValue ? `$${priceValue}` : "$1";
+    info.appendChild(priceDiv);
 
     card.appendChild(info);
 
     /* --- Ribbon --- */
-    if(p.ribbon){
-      const r=document.createElement("div");
-      r.className="top-label";
-      r.innerText=p.ribbon;
+    if(ribbon){
+      const r = document.createElement("div");
+      r.className = "top-label";
+      r.innerText = ribbon;
       card.appendChild(r);
     }
 
     /* --- Bubbles --- */
-    const bubbles=["category","color"].map(k=>p[k]).filter(Boolean);
+    const bubbles = [category, color].filter(Boolean);
     if(bubbles.length){
-      const b=document.createElement("div");
-      b.className="top-bubbles";
+      const b = document.createElement("div");
+      b.className = "top-bubbles";
       bubbles.forEach(t=>{
-        const d=document.createElement("div");
-        d.innerText=t;
+        const d = document.createElement("div");
+        d.innerText = t;
         b.appendChild(d);
       });
       card.appendChild(b);
     }
 
-  
-/* --- Link --- */
-const link = document.createElement("a");
-link.href = p.productId ? `product-page.html?id=${p.productId}` : "#";
-link.appendChild(card);
+    /* --- Link --- */
+    const link = document.createElement("a");
+    link.href = productId ? `product-page.html?id=${productId}` : "#";
+    link.appendChild(card);
 
-grid.appendChild(link);
+    grid.appendChild(link);
+  });
 
-
+  // Insert banners once per page, not per product
   insertBanners();
 
-  pageNumber.innerText=currentPage;
-  prevBtn.disabled=currentPage===1;
-  nextBtn.disabled=end>=allProducts.length;
+  pageNumber.innerText = currentPage;
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = end >= allProducts.length;
 
   applyDefaultGrid();
 }
