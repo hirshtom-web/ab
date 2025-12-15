@@ -216,6 +216,136 @@ section h2 { font-size: 28px; margin-bottom: 20px; text-align: center; }
   .related-card { width: 120px; }
   section h2 { font-size: 20px; }
 }
+
+   /* ===============================
+   SOFT CARD LAYER (NON-BREAKING)
+================================ */
+
+/* Create inner card feeling without changing HTML */
+.product-info-section,
+.accordion-section,
+.related-items-section,
+.artist-card-section,
+.testimonials-section {
+  position: relative;
+}
+
+/* Product main card */
+.product-info-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  max-width: 1200px;
+  margin: auto;
+  background: #F7F5ED;
+  border-radius: 28px;
+  z-index: -1;
+}
+
+/* Product gallery card */
+.product-gallery {
+  background: #fff;
+  padding: 16px;
+  border-radius: 24px;
+}
+
+/* Product details card */
+.product-details {
+  background: #fff;
+  padding: 28px;
+  border-radius: 24px;
+}
+
+/* Main image polish */
+#mainImage {
+  border-radius: 20px;
+}
+
+/* ===============================
+   SLIDER ARROWS (YOU ALREADY CREATE THEM)
+================================ */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.slider-arrow.left { left: 16px; }
+.slider-arrow.right { right: 16px; }
+
+/* ===============================
+   RIBBON & BUBBLES (YOU CREATE THEM IN JS)
+================================ */
+.top-label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #ff4500;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.top-bubbles {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+}
+
+.top-bubbles div {
+  background: #111;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+/* ===============================
+   ACCORDION CARD FEEL
+================================ */
+.accordion-item {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* ===============================
+   RELATED ITEMS POLISH
+================================ */
+.related-items-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  max-width: 1200px;
+  margin: auto;
+  background: #F7F5ED;
+  border-radius: 28px;
+  z-index: -1;
+}
+
+/* Buttons hover polish */
+.cta-buttons button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
 </style>
 </head>
 <body>
