@@ -169,16 +169,73 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#fff;color:#111;}
 .license-options label{display:flex;align-items:center;gap:6px;cursor:pointer;}
 .license-options input[type="radio"]{cursor:pointer;}
 
-    /* ---------- Related Section ---------- */
+/* ===============================
+   RELATED PRODUCTS
+================================ */
+.related-products {
+  margin: 50px auto 0;      /* center the section horizontally */
+  max-width: 1200px;        /* limits the width on large screens */
+  padding: 0 10px;          /* some horizontal padding on small screens */
+}
+
+.related-products h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;       /* center the heading */
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  justify-content: center;  /* center grid items if there’s extra space */
+}
+
+.related-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;         /* optional, looks cleaner */
+}
+
+.related-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.related-card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.related-card h4 {
+  margin: 10px 0 4px;
+  font-size: 16px;
+}
+
+.related-card .price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* ===============================
+   MOBILE ADJUSTMENTS
+================================ */
+@media (max-width: 480px) {
+  .related-products h2 {
+    font-size: 20px;
+  }
   
-    .related-products{margin-top:50px;}
-.related-products h2{font-size:24px;margin-bottom:20px;}
-.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;}
-.related-card{border:1px solid #eee;border-radius:12px;padding:12px;text-align:center;transition:transform 0.2s;}
-.related-card:hover{transform:scale(1.05);}
-.related-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;}
-.related-card h4{margin:10px 0 4px;font-size:16px;}
-.related-card .price{font-size:14px;font-weight:600;color:#111;}
+  .related-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
 
     
 </style>
