@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Layout with Skeleton Loading</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+<style>
+/* =====================
+   GLOBAL STYLES
+===================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 40px;
+}
+
+/* =====================
+   LAYOUT
+===================== */
+.layout {
+  display: flex;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* =====================
+   GALLERY
+===================== */
+.gallery {
+  flex: 0 0 65%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-main {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 20px;
+  height: 700px;
+  position: relative;
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+  transition: opacity 0.4s ease;
+}
+
+/* Desktop thumbnails */
+.gallery-thumbs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 72px;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.gallery-thumbs img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.gallery-thumbs img.active {
+  opacity: 1;
+  border: 1px solid #555;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .gallery-main {
+    height: 320px;
+  }
+  .gallery-thumbs {
+    display: none;
+  }
+}
+
+/* =====================
+   RIGHT CONTENT
+===================== */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* =====================
+   PRICING CARD
+===================== */
+.pricing {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+}
+
+.pricing h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.pricing .artist {
+  font-size: 12px;
+  color: #7d8796;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 800;
+  color: #116dff;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.price .old-price {
+  font-size: 12px;
+  color: #7d8796;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.sale-info {
+  font-size: 11px;
+  font-weight: 600;
+  color: #116dff;
+  white-space: nowrap;
+}
+
+.price span {
+  font-size: 12px;
+  color: #116dff;
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+.description {
+  font-size: 12px;
+  color: #7d8796;
+  margin: 20px 0;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons button {
+  font-size: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buy {
+  background: #daf2e8;
+  color: #22afa1;
+}
+
+.cart {
+  background: #22afa1;
+  color: #fff;
+}
+
+/* =====================
+   ACCORDION
+===================== */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-item {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* HEADER */
+.accordion-header {
+  padding: 14px 32px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #000;
+}
+
+.accordion-header .material-icons-outlined {
+  color: #7d8796;
+}
+
+/* CONTENT */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 32px;
+  transition: max-height 0.3s ease;
+}
+
+.accordion-content p {
+  font-size: 12px;
+  color: #7d8796;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 10px 0 14px;
+}
+
+/* =====================
+   SVG SECTION
+===================== */
+.section-svg {
+  display: flex;
+  justify-content: center;
+  margin: -30px 0;
+}
+
+.section-svg img {
+  max-width: 180px;
+  width: 100%;
+  height: auto;
+  opacity: 0.4;
+}
+
+/* =====================
+   SKELETON PLACEHOLDER
+===================== */
+.skeleton {
+  background: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+  0% { left: -150px; }
+  100% { left: 100%; }
+}
+
+.skeleton-img { height: 700px; border-radius: 20px; }
+@media (max-width:768px) { .skeleton-img { height: 320px; } }
+.skeleton-title { width: 60%; height: 22px; margin-bottom: 6px; border-radius: 4px; }
+.skeleton-artist { width: 40%; height: 14px; margin-bottom: 20px; border-radius: 4px; }
+.skeleton-price { width: 30%; height: 18px; margin-bottom: 10px; border-radius: 4px; }
+.skeleton-desc { width: 100%; height: 50px; margin-bottom: 20px; border-radius: 4px; }
+.skeleton-button { width: 100%; height: 40px; margin-bottom: 10px; border-radius: 10px; }
+
+/* =====================
+   MOBILE DOTS
+===================== */
+.gallery-dots {
+  display: none;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.gallery-dots .dot {
+  width: 8px;
+  height: 8px;
+  background: #ccc;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.gallery-dots .dot.active {
+  background: #22afa1;
+}
+
+@media (max-width: 768px) {
+  .gallery-dots { display: flex; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="layout">
+
+    <!-- LEFT -->
+    <div class="gallery">
+      <div class="gallery-main">
+        <!-- Skeleton while loading -->
+        <div class="skeleton skeleton-img" id="gallerySkeleton"></div>
+        <img id="mainImg" style="display:none;" src="">
+      </div>
+
+      <!-- Dot indicators for mobile -->
+      <div class="gallery-dots"></div>
+
+      <div class="gallery-thumbs"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="pricing" id="pricingSkeleton">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-artist"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-desc"></div>
+        <div class="skeleton skeleton-button"></div>
+        <div class="skeleton skeleton-button"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================
+   MOCK DATA (replace with real fetch)
+===================== */
+const productData = {
+  title: "Landscape at Collioure",
+  artist: "Henri Matisse",
+  price: 6.98,
+  oldPrice: 19.99,
+  description: "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
+  images: [
+    "https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png",
+    "https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png"
+  ]
+};
+
+/* =====================
+   RENDER PRODUCT
+===================== */
+function loadProduct(data) {
+  // Hide skeletons
+  document.getElementById("gallerySkeleton").remove();
+  document.getElementById("pricingSkeleton").innerHTML = `
+    <h2>${data.title}</h2>
+    <div class="artist">By ${data.artist}</div>
+    <div class="price">
+      $${data.price.toFixed(2)}
+      <span class="old-price">$${data.oldPrice.toFixed(2)}</span>
+      <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
+    </div>
+    <div class="description">${data.description}</div>
+    <div class="buttons">
+      <button class="buy">Buy Now</button>
+      <button class="cart">Add to Cart</button>
+    </div>
+  `;
+
+  // Render main image
+  const mainImg = document.getElementById("mainImg");
+  mainImg.src = data.images[0];
+  mainImg.style.display = "block";
+
+  // Render thumbnails
+  const thumbsContainer = document.querySelector(".gallery-thumbs");
+  data.images.forEach((img, i) => {
+    const thumb = document.createElement("img");
+    thumb.src = img;
+    if (i === 0) thumb.classList.add("active");
+    thumbsContainer.appendChild(thumb);
+  });
+
+  // Render mobile dots
+  const dotsContainer = document.querySelector('.gallery-dots');
+  data.images.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+    if (i === 0) dot.classList.add('active');
+    dotsContainer.appendChild(dot);
+  });
+
+  // Gallery logic
+  let currentIndex = 0;
+  document.querySelectorAll(".gallery-thumbs img").forEach((thumb, index) => {
+    thumb.addEventListener("click", () => {
+      currentIndex = index;
+      mainImg.src = thumb.src;
+      document.querySelectorAll(".gallery-thumbs img").forEach(t => t.classList.remove("active"));
+      thumb.classList.add("active");
+      updateDots(index);
+    });
+  });
+
+  let startX = 0;
+  mainImg.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+  mainImg.addEventListener("touchend", e => {
+    const endX = e.changedTouches[0].clientX;
+    if (endX - startX > 50) currentIndex = (currentIndex - 1 + data.images.length) % data.images.length;
+    else if (startX - endX > 50) currentIndex = (currentIndex + 1) % data.images.length;
+    else return;
+    mainImg.src = data.images[currentIndex];
+    updateDots(currentIndex);
+    document.querySelectorAll(".gallery-thumbs img").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".gallery-thumbs img")[currentIndex].classList.add("active");
+  });
+
+  function updateDots(index) {
+    document.querySelectorAll('.gallery-dots .dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  // Countdown timer
+  const saleInfo = document.getElementById("saleInfo");
+  let timer = 10*3600 + 33*60 + 11;
+  setInterval(() => {
+    let hours = Math.floor(timer/3600);
+    let minutes = Math.floor((timer%3600)/60);
+    let seconds = timer%60;
+    hours = hours<10?'0'+hours:hours;
+    minutes = minutes<10?'0'+minutes:minutes;
+    seconds = seconds<10?'0'+seconds:seconds;
+    saleInfo.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
+    if(timer>0) timer--;
+  },1000);
+}
+
+// Simulate data fetch delay
+setTimeout(() => loadProduct(productData), 1000);
+</script>
+
+</body>
+</html>
+
