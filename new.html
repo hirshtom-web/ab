@@ -794,22 +794,23 @@ function getRandomDescription() {
 }
 
 function addInstantDelivery() {
-  const galleryMain = mainImage.parentElement;
+  if (!descEl) return;
 
-  // Remove previous instant delivery or description if exists
-  galleryMain.querySelectorAll(".instant-delivery, .dynamic-description-text").forEach(e => e.remove());
+  // Remove previous dynamic description / badge
+  descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(e => e.remove());
 
-  // Create dynamic description above the badge
-  const descEl = document.createElement("p");
-  descEl.className = "dynamic-description-text";
-  descEl.innerText = getRandomDescription();
-  galleryMain.appendChild(descEl);
+  // Add dynamic description at the top
+  const randomDesc = document.createElement("p");
+  randomDesc.className = "dynamic-description-text";
+  randomDesc.innerText = getRandomDescription();
+  descEl.prepend(randomDesc);
 
-  // Create Instant Delivery badge
-  const badge = document.createElement("div");
-  badge.className = "instant-delivery";
-  badge.innerHTML = `<strong>🚀 Instant Delivery</strong>`;
-  galleryMain.appendChild(badge);
+  // Add Instant Delivery link right below dynamic description
+  const instantLink = document.createElement("a");
+  instantLink.href = "#";
+  instantLink.className = "ai-color-link instant-delivery";
+  instantLink.innerHTML = `<span class="material-icons-outlined">cloud_download</span> Instant Delivery`;
+  descEl.insertBefore(instantLink, descEl.children[1]); // after dynamic text
 }
 
 /* =====================
@@ -861,11 +862,11 @@ Papa.parse(csvUrl, {
     allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
     if(allImages.length) mainImage.src = allImages[0];
 
-    // Thumbnails
+    // --- Thumbnails ---
     thumbsEl.innerHTML = "";
     allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src)));
 
-    // Mobile dots
+    // --- Mobile dots ---
     dotsEl.innerHTML = "";
     allImages.forEach((_, i) => {
       const dot = document.createElement("span");
@@ -874,35 +875,31 @@ Papa.parse(csvUrl, {
       dotsEl.appendChild(dot);
     });
 
+    // --- RIBBON & BUBBLES ---
+    const galleryMain = mainImage.parentElement;
+    galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
+
+    if(product.ribbon){
+      const rEl = document.createElement("div");
+      rEl.className="top-label";
+      rEl.innerText = product.ribbon;
+      galleryMain.appendChild(rEl);
+    }
+
+    const bubbles = [product.category, product.color].filter(Boolean);
+    if(bubbles.length){
+      const bEl = document.createElement("div");
+      bEl.className="top-bubbles";
+      bubbles.forEach(t=>{
+        const d = document.createElement("div");
+        d.innerText = t;
+        bEl.appendChild(d);
+      });
+      galleryMain.appendChild(bEl);
+    }
+
     // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
     addInstantDelivery();
-
- // --- RIBBON & BUBBLES ---
-const galleryMain = mainImage.parentElement;
-galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
-
-if(product.ribbon){
-  const rEl = document.createElement("div");
-  rEl.className="top-label";
-  rEl.innerText = product.ribbon;
-  galleryMain.appendChild(rEl);
-}
-
-const bubbles = [product.category, product.color].filter(Boolean);
-if(bubbles.length){
-  const bEl = document.createElement("div");
-  bEl.className="top-bubbles";
-  bubbles.forEach(t=>{
-    const d = document.createElement("div");
-    d.innerText = t;
-    bEl.appendChild(d);
-  });
-  galleryMain.appendChild(bEl);
-}
-
-// --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
-addInstantDelivery(); // <-- ONLY call here, after ribbons/bubbles
-
 
     // --- BUY BUTTON ---
     buyBtn.onclick = () => {
@@ -993,9 +990,17 @@ style.innerHTML = `
   line-height: 1.4;
 }
 .instant-delivery {
+  display: inline-flex;
+  align-items: center;
   font-weight: bold;
   color: #d9534f;
+  text-decoration: none;
   margin-bottom: 12px;
+  font-size: 13px;
+}
+.instant-delivery .material-icons-outlined {
+  font-size: 16px;
+  margin-right: 4px;
 }
 `;
 document.head.appendChild(style);
@@ -1005,6 +1010,7 @@ document.head.appendChild(style);
 
 </body>
 </html>
+
 
 
 
