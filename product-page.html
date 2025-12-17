@@ -146,21 +146,19 @@
   <!-- PapaParse library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   
-  <!-- Scripts -->
   <script src="header.js"></script>
 <script src="product-page.js"></script>
-  
-  <script>
-    // Load header, then initialize
-    fetch("header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-        initHeader();          // initialize header
-        initProductsPage();    // initialize products after header exists
-      })
-      .catch(err => console.error("Header load failed:", err));
-  </script>
+<script>
+fetch("header.html")
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("header-placeholder").innerHTML = html;
+    if (typeof initHeader === "function") initHeader();
+    if (typeof initProductsPage === "function") initProductsPage();
+  })
+  .catch(err => console.error("Header load failed:", err));
+</script>
+
 </body>
 </html>
 
