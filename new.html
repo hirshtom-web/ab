@@ -794,24 +794,25 @@ function getRandomDescription() {
 }
 
 function addInstantDelivery() {
-  if (!descEl) return;
+  const descriptionBox = descEl; // the <div class="description">
 
-  // Remove previous dynamic description / badge
-  descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(e => e.remove());
+  // Remove previous dynamic text and badge
+  descriptionBox.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
 
-  // Add dynamic description at the top
+  // Add random description above the badge
   const randomDesc = document.createElement("p");
   randomDesc.className = "dynamic-description-text";
   randomDesc.innerText = getRandomDescription();
-  descEl.prepend(randomDesc);
+  descriptionBox.prepend(randomDesc);
 
-  // Add Instant Delivery link right below dynamic description
+  // Add Instant Delivery badge/link
   const instantLink = document.createElement("a");
   instantLink.href = "#";
   instantLink.className = "ai-color-link instant-delivery";
   instantLink.innerHTML = `<span class="material-icons-outlined">cloud_download</span> Instant Delivery`;
-  descEl.insertBefore(instantLink, descEl.children[1]); // after dynamic text
+  descriptionBox.appendChild(instantLink);
 }
+
 
 /* =====================
    LOAD CSV & INIT PRODUCT
@@ -1010,6 +1011,7 @@ document.head.appendChild(style);
 
 </body>
 </html>
+
 
 
 
