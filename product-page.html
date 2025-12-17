@@ -729,7 +729,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------------- CONFIG ----------------
   const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productId = new URLSearchParams(location.search).get("id") || new URLSearchParams(location.search).get("product") || "9182732";
+  const urlParams = new URLSearchParams(location.search);
+  const productIdRaw = urlParams.get("id") || urlParams.get("product") || "9182732";
+  const productId = String(productIdRaw).trim();
 
   // ---------------- UTILITIES ----------------
   function slugify(str) {
@@ -765,6 +767,20 @@ document.addEventListener("DOMContentLoaded", () => {
     img.addEventListener("click", () => switchImage(allImages.indexOf(src)));
     img.onclick = () => switchMainImage(mainImgEl, src, thumbsContainer);
     return img;
+  }
+
+  function updateThumbs() {
+    if(!thumbsEl) return;
+    thumbsEl.querySelectorAll("img").forEach((img,i)=>{
+      img.classList.toggle("active", i === currentIndex);
+    });
+  }
+
+  function updateDots() {
+    if(!dotsEl) return;
+    dotsEl.querySelectorAll(".dot").forEach((dot,i)=>{
+      dot.classList.toggle("active", i === currentIndex);
+    });
   }
 
   // ---------------- DYNAMIC DESCRIPTION + INSTANT DELIVERY ----------------
@@ -803,10 +819,10 @@ document.addEventListener("DOMContentLoaded", () => {
     skipEmptyLines: true,
     complete: function(res) {
       const products = res.data.map(p => ({
-        id: (p.productId || p.ProductId || "").trim(),
+        id: String((p.productId || p.ProductId || "").trim()),
         name: (p.name || p.Name || "").trim(),
         price: parseFloat(p.price || p.Price || 0),
-        discount: parseFloat(p.discountValue || "").trim() || 0,
+        discount: parseFloat((p.discountValue || "").trim()) || 0,
         discountMode: (p.discountMode || "").trim(),
         ribbon: (p.ribbon || p.Ribbon || "").trim(),
         category: (p.category || p.Category || "").trim(),
@@ -818,14 +834,17 @@ document.addEventListener("DOMContentLoaded", () => {
         images: (p.productImageUrl || p.ProductImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
       }));
 
-      const product = products.find(p => p.id === productId || slugify(p.name) === productId?.toLowerCase());
+      console.log("URL productId:", productId);
+      console.log("CSV IDs:", products.map(p=>p.id));
+
+      const product = products.find(p => p.id === productId || slugify(p.name) === productId.toLowerCase());
       if(!product || !product.visible){
         document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
         return;
       }
 
       // --- TEXT ---
-      titleEl.innerText = product.name;
+      if(titleEl) titleEl.innerText = product.name;
       if(artistEl) artistEl.innerText = product.artist;
       if(descEl) descEl.innerHTML = product.description;
 
@@ -848,7 +867,6 @@ document.addEventListener("DOMContentLoaded", () => {
         allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src, mainImage, thumbsEl)));
       }
 
-      // --- MOBILE DOTS ---
       if(dotsEl){
         dotsEl.innerHTML = "";
         allImages.forEach((_, i) => {
@@ -862,14 +880,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // --- RIBBON & BUBBLES ---
       const galleryMain = mainImage.parentElement;
       galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
-
       if(product.ribbon){
         const rEl = document.createElement("div");
         rEl.className="top-label";
         rEl.innerText = product.ribbon;
         galleryMain.appendChild(rEl);
       }
-
       const bubbles = [product.category, product.color].filter(Boolean);
       if(bubbles.length){
         const bEl = document.createElement("div");
@@ -920,34 +936,25 @@ document.addEventListener("DOMContentLoaded", () => {
   mainImage.addEventListener("touchend", e => {
     const endX = e.changedTouches[0].clientX;
     if(Math.abs(endX - startX) < 50) return;
-
-    if(endX - startX > 50){
-      switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    } else {
-      switchImage((currentIndex + 1) % allImages.length);
-    }
+    if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+    else switchImage((currentIndex + 1) % allImages.length);
   });
 
   // ---------------- SALE COUNTDOWN ----------------
   function startCountdown(duration) {
     if(!saleInfoEl) return;
     let timer = duration;
-
     const interval = setInterval(() => {
       let hours = Math.floor(timer / 3600);
       let minutes = Math.floor((timer % 3600) / 60);
       let seconds = timer % 60;
-
       hours = hours<10?"0"+hours:hours;
       minutes = minutes<10?"0"+minutes:minutes;
       seconds = seconds<10?"0"+seconds:seconds;
-
       saleInfoEl.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
-
       if(timer>0) timer--; else clearInterval(interval);
     },1000);
   }
-
   startCountdown(10*3600 + 33*60 + 11);
 
   // ---------------- ACCORDION ----------------
@@ -956,7 +963,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const item = btn.closest('.accordion-item');
       const content = btn.nextElementSibling;
       if(!item || !content) return;
-
       if(item.classList.contains('active')){
         content.style.maxHeight = null;
         item.classList.remove('active');
