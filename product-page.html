@@ -718,8 +718,11 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================
      CONFIG
   ==================== */
-  const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productId = new URLSearchParams(window.location.search).get("product") || "9182732";
+const product = allProducts.find(p => 
+    (p.id && p.id.trim() === productId.trim()) || 
+    (slugify(p.name) === productId.trim().toLowerCase())
+);
+
 
   /* =====================
      ELEMENTS
