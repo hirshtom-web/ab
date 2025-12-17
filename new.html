@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product Layout with Skeleton Loading</title>
+<title>Product Layout</title>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
 
 <style>
 /* =====================
@@ -40,6 +41,7 @@ body {
   .layout {
     flex-direction: column;
   }
+
   .container {
     padding: 0 16px;
   }
@@ -58,14 +60,13 @@ body {
   flex: 1;
   overflow: hidden;
   border-radius: 20px;
-  height: 700px;
-  position: relative;
+  height: 700px; /* desktop */
 }
 
 .gallery-main img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* crop images to fill container */
   border-radius: 20px;
   display: block;
   transition: opacity 0.4s ease;
@@ -98,10 +99,11 @@ body {
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .gallery-main {
-    height: 320px;
+    height: 320px; /* mobile height */
   }
+
   .gallery-thumbs {
-    display: none;
+    display: none; /* hide thumbs on mobile */
   }
 }
 
@@ -122,7 +124,6 @@ body {
   background: #fff;
   border-radius: 20px;
   padding: 32px;
-  position: relative;
 }
 
 .pricing h2 {
@@ -142,11 +143,15 @@ body {
   font-size: 18px;
   font-weight: 800;
   color: #116dff;
+}
+
+  .price {
   display: flex;
-  align-items: baseline;
+  align-items: baseline;   /* 👈 THIS is the key */
   gap: 5px;
   flex-wrap: wrap;
 }
+
 
 .price .old-price {
   font-size: 12px;
@@ -159,8 +164,9 @@ body {
   font-size: 11px;
   font-weight: 600;
   color: #116dff;
-  white-space: nowrap;
+  white-space: nowrap;      /* keep countdown on one line */
 }
+
 
 .price span {
   font-size: 12px;
@@ -200,6 +206,12 @@ body {
 .cart {
   background: #22afa1;
   color: #fff;
+}
+
+@media (max-width: 768px) {
+  .pricing {
+    padding: 20px;
+  }
 }
 
 /* =====================
@@ -259,6 +271,7 @@ body {
   display: flex;
   justify-content: center;
   margin: -30px 0;
+  
 }
 
 .section-svg img {
@@ -269,43 +282,186 @@ body {
 }
 
 /* =====================
-   SKELETON PLACEHOLDER
+   IMAGE FIXES
 ===================== */
-.skeleton {
-  background: #e0e0e0;
-  position: relative;
-  overflow: hidden;
+.gallery-main img {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+  
+  @media (max-width: 768px) {
+  .container {
+    padding: 0 10px; /* smaller padding for narrow screens */
+  }
+}
+  
+@media (max-width: 768px) {
+    
+  /* Accordion container */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* space between tabs */
+  }
+
+  /* Accordion item */
+  .accordion-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* Header button */
+  .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;       /* vertically center text + arrow */
+    padding: 10px 16px;        /* 10px top/bottom, 16px left/right */
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;       /* ensures equal top/bottom spacing */
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Header title */
+  .accordion-header .header-title {
+    display: inline-block;
+  }
+
+  /* Arrow icon */
+  .accordion-header .material-icons-outlined {
+    font-size: 16px;
+    color: #7d8796;
+    transition: transform 0.3s ease;
+  }
+
+  /* Rotate arrow when open */
+  .accordion-item.active .accordion-header .material-icons-outlined {
+    transform: rotate(180deg);
+  }
+
+  /* Content */
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px 10px 16px;  /* 10px bottom padding */
+    transition: max-height 0.3s ease;
+  }
+  .header-title {
+    margin-top: 10px;
+  }
+
+  /* Paragraphs inside content */
+  .accordion-content p {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #7d8796;
+    margin: 0;
+    padding: 10px 0 0 0; /* space from header or previous paragraph */
+  }
+
+  .accordion-content p + p {
+    padding-top: 10px; /* space between paragraphs */
+  }
 }
 
-.skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -150px;
-  width: 150px;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: loading 1.2s infinite;
+
+@media (max-width: 768px) {
+
+  .accordion-header {
+    height: 48px;                /* fixed tab height */
+    display: flex;
+    align-items: center;         /* centers content vertically */
+    justify-content: space-between;
+    padding: 0 16px;             /* horizontal only */
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;              /* remove text math */
+    background: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .accordion-header .header-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .accordion-header .material-icons-outlined {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    color: #7d8796;
+    transition: transform 0.3s ease;
+  }
+
+  .accordion-item.active
+  .accordion-header
+  .material-icons-outlined {
+    transform: rotate(180deg);
+  }
 }
 
-@keyframes loading {
-  0% { left: -150px; }
-  100% { left: 100%; }
+
+/* ===== RADIO BUTTON CARDS ===== */
+.license-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-.skeleton-img { height: 700px; border-radius: 20px; }
-@media (max-width:768px) { .skeleton-img { height: 320px; } }
-.skeleton-title { width: 60%; height: 22px; margin-bottom: 6px; border-radius: 4px; }
-.skeleton-artist { width: 40%; height: 14px; margin-bottom: 20px; border-radius: 4px; }
-.skeleton-price { width: 30%; height: 18px; margin-bottom: 10px; border-radius: 4px; }
-.skeleton-desc { width: 100%; height: 50px; margin-bottom: 20px; border-radius: 4px; }
-.skeleton-button { width: 100%; height: 40px; margin-bottom: 10px; border-radius: 10px; }
+.license-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border: 0.5px solid #d6e4ff;        /* thin blue line */
+  border-radius: 12px;
+  cursor: pointer;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #7d8796;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
 
-/* =====================
-   MOBILE DOTS
-===================== */
+.license-option input[type="radio"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  accent-color: #116dff;             /* blue radio */
+}
+
+/* ACTIVE (checked) CARD */
+.license-option input[type="radio"]:checked + .radio-label {
+  background: transparent;
+}
+
+.license-option:has(input[type="radio"]:checked) {
+  background: #eef4ff;               /* soft light blue */
+  border-color: #116dff;              /* thin blue border */
+}
+
+/* Text styles */
+.radio-label {
+  color: #7d8796;                     /* keep text neutral */
+}
+
+.radio-label strong {
+  font-weight: 600;
+  color: #000;                        /* title stays black */
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Dot indicators */
 .gallery-dots {
-  display: none;
+  display: none; /* hidden by default */
   justify-content: center;
   gap: 6px;
   margin-top: 8px;
@@ -323,9 +479,106 @@ body {
   background: #22afa1;
 }
 
+/* Show only on mobile */
 @media (max-width: 768px) {
-  .gallery-dots { display: flex; }
+  .gallery-dots {
+    display: flex;
+  }
 }
+/* ===== AI COLOR EFFECT ===== */
+.ai-color-icon,
+.ai-color-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+
+  background: linear-gradient(
+    90deg,
+    #ff3cac,
+    #784ba0,
+    #2b86c5,
+    #22afa1,
+    #ff3cac
+  );
+
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  animation: aiRainbow 7s linear infinite;
+}
+
+/* Icon sizing */
+.ai-color-icon.material-icons-outlined,
+.ai-color-link .material-icons-outlined {
+  font-size: 15px;
+}
+
+/* Animation */
+@keyframes aiRainbow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.ai-color-link:hover,
+.ai-color-icon:hover {
+  filter: drop-shadow(0 0 6px rgba(34, 175, 161, 0.6));
+  transform: translateY(-1px);
+}
+
+  /* MOBILE FIX: AI LINK VISIBILITY */
+@media (max-width: 768px) {
+  .ai-color-link {
+    color: #22afa1;
+    -webkit-text-fill-color: initial;
+    background: none;
+    animation: none;
+  }
+
+  .gallery-dots {
+    margin-top: 16px;
+  }
+
+  .right {
+    gap: 24px;
+  }
+}
+  
+@media (max-width: 768px) {
+
+  .section-svg {
+    position: relative;
+    height: 20px;
+    margin: -8px 0;   /* 👈 removes 8px from gap above & below */
+    overflow: hidden;
+  }
+
+  .section-svg img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 20px;
+    display: block;
+  }
+}
+
+  
+  @media (max-width: 768px) {
+  .accordion {
+    margin-top: -6px;
+  }
+}
+
+
 </style>
 </head>
 
@@ -336,142 +589,291 @@ body {
 
     <!-- LEFT -->
     <div class="gallery">
-      <div class="gallery-main">
-        <!-- Skeleton while loading -->
-        <div class="skeleton skeleton-img" id="gallerySkeleton"></div>
-        <img id="mainImg" style="display:none;" src="">
+<div class="gallery-main">
+  <img id="mainImg" src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png">
+</div>
+
+<!-- Dot indicators for mobile -->
+<div class="gallery-dots"></div>
+
+      <div class="gallery-thumbs">
+        <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" class="active">
+        <img src="https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png">
       </div>
-
-      <!-- Dot indicators for mobile -->
-      <div class="gallery-dots"></div>
-
-      <div class="gallery-thumbs"></div>
     </div>
 
     <!-- RIGHT -->
     <div class="right">
-      <div class="pricing" id="pricingSkeleton">
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-artist"></div>
-        <div class="skeleton skeleton-price"></div>
-        <div class="skeleton skeleton-desc"></div>
-        <div class="skeleton skeleton-button"></div>
-        <div class="skeleton skeleton-button"></div>
+
+      <div class="pricing">
+        <h2>Landscape at Collioure</h2>
+        <div class="artist">By Henri Matisse</div>
+<div class="price">
+  $6.98
+  <span class="old-price">$19.99</span>
+  <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
+</div>
+
+        <div class="description">
+          This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
+        <a href="#" class="ai-color-link">
+  <span class="material-icons-outlined">cloud_download</span>
+  Instant Delivery
+</a>
+    </div>
+        <div class="buttons">
+          <button class="buy">Buy Now</button>
+          <button class="cart">Add to Cart</button>
+        </div>
       </div>
+      
+      <div class="section-svg">
+        <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
+      </div>
+      
+      <div class="accordion">
+        <div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">High-Resolution Digital Art Prints</span>
+  <span class="material-icons-outlined">expand_more</span>
+</button>
+
+          <div class="accordion-content">
+            <p>
+              You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
+              Print in any size at home or through a local or online printing service.
+              Perfect for framing, gifts, or decorating your space.
+            </p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">Instant Download via Email</span>
+  <span class="material-icons-outlined">expand_more</span>
+</button>
+          <div class="accordion-content">
+            <p>
+              Your files will be sent straight to your email after purchase for quick and easy access.
+              No waiting, no shipping — download and print right away.
+            </p>
+          </div>
+        </div>
+
+<div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">Easy to Print & Frame</span>
+  <span class="material-icons-outlined">expand_more</span>
+</button>
+          <div class="accordion-content">
+            <p>
+              Print effortlessly at home, online, or through a professional print shop.
+              Once printed, your artwork is ready to frame and hang,
+              instantly adding beauty to your space.
+            </p>
+          </div>
+        </div>
+
+<div class="accordion-item">
+  <button class="accordion-header">
+    <span class="header-title">Usage License</span>
+    <span class="material-icons-outlined">expand_more</span>
+  </button>
+
+  <div class="accordion-content">
+    <div class="license-options">
+      <label class="license-option">
+        <input type="radio" name="license" checked>
+        <span class="radio-label">
+          <strong>Personal Use</strong>
+          Personal use only — perfect for home décor or gifting.
+        </span>
+      </label>
+
+      <label class="license-option">
+        <input type="radio" name="license">
+        <span class="radio-label">
+          <strong>Commercial Use</strong>
+          Commercial licensing for online, digital, and resale purposes.
+        </span>
+      </label>
+    </div>
+  </div>
+</div>
+
+
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
 /* =====================
-   MOCK DATA (replace with real fetch)
+   ACCORDION LOGIC
 ===================== */
-const productData = {
-  title: "Landscape at Collioure",
-  artist: "Henri Matisse",
-  price: 6.98,
-  oldPrice: 19.99,
-  description: "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
-  images: [
-    "https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png",
-    "https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png"
-  ]
-};
+document.querySelectorAll('.accordion-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.accordion-item');
+    const content = btn.nextElementSibling;
+
+    if (!item || !content) return;
+
+    if (item.classList.contains('active')) {
+      content.style.maxHeight = null;
+      item.classList.remove('active');
+    } else {
+      document.querySelectorAll('.accordion-item').forEach(i => {
+        i.classList.remove('active');
+        const c = i.querySelector('.accordion-content');
+        if (c) c.style.maxHeight = null;
+      });
+
+      content.style.maxHeight = content.scrollHeight + 'px';
+      item.classList.add('active');
+    }
+  });
+});
 
 /* =====================
-   RENDER PRODUCT
+   GALLERY LOGIC
 ===================== */
-function loadProduct(data) {
-  // Hide skeletons
-  document.getElementById("gallerySkeleton").remove();
-  document.getElementById("pricingSkeleton").innerHTML = `
-    <h2>${data.title}</h2>
-    <div class="artist">By ${data.artist}</div>
-    <div class="price">
-      $${data.price.toFixed(2)}
-      <span class="old-price">$${data.oldPrice.toFixed(2)}</span>
-      <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
-    </div>
-    <div class="description">${data.description}</div>
-    <div class="buttons">
-      <button class="buy">Buy Now</button>
-      <button class="cart">Add to Cart</button>
-    </div>
-  `;
+const mainImg = document.getElementById("mainImg");
 
-  // Render main image
-  const mainImg = document.getElementById("mainImg");
-  mainImg.src = data.images[0];
-  mainImg.style.display = "block";
+const galleryImages = [
+  "https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png",
+  "https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png"
+];
 
-  // Render thumbnails
-  const thumbsContainer = document.querySelector(".gallery-thumbs");
-  data.images.forEach((img, i) => {
-    const thumb = document.createElement("img");
-    thumb.src = img;
-    if (i === 0) thumb.classList.add("active");
-    thumbsContainer.appendChild(thumb);
+let currentIndex = 0;
+
+// Desktop thumbnails
+document.querySelectorAll(".gallery-thumbs img").forEach((thumb, index) => {
+  thumb.addEventListener("click", () => {
+    currentIndex = index;
+    mainImg.src = thumb.src;
+
+    document
+      .querySelectorAll(".gallery-thumbs img")
+      .forEach(t => t.classList.remove("active"));
+
+    thumb.classList.add("active");
   });
+});
 
-  // Render mobile dots
-  const dotsContainer = document.querySelector('.gallery-dots');
-  data.images.forEach((_, i) => {
-    const dot = document.createElement('span');
-    dot.classList.add('dot');
-    if (i === 0) dot.classList.add('active');
-    dotsContainer.appendChild(dot);
-  });
+// Mobile swipe
+let startX = 0;
 
-  // Gallery logic
-  let currentIndex = 0;
-  document.querySelectorAll(".gallery-thumbs img").forEach((thumb, index) => {
-    thumb.addEventListener("click", () => {
-      currentIndex = index;
-      mainImg.src = thumb.src;
-      document.querySelectorAll(".gallery-thumbs img").forEach(t => t.classList.remove("active"));
-      thumb.classList.add("active");
-      updateDots(index);
-    });
-  });
+mainImg.addEventListener("touchstart", e => {
+  if (window.innerWidth <= 768) {
+    startX = e.touches[0].clientX;
+  }
+});
 
-  let startX = 0;
-  mainImg.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-  mainImg.addEventListener("touchend", e => {
-    const endX = e.changedTouches[0].clientX;
-    if (endX - startX > 50) currentIndex = (currentIndex - 1 + data.images.length) % data.images.length;
-    else if (startX - endX > 50) currentIndex = (currentIndex + 1) % data.images.length;
-    else return;
-    mainImg.src = data.images[currentIndex];
-    updateDots(currentIndex);
-    document.querySelectorAll(".gallery-thumbs img").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".gallery-thumbs img")[currentIndex].classList.add("active");
-  });
+mainImg.addEventListener("touchend", e => {
+  if (window.innerWidth > 768) return;
 
-  function updateDots(index) {
-    document.querySelectorAll('.gallery-dots .dot').forEach((dot, i) => {
-      dot.classList.toggle('active', i === index);
-    });
+  const endX = e.changedTouches[0].clientX;
+
+  if (endX - startX > 50) {
+    currentIndex =
+      (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+  } else if (startX - endX > 50) {
+    currentIndex =
+      (currentIndex + 1) % galleryImages.length;
+  } else {
+    return;
   }
 
-  // Countdown timer
+  mainImg.style.opacity = 0;
+
+  const newImg = new Image();
+  newImg.src = galleryImages[currentIndex];
+
+  newImg.onload = () => {
+    mainImg.src = newImg.src;
+    mainImg.style.opacity = 1;
+  };
+});
+
+/* =====================
+   SALE COUNTDOWN TIMER
+===================== */
+function startCountdown(duration) {
   const saleInfo = document.getElementById("saleInfo");
-  let timer = 10*3600 + 33*60 + 11;
+  if (!saleInfo) return;
+
+  let timer = duration;
+
   setInterval(() => {
-    let hours = Math.floor(timer/3600);
-    let minutes = Math.floor((timer%3600)/60);
-    let seconds = timer%60;
-    hours = hours<10?'0'+hours:hours;
-    minutes = minutes<10?'0'+minutes:minutes;
-    seconds = seconds<10?'0'+seconds:seconds;
+    let hours = Math.floor(timer / 3600);
+    let minutes = Math.floor((timer % 3600) / 60);
+    let seconds = timer % 60;
+
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
     saleInfo.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
-    if(timer>0) timer--;
-  },1000);
+
+    if (timer > 0) {
+      timer--;
+    }
+  }, 1000);
 }
 
-// Simulate data fetch delay
-setTimeout(() => loadProduct(productData), 1000);
+// Example: countdown from 10 hours, 33 minutes, 11 seconds
+startCountdown(10 * 3600 + 33 * 60 + 11);
+  
+  // Create dots dynamically
+const dotsContainer = document.querySelector('.gallery-dots');
+galleryImages.forEach((_, i) => {
+  const dot = document.createElement('span');
+  dot.classList.add('dot');
+  if (i === 0) dot.classList.add('active');
+  dotsContainer.appendChild(dot);
+});
+
+// Function to update active dot
+function updateDots(index) {
+  document.querySelectorAll('.gallery-dots .dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
+// Update dots when thumbnail clicked
+document.querySelectorAll(".gallery-thumbs img").forEach((thumb, index) => {
+  thumb.addEventListener("click", () => {
+    currentIndex = index;
+    mainImg.src = thumb.src;
+    updateDots(index);
+    document.querySelectorAll(".gallery-thumbs img").forEach(t => t.classList.remove("active"));
+    thumb.classList.add("active");
+  });
+});
+
+// Update dots on swipe
+mainImg.addEventListener("touchend", e => {
+  if (window.innerWidth > 768) return;
+
+  const endX = e.changedTouches[0].clientX;
+  if (endX - startX > 50) {
+    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+  } else if (startX - endX > 50) {
+    currentIndex = (currentIndex + 1) % galleryImages.length;
+  } else return;
+
+  mainImg.style.opacity = 0;
+  const newImg = new Image();
+  newImg.src = galleryImages[currentIndex];
+  newImg.onload = () => {
+    mainImg.src = newImg.src;
+    mainImg.style.opacity = 1;
+    updateDots(currentIndex); // <-- update dots here
+  };
+});
+
 </script>
 
 </body>
 </html>
-
