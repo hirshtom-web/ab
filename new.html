@@ -3,1017 +3,655 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product Layout</title>
-
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
-
+<title>Product Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* =====================
-   GLOBAL STYLES
-===================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ===============================
+   RESET & BODY
+================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; color: #111; background: #fff; margin: 0; }
+.container { max-width: 100%; padding: 0 20px; margin: 0 auto; }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f5f5f5;
-}
+/* ===============================
+   FULL WIDTH SECTION STYLING
+================================ */
+section { width: 100%; padding: 40px 0; }
+section h2 { font-size: 28px; margin-bottom: 20px; text-align: center; }
 
-.container {
-  max-width: 1400px;
-  margin: 40px auto;
+/* ===============================
+   PRODUCT INFO SECTION
+================================ */
+/* ===============================
+   PRODUCT INFO SECTION (FIXED)
+================================ */
+.product-info-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+
+  /* outer spacing */
   padding: 0 40px;
+
+  /* space between gallery & details */
+  gap: 40px;
+
+  /* safety */
+  box-sizing: border-box;
 }
 
-/* =====================
-   LAYOUT
-===================== */
-.layout {
+.product-gallery,
+.product-details {
+  /* allow shrinking */
+  flex: 1 1 0;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* internal spacing */
+}
+
+/* main product image */
+.product-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* thumbnails */
+.product-thumbnails {
   display: flex;
   gap: 40px;
 }
 
-@media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-  }
-
-  .container {
-    padding: 0 16px;
-  }
-}
-
-/* =====================
-   GALLERY
-===================== */
-.gallery {
-  flex: 0 0 65%;
-  display: flex;
-  flex-direction: column;
-}
-
-.gallery-main {
-  flex: 1;
-  overflow: hidden;
-  border-radius: 20px;
-  height: 700px; /* desktop */
-}
-
-.gallery-main img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* crop images to fill container */
-  border-radius: 20px;
-  display: block;
-  transition: opacity 0.4s ease;
-}
-
-/* Desktop thumbnails */
-.gallery-thumbs {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 72px;
-  gap: 8px;
-  margin-top: 10px;
-  overflow-x: auto;
-}
-
-.gallery-thumbs img {
+.product-thumbnails img {
   width: 72px;
   height: 72px;
   object-fit: cover;
-  border-radius: 12px;
-  opacity: 0.6;
+  border-radius: 8px;
   cursor: pointer;
+  opacity: 0.6;
+  border: 2px solid transparent;
+  transition: 0.2s;
 }
 
-.gallery-thumbs img.active {
+.product-thumbnails img.active {
   opacity: 1;
-  border: 1px solid #555;
+  border-color: #111;
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .gallery-main {
-    height: 320px; /* mobile height */
-  }
-
-  .gallery-thumbs {
-    display: none; /* hide thumbs on mobile */
-  }
+/* details text */
+.product-details h1 { font-size: 32px; }
+.product-price { font-size: 24px; font-weight: 600; }
+.product-old-price {
+  font-size: 18px;
+  text-decoration: line-through;
+  color: #999;
 }
 
-/* =====================
-   RIGHT CONTENT
-===================== */
-.right {
-  flex: 1;
+.product-description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* licenses */
+.license-options {
   display: flex;
-  flex-direction: column;
   gap: 40px;
 }
 
-/* =====================
-   PRICING CARD
-===================== */
-.pricing {
-  background: #fff;
-  border-radius: 20px;
-  padding: 32px;
-}
-
-.pricing h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.pricing .artist {
-  font-size: 12px;
-  color: #7d8796;
-  margin-bottom: 20px;
-  font-weight: 500;
-}
-
-.price {
-  font-size: 18px;
-  font-weight: 800;
-  color: #116dff;
-}
-
-  .price {
+.license-options label {
   display: flex;
-  align-items: baseline;   /* 👈 THIS is the key */
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-
-.price .old-price {
-  font-size: 12px;
-  color: #7d8796;
-  text-decoration: line-through;
-  font-weight: 500;
-}
-
-.sale-info {
-  font-size: 11px;
-  font-weight: 600;
-  color: #116dff;
-  white-space: nowrap;      /* keep countdown on one line */
-}
-
-
-.price span {
-  font-size: 12px;
-  color: #116dff;
-  margin-left: 5px;
-  font-weight: 500;
-}
-
-.description {
-  font-size: 12px;
-  color: #7d8796;
-  margin: 20px 0;
-  font-weight: 500;
-  line-height: 1.6;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.buttons button {
-  font-size: 12px;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
 }
 
-.buy {
-  background: #daf2e8;
-  color: #22afa1;
+/* buttons */
+.cta-buttons {
+  display: flex;
+  gap: 40px;
 }
 
-.cart {
-  background: #22afa1;
-  color: #fff;
+.cta-buttons button {
+  flex: 1;
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
 }
 
+#addToCart { background: #111; color: #fff; }
+#buyNow { background: #ff4500; color: #fff; }
+
+/* ===============================
+   MOBILE ADJUSTMENT
+================================ */
 @media (max-width: 768px) {
-  .pricing {
-    padding: 20px;
+  .product-info-section {
+    padding: 0 20px;
+    gap: 24px;
+  }
+
+  .product-gallery,
+  .product-details {
+    gap: 24px;
+  }
+
+  .product-thumbnails,
+  .license-options,
+  .cta-buttons {
+    gap: 16px;
   }
 }
 
-/* =====================
-   ACCORDION
-===================== */
+/* ===============================
+   ACCORDION / DETAILS SECTION
+================================ */
 .accordion {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .accordion-item {
-  background: #fff;
-  border-radius: 10px;
+  background: #F7F5ED;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid #f0ede4;
 }
 
-/* HEADER */
 .accordion-header {
-  padding: 14px 32px;
-  font-size: 12px;
-  font-weight: 600;
-  border: none;
-  background: #fff;
-  width: 100%;
+  padding: 0 20px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
-  color: #000;
-}
-
-.accordion-header .material-icons-outlined {
-  color: #7d8796;
-}
-
-/* CONTENT */
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  padding: 0 32px;
-  transition: max-height 0.3s ease;
-}
-
-.accordion-content p {
-  font-size: 12px;
-  color: #7d8796;
   font-weight: 500;
-  line-height: 1.6;
-  padding: 10px 0 14px;
-}
-
-/* =====================
-   SVG SECTION
-===================== */
-.section-svg {
-  display: flex;
-  justify-content: center;
-  margin: -30px 0;
-  
-}
-
-.section-svg img {
-  max-width: 180px;
-  width: 100%;
-  height: auto;
-  opacity: 0.4;
-}
-
-/* =====================
-   IMAGE FIXES
-===================== */
-.gallery-main img {
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-  
-  @media (max-width: 768px) {
-  .container {
-    padding: 0 10px; /* smaller padding for narrow screens */
-  }
-}
-  
-@media (max-width: 768px) {
-    
-  /* Accordion container */
-  .accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* space between tabs */
-  }
-
-  /* Accordion item */
-  .accordion-item {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  /* Header button */
-  .accordion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;       /* vertically center text + arrow */
-    padding: 10px 16px;        /* 10px top/bottom, 16px left/right */
-    font-size: 12px;
-    font-weight: 600;
-    line-height: normal;       /* ensures equal top/bottom spacing */
-    background: #fff;
-    border: none;
-    cursor: pointer;
-    position: relative;
-  }
-
-  /* Header title */
-  .accordion-header .header-title {
-    display: inline-block;
-  }
-
-  /* Arrow icon */
-  .accordion-header .material-icons-outlined {
-    font-size: 16px;
-    color: #7d8796;
-    transition: transform 0.3s ease;
-  }
-
-  /* Rotate arrow when open */
-  .accordion-item.active .accordion-header .material-icons-outlined {
-    transform: rotate(180deg);
-  }
-
-  /* Content */
-  .accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    padding: 0 16px 10px 16px;  /* 10px bottom padding */
-    transition: max-height 0.3s ease;
-  }
-  .header-title {
-    margin-top: 10px;
-  }
-
-  /* Paragraphs inside content */
-  .accordion-content p {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.6;
-    color: #7d8796;
-    margin: 0;
-    padding: 10px 0 0 0; /* space from header or previous paragraph */
-  }
-
-  .accordion-content p + p {
-    padding-top: 10px; /* space between paragraphs */
-  }
-}
-
-
-@media (max-width: 768px) {
-
-  .accordion-header {
-    height: 48px;                /* fixed tab height */
-    display: flex;
-    align-items: center;         /* centers content vertically */
-    justify-content: space-between;
-    padding: 0 16px;             /* horizontal only */
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;              /* remove text math */
-    background: #fff;
-    border: none;
-    cursor: pointer;
-  }
-
-  .accordion-header .header-title {
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-
-  .accordion-header .material-icons-outlined {
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    color: #7d8796;
-    transition: transform 0.3s ease;
-  }
-
-  .accordion-item.active
-  .accordion-header
-  .material-icons-outlined {
-    transform: rotate(180deg);
-  }
-}
-
-
-/* ===== RADIO BUTTON CARDS ===== */
-.license-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.license-option {
-  display: flex;
-  align-items: flex-start;
-  padding: 12px 16px;
-  border: 0.5px solid #d6e4ff;        /* thin blue line */
-  border-radius: 12px;
   cursor: pointer;
-  background: #fff;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #7d8796;
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-
-.license-option input[type="radio"] {
-  margin-right: 10px;
-  margin-top: 3px;
-  accent-color: #116dff;             /* blue radio */
-}
-
-/* ACTIVE (checked) CARD */
-.license-option input[type="radio"]:checked + .radio-label {
+  border: none;
   background: transparent;
 }
 
-.license-option:has(input[type="radio"]:checked) {
-  background: #eef4ff;               /* soft light blue */
-  border-color: #116dff;              /* thin blue border */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  transition: max-height 0.35s ease, padding 0.35s ease;
 }
 
-/* Text styles */
-.radio-label {
-  color: #7d8796;                     /* keep text neutral */
+.accordion-item.active .accordion-content {
+  padding: 12px 20px 20px;
 }
 
-.radio-label strong {
-  font-weight: 600;
-  color: #000;                        /* title stays black */
-  display: block;
-  margin-bottom: 4px;
+/* ===============================
+   RELATED ITEMS SECTION
+================================ */
+.related-items-section {
+  overflow: hidden;
+  position: relative;
 }
 
-/* Dot indicators */
-.gallery-dots {
-  display: none; /* hidden by default */
-  justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.gallery-dots .dot {
-  width: 8px;
-  height: 8px;
-  background: #ccc;
-  border-radius: 50%;
-  transition: background 0.3s;
-}
-
-.gallery-dots .dot.active {
-  background: #22afa1;
-}
-
-/* Show only on mobile */
-@media (max-width: 768px) {
-  .gallery-dots {
-    display: flex;
-  }
-}
-/* ===== AI COLOR EFFECT ===== */
-.ai-color-icon,
-.ai-color-link {
-  display: inline-flex;
+.related-slider-wrapper {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 15px;
+}
 
+.related-grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+
+.related-grid::-webkit-scrollbar { display: none; }
+
+.related-card {
+  flex: 0 0 auto;
+  width: 180px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.related-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.related-card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 24px;
+  width: 40px;
+  height: 60px;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: 6px;
+}
+
+.slider-btn.prev { left: 0; }
+.slider-btn.next { right: 0; }
+
+/* ===============================
+   ARTIST CARD & TESTIMONIALS
+================================ */
+.artist-card-section, .testimonials-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .product-info-section { flex-direction: column; }
+  .related-card { width: 140px; }
+  .slider-btn { width: 32px; height: 48px; font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .related-card { width: 120px; }
+  section h2 { font-size: 20px; }
+}
+
+   /* ===============================
+   SOFT CARD LAYER (NON-BREAKING)
+================================ */
+
+/* Create inner card feeling without changing HTML */
+.product-info-section,
+.accordion-section,
+.related-items-section,
+.artist-card-section,
+.testimonials-section {
+  position: relative;
+}
+
+/* Product main card */
+.product-info-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  max-width: 1200px;
+  margin: auto;
+  background: #F7F5ED;
+  border-radius: 28px;
+  z-index: -1;
+}
+
+/* Product gallery card */
+.product-gallery {
+  background: #fff;
+  padding: 16px;
+  border-radius: 24px;
+}
+
+/* Product details card */
+.product-details {
+  background: #fff;
+  padding: 28px;
+  border-radius: 24px;
+}
+
+/* Main image polish */
+#mainImage {
+  border-radius: 20px;
+}
+
+/* ===============================
+   SLIDER ARROWS (YOU ALREADY CREATE THEM)
+================================ */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.slider-arrow.left { left: 16px; }
+.slider-arrow.right { right: 16px; }
+
+/* ===============================
+   RIBBON & BUBBLES (YOU CREATE THEM IN JS)
+================================ */
+.top-label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #ff4500;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-
-  background: linear-gradient(
-    90deg,
-    #ff3cac,
-    #784ba0,
-    #2b86c5,
-    #22afa1,
-    #ff3cac
-  );
-
-  background-size: 300% 300%;
-  background-clip: text;
-  -webkit-background-clip: text;
-
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-
-  animation: aiRainbow 7s linear infinite;
+  font-weight: 500;
 }
 
-/* Icon sizing */
-.ai-color-icon.material-icons-outlined,
-.ai-color-link .material-icons-outlined {
-  font-size: 15px;
+.top-bubbles {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
 }
 
-/* Animation */
-@keyframes aiRainbow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.ai-color-link:hover,
-.ai-color-icon:hover {
-  filter: drop-shadow(0 0 6px rgba(34, 175, 161, 0.6));
-  transform: translateY(-1px);
+.top-bubbles div {
+  background: #111;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
 }
 
-  /* MOBILE FIX: AI LINK VISIBILITY */
-@media (max-width: 768px) {
-  .ai-color-link {
-    color: #22afa1;
-    -webkit-text-fill-color: initial;
-    background: none;
-    animation: none;
-  }
-
-  .gallery-dots {
-    margin-top: 16px;
-  }
-
-  .right {
-    gap: 24px;
-  }
-}
-  
-@media (max-width: 768px) {
-
-  .section-svg {
-    position: relative;
-    height: 20px;
-    margin: -8px 0;   /* 👈 removes 8px from gap above & below */
-    overflow: hidden;
-  }
-
-  .section-svg img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 20px;
-    display: block;
-  }
+/* ===============================
+   ACCORDION CARD FEEL
+================================ */
+.accordion-item {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
-  
-  @media (max-width: 768px) {
-  .accordion {
-    margin-top: -6px;
-  }
+/* ===============================
+   RELATED ITEMS POLISH
+================================ */
+.related-items-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  max-width: 1200px;
+  margin: auto;
+  background: #F7F5ED;
+  border-radius: 28px;
+  z-index: -1;
 }
 
+/* Buttons hover polish */
+.cta-buttons button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
 
 </style>
 </head>
-
 <body>
 
-<div class="container">
-  <div class="layout">
-
-    <!-- LEFT -->
-    <div class="gallery">
-<div class="gallery-main">
-  <img id="mainImg" src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png">
-</div>
-
-<!-- Dot indicators for mobile -->
-<div class="gallery-dots"></div>
-
-      <div class="gallery-thumbs">
-        <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" class="active">
-        <img src="https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png">
-      </div>
+<!-- ===============================
+     PRODUCT INFO SECTION
+================================ -->
+<section class="product-info-section">
+  <div class="product-gallery">
+    <img id="mainImage" src="">
+    <div class="product-thumbnails" id="thumbnails"></div>
+  </div>
+  <div class="product-details">
+    <h1 id="title">Demo Product</h1>
+    <div class="product-price" id="price">$19.99</div>
+    <div class="product-old-price" id="oldPrice">$29.99</div>
+    <div class="product-description" id="description">
+      Demo description here.
     </div>
-
-    <!-- RIGHT -->
-    <div class="right">
-
-      <div class="pricing">
-        <h2>Landscape at Collioure</h2>
-        <div class="artist">By Henri Matisse</div>
-<div class="price">
-  $6.98
-  <span class="old-price">$19.99</span>
-  <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
-</div>
-
-        <div class="description">
-          This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
-        <a href="#" class="ai-color-link">
-  <span class="material-icons-outlined">cloud_download</span>
-  Instant Delivery
-</a>
-    </div>
-        <div class="buttons">
-          <button class="buy">Buy Now</button>
-          <button class="cart">Add to Cart</button>
-        </div>
-      </div>
-      
-      <div class="section-svg">
-        <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
-      </div>
-      
-      <div class="accordion">
-        <div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">High-Resolution Digital Art Prints</span>
-  <span class="material-icons-outlined">expand_more</span>
-</button>
-
-          <div class="accordion-content">
-            <p>
-              You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
-              Print in any size at home or through a local or online printing service.
-              Perfect for framing, gifts, or decorating your space.
-            </p>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Instant Download via Email</span>
-  <span class="material-icons-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Your files will be sent straight to your email after purchase for quick and easy access.
-              No waiting, no shipping — download and print right away.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Easy to Print & Frame</span>
-  <span class="material-icons-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Print effortlessly at home, online, or through a professional print shop.
-              Once printed, your artwork is ready to frame and hang,
-              instantly adding beauty to your space.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-  <button class="accordion-header">
-    <span class="header-title">Usage License</span>
-    <span class="material-icons-outlined">expand_more</span>
-  </button>
-
-  <div class="accordion-content">
     <div class="license-options">
-      <label class="license-option">
-        <input type="radio" name="license" checked>
-        <span class="radio-label">
-          <strong>Personal Use</strong>
-          Personal use only — perfect for home décor or gifting.
-        </span>
-      </label>
-
-      <label class="license-option">
-        <input type="radio" name="license">
-        <span class="radio-label">
-          <strong>Commercial Use</strong>
-          Commercial licensing for online, digital, and resale purposes.
-        </span>
-      </label>
+      <label><input type="radio" name="license" value="personal" checked> Personal</label>
+      <label><input type="radio" name="license" value="commercial"> Commercial</label>
+      <label><input type="radio" name="license" value="extended"> Extended</label>
+    </div>
+    <div class="cta-buttons">
+      <button id="addToCart">Add to Cart</button>
+      <button id="buyNow">Buy Now</button>
     </div>
   </div>
-</div>
+</section>
 
-
+<!-- ===============================
+     ACCORDION / DETAILS SECTION
+================================ -->
+<section class="accordion-section">
+  <h2>Product Details Section</h2>
+  <div class="accordion">
+    <div class="accordion-item">
+      <button class="accordion-header">High-Resolution Digital Art Prints</button>
+      <div class="accordion-content">
+        <p>High-resolution files with crisp details for printing.</p>
       </div>
-
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header">Instant Download Via Email</button>
+      <div class="accordion-content">
+        <p>Files sent directly to your email after purchase.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-header">Usage License</button>
+      <div class="accordion-content">
+        <p>For personal use only. Contact us for commercial licenses.</p>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
+<!-- ===============================
+     RELATED ITEMS SECTION
+================================ -->
+<section class="related-items-section">
+  <h2>Related Items Section</h2>
+  <div class="related-slider-wrapper">
+    <button class="slider-btn prev">‹</button>
+    <div id="relatedGrid" class="related-grid"></div>
+    <button class="slider-btn next">›</button>
+  </div>
+</section>
 
+<!-- ===============================
+     ARTIST CARD SECTION
+================================ -->
+<section class="artist-card-section">
+  <h2>Artist Card Section</h2>
+  <div id="artist-card-placeholder"></div>
+</section>
 
+<!-- ===============================
+     TESTIMONIALS SECTION
+================================ -->
+<section class="testimonials-section">
+  <h2>Testimonials Section</h2>
+  <div id="testimonials-placeholder"></div>
+</section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-/* =====================
-   CONFIG
-===================== */
-const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-const productId = new URLSearchParams(window.location.search).get("product") || "9182732";
+document.addEventListener("DOMContentLoaded", () => {
+  // ---------------- ELEMENTS ----------------
+  const titleEl = document.getElementById("title");
+  const priceEl = document.getElementById("price");
+  const oldPriceEl = document.getElementById("oldPrice");
+  const descEl = document.getElementById("description");
+  const mainImage = document.getElementById("mainImage");
+  const thumbsEl = document.getElementById("thumbnails");
+  const relatedGrid = document.getElementById("relatedGrid");
+  const addToCartBtn = document.getElementById("addToCart");
 
-/* =====================
-   ELEMENTS
-===================== */
-const titleEl = document.querySelector(".pricing h2");
-const artistEl = document.querySelector(".artist");
-const priceEl = document.querySelector(".price");
-const oldPriceEl = document.querySelector(".old-price");
-const saleInfoEl = document.getElementById("saleInfo");
-const descEl = document.querySelector(".description");
-const mainImage = document.getElementById("mainImg");
-const thumbsEl = document.querySelector(".gallery-thumbs");
-const dotsEl = document.querySelector(".gallery-dots");
-const buyBtn = document.querySelector(".buy");
+  // ---------------- GET PRODUCT ID ----------------
+  const productId = new URLSearchParams(location.search).get("id");
 
-/* =====================
-   HELPER FUNCTIONS
-===================== */
-function slugify(str) {
-  return str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-}
+  // ---------------- UTILITIES ----------------
+  function slugify(str){
+    return str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
 
-let allImages = [];
-let currentIndex = 0;
+  function switchMainImage(imgEl, src, thumbsContainer) {
+    imgEl.src = src;
+    thumbsContainer.querySelectorAll("img").forEach(t => t.classList.remove("active"));
+    thumbsContainer.querySelector(`img[src='${src}']`)?.classList.add("active");
+  }
 
-function switchImage(index) {
-  if (!allImages.length) return;
-  currentIndex = index;
-  mainImage.style.opacity = 0;
-  const newImg = new Image();
-  newImg.src = allImages[currentIndex];
-  newImg.onload = () => {
-    mainImage.src = newImg.src;
-    mainImage.style.opacity = 1;
-    updateThumbs();
-    updateDots();
-  };
-}
+  function createThumbnail(src, mainImgEl, thumbsContainer){
+    const t = document.createElement("img");
+    t.src = src;
+    t.onclick = () => switchMainImage(mainImgEl, src, thumbsContainer);
+    return t;
+  }
 
-function updateThumbs() {
-  if (!thumbsEl) return;
-  thumbsEl.querySelectorAll("img").forEach((img, i) => {
-    img.classList.toggle("active", i === currentIndex);
-  });
-}
+  // ---------------- LOAD CSV ----------------
+  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(res) {
+      const allProducts = res.data.map(p => ({
+        id: (p.productId || p.ProductId || "").trim(),
+        name: (p.name || p.Name || "").trim(),
+        price: (p.price || p.Price || "$1").trim(),
+        discount: (p.discountValue || "").trim(),
+        ribbon: (p.ribbon || p.Ribbon || "").trim(),
+        category: (p.category || p.Category || "").trim(),
+        color: (p.color || p.Color || "").trim(),
+        description: p.description || "",
+        images: (p.productImageUrl || p.ProductImageUrl || "").split(";").map(u=>u.trim()).filter(Boolean)
+      }));
 
-function updateDots() {
-  if (!dotsEl) return;
-  dotsEl.querySelectorAll(".dot").forEach((dot, i) => {
-    dot.classList.toggle("active", i === currentIndex);
-  });
-}
+      // Find product
+      const product = allProducts.find(p => p.id === productId || slugify(p.name) === productId?.toLowerCase());
+      if(!product){ console.warn("Product not found!"); return; }
 
-function createThumbnail(src) {
-  const img = document.createElement("img");
-  img.src = src;
-  img.addEventListener("click", () => switchImage(allImages.indexOf(src)));
-  return img;
-}
+      // --- TEXT ---
+      titleEl.innerText = product.name;
+      priceEl.innerText = "$" + product.price;
+      oldPriceEl.innerText = product.discount ? "$" + product.discount : "";
+      descEl.innerHTML = product.description;
 
-/* =====================
-   DYNAMIC DESCRIPTIONS + INSTANT DELIVERY
-===================== */
-const dynamicDescriptions = [
-  "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
-  "Add a touch of elegance and sophistication to your home with this piece.",
-  "Perfect for creating a calm, serene atmosphere in any room.",
-  "A bold statement piece that sparks conversation and creativity.",
-  "Infuse your space with color, energy, and modern flair."
-];
+      // --- MAIN IMAGE & THUMBNAILS ---
+      const images = product.images.map(src => src.includes("http") ? src : "https://static.wixstatic.com/media/" + src);
+      if(images.length) mainImage.src = images[0];
 
-function getRandomDescription() {
-  return dynamicDescriptions[Math.floor(Math.random() * dynamicDescriptions.length)];
-}
+      thumbsEl.innerHTML = "";
+      images.forEach(src => thumbsEl.appendChild(createThumbnail(src, mainImage, thumbsEl)));
 
-function addInstantDelivery() {
-  const descriptionBox = descEl; // the <div class="description">
-
-  // Remove previous dynamic text and badge
-  descriptionBox.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
-
-  // Add random description above the badge
-  const randomDesc = document.createElement("p");
-  randomDesc.className = "dynamic-description-text";
-  randomDesc.innerText = getRandomDescription();
-  descriptionBox.prepend(randomDesc);
-
-  // Add Instant Delivery badge/link
-  const instantLink = document.createElement("a");
-  instantLink.href = "#";
-  instantLink.className = "ai-color-link instant-delivery";
-  instantLink.innerHTML = `<span class="material-icons-outlined">cloud_download</span> Instant Delivery`;
-  descriptionBox.appendChild(instantLink);
-}
-
-
-/* =====================
-   LOAD CSV & INIT PRODUCT
-===================== */
-Papa.parse(csvUrl, {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
-  complete: function(res) {
-    const products = res.data.map(p => ({
-      id: (p.productId || "").trim(),
-      name: (p.name || "").trim(),
-      price: parseFloat(p.price || 0),
-      discount: parseFloat(p.discountValue || 0),
-      discountMode: (p.discountMode || "").trim(),
-      ribbon: (p.ribbon || "").trim(),
-      category: (p.category || "").trim(),
-      color: (p.color || "").trim(),
-      artist: (p.artist || "").trim(),
-      description: p.description || "",
-      downloadLink: (p.downloadLink || "").trim(),
-      visible: (p.visible || "true") === "true",
-      images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
-    }));
-
-    const product = products.find(p => p.id === productId || slugify(p.name) === productId.toLowerCase());
-    if (!product || !product.visible) {
-      document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
-      return;
-    }
-
-    // --- TEXT ---
-    titleEl.innerText = product.name;
-    artistEl.innerText = product.artist;
-    descEl.innerHTML = product.description;
-
-    // --- PRICE & DISCOUNT ---
-    if(product.discountMode === "PERCENT" && product.discount){
-      const discounted = product.price * (1 - product.discount/100);
-      oldPriceEl.innerText = "$" + product.price.toFixed(2);
-      priceEl.childNodes[0].nodeValue = "$" + discounted.toFixed(2);
-    } else {
-      oldPriceEl.innerText = "";
-      priceEl.childNodes[0].nodeValue = "$" + product.price.toFixed(2);
-    }
-
-    // --- IMAGES ---
-    allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
-    if(allImages.length) mainImage.src = allImages[0];
-
-    // --- Thumbnails ---
-    thumbsEl.innerHTML = "";
-    allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src)));
-
-    // --- Mobile dots ---
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("span");
-      dot.className = "dot";
-      if(i===0) dot.classList.add("active");
-      dotsEl.appendChild(dot);
-    });
-
-    // --- RIBBON & BUBBLES ---
-    const galleryMain = mainImage.parentElement;
-    galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
-
-    if(product.ribbon){
-      const rEl = document.createElement("div");
-      rEl.className="top-label";
-      rEl.innerText = product.ribbon;
-      galleryMain.appendChild(rEl);
-    }
-
-    const bubbles = [product.category, product.color].filter(Boolean);
-    if(bubbles.length){
-      const bEl = document.createElement("div");
-      bEl.className="top-bubbles";
-      bubbles.forEach(t=>{
-        const d = document.createElement("div");
-        d.innerText = t;
-        bEl.appendChild(d);
-      });
-      galleryMain.appendChild(bEl);
-    }
-
-    // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
-    addInstantDelivery();
-
-    // --- BUY BUTTON ---
-    buyBtn.onclick = () => {
-      if(product.downloadLink){
-        window.open(product.downloadLink, "_blank");
-      } else {
-        alert("Download not available");
+      // --- IMAGE SLIDER (arrows + swipe) ---
+      let currentImageIndex = 0;
+      function switchImage(dir){
+        if(!images.length) return;
+        currentImageIndex = (currentImageIndex + dir + images.length) % images.length;
+        switchMainImage(mainImage, images[currentImageIndex], thumbsEl);
       }
-    };
-  }
-});
 
-/* =====================
-   MOBILE SWIPE
-===================== */
-let startX = 0;
-mainImage.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-mainImage.addEventListener("touchend", e => {
-  const endX = e.changedTouches[0].clientX;
-  if(Math.abs(endX - startX) < 50) return;
+      mainImage.parentElement.querySelectorAll(".slider-arrow").forEach(arrow => arrow.remove());
+      if(images.length > 1){
+        ["left","right"].forEach(dir => {
+          const a = document.createElement("div");
+          a.className = `slider-arrow ${dir}`;
+          a.innerHTML = dir==="left"?"&#10094;":"&#10095;";
+          a.onclick = e => { e.preventDefault(); switchImage(dir==="left"?-1:1); };
+          mainImage.parentElement.appendChild(a);
+        });
 
-  if(endX - startX > 50){
-    switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-  } else {
-    switchImage((currentIndex + 1) % allImages.length);
-  }
-});
+        let startX=0;
+        mainImage.parentElement.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+        mainImage.parentElement.addEventListener("touchend", e => {
+          const dx = e.changedTouches[0].clientX - startX;
+          if(dx>30) switchImage(-1);
+          if(dx<-30) switchImage(1);
+        });
+      }
 
-/* =====================
-   SALE COUNTDOWN
-===================== */
-function startCountdown(duration) {
-  if(!saleInfoEl) return;
-  let timer = duration;
+      // --- RIBBON & BUBBLES ---
+      if(product.ribbon){
+        const rEl = document.createElement("div");
+        rEl.className="top-label";
+        rEl.innerText = product.ribbon;
+        mainImage.parentElement.appendChild(rEl);
+      }
 
-  const interval = setInterval(() => {
-    let hours = Math.floor(timer / 3600);
-    let minutes = Math.floor((timer % 3600) / 60);
-    let seconds = timer % 60;
+      const bubbles = [product.category, product.color].filter(Boolean);
+      if(bubbles.length){
+        const bEl = document.createElement("div");
+        bEl.className="top-bubbles";
+        bubbles.forEach(t=>{
+          const d = document.createElement("div");
+          d.innerText = t;
+          bEl.appendChild(d);
+        });
+        mainImage.parentElement.appendChild(bEl);
+      }
 
-    hours = hours<10?"0"+hours:hours;
-    minutes = minutes<10?"0"+minutes:minutes;
-    seconds = seconds<10?"0"+seconds:seconds;
-
-    saleInfoEl.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
-
-    if(timer>0) timer--; else clearInterval(interval);
-  },1000);
-}
-
-startCountdown(10*3600 + 33*60 + 11);
-
-/* =====================
-   ACCORDION
-===================== */
-document.querySelectorAll('.accordion-header').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.closest('.accordion-item');
-    const content = btn.nextElementSibling;
-
-    if (!item || !content) return;
-
-    if (item.classList.contains('active')) {
-      content.style.maxHeight = null;
-      item.classList.remove('active');
-    } else {
-      document.querySelectorAll('.accordion-item').forEach(i => {
-        i.classList.remove('active');
-        const c = i.querySelector('.accordion-content');
-        if (c) c.style.maxHeight = null;
+      // --- RELATED PRODUCTS ---
+      const related = allProducts.filter(p => p.id !== product.id).slice(0, 10);
+      relatedGrid.innerHTML = "";
+      related.forEach(r => {
+        const card = document.createElement("div");
+        card.className = "related-card";
+        const img = document.createElement("img");
+        img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/"+r.images[0]) : "https://via.placeholder.com/300";
+        const h4 = document.createElement("h4");
+        h4.innerText = r.name;
+        card.appendChild(img);
+        card.appendChild(h4);
+        card.onclick = () => location.href = `product-page.html?id=${r.id}`;
+        relatedGrid.appendChild(card);
       });
-
-      content.style.maxHeight = content.scrollHeight + 'px';
-      item.classList.add('active');
     }
   });
-});
 
-/* =====================
-   OPTIONAL CSS
-===================== */
-const style = document.createElement('style');
-style.innerHTML = `
-.dynamic-description-text {
-  font-size: 13px;
-  color: #555;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-.instant-delivery {
-  display: inline-flex;
-  align-items: center;
-  font-weight: bold;
-  color: #d9534f;
-  text-decoration: none;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-.instant-delivery .material-icons-outlined {
-  font-size: 16px;
-  margin-right: 4px;
-}
-`;
-document.head.appendChild(style);
+  // ---------------- ADD TO CART ----------------
+  addToCartBtn.onclick = () => {
+    const selectedLicense = document.querySelector('input[name="license"]:checked')?.value || "default";
+    alert(`Added ${titleEl.innerText} (${selectedLicense}) to cart!`);
+  };
+
+  // ---------------- ACCORDION ----------------
+  document.querySelectorAll(".accordion-header").forEach(header => {
+    header.onclick = () => {
+      const item = header.parentElement;
+      item.classList.toggle("active");
+      const content = header.nextElementSibling;
+      content.style.maxHeight = item.classList.contains("active") ? content.scrollHeight + "px" : null;
+    };
+  });
+
+  // ---------------- RELATED SLIDER ----------------
+  const slider = relatedGrid;
+  document.querySelectorAll(".slider-btn.next").forEach(btn => btn.onclick = () => slider.scrollBy({left:240,behavior:'smooth'}));
+  document.querySelectorAll(".slider-btn.prev").forEach(btn => btn.onclick = () => slider.scrollBy({left:-240,behavior:'smooth'}));
+
+  // ---------------- LOAD EXTERNAL ----------------
+  fetch("artist-card.html").then(r=>r.text()).then(html=>document.getElementById("artist-card-placeholder").innerHTML=html);
+  fetch("testimonials.html").then(r=>r.text()).then(html=>document.getElementById("testimonials-placeholder").innerHTML=html);
+});
 </script>
+
 
 
 
 </body>
 </html>
-
-
-
-
-
-
