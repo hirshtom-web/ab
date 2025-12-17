@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Header</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+<!-- Header styles -->
+<link rel="stylesheet" href="header.css">
+  
+</head>
+<body>
+
+<!-- ---------- TOP BAR DESKTOP ---------- -->
+<div class="top-bar" id="desktop-bar">
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+    <span>Curated for Your Space</span>
+  </div>
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">wall_art</span>
+    <span>Digital Art Prints</span>
+  </div>
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">rewarded_ads</span>
+    <span>Premium Quality Prints</span>
+  </div>
+</div>
+
+<!-- ---------- TOP BAR MOBILE ---------- -->
+<div class="top-bar" id="mobile-bar">
+  <div class="mobile-track">
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+      Curated for Your Space
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">wall_art</span>
+      Digital Art Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">rewarded_ads</span>
+      Premium Quality Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+      Curated for Your Space
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">wall_art</span>
+      Digital Art Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">rewarded_ads</span>
+      Premium Quality Prints
+    </div>
+  </div>
+</div>
+
+<!-- ---------- DESKTOP HEADER ---------- -->
+<header>
+  <div class="header-left">
+    <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+  </div>
+<nav class="header-center">
+  <a href="products.html">Art Prints</a>
+  <a href="categories.html">Categories</a>
+  <a href="perfect-pair.html">Perfect Pair</a>
+  <a href="gallery-walls.html">Gallery Walls</a>
+  <a href="how-it-works.html">How It Works</a>
+  <a href="inspiration.html">Inspiration</a>
+</nav>
+  <div class="header-right">
+    <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+    <span class="material-symbols-outlined" id="searchIcon">search</span>
+    <input type="text" id="searchBar" placeholder="Search...">
+    <span class="material-symbols-outlined" id="giftIcon">card_giftcard</span>
+    <span class="material-symbols-outlined">help_outline</span>
+  </div>
+</header>
+
+<!-- ---------- MOBILE HEADER ---------- -->
+<div class="mobile-header">
+  <div class="left">
+    <span class="material-symbols-outlined" id="hamburger">menu</span>
+    <span class="material-symbols-outlined" id="mobileSearch">search</span>
+  </div>
+
+  <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+
+  <div class="right">
+    <span class="material-symbols-outlined" id="mobileGift">card_giftcard</span>
+    <span class="material-symbols-outlined" id="mobileHelp">help_outline</span>
+    <span class="material-symbols-outlined" id="mobileCart">shopping_cart</span>
+  </div>
+</div>
+
+<!-- Mobile Search under header -->
+<div class="mobile-search-container">
+  <input type="text" placeholder="Search..." id="mobileSearchBar">
+</div>
+
+<!-- Mobile Hamburger Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenu">
+  <span class="close-menu" id="closeMenu">×</span>
+  <nav class="mobile-nav-links">
+  <a href="products.html">Art Prints</a>
+  <a href="categories.html">Categories</a>
+  <a href="perfect-pair.html">Perfect Pair</a>
+  <a href="gallery-walls.html">Gallery Walls</a>
+  <a href="how-it-works.html">How It Works</a>
+  <a href="inspiration.html">Inspiration</a>
+</nav>
+
+</div>
+
+<!-- ---------- ITEM POPUP ---------- -->
+<div class="item-popup" id="itemPopup">
+  <div class="popup-content">
+    <div class="popup-image">
+      <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" alt="Gift Card Image">
+    </div>
+    <div class="popup-text">
+      <h2>Christmas Gift Card</h2>
+      <p>Send this beautiful Christmas gift card to someone special and make their holidays joyful!</p>
+      <p class="price"><strong>Price: $25</strong></p>
+      <button class="popup-btn">Send Gift</button>
+    </div>
+  </div>
+  <span class="popup-close" onclick="closePopup()">×</span>
+</div>
+
+   
+<script>
+// ---------- GIFT CARD POPUP ----------
+document.getElementById('giftIcon').addEventListener('click', function() {
+  openPopup(
+    'https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png',
+    'Christmas Gift Card',
+    'Send this beautiful Christmas gift card to someone special and make their holidays joyful!',
+    '$25'
+  );
+});
+document.getElementById('mobileGift').addEventListener('click', function() {
+  openPopup(
+    'https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png',
+    'Christmas Gift Card',
+    'Send this beautiful Christmas gift card to someone special and make their holidays joyful!',
+    '$25'
+  );
+});
+
+function openPopup(imgSrc, title, description, price) {
+  const popup = document.getElementById('itemPopup');
+  popup.querySelector('.popup-image img').src = imgSrc;
+  popup.querySelector('.popup-text h2').textContent = title;
+  popup.querySelector('.popup-text p:nth-of-type(1)').textContent = description;
+  popup.querySelector('.popup-text p.price').innerHTML = `<strong>Price: ${price}</strong>`;
+  popup.style.display = 'flex';
+}
+
+function closePopup() {
+  document.getElementById('itemPopup').style.display = 'none';
+}
+
+// ---------- DESKTOP SEARCH ----------
+const desktopSearchIcon = document.getElementById('searchIcon');
+const desktopSearchBar  = document.getElementById('searchBar');
+
+desktopSearchIcon.addEventListener('click', () => {
+  const isOpen = desktopSearchBar.style.display === 'block';
+  desktopSearchBar.style.display = isOpen ? 'none' : 'block';
+
+  if (!isOpen) {
+    desktopSearchBar.focus();
+  }
+});
+
+// ---------- MOBILE SEARCH ----------
+const mobileSearchIcon = document.getElementById('mobileSearch');
+const mobileSearchContainer = document.querySelector('.mobile-search-container');
+const mobileSearchInput = document.getElementById('mobileSearchBar');
+
+mobileSearchIcon.addEventListener('click', () => {
+  const isOpen = mobileSearchContainer.style.display === 'block';
+  mobileSearchContainer.style.display = isOpen ? 'none' : 'block';
+
+  if (!isOpen) {
+    mobileSearchInput.focus();
+  }
+});
+
+// ---------- MOBILE HAMBURGER MENU ----------
+document.getElementById('hamburger').addEventListener('click', function() {
+  if (window.innerWidth > 700) return;
+  document.getElementById('mobileMenu').style.display = 'flex';
+});
+
+document.getElementById('closeMenu').addEventListener('click', function() {
+  document.getElementById('mobileMenu').style.display = 'none';
+});
+
+// Close mobile menu if clicking outside links
+document.getElementById('mobileMenu').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+const slider = document.getElementById("bestsellerSlider");
+
+Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  complete: results => {
+    const products = results.data.slice(0, 12); // pick first 12
+    products.forEach(p => {
+      const item = document.createElement("div");
+      item.className = "slider-item";
+
+      const img = document.createElement("img");
+      const imgUrl = (p.productImageUrl||"").split(";")[0]?.trim() || "";
+      img.src = imgUrl.includes("http") ? imgUrl : "https://static.wixstatic.com/media/" + imgUrl;
+      item.appendChild(img);
+
+      const title = document.createElement("h3");
+      title.innerText = p.name || "Unnamed Product";
+      item.appendChild(title);
+
+      const price = document.createElement("div");
+      price.className = "price";
+      price.innerText = p.price && p.price.trim()!=="" ? "$"+p.price : "$1";
+      item.appendChild(price);
+
+      slider.appendChild(item);
+    });
+  }
+});
+</script>
+  
+</body>
+</html>
