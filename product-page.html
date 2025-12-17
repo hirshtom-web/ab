@@ -718,8 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------------- ELEMENTS ----------------
   const titleEl = document.querySelector(".pricing h2") || document.getElementById("title");
   const artistEl = document.querySelector(".artist");
-  const categoryEl = document.createElement("div"); // Category will go under title
-  categoryEl.className = "product-category";
   const priceEl = document.querySelector(".price") || document.getElementById("price");
   const oldPriceEl = document.querySelector(".old-price") || document.getElementById("oldPrice");
   const saleInfoEl = document.querySelector(".sale-info") || document.getElementById("saleInfo");
@@ -730,15 +728,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const buyBtn = document.querySelector(".buy") || document.getElementById("addToCart");
   const relatedGrid = document.getElementById("relatedGrid");
 
-  console.log("DOM elements:", {titleEl, artistEl, categoryEl, priceEl, oldPriceEl, saleInfoEl, descEl, mainImage, thumbsEl, dotsEl, buyBtn, relatedGrid});
+  // Category under title
+  const categoryEl = document.createElement("div");
+  categoryEl.className = "product-category";
 
   // ---------------- CONFIG ----------------
   const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
- const product = products.find(p => 
-    (p.id && p.id.toString().trim() === productId?.trim()) || 
-    slugify(p.name) === productId?.toLowerCase()
-);
-
+  const productId = new URLSearchParams(location.search).get("id")?.trim() || new URLSearchParams(location.search).get("product")?.trim();
 
   // ---------------- UTILITIES ----------------
   function slugify(str) {
@@ -749,7 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentIndex = 0;
 
   function switchImage(index) {
-    if (!allImages.length || !mainImage) return;
+    if (!allImages.length) return;
     currentIndex = index;
     mainImage.style.opacity = 0;
     const newImg = new Image();
@@ -762,14 +758,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function switchMainImage(imgEl, src, thumbsContainer) {
-    if(!imgEl || !thumbsContainer) return;
-    imgEl.src = src;
-    thumbsContainer.querySelectorAll("img").forEach(t => t.classList.remove("active"));
-    thumbsContainer.querySelector(`img[src='${src}']`)?.classList.add("active");
-  }
-
-  function createThumbnail(src, mainImgEl, thumbsContainer) {
+  function createThumbnail(src) {
     const img = document.createElement("img");
     img.src = src;
     img.onclick = () => switchImage(allImages.indexOf(src));
@@ -790,7 +779,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------------- DYNAMIC DESCRIPTION ----------------
+  // Dynamic descriptions
   const dynamicDescriptions = [
     "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
     "Add a touch of elegance and sophistication to your home with this piece.",
@@ -799,17 +788,13 @@ document.addEventListener("DOMContentLoaded", () => {
     "Infuse your space with color, energy, and modern flair."
   ];
 
-  function getRandomDescription() {
-    return dynamicDescriptions[Math.floor(Math.random() * dynamicDescriptions.length)];
-  }
-
   function addInstantDelivery() {
     if(!descEl) return;
     descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
 
     const randomDesc = document.createElement("p");
     randomDesc.className = "dynamic-description-text";
-    randomDesc.innerText = getRandomDescription();
+    randomDesc.innerText = dynamicDescriptions[Math.floor(Math.random() * dynamicDescriptions.length)];
     descEl.prepend(randomDesc);
 
     const instantLink = document.createElement("a");
@@ -819,18 +804,17 @@ document.addEventListener("DOMContentLoaded", () => {
     descEl.appendChild(instantLink);
   }
 
-  // ---------------- LOAD CSV ----------------
+  // ---------------- LOAD CSV & INIT PRODUCT ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function(res) {
-      console.log("CSV loaded:", res.data.length, "rows");
       const products = res.data.map(p => ({
         id: (p.productId || p.ProductId || "").trim(),
         name: (p.name || p.Name || "").trim(),
         price: parseFloat(p.price || p.Price || 0),
-        discount: parseFloat(p.discountValue || "").trim() || 0,
+        discount: parseFloat(p.discountValue || 0),
         discountMode: (p.discountMode || "").trim(),
         ribbon: (p.ribbon || p.Ribbon || "").trim(),
         category: (p.category || p.Category || "").trim(),
@@ -842,19 +826,19 @@ document.addEventListener("DOMContentLoaded", () => {
         images: (p.productImageUrl || p.ProductImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
       }));
 
-      console.log("Parsed products:", products);
+      console.log("All products loaded:", products.map(p=>p.id)); // DEBUG
 
-      const product = products.find(p => p.id === productId || slugify(p.name) === productId?.toLowerCase());
+      const product = products.find(p =>
+        (p.id === productId) || (slugify(p.name) === productId?.toLowerCase())
+      );
+
       if(!product || !product.visible){
-        console.warn("Product not found or not visible:", productId);
         document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
         return;
       }
 
-      console.log("Found product:", product);
-
       // --- TITLE & CATEGORY ---
-      if(titleEl) titleEl.innerText = product.name;
+      titleEl.innerText = product.name;
       titleEl.after(categoryEl);
       categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
 
@@ -865,24 +849,25 @@ document.addEventListener("DOMContentLoaded", () => {
       if(descEl) descEl.innerHTML = product.description;
       addInstantDelivery();
 
-      // --- PRICE ---
-      let discountedPrice = product.price;
-      if(product.discount && product.discountMode === "PERCENT") discountedPrice = product.price * (1 - product.discount/100);
-      else if(product.discount && product.discountMode === "FIXED") discountedPrice = product.price - product.discount;
+      // --- PRICE & OLD PRICE ---
+      let finalPrice = product.price;
+      if(product.discount){
+        if(product.discountMode === "PERCENT") finalPrice = product.price * (1 - product.discount/100);
+        else if(product.discountMode === "FIXED") finalPrice = product.price - product.discount;
+      }
+      if(priceEl) priceEl.innerText = "$" + finalPrice.toFixed(2);
+      if(oldPriceEl) oldPriceEl.innerText = product.discount ? "$" + product.price.toFixed(2) : "";
 
-      if(priceEl) priceEl.innerText = "$" + discountedPrice.toFixed(2);
-      if(oldPriceEl && product.discount) oldPriceEl.innerText = "$" + product.price.toFixed(2);
-      else if(oldPriceEl) oldPriceEl.innerText = "";
-
-      // --- IMAGES ---
+      // --- IMAGES & THUMBNAILS ---
       allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
-      if(allImages.length && mainImage) mainImage.src = allImages[0];
+      if(allImages.length) mainImage.src = allImages[0];
 
       if(thumbsEl){
         thumbsEl.innerHTML = "";
-        allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src, mainImage, thumbsEl)));
+        allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src)));
       }
 
+      // --- MOBILE DOTS ---
       if(dotsEl){
         dotsEl.innerHTML = "";
         allImages.forEach((_, i) => {
@@ -894,14 +879,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // --- RIBBON ---
-      if(mainImage && mainImage.parentElement){
-        mainImage.parentElement.querySelectorAll(".top-label").forEach(e => e.remove());
-        if(product.ribbon){
-          const rEl = document.createElement("div");
-          rEl.className="top-label";
-          rEl.innerText = product.ribbon;
-          mainImage.parentElement.appendChild(rEl);
-        }
+      const galleryMain = mainImage.parentElement;
+      galleryMain.querySelectorAll(".top-label").forEach(e => e.remove());
+      if(product.ribbon){
+        const rEl = document.createElement("div");
+        rEl.className = "top-label";
+        rEl.innerText = product.ribbon;
+        galleryMain.appendChild(rEl);
       }
 
       // --- BUY BUTTON ---
@@ -912,13 +896,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // --- RELATED PRODUCTS ---
       if(relatedGrid){
-        relatedGrid.innerHTML = "";
         const related = products.filter(p => p.id !== product.id).slice(0,10);
+        relatedGrid.innerHTML = "";
         related.forEach(r => {
           const card = document.createElement("div");
-          card.className="related-card";
+          card.className = "related-card";
           const img = document.createElement("img");
-          img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/"+r.images[0]) : "https://via.placeholder.com/300";
+          img.src = r.images[0] ? (r.images[0].startsWith("http") ? r.images[0] : "https://static.wixstatic.com/media/" + r.images[0]) : "https://via.placeholder.com/300";
           const h4 = document.createElement("h4");
           h4.innerText = r.name;
           card.appendChild(img);
@@ -933,35 +917,86 @@ document.addEventListener("DOMContentLoaded", () => {
         if(!saleInfoEl) return;
         let timer = duration;
         const interval = setInterval(() => {
-          let hours = Math.floor(timer/3600);
-          let minutes = Math.floor((timer%3600)/60);
-          let seconds = timer%60;
+          let hours = Math.floor(timer / 3600);
+          let minutes = Math.floor((timer % 3600) / 60);
+          let seconds = timer % 60;
           hours = hours<10?"0"+hours:hours;
           minutes = minutes<10?"0"+minutes:minutes;
           seconds = seconds<10?"0"+seconds:seconds;
           saleInfoEl.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
           if(timer>0) timer--; else clearInterval(interval);
-        },1000);
+        }, 1000);
       }
       startCountdown(10*3600 + 33*60 + 11);
 
       // --- MOBILE SWIPE ---
-      if(mainImage){
-        let startX = 0;
-        mainImage.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-        mainImage.addEventListener("touchend", e => {
-          const endX = e.changedTouches[0].clientX;
-          if(Math.abs(endX - startX) < 50) return;
-          if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-          else switchImage((currentIndex + 1) % allImages.length);
-        });
-      }
+      let startX = 0;
+      mainImage.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+      mainImage.addEventListener("touchend", e => {
+        const endX = e.changedTouches[0].clientX;
+        if(Math.abs(endX - startX) < 50) return;
+        if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+        else switchImage((currentIndex + 1) % allImages.length);
+      });
 
-    } // end Papa.parse complete
-  }); // end Papa.parse
+      // --- ACCORDION ---
+      document.querySelectorAll('.accordion-header').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.closest('.accordion-item');
+          const content = btn.nextElementSibling;
+          if(!item || !content) return;
+          if(item.classList.contains('active')){
+            content.style.maxHeight = null;
+            item.classList.remove('active');
+          } else {
+            document.querySelectorAll('.accordion-item').forEach(i=>{
+              i.classList.remove('active');
+              const c=i.querySelector('.accordion-content');
+              if(c) c.style.maxHeight = null;
+            });
+            content.style.maxHeight = content.scrollHeight + 'px';
+            item.classList.add('active');
+          }
+        });
+      });
+
+      // --- OPTIONAL CSS ---
+      const style = document.createElement('style');
+      style.innerHTML = `
+.dynamic-description-text {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.instant-delivery {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  color: #d9534f;
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.instant-delivery .material-icons-outlined {
+  font-size: 16px;
+  margin-right: 4px;
+}
+.product-category {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+`;
+      document.head.appendChild(style);
+
+    }
+  });
 
 });
 </script>
+
 
 
 
