@@ -1,66 +1,56 @@
 function initProductsPage() {
-  console.log("✅ Products page initialized");
-  ...
-}
-
-
-function initProductsPage() {
+  console.log("✅ initProductsPage running");
 
   const grid = document.getElementById("productGrid");
+  if (!grid) {
+    console.error("❌ productGrid not found");
+    return;
+  }
+
   const prevBtn = document.getElementById("prevPage");
   const nextBtn = document.getElementById("nextPage");
-  const shuffleBtn = document.querySelector('[title="Shuffle"]');
-  const sortBtn = document.querySelector('[title="Sort"]');
 
-  if (!grid) return; // safety exit
+  let allProducts = [];
+  let currentPage = 1;
+  const productsPerPage = 12;
 
-  // Pagination
-  prevBtn.onclick = () => {
+  function renderPage(page) {
+    grid.innerHTML = "";
+    const start = (page - 1) * productsPerPage;
+    const slice = allProducts.slice(start, start + productsPerPage);
+
+    slice.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <p>$${p.price}</p>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // TEMP TEST DATA (IMPORTANT)
+  allProducts = [
+    { name: "Test Product 1", price: 10, image: "https://via.placeholder.com/300" },
+    { name: "Test Product 2", price: 20, image: "https://via.placeholder.com/300" },
+    { name: "Test Product 3", price: 30, image: "https://via.placeholder.com/300" }
+  ];
+
+  renderPage(currentPage);
+
+  if (prevBtn) prevBtn.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
       renderPage(currentPage);
     }
   };
 
-  nextBtn.onclick = () => {
+  if (nextBtn) nextBtn.onclick = () => {
     if (currentPage * productsPerPage < allProducts.length) {
       currentPage++;
       renderPage(currentPage);
     }
   };
-
-  // Shuffle
-  shuffleBtn.addEventListener("click", () => {
-    shuffleArray(allProducts);
-    renderPage(currentPage);
-  });
-
-  // Sort menu
-  sortBtn.addEventListener("click", () => {
-    const bubble = document.createElement("div");
-    bubble.className = "sort-bubble";
-    bubble.innerHTML = `
-      <div data-sort="priceAsc">Price ↑</div>
-      <div data-sort="priceDesc">Price ↓</div>
-      <div data-sort="az">A–Z</div>
-      <div data-sort="za">Z–A</div>
-    `;
-    document.body.appendChild(bubble);
-
-    bubble.querySelectorAll("div").forEach(item => {
-      item.onclick = () => {
-        const type = item.dataset.sort;
-        if (type === "priceAsc") allProducts.sort((a,b)=>a.price-b.price);
-        if (type === "priceDesc") allProducts.sort((a,b)=>b.price-a.price);
-        if (type === "az") allProducts.sort((a,b)=>a.name.localeCompare(b.name));
-        if (type === "za") allProducts.sort((a,b)=>b.name.localeCompare(a.name));
-        renderPage(currentPage);
-        bubble.remove();
-      };
-    });
-  });
-
-  // Default grid
-  applyDefaultGrid();
 }
-
