@@ -27,15 +27,13 @@
       <!-- LEFT -->
       <div class="gallery">
         <div class="gallery-main">
-          <img id="mainImg" src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png">
+          <img id="mainImg" src="">
         </div>
         <div class="gallery-dots"></div>
-        <div class="gallery-thumbs">
-          <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" class="active">
-          <img src="https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png">
-        </div>
+        <div class="gallery-thumbs"></div>
       </div>
 
+    
        <!-- RIGHT -->
     <div class="right">
 
@@ -90,71 +88,20 @@
             <p>
               Your files will be sent straight to your email after purchase for quick and easy access.
               No waiting, no shipping — download and print right away.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Easy to Print & Frame</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Print effortlessly at home, online, or through a professional print shop.
-              Once printed, your artwork is ready to frame and hang,
-              instantly adding beauty to your space.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-  <button class="accordion-header">
-    <span class="header-title">Usage License</span>
-    <span class="material-symbols-outlined">expand_more</span>
-  </button>
-
-  <div class="accordion-content">
-    <div class="license-options">
-      <label class="license-option">
-        <input type="radio" name="license" checked>
-        <span class="radio-label">
-          <strong>Personal Use</strong>
-          Personal use only — perfect for home décor or gifting.
-        </span>
-      </label>
-
-      <label class="license-option">
-        <input type="radio" name="license">
-        <span class="radio-label">
-          <strong>Commercial Use</strong>
-          Commercial licensing for online, digital, and resale purposes.
-        </span>
-      </label>
-    </div>
-  </div>
-</div>
-      </div>
-    </div>
-  </div>
 </div>
 
-  <!-- Scripts -->
   <script src="header.js"></script>
   <script src="product-page.js"></script>
-
   <script>
-    // Load header, then initialize
     fetch("header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
         if (typeof initHeader === "function") initHeader();
-        if (typeof initProductsPage === "function") initProductsPage(); // init after header is loaded
+        if (typeof initProductsPage === "function") initProductsPage();
       })
       .catch(err => console.error("Header load failed:", err));
   </script>
 
 </body>
 </html>
-
