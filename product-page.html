@@ -734,8 +734,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------------- CONFIG ----------------
   const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productId = new URLSearchParams(location.search).get("id") || new URLSearchParams(location.search).get("product") || "9182732";
-  console.log("Looking for product ID:", productId);
+ const product = products.find(p => 
+    (p.id && p.id.toString().trim() === productId?.trim()) || 
+    slugify(p.name) === productId?.toLowerCase()
+);
+
 
   // ---------------- UTILITIES ----------------
   function slugify(str) {
