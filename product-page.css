@@ -553,3 +553,44 @@
   }
 }
 
+@media (max-width: 768px) {
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .gallery-main {
+    height: 320px;
+  }
+
+  .gallery-thumbs {
+    display: none;
+  }
+
+  .gallery-dots {
+    display: flex;
+  }
+
+  .right {
+    width: 100%;
+    gap: 24px;
+  }
+
+  .buttons button {
+    width: 100%;
+  }
+
+  .ai-color-link {
+    display: inline-block;
+    width: fit-content;
+    white-space: nowrap; /* prevents wrapping */
+  }
+
+  .accordion {
+    margin-top: 0; /* remove negative margin */
+  }
+}
