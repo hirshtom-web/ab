@@ -714,12 +714,15 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   // ---------------- ELEMENTS ----------------
   const titleEl = document.querySelector(".pricing h2") || document.getElementById("title");
   const artistEl = document.querySelector(".artist");
+  const categoryEl = document.createElement("div"); // Category will go under title
+  categoryEl.className = "product-category";
   const priceEl = document.querySelector(".price") || document.getElementById("price");
   const oldPriceEl = document.querySelector(".old-price") || document.getElementById("oldPrice");
-  const saleInfoEl = document.getElementById("saleInfo");
+  const saleInfoEl = document.querySelector(".sale-info") || document.getElementById("saleInfo");
   const descEl = document.querySelector(".description") || document.getElementById("description");
   const mainImage = document.getElementById("mainImg") || document.getElementById("mainImage");
   const thumbsEl = document.querySelector(".gallery-thumbs") || document.getElementById("thumbnails");
@@ -729,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------------- CONFIG ----------------
   const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productIdRaw = new URLSearchParams(location.search).get("id") || new URLSearchParams(location.search).get("product");
+  const productId = new URLSearchParams(location.search).get("id") || new URLSearchParams(location.search).get("product") || "9182732";
 
   // ---------------- UTILITIES ----------------
   function slugify(str) {
@@ -753,6 +756,19 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  function switchMainImage(imgEl, src, thumbsContainer) {
+    imgEl.src = src;
+    thumbsContainer.querySelectorAll("img").forEach(t => t.classList.remove("active"));
+    thumbsContainer.querySelector(`img[src='${src}']`)?.classList.add("active");
+  }
+
+  function createThumbnail(src, mainImgEl, thumbsContainer) {
+    const img = document.createElement("img");
+    img.src = src;
+    img.onclick = () => switchImage(allImages.indexOf(src));
+    return img;
+  }
+
   function updateThumbs() {
     if(!thumbsEl) return;
     thumbsEl.querySelectorAll("img").forEach((img, idx) => {
@@ -762,19 +778,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateDots() {
     if(!dotsEl) return;
-    dotsEl.querySelectorAll(".dot").forEach((dot, idx) => {
+    dotsEl.querySelectorAll("span.dot").forEach((dot, idx) => {
       dot.classList.toggle("active", idx === currentIndex);
     });
   }
 
-  function createThumbnail(src, index) {
-    const img = document.createElement("img");
-    img.src = src;
-    img.onclick = () => switchImage(index);
-    return img;
-  }
-
-  // ---------------- DYNAMIC DESCRIPTION ----------------
+  // ---------------- DYNAMIC DESCRIPTION + INSTANT DELIVERY ----------------
   const dynamicDescriptions = [
     "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
     "Add a touch of elegance and sophistication to your home with this piece.",
@@ -813,7 +822,7 @@ document.addEventListener("DOMContentLoaded", () => {
         id: (p.productId || p.ProductId || "").trim(),
         name: (p.name || p.Name || "").trim(),
         price: parseFloat(p.price || p.Price || 0),
-        discount: parseFloat((p.discountValue || "").trim()) || 0,
+        discount: parseFloat(p.discountValue || "").trim() || 0,
         discountMode: (p.discountMode || "").trim(),
         ribbon: (p.ribbon || p.Ribbon || "").trim(),
         category: (p.category || p.Category || "").trim(),
@@ -825,33 +834,30 @@ document.addEventListener("DOMContentLoaded", () => {
         images: (p.productImageUrl || p.ProductImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
       }));
 
-      // --- FIXED PRODUCT MATCHING ---
-      const normalizedProductId = productIdRaw ? productIdRaw.trim().toLowerCase() : "";
-      console.log("URL Product ID:", normalizedProductId);
-      console.log("CSV Product IDs:", products.map(p => p.id.toLowerCase()));
-
-      const product = products.find(p => p.id.toLowerCase() === normalizedProductId) 
-                   || products.find(p => slugify(p.name) === normalizedProductId);
-
+      const product = products.find(p => p.id === productId || slugify(p.name) === productId?.toLowerCase());
       if(!product || !product.visible){
         document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
         return;
       }
 
       // --- TEXT ---
-      titleEl && (titleEl.innerText = product.name);
-      artistEl && (artistEl.innerText = product.artist);
-      descEl && (descEl.innerHTML = product.description);
+      titleEl.innerText = product.name;
+      titleEl.after(categoryEl);
+      categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
+      if(artistEl) artistEl.innerText = product.artist;
+      if(descEl) descEl.innerHTML = product.description;
 
-      // --- PRICE ---
-      if(product.discountMode === "PERCENT" && product.discount){
-        const discounted = product.price * (1 - product.discount/100);
-        oldPriceEl && (oldPriceEl.innerText = "$" + product.price.toFixed(2));
-        priceEl && (priceEl.innerText = "$" + discounted.toFixed(2));
-      } else {
-        oldPriceEl && (oldPriceEl.innerText = "");
-        priceEl && (priceEl.innerText = "$" + product.price.toFixed(2));
+      // --- PRICE & DISCOUNT ---
+      let discountedPrice = product.price;
+      if(product.discount && product.discountMode === "PERCENT") {
+          discountedPrice = product.price * (1 - product.discount / 100);
+      } else if(product.discount && product.discountMode === "FIXED") {
+          discountedPrice = product.price - product.discount;
       }
+
+      if(priceEl) priceEl.innerText = "$" + discountedPrice.toFixed(2);
+      if(oldPriceEl && product.discount) oldPriceEl.innerText = "$" + product.price.toFixed(2);
+      else if(oldPriceEl) oldPriceEl.innerText = "";
 
       // --- IMAGES & THUMBNAILS ---
       allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
@@ -859,24 +865,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if(thumbsEl){
         thumbsEl.innerHTML = "";
-        allImages.forEach((src, idx) => thumbsEl.appendChild(createThumbnail(src, idx)));
+        allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src, mainImage, thumbsEl)));
       }
 
+      // --- MOBILE DOTS ---
       if(dotsEl){
         dotsEl.innerHTML = "";
         allImages.forEach((_, i) => {
           const dot = document.createElement("span");
           dot.className = "dot";
           if(i===0) dot.classList.add("active");
-          dot.onclick = () => switchImage(i);
           dotsEl.appendChild(dot);
         });
       }
 
-      // --- RIBBON & BUBBLES ---
+      // --- RIBBON ---
       const galleryMain = mainImage.parentElement;
-      galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
-
+      galleryMain.querySelectorAll(".top-label").forEach(e => e.remove());
       if(product.ribbon){
         const rEl = document.createElement("div");
         rEl.className="top-label";
@@ -884,26 +889,17 @@ document.addEventListener("DOMContentLoaded", () => {
         galleryMain.appendChild(rEl);
       }
 
-      const bubbles = [product.category, product.color].filter(Boolean);
-      if(bubbles.length){
-        const bEl = document.createElement("div");
-        bEl.className="top-bubbles";
-        bubbles.forEach(t=>{
-          const d = document.createElement("div");
-          d.innerText = t;
-          bEl.appendChild(d);
-        });
-        galleryMain.appendChild(bEl);
-      }
-
       // --- INSTANT DELIVERY ---
       addInstantDelivery();
 
       // --- BUY BUTTON ---
-      buyBtn && (buyBtn.onclick = () => {
-        if(product.downloadLink) window.open(product.downloadLink, "_blank");
-        else alert("Download not available");
-      });
+      if(buyBtn) buyBtn.onclick = () => {
+        if(product.downloadLink){
+          window.open(product.downloadLink, "_blank");
+        } else {
+          alert("Download not available");
+        }
+      };
 
       // --- RELATED PRODUCTS ---
       if(relatedGrid){
@@ -913,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const card = document.createElement("div");
           card.className="related-card";
           const img = document.createElement("img");
-          img.src = r.images[0] ? (r.images[0].startsWith("http") ? r.images[0] : "https://static.wixstatic.com/media/"+r.images[0]) : "https://via.placeholder.com/300";
+          img.src = r.images[0] ? (r.images[0].includes("http") ? r.images[0] : "https://static.wixstatic.com/media/"+r.images[0]) : "https://via.placeholder.com/300";
           const h4 = document.createElement("h4");
           h4.innerText = r.name;
           card.appendChild(img);
@@ -922,62 +918,91 @@ document.addEventListener("DOMContentLoaded", () => {
           relatedGrid.appendChild(card);
         });
       }
+
+      // --- SALE COUNTDOWN ---
+      function startCountdown(duration) {
+        if(!saleInfoEl) return;
+        let timer = duration;
+        const interval = setInterval(() => {
+          let hours = Math.floor(timer / 3600);
+          let minutes = Math.floor((timer % 3600) / 60);
+          let seconds = timer % 60;
+          hours = hours<10?"0"+hours:hours;
+          minutes = minutes<10?"0"+minutes:minutes;
+          seconds = seconds<10?"0"+seconds:seconds;
+          saleInfoEl.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
+          if(timer>0) timer--; else clearInterval(interval);
+        },1000);
+      }
+      startCountdown(10*3600 + 33*60 + 11);
+
+      // --- MOBILE SWIPE ---
+      let startX = 0;
+      mainImage.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+      mainImage.addEventListener("touchend", e => {
+        const endX = e.changedTouches[0].clientX;
+        if(Math.abs(endX - startX) < 50) return;
+        if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+        else switchImage((currentIndex + 1) % allImages.length);
+      });
+
+      // --- ACCORDION ---
+      document.querySelectorAll('.accordion-header').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.closest('.accordion-item');
+          const content = btn.nextElementSibling;
+          if(!item || !content) return;
+          if(item.classList.contains('active')){
+            content.style.maxHeight = null;
+            item.classList.remove('active');
+          } else {
+            document.querySelectorAll('.accordion-item').forEach(i=>{
+              i.classList.remove('active');
+              const c=i.querySelector('.accordion-content');
+              if(c) c.style.maxHeight = null;
+            });
+            content.style.maxHeight = content.scrollHeight + 'px';
+            item.classList.add('active');
+          }
+        });
+      });
+
+      // --- OPTIONAL CSS ---
+      const style = document.createElement('style');
+      style.innerHTML = `
+.dynamic-description-text {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.instant-delivery {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  color: #d9534f;
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.instant-delivery .material-icons-outlined {
+  font-size: 16px;
+  margin-right: 4px;
+}
+.product-category {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+`;
+      document.head.appendChild(style);
     }
   });
 
-  // ---------------- MOBILE SWIPE ----------------
-  let startX = 0;
-  mainImage.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-  mainImage.addEventListener("touchend", e => {
-    const endX = e.changedTouches[0].clientX;
-    if(Math.abs(endX - startX) < 50) return;
-    if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    else switchImage((currentIndex + 1) % allImages.length);
-  });
-
-  // ---------------- SALE COUNTDOWN ----------------
-  function startCountdown(duration) {
-    if(!saleInfoEl) return;
-    let timer = duration;
-    const interval = setInterval(() => {
-      let h = Math.floor(timer/3600), m = Math.floor((timer%3600)/60), s = timer%60;
-      h = h<10?"0"+h:h; m=m<10?"0"+m:m; s=s<10?"0"+s:s;
-      saleInfoEl.textContent = `Sale ends in ${h}:${m}:${s}`;
-      if(timer>0) timer--; else clearInterval(interval);
-    },1000);
-  }
-  startCountdown(10*3600 + 33*60 + 11);
-
-  // ---------------- ACCORDION ----------------
-  document.querySelectorAll('.accordion-header').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('.accordion-item');
-      const content = btn.nextElementSibling;
-      if(!item || !content) return;
-      if(item.classList.contains('active')){
-        content.style.maxHeight = null; item.classList.remove('active');
-      } else {
-        document.querySelectorAll('.accordion-item').forEach(i=>{
-          i.classList.remove('active');
-          const c=i.querySelector('.accordion-content'); if(c) c.style.maxHeight=null;
-        });
-        content.style.maxHeight = content.scrollHeight + 'px'; item.classList.add('active');
-      }
-    });
-  });
-
-  // ---------------- OPTIONAL CSS ----------------
-  const style = document.createElement('style');
-  style.innerHTML = `
-.dynamic-description-text { font-size:13px;color:#555;margin-bottom:6px;line-height:1.4; }
-.instant-delivery { display:inline-flex;align-items:center;font-weight:bold;color:#d9534f;text-decoration:none;margin-bottom:12px;font-size:13px; }
-.instant-delivery .material-icons-outlined { font-size:16px;margin-right:4px; }
-.dot { height:8px;width:8px;margin:0 4px;background:#bbb;border-radius:50%;display:inline-block;cursor:pointer; }
-.dot.active { background:#555; }
-`;
-  document.head.appendChild(style);
 });
 </script>
+
 
 
 
