@@ -779,6 +779,40 @@ function createThumbnail(src) {
 }
 
 /* =====================
+   DYNAMIC DESCRIPTIONS + INSTANT DELIVERY
+===================== */
+const dynamicDescriptions = [
+  "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
+  "Add a touch of elegance and sophistication to your home with this piece.",
+  "Perfect for creating a calm, serene atmosphere in any room.",
+  "A bold statement piece that sparks conversation and creativity.",
+  "Infuse your space with color, energy, and modern flair."
+];
+
+function getRandomDescription() {
+  return dynamicDescriptions[Math.floor(Math.random() * dynamicDescriptions.length)];
+}
+
+function addInstantDelivery() {
+  const galleryMain = mainImage.parentElement;
+
+  // Remove previous instant delivery or description if exists
+  galleryMain.querySelectorAll(".instant-delivery, .dynamic-description-text").forEach(e => e.remove());
+
+  // Create dynamic description above the badge
+  const descEl = document.createElement("p");
+  descEl.className = "dynamic-description-text";
+  descEl.innerText = getRandomDescription();
+  galleryMain.appendChild(descEl);
+
+  // Create Instant Delivery badge
+  const badge = document.createElement("div");
+  badge.className = "instant-delivery";
+  badge.innerHTML = `<strong>🚀 Instant Delivery</strong>`;
+  galleryMain.appendChild(badge);
+}
+
+/* =====================
    LOAD CSV & INIT PRODUCT
 ===================== */
 Papa.parse(csvUrl, {
@@ -839,6 +873,9 @@ Papa.parse(csvUrl, {
       if(i===0) dot.classList.add("active");
       dotsEl.appendChild(dot);
     });
+
+    // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
+    addInstantDelivery();
 
     // --- RIBBON & BUBBLES ---
     const galleryMain = mainImage.parentElement;
@@ -939,9 +976,30 @@ document.querySelectorAll('.accordion-header').forEach(btn => {
     }
   });
 });
+
+/* =====================
+   OPTIONAL CSS
+===================== */
+const style = document.createElement('style');
+style.innerHTML = `
+.dynamic-description-text {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.instant-delivery {
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 12px;
+}
+`;
+document.head.appendChild(style);
 </script>
+
 
 
 </body>
 </html>
+
 
