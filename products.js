@@ -1,7 +1,3 @@
-// ===============================
-// PRODUCTS PAGE SCRIPT
-// ===============================
-
 function initProductsPage() {
   console.log("✅ initProductsPage running");
 
@@ -12,10 +8,7 @@ function initProductsPage() {
   const sortBtn = document.querySelector(".controls-right [title='Sort']");
   const gridBtns = document.querySelectorAll(".grid-btn");
 
-  if (!grid) {
-    console.error("❌ productGrid not found");
-    return;
-  }
+  if (!grid) return console.error("❌ productGrid not found");
 
   let allProducts = [];
   let currentPage = 1;
@@ -30,15 +23,24 @@ function initProductsPage() {
     skipEmptyLines: true,
     complete: results => {
       console.log("CSV loaded:", results.data);
-      allProducts = results.data.map(p => ({
-        name: p.name || "Unnamed Product",
-        price: p.price && p.price.trim() !== "" ? parseFloat(p.price) : 1,
-        image: (p.productImageUrl || "").split(";")[0]?.trim() || "https://via.placeholder.com/300",
-        productId: p.productId || ""
-      }));
+
+      allProducts = results.data
+        .filter(p => p.visible && p.visible.toLowerCase() === "true") // only visible products
+        .map(p => ({
+          name: p.name || "Unnamed Product",
+          price: p.price ? parseFloat(p.price) : 1,
+          image: p.productImageUrl
+            ? p.productImageUrl.split(";")[0].trim()
+            : "https://via.placeholder.com/300",
+          productId: p.productId || "",
+          type: p.type || "",
+          category: p.category || "",
+        }));
+
       console.log("Mapped products:", allProducts);
       renderPage(currentPage);
-    }
+    },
+    error: err => console.error("CSV load error:", err)
   });
 
   // -------------------------------
@@ -46,11 +48,10 @@ function initProductsPage() {
   // -------------------------------
   function renderPage(page) {
     grid.innerHTML = "";
-
     const start = (page - 1) * productsPerPage;
     const slice = allProducts.slice(start, start + productsPerPage);
 
-    if (slice.length === 0) {
+    if (!slice.length) {
       grid.innerHTML = "<p>No products found.</p>";
       return;
     }
@@ -59,13 +60,12 @@ function initProductsPage() {
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
+        <img src="${p.image.includes("http") ? p.image : "https://static.wixstatic.com/media/" + p.image}" alt="${p.name}">
         <h3>${p.name}</h3>
         <p>$${p.price}</p>
       `;
       grid.appendChild(card);
 
-      // Insert banner every 9th card
       if ((i + 1) % 9 === 0) {
         const banner = document.createElement("div");
         banner.className = "banner-card";
@@ -84,7 +84,6 @@ function initProductsPage() {
       renderPage(currentPage);
     }
   };
-
   if (nextBtn) nextBtn.onclick = () => {
     if (currentPage * productsPerPage < allProducts.length) {
       currentPage++;
@@ -100,7 +99,6 @@ function initProductsPage() {
       shuffleArray(allProducts);
       renderPage(currentPage);
     });
-    shuffleBtn.title = "Shuffle to see more";
   }
 
   function shuffleArray(array) {
@@ -124,13 +122,10 @@ function initProductsPage() {
       bubble.style.padding = "10px";
       bubble.style.zIndex = "999";
       bubble.innerHTML = `
-        <div data-sort="best">Best Selling</div>
         <div data-sort="priceAsc">Price: Low → High</div>
         <div data-sort="priceDesc">Price: High → Low</div>
-        <div data-sort="az">Alphabetically A-Z</div>
-        <div data-sort="za">Alphabetically Z-A</div>
-        <div data-sort="new">New → Old</div>
-        <div data-sort="old">Old → New</div>
+        <div data-sort="az">A → Z</div>
+        <div data-sort="za">Z → A</div>
       `;
       document.body.appendChild(bubble);
 
@@ -149,14 +144,6 @@ function initProductsPage() {
               break;
             case "za":
               allProducts.sort((a, b) => b.name.localeCompare(a.name));
-              break;
-            case "new":
-              allProducts.sort((a, b) => a.productId.localeCompare(b.productId));
-              break;
-            case "old":
-              allProducts.sort((a, b) => b.productId.localeCompare(a.productId));
-              break;
-            case "best":
               break;
           }
           renderPage(currentPage);
@@ -185,7 +172,7 @@ function initProductsPage() {
   });
 
   // -------------------------------
-  // SET DEFAULT GRID ON LOAD
+  // DEFAULT GRID
   // -------------------------------
   (function() {
     const isMobile = window.innerWidth <= 768;
@@ -203,6 +190,4 @@ function initProductsPage() {
 // -------------------------------
 // INIT ON DOM LOAD
 // -------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  initProductsPage();
-});
+document.addEventListener("DOMContentLoaded", initProductsPage);
