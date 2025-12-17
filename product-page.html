@@ -728,7 +728,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const buyBtn = document.querySelector(".buy") || document.getElementById("addToCart");
   const relatedGrid = document.getElementById("relatedGrid");
 
-  // Category under title
+  // Category element under title
   const categoryEl = document.createElement("div");
   categoryEl.className = "product-category";
 
@@ -894,9 +894,9 @@ document.addEventListener("DOMContentLoaded", () => {
         else alert("Download not available");
       };
 
-      // --- RELATED PRODUCTS ---
+      // --- RELATED PRODUCTS (same category) ---
       if(relatedGrid){
-        const related = products.filter(p => p.id !== product.id).slice(0,10);
+        const related = products.filter(p => p.id !== product.id && p.category === product.category).slice(0,10);
         relatedGrid.innerHTML = "";
         related.forEach(r => {
           const card = document.createElement("div");
