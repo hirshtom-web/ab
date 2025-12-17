@@ -901,7 +901,8 @@ if(bubbles.length){
 }
 
 // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
-addInstantDelivery();
+addInstantDelivery(); // <-- ONLY call here, after ribbons/bubbles
+
 
     // --- BUY BUTTON ---
     buyBtn.onclick = () => {
@@ -1004,6 +1005,7 @@ document.head.appendChild(style);
 
 </body>
 </html>
+
 
 
 
