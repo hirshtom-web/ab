@@ -10,10 +10,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
   <!-- Styles -->
-<link rel="stylesheet" href="main.css">      <!-- Global styles -->
-<link rel="stylesheet" href="header.css">    <!-- Header styles -->
-<link rel="stylesheet" href="products.css">  <!-- Page-specific -->
-
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="products.css">
 </head>
 <body>
 
@@ -83,26 +82,25 @@
 
 
 <!-- Scripts -->
-<script src="header.js"></script> <!-- your header JS file -->
+  <script src="header.js"></script>
+  <script src="products.js"></script>
 
-<script>
-  // Fetch and insert header
-  fetch("header.html")
-    .then(res => res.text())
-    .then(html => {
-      const placeholder = document.getElementById("header-placeholder");
-      placeholder.innerHTML = html;
+  <!-- Load header.html dynamically -->
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        const placeholder = document.getElementById("header-placeholder");
+        placeholder.innerHTML = html;
 
-      // If your header.js has functions that need the header elements to exist:
-      if (typeof initHeaderIcons === "function") {
-        initHeaderIcons();
-      }
-    })
-    .catch(err => console.error("Error loading header:", err));
-</script>
+        // Initialize header icons
+        if (typeof initHeaderIcons === "function") initHeaderIcons();
 
-<script src="products.js"></script> <!-- your products JS -->
-
+        // Initialize products grid
+        if (typeof initProducts === "function") initProducts();
+      })
+      .catch(err => console.error("Error loading header:", err));
+  </script>
 
 </body>
 </html>
