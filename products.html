@@ -3,104 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArteBarte Products</title>
+  <title>Products</title>
 
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="products.css">
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- HEADER PLACEHOLDER -->
   <div id="header-placeholder"></div>
 
-  <!-- PRODUCTS GRID -->
-  <div class="controls-bar">
+  <!-- PAGE CONTENT -->
+  <main>
+    <h1>Products</h1>
+    <div id="productsGrid"></div>
+  </main>
 
-  <!-- LEFT: GRID LAYOUT -->
-  <div class="controls-left">
-
-   <!-- DESKTOP -->
-<button class="grid-btn active desktop-only" data-cols="4">
-  <span class="material-symbols-outlined">calendar_view_week</span>
-</button>
-
-<button class="grid-btn desktop-only" data-cols="3">
-  <span class="material-symbols-outlined">calendar_view_month</span>
-</button>
-
-<!-- MOBILE -->
-<button class="grid-btn active mobile-only" data-cols="2">
-  <span class="material-symbols-outlined">splitscreen</span>
-</button>
-
-<button class="grid-btn mobile-only" data-cols="1">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5z"/>
-  </svg>
-</button>
-
-  </div>
-
-  <!-- CENTER: IMAGE TYPE -->
-  <div class="controls-center image-selector">
-    <button class="img-btn active" data-index="0">Cover Image</button>
-    <button class="img-btn" data-index="1">Lifestyle Image</button>
-  </div>
-
-  <!-- RIGHT: SORT / SHUFFLE -->
-  <div class="controls-right">
-    <button class="control-btn" title="Sort">
-      <span class="material-symbols-outlined">sort</span>
-    </button>
-
-    <button class="control-btn" title="Shuffle">
-      <span class="material-symbols-outlined">shuffle</span>
-    </button>
-  </div>
-
-</div>
-
-<!-- ===============================
-     PRODUCTS GRID
-================================ -->
-<div class="products-grid week-view" id="productGrid"></div>
-
-<!-- ===============================
-     PAGINATION
-================================ -->
-<div class="pagination">
-  <button id="prevPage">Prev</button>
-  <span id="pageNumber">1</span>
-  <button id="nextPage">Next</button>
-</div>
-
-
-<!-- Scripts -->
+  <!-- HEADER SCRIPT (defines initHeader) -->
   <script src="header.js"></script>
-  <script src="products.js"></script>
 
-  <!-- Load header.html dynamically -->
+  <!-- LOAD HEADER HTML + INIT -->
   <script>
     fetch("header.html")
       .then(res => res.text())
       .then(html => {
-        const placeholder = document.getElementById("header-placeholder");
-        placeholder.innerHTML = html;
-
-        // Initialize header icons
-        if (typeof initHeaderIcons === "function") initHeaderIcons();
-
-        // Initialize products grid
-        if (typeof initProducts === "function") initProducts();
+        document.getElementById("header-placeholder").innerHTML = html;
+        initHeader(); // 🔥 THIS IS THE KEY
       })
-      .catch(err => console.error("Error loading header:", err));
+      .catch(err => console.error("Header load failed:", err));
   </script>
+
+  <!-- PAGE SCRIPT -->
+  <script src="products.js"></script>
 
 </body>
 </html>
