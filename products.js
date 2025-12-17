@@ -1,56 +1,200 @@
+// ===============================
+// PRODUCTS PAGE SCRIPT
+// ===============================
+
 function initProductsPage() {
   console.log("✅ initProductsPage running");
 
   const grid = document.getElementById("productGrid");
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  const shuffleBtn = document.querySelector(".controls-right [title='Shuffle']");
+  const sortBtn = document.querySelector(".controls-right [title='Sort']");
+  const gridBtns = document.querySelectorAll(".grid-btn");
+
   if (!grid) {
     console.error("❌ productGrid not found");
     return;
   }
 
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-
   let allProducts = [];
   let currentPage = 1;
   const productsPerPage = 12;
 
+  // -------------------------------
+  // FETCH CSV PRODUCTS
+  // -------------------------------
+  Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: results => {
+      allProducts = results.data.map(p => ({
+        name: p.name || "Unnamed Product",
+        price: p.price && p.price.trim() !== "" ? parseFloat(p.price) : 1,
+        image: (p.productImageUrl || "").split(";")[0]?.trim() || "https://via.placeholder.com/300",
+        productId: p.productId || ""
+      }));
+      renderPage(currentPage);
+    }
+  });
+
+  // -------------------------------
+  // RENDER GRID PAGE
+  // -------------------------------
   function renderPage(page) {
     grid.innerHTML = "";
+
     const start = (page - 1) * productsPerPage;
     const slice = allProducts.slice(start, start + productsPerPage);
 
-    slice.forEach(p => {
+    slice.forEach((p, i) => {
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <img src="${p.image}">
+        <img src="${p.image}" alt="${p.name}">
         <h3>${p.name}</h3>
         <p>$${p.price}</p>
       `;
       grid.appendChild(card);
+
+      // Insert banner every 9th card
+      if ((i + 1) % 9 === 0) {
+        const banner = document.createElement("div");
+        banner.className = "banner-card";
+        banner.innerHTML = "<span>✨ New Collection Drop!</span>";
+        grid.appendChild(banner);
+      }
     });
   }
 
-  // TEMP TEST DATA (IMPORTANT)
-  allProducts = [
-    { name: "Test Product 1", price: 10, image: "https://via.placeholder.com/300" },
-    { name: "Test Product 2", price: 20, image: "https://via.placeholder.com/300" },
-    { name: "Test Product 3", price: 30, image: "https://via.placeholder.com/300" }
-  ];
-
-  renderPage(currentPage);
-
+  // -------------------------------
+  // PAGINATION
+  // -------------------------------
   if (prevBtn) prevBtn.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
       renderPage(currentPage);
     }
   };
-
   if (nextBtn) nextBtn.onclick = () => {
     if (currentPage * productsPerPage < allProducts.length) {
       currentPage++;
       renderPage(currentPage);
     }
   };
+
+  // -------------------------------
+  // SHUFFLE BUTTON
+  // -------------------------------
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener("click", () => {
+      shuffleArray(allProducts);
+      renderPage(currentPage);
+    });
+    shuffleBtn.title = "Shuffle to see more";
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  // -------------------------------
+  // SORT BUTTON
+  // -------------------------------
+  if (sortBtn) {
+    sortBtn.addEventListener("click", () => {
+      const bubble = document.createElement("div");
+      bubble.style.position = "absolute";
+      bubble.style.top = "40px";
+      bubble.style.right = "0px";
+      bubble.style.background = "#fff";
+      bubble.style.border = "1px solid #ccc";
+      bubble.style.padding = "10px";
+      bubble.style.zIndex = "999";
+      bubble.innerHTML = `
+        <div data-sort="best">Best Selling</div>
+        <div data-sort="priceAsc">Price: Low → High</div>
+        <div data-sort="priceDesc">Price: High → Low</div>
+        <div data-sort="az">Alphabetically A-Z</div>
+        <div data-sort="za">Alphabetically Z-A</div>
+        <div data-sort="new">New → Old</div>
+        <div data-sort="old">Old → New</div>
+      `;
+      document.body.appendChild(bubble);
+
+      bubble.querySelectorAll("div").forEach(item => {
+        item.addEventListener("click", () => {
+          const sortType = item.dataset.sort;
+          switch (sortType) {
+            case "priceAsc":
+              allProducts.sort((a, b) => a.price - b.price);
+              break;
+            case "priceDesc":
+              allProducts.sort((a, b) => b.price - a.price);
+              break;
+            case "az":
+              allProducts.sort((a, b) => a.name.localeCompare(b.name));
+              break;
+            case "za":
+              allProducts.sort((a, b) => b.name.localeCompare(a.name));
+              break;
+            case "new":
+              allProducts.sort((a, b) => a.productId.localeCompare(b.productId));
+              break;
+            case "old":
+              allProducts.sort((a, b) => b.productId.localeCompare(a.productId));
+              break;
+            case "best":
+              break;
+          }
+          renderPage(currentPage);
+          bubble.remove();
+        });
+      });
+
+      document.addEventListener("click", e => {
+        if (!bubble.contains(e.target) && e.target !== sortBtn) bubble.remove();
+      }, { once: true });
+    });
+  }
+
+  // -------------------------------
+  // GRID LAYOUT BUTTONS
+  // -------------------------------
+  gridBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      gridBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const cols = parseInt(btn.dataset.cols);
+      grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+      grid.classList.add(`cols-${cols}`);
+    });
+  });
+
+  // -------------------------------
+  // SET DEFAULT GRID ON LOAD
+  // -------------------------------
+  (function() {
+    const isMobile = window.innerWidth <= 768;
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+    grid.classList.add(isMobile ? "cols-2" : "cols-4");
+  })();
+
+  window.addEventListener("resize", () => {
+    const isMobile = window.innerWidth <= 768;
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+    grid.classList.add(isMobile ? "cols-2" : "cols-4");
+  });
 }
+
+// -------------------------------
+// INIT ON DOM LOAD
+// -------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  initProductsPage();
+});
