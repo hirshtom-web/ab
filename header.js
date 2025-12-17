@@ -1,3 +1,33 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("hamburger");
+  const mobileMenu = document.querySelector(".mobile-menu");
+
+  hamburger.addEventListener("click", () => {
+    // Toggle mobile menu visibility
+    if (mobileMenu.style.display === "none") {
+      mobileMenu.style.display = "block";
+    } else {
+      mobileMenu.style.display = "none";
+    }
+  });
+
+  document.getElementById("mobileSearch").addEventListener("click", () => {
+    alert("Search clicked"); // replace with your search function
+  });
+
+  document.getElementById("mobileGift").addEventListener("click", () => {
+    window.location.href = "gift.html"; // replace with your gift page
+  });
+
+  document.getElementById("mobileHelp").addEventListener("click", () => {
+    window.location.href = "help.html"; // replace with your help page
+  });
+
+  document.getElementById("mobileCart").addEventListener("click", () => {
+    window.location.href = "cart.html"; // replace with your cart page
+  });
+});
+
 // ---------- GIFT CARD POPUP ----------
 document.getElementById('giftIcon').addEventListener('click', function() {
   openPopup(
