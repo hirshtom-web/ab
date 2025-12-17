@@ -1,15 +1,14 @@
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+function initProductsPage() {
   const grid = document.getElementById("productGrid");
   const prevBtn = document.getElementById("prevPage");
   const nextBtn = document.getElementById("nextPage");
-  const pageInfo = document.getElementById("pageInfo");
+  const pageNumber = document.getElementById("pageNumber");
+
+  if (!grid) return console.error("❌ productGrid not found");
 
   let allProducts = [];
   let currentPage = 1;
-  const productsPerPage = 60; // <-- 60 items per page
+  const productsPerPage = 60;
 
   // Load CSV
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
@@ -18,12 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
     skipEmptyLines: true,
     complete: res => {
       allProducts = res.data.map(p => ({
-        id: (p.productId || p.ProductId || "").trim(),
-        name: (p.name || p.Name || "Unnamed Product").trim(),
+        id: (p.productId || "").trim(),
+        name: (p.name || "Unnamed Product").trim(),
         price: p.price ? parseFloat(p.price) : 1,
-        image: (p.productImageUrl || p.ProductImageUrl || "").split(";")[0].trim()
+        image: (p.productImageUrl || "").split(";")[0].trim()
       }));
-
       renderPage(currentPage);
     },
     error: err => console.error("CSV load failed:", err)
@@ -51,27 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
       grid.appendChild(card);
     });
 
-    // Update pagination info
     const totalPages = Math.ceil(allProducts.length / productsPerPage);
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
 
-    // Disable buttons if needed
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
   }
 
-  // Pagination buttons
-  prevBtn.onclick = () => {
-    if (currentPage > 1) {
-      currentPage--;
-      renderPage(currentPage);
-    }
-  };
-  nextBtn.onclick = () => {
-    if (currentPage * productsPerPage < allProducts.length) {
-      currentPage++;
-      renderPage(currentPage);
-    }
-  };
-});
-</script>
+  prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
+  nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
+}
+
