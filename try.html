@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Grid Example</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .product-card { border: 1px solid #ccc; padding: 10px; text-align: center; cursor: pointer; }
+    .product-card img { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+
+<h1>Product Grid</h1>
+<div class="products-grid" id="productGrid"></div>
+
+<!-- PapaParse -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("productGrid");
+  if (!grid) return console.error("❌ productGrid element not found");
+
+  // Load CSV
+  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: res => {
+      const allProducts = res.data.map(p => ({
+        id: (p.productId || p.ProductId || "").trim(),
+        name: (p.name || p.Name || "Unnamed Product").trim(),
+        price: p.price ? parseFloat(p.price) : 1,
+        image: (p.productImageUrl || p.ProductImageUrl || "").split(";")[0].trim()
+      }));
+
+      console.log("Products loaded:", allProducts.length, allProducts);
+
+      allProducts.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${p.image.includes("http") ? p.image : 'https://static.wixstatic.com/media/' + p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>$${p.price}</p>
+        `;
+        card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+        grid.appendChild(card);
+      });
+    },
+    error: err => console.error("CSV load failed:", err)
+  });
+});
+</script>
+
+</body>
+</html>
