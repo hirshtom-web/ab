@@ -91,9 +91,24 @@
 /* ===============================
    PRODUCT CARD
 ================================ */
+/* ===============================
+   PRODUCTS GRID
+================================ */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* each card ~250px wide */
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* ===============================
+   PRODUCT CARD
+================================ */
 .product-card {
   width: 100%;
-  height: 350px;              /* fixed height */
+  height: 300px;          /* fixed height */
   border-radius: 16px;
   overflow: hidden;
   background: #fff;
@@ -105,28 +120,35 @@
 
 .img-wrapper {
   width: 100%;
-  height: 200px;              /* fixed image height */
+  height: 200px;          /* fixed image height */
   overflow: hidden;
 }
 
 .img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;          /* crop images nicely */
+  object-fit: cover;      /* crop instead of stretching */
   display: block;
   border-radius: 16px 16px 0 0;
 }
 
-/* ===============================
-   PRODUCT INFO
-================================ */
 .product-info {
   padding: 10px;
-  flex-grow: 1;                /* fills remaining space */
+  flex-grow: 1;           /* fill remaining space */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+
+/* ===============================
+   MOBILE OVERRIDE
+================================ */
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
 
 .product-info h3 {
   margin: 0;
