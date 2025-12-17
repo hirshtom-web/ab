@@ -877,28 +877,31 @@ Papa.parse(csvUrl, {
     // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
     addInstantDelivery();
 
-    // --- RIBBON & BUBBLES ---
-    const galleryMain = mainImage.parentElement;
-    galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
+ // --- RIBBON & BUBBLES ---
+const galleryMain = mainImage.parentElement;
+galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
 
-    if(product.ribbon){
-      const rEl = document.createElement("div");
-      rEl.className="top-label";
-      rEl.innerText = product.ribbon;
-      galleryMain.appendChild(rEl);
-    }
+if(product.ribbon){
+  const rEl = document.createElement("div");
+  rEl.className="top-label";
+  rEl.innerText = product.ribbon;
+  galleryMain.appendChild(rEl);
+}
 
-    const bubbles = [product.category, product.color].filter(Boolean);
-    if(bubbles.length){
-      const bEl = document.createElement("div");
-      bEl.className="top-bubbles";
-      bubbles.forEach(t=>{
-        const d = document.createElement("div");
-        d.innerText = t;
-        bEl.appendChild(d);
-      });
-      galleryMain.appendChild(bEl);
-    }
+const bubbles = [product.category, product.color].filter(Boolean);
+if(bubbles.length){
+  const bEl = document.createElement("div");
+  bEl.className="top-bubbles";
+  bubbles.forEach(t=>{
+    const d = document.createElement("div");
+    d.innerText = t;
+    bEl.appendChild(d);
+  });
+  galleryMain.appendChild(bEl);
+}
+
+// --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
+addInstantDelivery();
 
     // --- BUY BUTTON ---
     buyBtn.onclick = () => {
@@ -1001,5 +1004,6 @@ document.head.appendChild(style);
 
 </body>
 </html>
+
 
 
