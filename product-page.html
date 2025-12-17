@@ -22,25 +22,21 @@
   <!-- HEADER -->
   <div id="header-placeholder"></div>
 
-<div class="container">
-  <div class="layout">
-
-    <!-- LEFT -->
-    <div class="gallery">
-<div class="gallery-main">
-  <img id="mainImg" src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png">
-</div>
-
-<!-- Dot indicators for mobile -->
-<div class="gallery-dots"></div>
-
-      <div class="gallery-thumbs">
-        <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" class="active">
-        <img src="https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png">
+  <div class="container">
+    <div class="layout">
+      <!-- LEFT -->
+      <div class="gallery">
+        <div class="gallery-main">
+          <img id="mainImg" src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png">
+        </div>
+        <div class="gallery-dots"></div>
+        <div class="gallery-thumbs">
+          <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" class="active">
+          <img src="https://static.wixstatic.com/media/1799ca_592d8b363db640cf8ef9fc684398d929~mv2.png">
+        </div>
       </div>
-    </div>
 
-    <!-- RIGHT -->
+       <!-- RIGHT -->
     <div class="right">
 
       <div class="pricing">
@@ -143,23 +139,22 @@
   </div>
 </div>
 
-  <!-- PapaParse library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  
+  <!-- Scripts -->
   <script src="header.js"></script>
-<script src="product-page.js"></script>
-<script>
-fetch("header.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("header-placeholder").innerHTML = html;
-    if (typeof initHeader === "function") initHeader();
-    if (typeof initProductsPage === "function") initProductsPage();
-  })
-  .catch(err => console.error("Header load failed:", err));
-</script>
+  <script src="product-page.js"></script>
+
+  <script>
+    // Load header, then initialize
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-placeholder").innerHTML = html;
+        if (typeof initHeader === "function") initHeader();
+        if (typeof initProductsPage === "function") initProductsPage(); // init after header is loaded
+      })
+      .catch(err => console.error("Header load failed:", err));
+  </script>
 
 </body>
 </html>
-
 
