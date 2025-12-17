@@ -82,20 +82,17 @@
   <button id="nextPage">Next</button>
 </div>
 
-  <script src="header.js"></script>
+<script src="header.js"></script>
 <script src="products.js"></script>
-
 <script>
-  fetch("header.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("header-placeholder").innerHTML = html;
-
-      // INIT AFTER HEADER EXISTS
-      initHeader();
-      initProductsPage(); // 🔥 THIS WAS MISSING
-    })
-    .catch(err => console.error("Header load failed:", err));
+fetch("header.html")
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("header-placeholder").innerHTML = html;
+    initHeader();          // initialize header
+    initProductsPage();    // initialize products AFTER DOM exists
+  })
+  .catch(err => console.error("Header load failed:", err));
 </script>
 
 </body>
