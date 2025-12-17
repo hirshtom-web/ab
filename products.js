@@ -1,4 +1,10 @@
 function initProductsPage() {
+  console.log("✅ Products page initialized");
+  ...
+}
+
+
+function initProductsPage() {
 
   const grid = document.getElementById("productGrid");
   const prevBtn = document.getElementById("prevPage");
