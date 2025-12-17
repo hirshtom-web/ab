@@ -849,26 +849,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if(descEl) descEl.innerHTML = product.description;
       addInstantDelivery();
 
-  // --- PRICE & OLD PRICE ---
-let finalPrice = product.price;
-if(product.discount){
-  if(product.discountMode === "PERCENT") finalPrice = product.price * (1 - product.discount/100);
-  else if(product.discountMode === "FIXED") finalPrice = product.price - product.discount;
-}
+      // --- PRICE & OLD PRICE ---
+      let finalPrice = product.price;
+      if(product.discount){
+        if(product.discountMode === "PERCENT") finalPrice = product.price * (1 - product.discount/100);
+        else if(product.discountMode === "FIXED") finalPrice = product.price - product.discount;
+      }
 
-if(priceEl) priceEl.innerText = "$" + finalPrice.toFixed(2);
+      if(priceEl) priceEl.innerText = "$" + finalPrice.toFixed(2);
 
-if(oldPriceEl){
-  if(product.discount){
-    oldPriceEl.innerText = "$" + product.price.toFixed(2);
-    oldPriceEl.style.textDecoration = "line-through"; // cross out
-    oldPriceEl.style.color = "#999";                 // optional styling
-  } else {
-    oldPriceEl.innerText = "";
-  }
-}
-
-
+      if(oldPriceEl){
+        if(product.discount){
+          oldPriceEl.innerText = "$" + product.price.toFixed(2);
+          oldPriceEl.style.textDecoration = "line-through"; // cross out
+          oldPriceEl.style.color = "#999";                 // optional styling
+          oldPriceEl.style.display = "inline";            // make sure visible
+        } else {
+          oldPriceEl.innerText = "";
+          oldPriceEl.style.display = "none";              // hide if no discount
+        }
+      }
 
       // --- IMAGES & THUMBNAILS ---
       allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
@@ -927,6 +927,7 @@ if(oldPriceEl){
       // --- SALE COUNTDOWN ---
       function startCountdown(duration) {
         if(!saleInfoEl) return;
+        saleInfoEl.style.display = "block"; // make sure visible
         let timer = duration;
         const interval = setInterval(() => {
           let hours = Math.floor(timer / 3600);
@@ -1008,6 +1009,7 @@ if(oldPriceEl){
 
 });
 </script>
+
 
 
 
