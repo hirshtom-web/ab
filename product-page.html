@@ -1,27 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Layout</title>
+  <title>Product Page</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
-  <!-- Material Symbols (ONLY this icon system) -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-
-  <!-- Global / header styles -->
+  <!-- Styles -->
   <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="product-page.css">
 
-  <!-- Page-specific styles -->
-  <style>
-
-
-  </style>
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
-
 <body>
 
-   
+  <!-- HEADER -->
+  <div id="header-placeholder"></div>
+
 <div class="container">
   <div class="layout">
 
@@ -138,17 +138,30 @@
     </div>
   </div>
 </div>
-
-
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- PapaParse library -->
+  <!-- PapaParse library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-<!-- Your product page JS -->
+  
+  <!-- Scripts -->
+  <script src="header.js"></script>
 <script src="product-page.js"></script>
+  
+  <script>
+    // Load header, then initialize
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-placeholder").innerHTML = html;
+        initHeader();          // initialize header
+        initProductsPage();    // initialize products after header exists
+      })
+      .catch(err => console.error("Header load failed:", err));
+  </script>
+</body>
+</html>
+
 
