@@ -132,20 +132,22 @@
     </div>
   </div>
 </div>
-      </div>
-    </div>
-  </div>
-</div>
 
+ <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="header.js"></script>
   <script src="product-page.js"></script>
   <script>
+    // 1️⃣ Load header first
     fetch("header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
         if (typeof initHeader === "function") initHeader();
-        if (typeof initProductsPage === "function") initProductsPage();
+
+        // 2️⃣ Ensure DOM is ready before initializing products
+        document.addEventListener("DOMContentLoaded", () => {
+          if (typeof initProductsPage === "function") initProductsPage();
+        });
       })
       .catch(err => console.error("Header load failed:", err));
   </script>
