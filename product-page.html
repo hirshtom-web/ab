@@ -849,26 +849,53 @@ document.addEventListener("DOMContentLoaded", () => {
       if(descEl) descEl.innerHTML = product.description;
       addInstantDelivery();
 
-      // --- PRICE & OLD PRICE ---
-      let finalPrice = product.price;
-      if(product.discount){
-        if(product.discountMode === "PERCENT") finalPrice = product.price * (1 - product.discount/100);
-        else if(product.discountMode === "FIXED") finalPrice = product.price - product.discount;
-      }
+       // ---------------- PRICE, OLD PRICE & SALE TIMER ----------------
+let finalPrice = product.price;
+if(product.discount){
+  if(product.discountMode === "PERCENT") finalPrice = product.price * (1 - product.discount/100);
+  else if(product.discountMode === "FIXED") finalPrice = product.price - product.discount;
+}
 
-      if(priceEl) priceEl.innerText = "$" + finalPrice.toFixed(2);
+// Set current price
+if(priceEl) {
+  priceEl.childNodes[0].nodeValue = "$" + finalPrice.toFixed(2) + " "; // update text node before old price
+}
 
-      if(oldPriceEl){
-        if(product.discount){
-          oldPriceEl.innerText = "$" + product.price.toFixed(2);
-          oldPriceEl.style.textDecoration = "line-through"; // cross out
-          oldPriceEl.style.color = "#999";                 // optional styling
-          oldPriceEl.style.display = "inline";            // make sure visible
-        } else {
-          oldPriceEl.innerText = "";
-          oldPriceEl.style.display = "none";              // hide if no discount
-        }
-      }
+// Set old price
+if(oldPriceEl){
+  if(product.discount){
+    oldPriceEl.innerText = "$" + product.price.toFixed(2);
+    oldPriceEl.style.textDecoration = "line-through";
+    oldPriceEl.style.color = "#999";
+    oldPriceEl.style.display = "inline";
+    oldPriceEl.style.marginLeft = "8px";
+    oldPriceEl.style.marginRight = "8px";
+  } else {
+    oldPriceEl.innerText = "";
+    oldPriceEl.style.display = "none";
+  }
+}
+
+// Set sale timer
+function startCountdown(duration) {
+  if(!saleInfoEl) return;
+  saleInfoEl.style.display = "inline";
+  saleInfoEl.style.fontWeight = "bold";
+  saleInfoEl.style.color = "#d9534f";
+  let timer = duration;
+  const interval = setInterval(() => {
+    let hours = Math.floor(timer / 3600);
+    let minutes = Math.floor((timer % 3600) / 60);
+    let seconds = timer % 60;
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    saleInfoEl.textContent = `Sale ends in ${hours}:${minutes}:${seconds}`;
+    if(timer > 0) timer--; else clearInterval(interval);
+  }, 1000);
+}
+startCountdown(10*3600 + 33*60 + 11);
+
 
       // --- IMAGES & THUMBNAILS ---
       allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
