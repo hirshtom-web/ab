@@ -7,6 +7,8 @@
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
+   <!-- Header styles -->
+<link rel="stylesheet" href="style.css">
 
 <style>
 /* =====================
@@ -584,6 +586,130 @@ body {
 
 <body>
 
+
+<!-- ---------- TOP BAR DESKTOP ---------- -->
+<div class="top-bar" id="desktop-bar">
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+    <span>Curated for Your Space</span>
+  </div>
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">wall_art</span>
+    <span>Digital Art Prints</span>
+  </div>
+  <div class="desktop-item">
+    <span class="material-symbols-outlined">rewarded_ads</span>
+    <span>Premium Quality Prints</span>
+  </div>
+</div>
+
+<!-- ---------- TOP BAR MOBILE ---------- -->
+<div class="top-bar" id="mobile-bar">
+  <div class="mobile-track">
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+      Curated for Your Space
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">wall_art</span>
+      Digital Art Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">rewarded_ads</span>
+      Premium Quality Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">featured_seasonal_and_gifts</span>
+      Curated for Your Space
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">wall_art</span>
+      Digital Art Prints
+    </div>
+    <div class="mobile-item">
+      <span class="material-symbols-outlined">rewarded_ads</span>
+      Premium Quality Prints
+    </div>
+  </div>
+</div>
+
+<!-- ---------- DESKTOP HEADER ---------- -->
+<header>
+  <div class="header-left">
+    <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+  </div>
+<nav class="header-center">
+  <a href="products.html">Art Prints</a>
+  <a href="categories.html">Categories</a>
+  <a href="perfect-pair.html">Perfect Pair</a>
+  <a href="gallery-walls.html">Gallery Walls</a>
+  <a href="how-it-works.html">How It Works</a>
+  <a href="inspiration.html">Inspiration</a>
+</nav>
+  <div class="header-right">
+    <span class="material-symbols-outlined" id="cartIcon">shopping_cart</span>
+    <span class="material-symbols-outlined" id="searchIcon">search</span>
+    <input type="text" id="searchBar" placeholder="Search...">
+    <span class="material-symbols-outlined" id="giftIcon">card_giftcard</span>
+    <span class="material-symbols-outlined">help_outline</span>
+  </div>
+</header>
+
+<!-- ---------- MOBILE HEADER ---------- -->
+<div class="mobile-header">
+  <div class="left">
+    <span class="material-symbols-outlined" id="hamburger">menu</span>
+    <span class="material-symbols-outlined" id="mobileSearch">search</span>
+  </div>
+
+  <a href="index.html"><img src="https://static.wixstatic.com/shapes/1799ca_68ff77108ba74465909e2b18efea077e.svg" class="logo" alt="Logo"></a>
+
+  <div class="right">
+    <span class="material-symbols-outlined" id="mobileGift">card_giftcard</span>
+    <span class="material-symbols-outlined" id="mobileHelp">help_outline</span>
+    <span class="material-symbols-outlined" id="mobileCart">shopping_cart</span>
+  </div>
+</div>
+
+<!-- Mobile Search under header -->
+<div class="mobile-search-container">
+  <input type="text" placeholder="Search..." id="mobileSearchBar">
+</div>
+
+<!-- Mobile Hamburger Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenu">
+  <span class="close-menu" id="closeMenu">×</span>
+  <nav class="mobile-nav-links">
+  <a href="products.html">Art Prints</a>
+  <a href="categories.html">Categories</a>
+  <a href="perfect-pair.html">Perfect Pair</a>
+  <a href="gallery-walls.html">Gallery Walls</a>
+  <a href="how-it-works.html">How It Works</a>
+  <a href="inspiration.html">Inspiration</a>
+</nav>
+
+</div>
+
+<!-- ---------- ITEM POPUP ---------- -->
+<div class="item-popup" id="itemPopup">
+  <div class="popup-content">
+    <div class="popup-image">
+      <img src="https://static.wixstatic.com/media/1799ca_b4155d02cccc4736a27be7dfce5fd416~mv2.png" alt="Gift Card Image">
+    </div>
+    <div class="popup-text">
+      <h2>Christmas Gift Card</h2>
+      <p>Send this beautiful Christmas gift card to someone special and make their holidays joyful!</p>
+      <p class="price"><strong>Price: $25</strong></p>
+      <button class="popup-btn">Send Gift</button>
+    </div>
+  </div>
+  <span class="popup-close" onclick="closePopup()">×</span>
+</div>
+
+   <!-- Desktop + mobile -->
+   <!-- Desktop + mobile -->
+   <!-- Desktop + mobile -->
+   
 <div class="container">
   <div class="layout">
 
