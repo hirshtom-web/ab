@@ -26,32 +26,42 @@ function initProductsPage() {
   function switchImage(index) {
     if(!allImages.length) return;
     currentIndex = index;
+
+    // fade out
     mainImage.style.opacity = 0;
+
+    // preload new image
     const img = new Image();
     img.src = allImages[currentIndex];
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
+
+      // update thumbnails and dots
       updateThumbs();
       updateDots();
     };
   }
 
-  function createThumbnail(src) {
+  function createThumbnail(src, index) {
     const img = document.createElement("img");
     img.src = src;
-    img.onclick = () => switchImage(allImages.indexOf(src));
+    img.onclick = () => switchImage(index);
     return img;
   }
 
   function updateThumbs() {
     if(!thumbsEl) return;
-    thumbsEl.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
+    thumbsEl.querySelectorAll("img").forEach((img, idx) => {
+      img.classList.toggle("active", idx === currentIndex);
+    });
   }
 
   function updateDots() {
     if(!dotsEl) return;
-    dotsEl.querySelectorAll("span.dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
+    dotsEl.querySelectorAll(".dot").forEach((dot, idx) => {
+      dot.classList.toggle("active", idx === currentIndex);
+    });
   }
 
   function addInstantDelivery() {
@@ -130,19 +140,22 @@ function initProductsPage() {
 
       // --- Images ---
       allImages = product.images.length ? product.images.map(u => u.startsWith("http") ? u : "https://static.wixstatic.com/media/" + u) : [];
-      if(allImages.length) mainImage.src = allImages[0];
+      if(allImages.length) switchImage(0);
 
+      // Thumbnails
       if(thumbsEl){
-        thumbsEl.innerHTML="";
-        allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src)));
+        thumbsEl.innerHTML = "";
+        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
       }
 
+      // Dots (mobile)
       if(dotsEl){
-        dotsEl.innerHTML="";
+        dotsEl.innerHTML = "";
         allImages.forEach((_,i)=>{
           const dot = document.createElement("span");
           dot.className="dot";
           if(i===0) dot.classList.add("active");
+          dot.onclick = () => switchImage(i);
           dotsEl.appendChild(dot);
         });
       }
