@@ -1,0 +1,555 @@
+.container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 40px;
+}
+
+/* =====================
+   LAYOUT
+===================== */
+.layout {
+  display: flex;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* =====================
+   GALLERY
+===================== */
+.gallery {
+  flex: 0 0 65%;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-main {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 20px;
+  height: 700px; /* desktop */
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* crop images to fill container */
+  border-radius: 20px;
+  display: block;
+  transition: opacity 0.4s ease;
+}
+
+/* Desktop thumbnails */
+.gallery-thumbs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 72px;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.gallery-thumbs img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.gallery-thumbs img.active {
+  opacity: 1;
+  border: 1px solid #555;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .gallery-main {
+    height: 320px; /* mobile height */
+  }
+
+  .gallery-thumbs {
+    display: none; /* hide thumbs on mobile */
+  }
+}
+
+/* =====================
+   RIGHT CONTENT
+===================== */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* =====================
+   PRICING CARD
+===================== */
+.pricing {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+}
+
+.pricing h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.pricing .artist {
+  font-size: 12px;
+  color: #7d8796;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 800;
+  color: #116dff;
+}
+
+  .price {
+  display: flex;
+  align-items: baseline;   /* 👈 THIS is the key */
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+
+.price .old-price {
+  font-size: 12px;
+  color: #7d8796;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.sale-info {
+  font-size: 11px;
+  font-weight: 600;
+  color: #116dff;
+  white-space: nowrap;      /* keep countdown on one line */
+}
+
+
+.price span {
+  font-size: 12px;
+  color: #116dff;
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+.description {
+  font-size: 12px;
+  color: #7d8796;
+  margin: 20px 0;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons button {
+  font-size: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.buy {
+  background: #daf2e8;
+  color: #22afa1;
+}
+
+.cart {
+  background: #22afa1;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .pricing {
+    padding: 20px;
+  }
+}
+
+/* =====================
+   ACCORDION
+===================== */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-item {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* HEADER */
+.accordion-header {
+  padding: 14px 32px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #000;
+}
+
+.accordion-header .material-icons-outlined {
+  color: #7d8796;
+}
+
+/* CONTENT */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 32px;
+  transition: max-height 0.3s ease;
+}
+
+.accordion-content p {
+  font-size: 12px;
+  color: #7d8796;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 10px 0 14px;
+}
+
+/* =====================
+   SVG SECTION
+===================== */
+.section-svg {
+  display: flex;
+  justify-content: center;
+  margin: -30px 0;
+  
+}
+
+.section-svg img {
+  max-width: 180px;
+  width: 100%;
+  height: auto;
+  opacity: 0.4;
+}
+
+/* =====================
+   IMAGE FIXES
+===================== */
+.gallery-main img {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+  
+  @media (max-width: 768px) {
+  .container {
+    padding: 0 10px; /* smaller padding for narrow screens */
+  }
+}
+  
+@media (max-width: 768px) {
+    
+  /* Accordion container */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* space between tabs */
+  }
+
+  /* Accordion item */
+  .accordion-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* Header button */
+  .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;       /* vertically center text + arrow */
+    padding: 10px 16px;        /* 10px top/bottom, 16px left/right */
+    font-size: 12px;
+    font-weight: 600;
+    line-height: normal;       /* ensures equal top/bottom spacing */
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    position: relative;
+  }
+
+  /* Header title */
+  .accordion-header .header-title {
+    display: inline-block;
+  }
+
+  /* Arrow icon */
+  .accordion-header .material-icons-outlined {
+    font-size: 16px;
+    color: #7d8796;
+    transition: transform 0.3s ease;
+  }
+
+  /* Rotate arrow when open */
+  .accordion-item.active .accordion-header .material-icons-outlined {
+    transform: rotate(180deg);
+  }
+
+  /* Content */
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px 10px 16px;  /* 10px bottom padding */
+    transition: max-height 0.3s ease;
+  }
+  .header-title {
+    margin-top: 10px;
+  }
+
+  /* Paragraphs inside content */
+  .accordion-content p {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #7d8796;
+    margin: 0;
+    padding: 10px 0 0 0; /* space from header or previous paragraph */
+  }
+
+  .accordion-content p + p {
+    padding-top: 10px; /* space between paragraphs */
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .accordion-header {
+    height: 48px;                /* fixed tab height */
+    display: flex;
+    align-items: center;         /* centers content vertically */
+    justify-content: space-between;
+    padding: 0 16px;             /* horizontal only */
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;              /* remove text math */
+    background: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .accordion-header .header-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .accordion-header .material-icons-outlined {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    color: #7d8796;
+    transition: transform 0.3s ease;
+  }
+
+  .accordion-item.active
+  .accordion-header
+  .material-icons-outlined {
+    transform: rotate(180deg);
+  }
+}
+
+
+/* ===== RADIO BUTTON CARDS ===== */
+.license-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.license-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border: 0.5px solid #d6e4ff;        /* thin blue line */
+  border-radius: 12px;
+  cursor: pointer;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #7d8796;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.license-option input[type="radio"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  accent-color: #116dff;             /* blue radio */
+}
+
+/* ACTIVE (checked) CARD */
+.license-option input[type="radio"]:checked + .radio-label {
+  background: transparent;
+}
+
+.license-option:has(input[type="radio"]:checked) {
+  background: #eef4ff;               /* soft light blue */
+  border-color: #116dff;              /* thin blue border */
+}
+
+/* Text styles */
+.radio-label {
+  color: #7d8796;                     /* keep text neutral */
+}
+
+.radio-label strong {
+  font-weight: 600;
+  color: #000;                        /* title stays black */
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Dot indicators */
+.gallery-dots {
+  display: none; /* hidden by default */
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.gallery-dots .dot {
+  width: 8px;
+  height: 8px;
+  background: #ccc;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.gallery-dots .dot.active {
+  background: #22afa1;
+}
+
+/* Show only on mobile */
+@media (max-width: 768px) {
+  .gallery-dots {
+    display: flex;
+  }
+}
+/* ===== AI COLOR EFFECT ===== */
+.ai-color-icon,
+.ai-color-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+
+  background: linear-gradient(
+    90deg,
+    #ff3cac,
+    #784ba0,
+    #2b86c5,
+    #22afa1,
+    #ff3cac
+  );
+
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  animation: aiRainbow 7s linear infinite;
+}
+
+/* Icon sizing */
+.ai-color-icon.material-icons-outlined,
+.ai-color-link .material-icons-outlined {
+  font-size: 15px;
+}
+
+/* Animation */
+@keyframes aiRainbow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.ai-color-link:hover,
+.ai-color-icon:hover {
+  filter: drop-shadow(0 0 6px rgba(34, 175, 161, 0.6));
+  transform: translateY(-1px);
+}
+
+  /* MOBILE FIX: AI LINK VISIBILITY */
+@media (max-width: 768px) {
+  .ai-color-link {
+    color: #22afa1;
+    -webkit-text-fill-color: initial;
+    background: none;
+    animation: none;
+  }
+
+  .gallery-dots {
+    margin-top: 16px;
+  }
+
+  .right {
+    gap: 24px;
+  }
+}
+  
+@media (max-width: 768px) {
+
+  .section-svg {
+    position: relative;
+    height: 20px;
+    margin: -8px 0;   /* 👈 removes 8px from gap above & below */
+    overflow: hidden;
+  }
+
+  .section-svg img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 20px;
+    display: block;
+  }
+}
+
+  
+  @media (max-width: 768px) {
+  .accordion {
+    margin-top: -6px;
+  }
+}
+
