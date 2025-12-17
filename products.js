@@ -1,3 +1,7 @@
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", initProductsPage);
+
 function initProductsPage() {
   console.log("✅ initProductsPage running");
 
@@ -25,17 +29,17 @@ function initProductsPage() {
       console.log("CSV loaded:", results.data);
 
       allProducts = results.data
-        .filter(p => p.visible && p.visible.toLowerCase() === "true") // only visible products
         .map(p => ({
-          name: p.name || "Unnamed Product",
+          id: (p.productId || p.ProductId || "").trim(),
+          name: (p.name || p.Name || "Unnamed Product").trim(),
           price: p.price ? parseFloat(p.price) : 1,
-          image: p.productImageUrl
-            ? p.productImageUrl.split(";")[0].trim()
-            : "https://via.placeholder.com/300",
-          productId: p.productId || "",
+          discount: (p.discountValue || "").trim(),
           type: p.type || "",
-          category: p.category || "",
-        }));
+          category: p.category || p.Category || "",
+          image: (p.productImageUrl || p.ProductImageUrl || "").split(";")[0].trim(),
+          visible: ((p.visible || p.Visible || "").toLowerCase() === "true")
+        }))
+        .filter(p => p.visible);
 
       console.log("Mapped products:", allProducts);
       renderPage(currentPage);
@@ -66,6 +70,7 @@ function initProductsPage() {
       `;
       grid.appendChild(card);
 
+      // Add a banner every 9 items
       if ((i + 1) % 9 === 0) {
         const banner = document.createElement("div");
         banner.className = "banner-card";
@@ -186,8 +191,4 @@ function initProductsPage() {
     grid.classList.add(isMobile ? "cols-2" : "cols-4");
   });
 }
-
-// -------------------------------
-// INIT ON DOM LOAD
-// -------------------------------
-document.addEventListener("DOMContentLoaded", initProductsPage);
+</script>
