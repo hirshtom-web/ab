@@ -718,11 +718,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================
      CONFIG
   ==================== */
-const product = allProducts.find(p => 
-    (p.id && p.id.trim() === productId.trim()) || 
-    (slugify(p.name) === productId.trim().toLowerCase())
-);
-
+  const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
+  const productId = new URLSearchParams(window.location.search).get("product") || "";
 
   /* =====================
      ELEMENTS
@@ -782,15 +779,17 @@ const product = allProducts.find(p =>
   function addInstantDelivery() {
     descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
 
+    const dynamicDescriptions = [
+      "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
+      "Add a touch of elegance and sophistication to your home with this piece.",
+      "Perfect for creating a calm, serene atmosphere in any room.",
+      "A bold statement piece that sparks conversation and creativity.",
+      "Infuse your space with color, energy, and modern flair."
+    ];
+
     const randomDesc = document.createElement("p");
     randomDesc.className = "dynamic-description-text";
-    randomDesc.innerText = [
-      "This artwork complements modern living spaces with a light, airy vibe.",
-      "Add a touch of elegance and sophistication to your home.",
-      "Perfect for creating a calm, serene atmosphere.",
-      "A bold statement piece that sparks conversation.",
-      "Infuse your space with color and modern flair."
-    ][Math.floor(Math.random() * 5)];
+    randomDesc.innerText = dynamicDescriptions[Math.floor(Math.random() * dynamicDescriptions.length)];
     descEl.prepend(randomDesc);
 
     const instantLink = document.createElement("a");
@@ -830,12 +829,12 @@ const product = allProducts.find(p =>
         return;
       }
 
-      // TEXT
+      // --- TEXT ---
       titleEl.innerText = product.name;
       artistEl.innerText = product.artist;
       descEl.innerHTML = product.description;
 
-      // PRICE
+      // --- PRICE & DISCOUNT ---
       if(product.discountMode === "PERCENT" && product.discount){
         const discounted = product.price * (1 - product.discount/100);
         oldPriceEl.innerText = "$" + product.price.toFixed(2);
@@ -845,15 +844,15 @@ const product = allProducts.find(p =>
         priceEl.childNodes[0].nodeValue = "$" + product.price.toFixed(2);
       }
 
-      // IMAGES
+      // --- IMAGES ---
       allImages = product.images.map(src => src.startsWith("http") ? src : "https://static.wixstatic.com/media/" + src);
       if(allImages.length) mainImage.src = allImages[0];
 
-      // THUMBNAILS
+      // --- THUMBNAILS ---
       thumbsEl.innerHTML = "";
       allImages.forEach(src => thumbsEl.appendChild(createThumbnail(src)));
 
-      // DOTS
+      // --- DOTS ---
       dotsEl.innerHTML = "";
       allImages.forEach((_, i) => {
         const dot = document.createElement("span");
@@ -862,7 +861,7 @@ const product = allProducts.find(p =>
         dotsEl.appendChild(dot);
       });
 
-      // RIBBON & BUBBLES
+      // --- RIBBON & BUBBLES ---
       const galleryMain = mainImage.parentElement;
       galleryMain.querySelectorAll(".top-label, .top-bubbles").forEach(e => e.remove());
 
@@ -885,10 +884,10 @@ const product = allProducts.find(p =>
         galleryMain.appendChild(bEl);
       }
 
-      // INSTANT DELIVERY
+      // --- INSTANT DELIVERY + RANDOM DESCRIPTION ---
       addInstantDelivery();
 
-      // BUY BUTTON
+      // --- BUY BUTTON ---
       buyBtn.onclick = () => {
         if(product.downloadLink){
           window.open(product.downloadLink, "_blank");
