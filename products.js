@@ -24,17 +24,19 @@ function initProductsPage() {
   // -------------------------------
   // FETCH CSV PRODUCTS
   // -------------------------------
-  Papa.parse("https://hirshtom-web.github.io/ab/new_product_list.csv", {
+  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: results => {
+      console.log("CSV loaded:", results.data);
       allProducts = results.data.map(p => ({
         name: p.name || "Unnamed Product",
         price: p.price && p.price.trim() !== "" ? parseFloat(p.price) : 1,
         image: (p.productImageUrl || "").split(";")[0]?.trim() || "https://via.placeholder.com/300",
         productId: p.productId || ""
       }));
+      console.log("Mapped products:", allProducts);
       renderPage(currentPage);
     }
   });
@@ -47,6 +49,11 @@ function initProductsPage() {
 
     const start = (page - 1) * productsPerPage;
     const slice = allProducts.slice(start, start + productsPerPage);
+
+    if (slice.length === 0) {
+      grid.innerHTML = "<p>No products found.</p>";
+      return;
+    }
 
     slice.forEach((p, i) => {
       const card = document.createElement("div");
@@ -77,6 +84,7 @@ function initProductsPage() {
       renderPage(currentPage);
     }
   };
+
   if (nextBtn) nextBtn.onclick = () => {
     if (currentPage * productsPerPage < allProducts.length) {
       currentPage++;
