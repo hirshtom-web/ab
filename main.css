@@ -11,3 +11,40 @@ body {
 input, textarea, select { 
   font-size: 16px; /* prevents zoom on mobile */
 }
+
+
+.ab-hero {
+  width: 100%;
+  background-image:
+    linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)),
+    url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 12px;
+      overflow: hidden;
+}
+
+.ab-hero-inner {
+  max-width: 1200px; /* keeps it centered with space on sides */
+  width: 100%;
+  padding: 0 20px;   /* ensures it never touches edges */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 800px;
+  border-radius: 12px;
+      overflow: hidden;
+}
+
+.ab-hero-title {
+  width: 420px;
+  max-width: 80%;
+}
+
+/* Responsive */
+@media (max-width:900px){
+  .ab-hero-inner { height: 500px; }
+  .ab-hero-title { width: 260px; }
+}
