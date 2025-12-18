@@ -1,12 +1,13 @@
 /* =====================
    CONTAINER
 ===================== */
-.container {
+.product-container {
   max-width: 1400px;
   margin: 40px auto;
   padding: 0 40px;
   box-sizing: border-box;
 }
+
 
 /* =====================
    LAYOUT
@@ -337,7 +338,7 @@
    MEDIA QUERIES: MOBILE
 ===================== */
 @media (max-width: 768px) {
-  .container {
+  .product-container {
     padding: 0 16px;
     width: 100%;
   }
