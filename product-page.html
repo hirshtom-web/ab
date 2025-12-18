@@ -134,28 +134,28 @@
   </div>
 </div>
 
- <!-- JS scripts at the end of body -->
+<!-- JS scripts at the end of body -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="header.js"></script>
 <script src="product-page.js"></script>
 <script>
-  // Wait until the page is fully loaded
   window.addEventListener("load", () => {
-
     // 1️⃣ Load header first
     fetch("header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
+
+        // 2️⃣ Initialize header
         if (typeof initHeader === "function") initHeader();
 
-        // 2️⃣ Initialize product page AFTER header and DOM exist
+        // 3️⃣ Initialize product page AFTER header is in DOM
         if (typeof initProductsPage === "function") initProductsPage();
       })
       .catch(err => console.error("Header load failed:", err));
-
   });
 </script>
+
 
 </body>
 </html>
