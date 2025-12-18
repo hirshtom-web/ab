@@ -10,7 +10,6 @@ const isCartPage = !!cartItemsEl && !!cartSummaryEl;
 ================================ */
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
   const existing = cart.find(item => item.id === product.id);
 
   if (existing) {
@@ -26,21 +25,20 @@ function addToCart(product) {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartIcon();
+  renderCart();
+  updateCartBadge();
 }
 
 /* ================================
    CART ICON BADGE
 ================================ */
-function updateCartIcon() {
+function updateCartBadge() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const icon = document.getElementById("cartIcon");
-  if (!icon) return;
-
-  icon.setAttribute("data-count", count);
-  icon.classList.toggle("has-items", count > 0);
+  const badge = document.getElementById("cartBadge");
+  if (!badge) return;
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  badge.textContent = totalItems;
+  badge.style.display = totalItems > 0 ? "inline-block" : "none";
 }
 
 /* ================================
@@ -106,7 +104,7 @@ function updateQuantity(id, qty) {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
-  updateCartIcon();
+  updateCartBadge();
 }
 
 /* ================================
@@ -118,13 +116,13 @@ function removeFromCart(id) {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
-  updateCartIcon();
+  updateCartBadge();
 }
 
 /* ================================
    INIT ON PAGE LOAD
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  if (isCartPage) renderCart();
-  updateCartIcon();
+  renderCart();
+  updateCartBadge();
 });
