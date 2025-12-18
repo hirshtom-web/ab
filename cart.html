@@ -49,99 +49,78 @@
   <!-- Scripts -->
   <script src="header.js"></script>
   <script src="products.js"></script>
-  <script>
-    // Load header, then initialize
-    fetch("header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-        initHeader();          // initialize header
-        initProductsPage();    // initialize products after header exists
-      })
-      .catch(err => console.error("Header load failed:", err));
-  </script>
-<script>
-  // Example product data (you can replace this with real product info)
-  const products = [
-    { id: 1, name: "Modern Chair", price: 129.99, img: "https://via.placeholder.com/80" },
-    { id: 2, name: "Stylish Lamp", price: 59.99, img: "https://via.placeholder.com/80" },
-    { id: 3, name: "Wooden Table", price: 249.99, img: "https://via.placeholder.com/80" },
-  ];
-
-  // Load cart from localStorage
-  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
+ <script>
   const cartItemsEl = document.getElementById("cart-items");
   const cartSummaryEl = document.getElementById("cart-summary");
 
   function renderCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
     cartItemsEl.innerHTML = "";
-    let total = 0;
 
-    if(cart.length === 0) {
-      cartItemsEl.innerHTML = '<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>';
+    if (cart.length === 0) {
+      cartItemsEl.innerHTML =
+        `<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>`;
       cartSummaryEl.textContent = "Total: $0";
       return;
     }
 
+    let total = 0;
+
     cart.forEach(item => {
-      const product = products.find(p => p.id === item.id);
-      const itemTotal = product.price * item.quantity;
+      const itemTotal = item.price * item.quantity;
       total += itemTotal;
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>
-          <div class="cart-product">
-            <img src="${product.img}" alt="${product.name}">
-            <span>${product.name}</span>
-          </div>
-        </td>
-        <td>$${product.price.toFixed(2)}</td>
-        <td>
-          <input type="number" min="1" class="quantity-input" value="${item.quantity}" data-id="${item.id}">
-        </td>
-        <td>$${itemTotal.toFixed(2)}</td>
-        <td>
-          <button class="remove-btn" data-id="${item.id}">Remove</button>
-        </td>
+      cartItemsEl.innerHTML += `
+        <tr>
+          <td>
+            <div class="cart-product">
+              <img src="${item.image}" alt="${item.title}">
+              <span>${item.title}</span>
+            </div>
+          </td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>
+            <input type="number" min="1"
+              class="quantity-input"
+              value="${item.quantity}"
+              onchange="updateQuantity('${item.id}', this.value)">
+          </td>
+          <td>$${itemTotal.toFixed(2)}</td>
+          <td>
+            <button class="remove-btn" onclick="removeFromCart('${item.id}')">
+              Remove
+            </button>
+          </td>
+        </tr>
       `;
-      cartItemsEl.appendChild(tr);
     });
 
     cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
-
-    // Add event listeners for quantity change
-    document.querySelectorAll(".quantity-input").forEach(input => {
-      input.addEventListener("change", e => {
-        const id = parseInt(e.target.dataset.id);
-        const qty = parseInt(e.target.value);
-        cart = cart.map(item => item.id === id ? {...item, quantity: qty} : item);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        renderCart();
-      });
-    });
-
-    // Add event listeners for remove buttons
-    document.querySelectorAll(".remove-btn").forEach(btn => {
-      btn.addEventListener("click", e => {
-        const id = parseInt(e.target.dataset.id);
-        cart = cart.filter(item => item.id !== id);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        renderCart();
-      });
-    });
   }
 
-  renderCart();
+  function updateQuantity(id, qty) {
+  qty = Math.max(1, Number(qty));
 
-  document.getElementById("checkout-btn").addEventListener("click", () => {
-    alert("Checkout not implemented yet! Total: $" + cart.reduce((sum, item) => {
-      const product = products.find(p => p.id === item.id);
-      return sum + product.price * item.quantity;
-    }, 0).toFixed(2));
-  });
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.map(item =>
+    item.id === id ? { ...item, quantity: qty } : item
+  );
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+
+  function removeFromCart(id) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart = cart.filter(item => item.id !== id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  document.addEventListener("DOMContentLoaded", renderCart);
+ 
 </script>
+
   
 </body>
   </html>
