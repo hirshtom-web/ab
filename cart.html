@@ -1,3 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArteBarte | Cart<title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="cart.css">
+
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div id="header-placeholder"></div>
+
 <div class="cart-container">
   <h1>Your Cart</h1>
   <table class="cart-table">
@@ -22,6 +46,20 @@
   <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
 </div>
 
+  <!-- Scripts -->
+  <script src="header.js"></script>
+  <script src="products.js"></script>
+  <script>
+    // Load header, then initialize
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-placeholder").innerHTML = html;
+        initHeader();          // initialize header
+        initProductsPage();    // initialize products after header exists
+      })
+      .catch(err => console.error("Header load failed:", err));
+  </script>
 <script>
   // Example product data (you can replace this with real product info)
   const products = [
@@ -104,3 +142,6 @@
     }, 0).toFixed(2));
   });
 </script>
+  
+</body>
+  </html>
