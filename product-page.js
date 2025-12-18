@@ -17,7 +17,7 @@ function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
-  // ---------------- HELPERS ----------------
+  // ---------------- HELPER FUNCTIONS ----------------
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
@@ -94,6 +94,7 @@ function initProductsPage() {
           if(content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
+      // expand initially if active
       if(item.classList.contains("active") && content) content.style.maxHeight = content.scrollHeight + "px";
     });
   }
@@ -183,6 +184,8 @@ function initProductsPage() {
 
       // Accordion
       initAccordion();
+
+      console.log("Product page initialized successfully", product);
     },
     error: err => console.error("CSV load failed:", err)
   });
