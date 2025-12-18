@@ -16,12 +16,13 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      allProducts = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.price ? parseFloat(p.price) : 1,
-        image: (p.productImageUrl || "").split(";")[0].trim()
-      }));
+     allProducts = res.data.map(p => ({
+  id: (p.productId || "").trim(),
+  name: (p.name || "Unnamed Product").trim(),
+  price: p.price ? parseFloat(p.price) : 1,
+  images: (p.productImageUrl || "").split(";").map(i => i.trim())  // store all images
+}));
+
       renderPage(currentPage);
     },
     error: err => console.error("CSV load failed:", err)
@@ -42,14 +43,15 @@ function initProductsPage() {
   card.className = "product-card";
 
   // Store all images in a JSON array for toggle
-  const imagesArray = (p.productImageUrl || p.image).split(";").map(i => i.trim());
-  card.dataset.images = JSON.stringify(imagesArray);
+ const imagesArray = p.images.length ? p.images : [p.image];
+card.dataset.images = JSON.stringify(imagesArray);
 
-  card.innerHTML = `
-    <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
-    <h3>${p.name}</h3>
-    <p>$${p.price}</p>
-  `;
+card.innerHTML = `
+  <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+  <h3>${p.name}</h3>
+  <p>$${p.price}</p>
+`;
+
   card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
   grid.appendChild(card);
 });
