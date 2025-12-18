@@ -13,7 +13,6 @@ function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   const existing = cart.find(item => item.id === product.id);
-
   if (existing) {
     existing.quantity += 1;
   } else {
@@ -37,21 +36,26 @@ function addToCart(product) {
 /* ================================
    CART ICON BADGE
 ================================ */
-function updateCartBadge(count) {
-  const badge = document.querySelector('.cart-badge');
-  if (count > 0) {
-    badge.style.display = 'flex'; // show badge
-    badge.textContent = count;     // set number
-  } else {
-    badge.style.display = 'none'; // hide badge if 0
+function updateCartBadge() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (!cartIconEl) return;
+
+  let badge = cartIconEl.querySelector(".cart-badge");
+
+  if (totalItems > 0) {
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "cart-badge";
+      cartIconEl.appendChild(badge);
+    }
+    badge.textContent = totalItems;
+    badge.style.display = "flex"; // show badge
+  } else if (badge) {
+    badge.style.display = "none"; // hide if empty
   }
 }
-
-// Example usage:
-updateCartBadge(0); // hides badge
-updateCartBadge(3); // shows badge with 3
-
-
 
 /* ================================
    ADD SUCCESS POPUP
