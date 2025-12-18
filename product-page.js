@@ -1,4 +1,9 @@
-function initProductsPage() {
+// product-page.js
+async function initProductsPage() {
+  // Wait until DOM is fully loaded
+  await new Promise(res => window.addEventListener("load", res));
+
+  // Select elements AFTER DOM exists
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".current-price");
@@ -17,7 +22,6 @@ function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
-  // ---------------- HELPER FUNCTIONS ----------------
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
@@ -30,8 +34,8 @@ function initProductsPage() {
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-      updateThumbs();
-      updateDots();
+      thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
+      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
   }
 
@@ -42,49 +46,13 @@ function initProductsPage() {
     return img;
   }
 
-  function updateThumbs() {
-    if(!thumbsEl) return;
-    thumbsEl.querySelectorAll("img").forEach((img, idx) => {
-      img.classList.toggle("active", idx === currentIndex);
-    });
-  }
-
-  function updateDots() {
-    if(!dotsEl) return;
-    dotsEl.querySelectorAll(".dot").forEach((dot, idx) => {
-      dot.classList.toggle("active", idx === currentIndex);
-    });
-  }
-
-  function addInstantDelivery() {
-    if(!descEl) return;
-    descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
-    const dynamicDescriptions = [
-      "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
-      "Add a touch of elegance and sophistication to your home with this piece.",
-      "Perfect for creating a calm, serene atmosphere in any room.",
-      "A bold statement piece that sparks conversation and creativity.",
-      "Infuse your space with color, energy, and modern flair."
-    ];
-    const p = document.createElement("p");
-    p.className = "dynamic-description-text";
-    p.innerText = dynamicDescriptions[Math.floor(Math.random()*dynamicDescriptions.length)];
-    descEl.prepend(p);
-
-    const a = document.createElement("a");
-    a.href = "#";
-    a.className = "ai-color-link instant-delivery";
-    a.innerHTML = `<span class="material-symbols-outlined">cloud_download</span> Instant Delivery`;
-    descEl.appendChild(a);
-  }
-
   function initAccordion() {
-    document.querySelectorAll(".accordion-header").forEach(btn=>{
+    document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
       const content = btn.nextElementSibling;
-      btn.addEventListener("click",()=>{
+      btn.addEventListener("click", () => {
         const isActive = item.classList.contains("active");
-        document.querySelectorAll(".accordion-item").forEach(i=>{
+        document.querySelectorAll(".accordion-item").forEach(i => {
           i.classList.remove("active");
           const c = i.querySelector(".accordion-content");
           if(c) c.style.maxHeight = null;
@@ -94,12 +62,10 @@ function initProductsPage() {
           if(content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
-      // expand initially if active
-      if(item.classList.contains("active") && content) content.style.maxHeight = content.scrollHeight + "px";
     });
   }
 
-  // ---------------- LOAD CSV ----------------
+  // Load CSV
   Papa.parse(csvUrl, {
     download: true,
     header: true,
@@ -107,11 +73,10 @@ function initProductsPage() {
     complete: function(res) {
       const products = res.data.map(p => ({
         id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
+        name: (p.name || "").trim(),
         price: parseFloat(p.price || 0),
         discount: parseFloat(p.discountValue || 0),
         discountMode: (p.discountMode || "").trim(),
-        ribbon: (p.ribbon || "").trim(),
         category: (p.category || "").trim(),
         color: (p.color || "").trim(),
         artist: (p.artist || "").trim(),
@@ -128,15 +93,14 @@ function initProductsPage() {
         return;
       }
 
-      // ---------------- DOM UPDATES ----------------
+      // DOM updates
       titleEl.innerText = product.name;
       titleEl.after(categoryEl);
       categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
       artistEl.innerText = product.artist;
       descEl.innerHTML = product.description;
-      addInstantDelivery();
 
-      // --- Price ---
+      // Price
       let finalPrice = product.price;
       if(product.discount){
         finalPrice = product.discountMode === "PERCENT"
@@ -151,30 +115,21 @@ function initProductsPage() {
         } else oldPriceEl.style.display="none";
       }
 
-      // --- Images ---
-      allImages = product.images.length 
-        ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) 
-        : [];
-
+      // Images
+      allImages = product.images.length ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) : [];
       if(allImages.length) switchImage(0);
 
-      // Thumbnails
-      if(thumbsEl){
-        thumbsEl.innerHTML = "";
-        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
-      }
+      thumbsEl && (thumbsEl.innerHTML = "");
+      allImages.forEach((src,i) => thumbsEl?.appendChild(createThumbnail(src,i)));
 
-      // Dots
-      if(dotsEl){
-        dotsEl.innerHTML = "";
-        allImages.forEach((_,i)=>{
-          const dot = document.createElement("span");
-          dot.className="dot";
-          if(i===0) dot.classList.add("active");
-          dot.onclick = () => switchImage(i);
-          dotsEl.appendChild(dot);
-        });
-      }
+      dotsEl && (dotsEl.innerHTML = "");
+      allImages.forEach((_,i)=>{
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        if(i===0) dot.classList.add("active");
+        dot.onclick = () => switchImage(i);
+        dotsEl?.appendChild(dot);
+      });
 
       // Buy button
       buyBtn.onclick = () => {
@@ -184,8 +139,6 @@ function initProductsPage() {
 
       // Accordion
       initAccordion();
-
-      console.log("Product page initialized successfully", product);
     },
     error: err => console.error("CSV load failed:", err)
   });
