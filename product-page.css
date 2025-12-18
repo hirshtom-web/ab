@@ -424,26 +424,27 @@
   }
 }
 
-/* DESKTOP: Thumbnails on the RIGHT of main image */
 @media (min-width: 769px) {
   .gallery {
     flex-direction: row; /* horizontal layout */
   }
 
-  .gallery-main {
-    flex: 1;
-    height: 700px; /* keep main image height */
-  }
-
   .gallery-thumbs {
     display: grid;
     grid-auto-flow: row; /* vertical stacking */
-    grid-auto-rows: 72px; /* thumbnail size */
+    grid-auto-rows: 72px;
     gap: 8px;
     margin-top: 0;
-    margin-left: 16px; /* spacing between main image and thumbs */
+    margin-right: 16px; /* space between thumbs and main image */
     overflow-y: auto;
-    flex: 0 0 80px; /* fixed width for thumbnails column */
+    flex: 0 0 80px; /* fixed width for thumbs column */
     height: 700px; /* match main image height */
+    order: 0; /* render first */
+  }
+
+  .gallery-main {
+    flex: 1;
+    height: 700px;
+    order: 1; /* render after thumbnails */
   }
 }
