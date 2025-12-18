@@ -418,21 +418,21 @@ nav a:hover {
   backdrop-filter: blur(4px);
 }
 
-/* Cart icon badge */
 .cart-badge {
   position: absolute;
   top: -6px;
   right: -6px;
   background: #ff4c4c;
   color: #fff;
-  font-size: 10px; /* smaller than before */
+  font-size: 10px;
   font-weight: 500;
   border-radius: 50%;
   padding: 2px 6px;
-  display: flex;
+  display: none; /* hide by default */
   align-items: center;
   justify-content: center;
 }
+
 
 /* Success popup */
 .cart-success-popup {
