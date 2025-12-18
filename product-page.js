@@ -1,9 +1,4 @@
-// product-page.js
 async function initProductsPage() {
-  // Wait until DOM is fully loaded
-  await new Promise(res => window.addEventListener("load", res));
-
-  // Select static elements
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -13,7 +8,6 @@ async function initProductsPage() {
   const thumbsEl = document.querySelector(".gallery-thumbs");
   const dotsEl = document.querySelector(".gallery-dots");
   const buyBtn = document.querySelector(".buy");
-  const saleInfoEl = document.getElementById("saleInfo");
   const categoryEl = document.createElement("div");
   categoryEl.className = "product-category";
 
@@ -23,11 +17,9 @@ async function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
-  // Slug helper
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-  // ---------------- IMAGE FUNCTIONS ----------------
   function switchImage(index) {
     if(!allImages.length) return;
     currentIndex = index;
@@ -37,8 +29,7 @@ async function initProductsPage() {
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-
-      // Update thumbnails & dots
+      // Update thumbs & dots
       thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
       dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
@@ -51,7 +42,6 @@ async function initProductsPage() {
     return img;
   }
 
-  // ---------------- ACCORDION ----------------
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
@@ -68,26 +58,10 @@ async function initProductsPage() {
           if(content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
-      // Expand initially if active
-      if(item.classList.contains("active") && content) content.style.maxHeight = content.scrollHeight + "px";
     });
   }
 
-  // ---------------- SALE TIMER ----------------
-  function startTimer(seconds=36000) { // 10 hours
-    function updateTimer() {
-      const h = Math.floor(seconds/3600);
-      const m = Math.floor((seconds%3600)/60);
-      const s = seconds%60;
-      if(saleInfoEl){
-        saleInfoEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-      }
-      if(seconds>0){ seconds--; setTimeout(updateTimer,1000); }
-    }
-    updateTimer();
-  }
-
-  // ---------------- CSV LOAD ----------------
+  // ---------------- LOAD CSV ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
@@ -115,16 +89,12 @@ async function initProductsPage() {
         return;
       }
 
-      // ---------------- DOM UPDATE ----------------
+      // ---------------- DOM Updates ----------------
       titleEl.innerText = product.name;
       titleEl.after(categoryEl);
       categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
       artistEl.innerText = product.artist;
-
-      // Only append description text, preserve existing Instant Delivery link
-      const descText = document.createElement("p");
-      descText.innerText = product.description;
-      descEl.prepend(descText);
+      descEl.innerHTML = product.description;
 
       // --- Price ---
       let finalPrice = product.price;
@@ -145,12 +115,13 @@ async function initProductsPage() {
       allImages = product.images.length
         ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
         : [];
+
       if(allImages.length) switchImage(0);
 
       // Thumbnails
       if(thumbsEl){
         thumbsEl.innerHTML = "";
-        allImages.forEach((src,i)=> thumbsEl.appendChild(createThumbnail(src,i)));
+        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
       }
 
       // Dots
@@ -173,10 +144,6 @@ async function initProductsPage() {
 
       // Accordion
       initAccordion();
-
-      // Instant Delivery link already exists in HTML, no need to replace
-      // Start sale timer
-      startTimer();
     },
     error: err => console.error("CSV load failed:", err)
   });
