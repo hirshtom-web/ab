@@ -1,0 +1,106 @@
+<div class="cart-container">
+  <h1>Your Cart</h1>
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="cart-items">
+      <!-- Items will be inserted here -->
+    </tbody>
+  </table>
+
+  <div class="cart-summary" id="cart-summary">
+    Total: $0
+  </div>
+
+  <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+</div>
+
+<script>
+  // Example product data (you can replace this with real product info)
+  const products = [
+    { id: 1, name: "Modern Chair", price: 129.99, img: "https://via.placeholder.com/80" },
+    { id: 2, name: "Stylish Lamp", price: 59.99, img: "https://via.placeholder.com/80" },
+    { id: 3, name: "Wooden Table", price: 249.99, img: "https://via.placeholder.com/80" },
+  ];
+
+  // Load cart from localStorage
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+  const cartItemsEl = document.getElementById("cart-items");
+  const cartSummaryEl = document.getElementById("cart-summary");
+
+  function renderCart() {
+    cartItemsEl.innerHTML = "";
+    let total = 0;
+
+    if(cart.length === 0) {
+      cartItemsEl.innerHTML = '<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>';
+      cartSummaryEl.textContent = "Total: $0";
+      return;
+    }
+
+    cart.forEach(item => {
+      const product = products.find(p => p.id === item.id);
+      const itemTotal = product.price * item.quantity;
+      total += itemTotal;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <div class="cart-product">
+            <img src="${product.img}" alt="${product.name}">
+            <span>${product.name}</span>
+          </div>
+        </td>
+        <td>$${product.price.toFixed(2)}</td>
+        <td>
+          <input type="number" min="1" class="quantity-input" value="${item.quantity}" data-id="${item.id}">
+        </td>
+        <td>$${itemTotal.toFixed(2)}</td>
+        <td>
+          <button class="remove-btn" data-id="${item.id}">Remove</button>
+        </td>
+      `;
+      cartItemsEl.appendChild(tr);
+    });
+
+    cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
+
+    // Add event listeners for quantity change
+    document.querySelectorAll(".quantity-input").forEach(input => {
+      input.addEventListener("change", e => {
+        const id = parseInt(e.target.dataset.id);
+        const qty = parseInt(e.target.value);
+        cart = cart.map(item => item.id === id ? {...item, quantity: qty} : item);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      });
+    });
+
+    // Add event listeners for remove buttons
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+      btn.addEventListener("click", e => {
+        const id = parseInt(e.target.dataset.id);
+        cart = cart.filter(item => item.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      });
+    });
+  }
+
+  renderCart();
+
+  document.getElementById("checkout-btn").addEventListener("click", () => {
+    alert("Checkout not implemented yet! Total: $" + cart.reduce((sum, item) => {
+      const product = products.find(p => p.id === item.id);
+      return sum + product.price * item.quantity;
+    }, 0).toFixed(2));
+  });
+</script>
