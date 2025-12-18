@@ -38,19 +38,26 @@ function initProductsPage() {
       return;
     }
 
-  slice.forEach(p => {
+slice.forEach(p => {
   const card = document.createElement("div");
   card.className = "product-card";
 
-  // Store all images in a JSON array for toggle
- const imagesArray = p.images.length ? p.images : [p.image];
-card.dataset.images = JSON.stringify(imagesArray);
+  // Store all images for toggle
+  const imagesArray = p.images.length ? p.images : [p.image];
+  card.dataset.images = JSON.stringify(imagesArray);
 
-card.innerHTML = `
-  <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
-  <h3>${p.name}</h3>
-  <p>$${p.price}</p>
-`;
+  card.innerHTML = `
+    <div class="img-wrapper">
+      <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+    </div>
+    <div class="product-info">
+      <h3>${p.name}</h3>
+      <div class="price-wrapper">
+        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+        <span class="price-new">$${p.price}</span>
+      </div>
+    </div>
+  `;
 
   card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
   grid.appendChild(card);
@@ -179,3 +186,5 @@ document.addEventListener("DOMContentLoaded", () => {
     renderPage(currentPage);
   });
 });
+
+
