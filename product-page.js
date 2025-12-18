@@ -151,27 +151,30 @@ function initProductsPage() {
         } else oldPriceEl.style.display="none";
       }
 
-      // --- Images ---
-      allImages = product.images.filter(Boolean); // use exact URLs from CSV
-      if(allImages.length) switchImage(0);
+     // --- Images ---
+allImages = product.images.length 
+  ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) 
+  : [];
 
-      // Thumbnails
-      if(thumbsEl){
-        thumbsEl.innerHTML = "";
-        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
-      }
+if(allImages.length) switchImage(0);
 
-      // Dots
-      if(dotsEl){
-        dotsEl.innerHTML = "";
-        allImages.forEach((_,i)=>{
-          const dot = document.createElement("span");
-          dot.className="dot";
-          if(i===0) dot.classList.add("active");
-          dot.onclick = () => switchImage(i);
-          dotsEl.appendChild(dot);
-        });
-      }
+// Thumbnails
+if(thumbsEl){
+  thumbsEl.innerHTML = "";
+  allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
+}
+
+// Dots
+if(dotsEl){
+  dotsEl.innerHTML = "";
+  allImages.forEach((_,i)=>{
+    const dot = document.createElement("span");
+    dot.className="dot";
+    if(i===0) dot.classList.add("active");
+    dot.onclick = () => switchImage(i);
+    dotsEl.appendChild(dot);
+  });
+}
 
       // Buy button
       buyBtn.onclick = () => {
