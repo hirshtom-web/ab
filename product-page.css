@@ -423,3 +423,28 @@
     width: 100%;
   }
 }
+
+/* DESKTOP: Thumbnails on the left of main image */
+@media (min-width: 769px) {
+  .gallery {
+    flex-direction: row; /* horizontal layout */
+  }
+
+  .gallery-thumbs {
+    display: grid;
+    grid-auto-flow: row; /* vertical stacking */
+    grid-auto-rows: 72px; /* size of each thumbnail */
+    gap: 8px;
+    margin-top: 0;
+    margin-right: 16px; /* spacing between thumbs and main image */
+    overflow-y: auto;
+    flex: 0 0 80px; /* fixed width for thumbnails column */
+    height: 700px; /* match main image height */
+  }
+
+  .gallery-main {
+    flex: 1;
+    height: 700px; /* same as before */
+  }
+}
+
