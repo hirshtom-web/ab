@@ -1,9 +1,9 @@
 // product-page.js
 async function initProductsPage() {
-  // Wait for DOM fully loaded
+  // Wait until DOM is fully loaded
   await new Promise(res => window.addEventListener("load", res));
 
-  // --- Elements ---
+  // Select static elements
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -13,6 +13,7 @@ async function initProductsPage() {
   const thumbsEl = document.querySelector(".gallery-thumbs");
   const dotsEl = document.querySelector(".gallery-dots");
   const buyBtn = document.querySelector(".buy");
+  const saleInfoEl = document.getElementById("saleInfo");
   const categoryEl = document.createElement("div");
   categoryEl.className = "product-category";
 
@@ -22,10 +23,11 @@ async function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
+  // Slug helper
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-  // --- Image Functions ---
+  // ---------------- IMAGE FUNCTIONS ----------------
   function switchImage(index) {
     if(!allImages.length) return;
     currentIndex = index;
@@ -36,6 +38,7 @@ async function initProductsPage() {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
 
+      // Update thumbnails & dots
       thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
       dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
@@ -48,7 +51,7 @@ async function initProductsPage() {
     return img;
   }
 
-  // --- Accordion ---
+  // ---------------- ACCORDION ----------------
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
@@ -65,57 +68,26 @@ async function initProductsPage() {
           if(content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
+      // Expand initially if active
+      if(item.classList.contains("active") && content) content.style.maxHeight = content.scrollHeight + "px";
     });
   }
 
-  // --- Instant Delivery ---
-  function addInstantDelivery() {
-    if(!descEl) return;
-    descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
-
-    const dynamicTexts = [
-      "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
-      "Add a touch of elegance and sophistication to your home with this piece.",
-      "Perfect for creating a calm, serene atmosphere in any room.",
-      "A bold statement piece that sparks conversation and creativity.",
-      "Infuse your space with color, energy, and modern flair."
-    ];
-
-    const p = document.createElement("p");
-    p.className = "dynamic-description-text";
-    p.innerText = dynamicTexts[Math.floor(Math.random() * dynamicTexts.length)];
-    descEl.prepend(p);
-
-    const a = document.createElement("a");
-    a.href = "#"; // replace with product.downloadLink if needed
-    a.className = "ai-color-link instant-delivery";
-    a.innerHTML = `<span class="material-symbols-outlined">cloud_download</span> Instant Delivery`;
-    descEl.appendChild(a);
-  }
-
-  // --- Countdown Timer ---
-  function startTimer(durationHours = 24) {
-    const saleEl = document.getElementById("saleInfo");
-    if(!saleEl) return;
-
-    const endTime = new Date().getTime() + durationHours * 60 * 60 * 1000;
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      let distance = endTime - now;
-      if(distance < 0){
-        saleEl.innerText = "Sale ended";
-        clearInterval(interval);
-        return;
+  // ---------------- SALE TIMER ----------------
+  function startTimer(seconds=36000) { // 10 hours
+    function updateTimer() {
+      const h = Math.floor(seconds/3600);
+      const m = Math.floor((seconds%3600)/60);
+      const s = seconds%60;
+      if(saleInfoEl){
+        saleInfoEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
       }
-      const hrs = Math.floor((distance/(1000*60*60))%24);
-      const mins = Math.floor((distance/(1000*60))%60);
-      const secs = Math.floor((distance/1000)%60);
-      saleEl.innerText = `Sale ends in ${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-    }, 1000);
+      if(seconds>0){ seconds--; setTimeout(updateTimer,1000); }
+    }
+    updateTimer();
   }
 
-  // --- Load CSV ---
+  // ---------------- CSV LOAD ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
@@ -143,15 +115,18 @@ async function initProductsPage() {
         return;
       }
 
-      // --- DOM Updates ---
+      // ---------------- DOM UPDATE ----------------
       titleEl.innerText = product.name;
       titleEl.after(categoryEl);
       categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
       artistEl.innerText = product.artist;
-      descEl.innerHTML = product.description;
-      addInstantDelivery();
 
-      // Price
+      // Only append description text, preserve existing Instant Delivery link
+      const descText = document.createElement("p");
+      descText.innerText = product.description;
+      descEl.prepend(descText);
+
+      // --- Price ---
       let finalPrice = product.price;
       if(product.discount){
         finalPrice = product.discountMode === "PERCENT"
@@ -166,21 +141,29 @@ async function initProductsPage() {
         } else oldPriceEl.style.display="none";
       }
 
-      // Images
-      allImages = product.images.length ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) : [];
+      // --- Images ---
+      allImages = product.images.length
+        ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+        : [];
       if(allImages.length) switchImage(0);
 
-      thumbsEl && (thumbsEl.innerHTML = "");
-      allImages.forEach((src,i) => thumbsEl?.appendChild(createThumbnail(src,i)));
+      // Thumbnails
+      if(thumbsEl){
+        thumbsEl.innerHTML = "";
+        allImages.forEach((src,i)=> thumbsEl.appendChild(createThumbnail(src,i)));
+      }
 
-      dotsEl && (dotsEl.innerHTML = "");
-      allImages.forEach((_,i)=>{
-        const dot = document.createElement("span");
-        dot.className = "dot";
-        if(i===0) dot.classList.add("active");
-        dot.onclick = () => switchImage(i);
-        dotsEl?.appendChild(dot);
-      });
+      // Dots
+      if(dotsEl){
+        dotsEl.innerHTML = "";
+        allImages.forEach((_,i)=>{
+          const dot = document.createElement("span");
+          dot.className="dot";
+          if(i===0) dot.classList.add("active");
+          dot.onclick = () => switchImage(i);
+          dotsEl.appendChild(dot);
+        });
+      }
 
       // Buy button
       buyBtn.onclick = () => {
@@ -191,8 +174,9 @@ async function initProductsPage() {
       // Accordion
       initAccordion();
 
-      // Start timer (example: 10 hours)
-      startTimer(10);
+      // Instant Delivery link already exists in HTML, no need to replace
+      // Start sale timer
+      startTimer();
     },
     error: err => console.error("CSV load failed:", err)
   });
