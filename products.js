@@ -59,3 +59,32 @@ function initProductsPage() {
   prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
   nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
 }
+
+// ============================
+// GRID IMAGE TOGGLE ADD-ON
+// ============================
+document.addEventListener("DOMContentLoaded", () => {
+  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
+  if (!imgButtons.length) return;
+
+  let currentImageIndex = 0; // 0 = Cover, 1 = Lifestyle
+
+  imgButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Update active button
+      imgButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      currentImageIndex = parseInt(btn.dataset.index);
+
+      // Update all product images in the grid
+      const productCards = document.querySelectorAll("#productGrid .product-card");
+      productCards.forEach((card, i) => {
+        // Get the product's original image list from a data attribute
+        const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
+        const newImg = imgList[currentImageIndex] || imgList[0];
+        card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+      });
+    });
+  });
+});
