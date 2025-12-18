@@ -46,17 +46,20 @@ function updateCartBadge() {
   let badge = cartIconEl.querySelector(".cart-badge");
 
   if (totalItems > 0) {
+    // Show badge with count
     if (!badge) {
       badge = document.createElement("span");
       badge.className = "cart-badge";
       cartIconEl.appendChild(badge);
     }
     badge.textContent = totalItems;
-    badge.style.display = "flex";
+    badge.style.display = "flex"; // show
   } else {
+    // Hide badge if 0 items
     if (badge) badge.style.display = "none";
   }
 }
+
 
 /* ================================
    ADD SUCCESS POPUP
