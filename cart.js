@@ -13,7 +13,6 @@ function updateCartBadge() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Only show badge if 1 or more items
   if (!cartIconEl) return;
   let badge = cartIconEl.querySelector(".cart-badge");
 
@@ -43,7 +42,9 @@ function addToCart(product) {
     cart.push({
       id: product.id,
       title: product.title,
-      price: product.price,
+      price: product.price,          // new price
+      oldPrice: product.oldPrice || null,  // old price (optional)
+      discount: product.discount || null,  // discount percentage (optional)
       image: product.image,
       quantity: 1
     });
@@ -99,12 +100,16 @@ function renderCart() {
     const itemTotal = item.price * item.quantity;
     total += itemTotal;
 
+    const oldPriceHTML = item.oldPrice ? `<span class="old-price">$${item.oldPrice.toFixed(2)}</span>` : '';
+    const discountHTML = item.discount ? `<span class="discount">-${item.discount}%</span>` : '';
+
     cartItemsEl.innerHTML += `
       <tr>
         <td>
           <div class="cart-product">
-            <img src="${item.image}" alt="${item.title}">
+            <img src="${item.image}" alt="${item.title}" class="cart-small-img">
             <span>${item.title}</span>
+            ${oldPriceHTML} ${discountHTML}
           </div>
         </td>
         <td>$${item.price.toFixed(2)}</td>
