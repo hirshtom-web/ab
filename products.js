@@ -38,30 +38,55 @@ function initProductsPage() {
       return;
     }
 
-slice.forEach(p => {
-  const card = document.createElement("div");
-  card.className = "product-card";
+slice.forEach((p, index) => {
+  let card;
 
-  // Store all images for toggle
-  const imagesArray = p.images.length ? p.images : [p.image];
-  card.dataset.images = JSON.stringify(imagesArray);
+  // Every 7th card is a banner
+  if ((index + 1) % 7 === 0) {
+    card = document.createElement("div");
+    card.className = "banner-card";
 
-  card.innerHTML = `
-    <div class="img-wrapper">
-      <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
-    </div>
-    <div class="product-info">
-      <h3>${p.name}</h3>
-      <div class="price-wrapper">
-        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-        <span class="price-new">$${p.price}</span>
+    // Example: use a video if p.videoUrl exists, otherwise use image
+    if (p.videoUrl) {
+      card.innerHTML = `
+        <video autoplay muted loop playsinline>
+          <source src="${p.videoUrl}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      `;
+    } else {
+      card.innerHTML = `
+        <img src="${p.image || 'default-banner.jpg'}" alt="Banner">
+      `;
+    }
+
+  } else {
+    // Regular product card
+    card = document.createElement("div");
+    card.className = "product-card";
+
+    const imagesArray = p.images.length ? p.images : [p.image];
+    card.dataset.images = JSON.stringify(imagesArray);
+
+    card.innerHTML = `
+      <div class="img-wrapper">
+        <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
       </div>
-    </div>
-  `;
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <div class="price-wrapper">
+          <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+          <span class="price-new">$${p.price}</span>
+        </div>
+      </div>
+    `;
 
-  card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+    card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+  }
+
   grid.appendChild(card);
 });
+
 
 
     const totalPages = Math.ceil(allProducts.length / productsPerPage);
