@@ -1,5 +1,11 @@
 function initHeader() {
 
+  
+  document.getElementById("cartIcon")?.addEventListener("click", () => {
+  window.location.href = "cart.html";
+});
+
+
   // ---------- MOBILE HAMBURGER ----------
   const hamburger = document.getElementById("hamburger");
   const mobileMenu = document.getElementById("mobileMenu");
