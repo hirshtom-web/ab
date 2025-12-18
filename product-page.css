@@ -424,27 +424,26 @@
   }
 }
 
-/* DESKTOP: Thumbnails on the left of main image */
+/* DESKTOP: Thumbnails on the RIGHT of main image */
 @media (min-width: 769px) {
   .gallery {
     flex-direction: row; /* horizontal layout */
   }
 
+  .gallery-main {
+    flex: 1;
+    height: 700px; /* keep main image height */
+  }
+
   .gallery-thumbs {
     display: grid;
     grid-auto-flow: row; /* vertical stacking */
-    grid-auto-rows: 72px; /* size of each thumbnail */
+    grid-auto-rows: 72px; /* thumbnail size */
     gap: 8px;
     margin-top: 0;
-    margin-right: 16px; /* spacing between thumbs and main image */
+    margin-left: 16px; /* spacing between main image and thumbs */
     overflow-y: auto;
     flex: 0 0 80px; /* fixed width for thumbnails column */
     height: 700px; /* match main image height */
   }
-
-  .gallery-main {
-    flex: 1;
-    height: 700px; /* same as before */
-  }
 }
-
