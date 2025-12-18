@@ -69,13 +69,19 @@ card.innerHTML = `
 }
 
 // ============================
-// GRID IMAGE TOGGLE ADD-ON
+// GRID IMAGE TOGGLE WITH MEMORY
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
   if (!imgButtons.length) return;
 
-  let currentImageIndex = 0; // 0 = Cover, 1 = Lifestyle
+  // Load last selection from localStorage, default to 0 (Cover)
+  let currentImageIndex = parseInt(localStorage.getItem("selectedImageIndex") || 0);
+
+  // Set active button based on saved value
+  imgButtons.forEach(b => b.classList.remove("active"));
+  const activeBtn = document.querySelector(`.image-selector .img-btn[data-index="${currentImageIndex}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
 
   imgButtons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -85,14 +91,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       currentImageIndex = parseInt(btn.dataset.index);
 
+      // Save selection
+      localStorage.setItem("selectedImageIndex", currentImageIndex);
+
       // Update all product images in the grid
       const productCards = document.querySelectorAll("#productGrid .product-card");
-      productCards.forEach((card, i) => {
-        // Get the product's original image list from a data attribute
+      productCards.forEach(card => {
         const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
         const newImg = imgList[currentImageIndex] || imgList[0];
         card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
       });
     });
+  });
+
+  // Trigger initial update on page load
+  const productCards = document.querySelectorAll("#productGrid .product-card");
+  productCards.forEach(card => {
+    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
+    const newImg = imgList[currentImageIndex] || imgList[0];
+    card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
   });
 });
