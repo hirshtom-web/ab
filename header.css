@@ -277,7 +277,11 @@ nav a:hover {
   font-size: 28px;
   color: #fff;
   cursor: pointer;
+
+  z-index: 10000;        /* 🔥 REQUIRED */
+  pointer-events: auto; /* 🔥 REQUIRED */
 }
+
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
