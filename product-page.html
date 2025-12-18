@@ -134,25 +134,28 @@
   </div>
 </div>
 
- <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="header.js"></script>
-  <script src="product-page.js"></script>
-  <script>
-   document.addEventListener("DOMContentLoaded", () => {
-  // Load header
-  fetch("header.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("header-placeholder").innerHTML = html;
-      if (typeof initHeader === "function") initHeader();
-    })
-    .catch(err => console.error("Header load failed:", err));
+ <!-- JS scripts at the end of body -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="header.js"></script>
+<script src="product-page.js"></script>
+<script>
+  // Wait until the page is fully loaded
+  window.addEventListener("load", () => {
 
-  // Initialize product page
-  if (typeof initProductsPage === "function") initProductsPage();
-});
+    // 1️⃣ Load header first
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-placeholder").innerHTML = html;
+        if (typeof initHeader === "function") initHeader();
 
-  </script>
+        // 2️⃣ Initialize product page AFTER header and DOM exist
+        if (typeof initProductsPage === "function") initProductsPage();
+      })
+      .catch(err => console.error("Header load failed:", err));
+
+  });
+</script>
 
 </body>
 </html>
