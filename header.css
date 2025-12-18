@@ -411,22 +411,34 @@ nav a:hover {
   backdrop-filter: blur(4px);
 }
 
+/* Cart icon badge */
 .cart-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
   background: #ff4c4c;
   color: #fff;
-  font-size: 8px;
+  font-size: 10px; /* smaller than before */
   font-weight: 500;
-  width: 14px;
-  height: 14px;
   border-radius: 50%;
-  text-align: center;
-  line-height: 14px; /* vertically centers the number */
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#cartIcon {
-  position: relative;
-  cursor: pointer;
+/* Success popup */
+.cart-success-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #116dff;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 9999;
 }
+
