@@ -17,7 +17,7 @@ function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
-  // ---------------- HELPER FUNCTIONS ----------------
+  // ---------------- HELPERS ----------------
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
@@ -94,7 +94,6 @@ function initProductsPage() {
           if(content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
-      // expand initially if active
       if(item.classList.contains("active") && content) content.style.maxHeight = content.scrollHeight + "px";
     });
   }
@@ -151,30 +150,30 @@ function initProductsPage() {
         } else oldPriceEl.style.display="none";
       }
 
-     // --- Images ---
-allImages = product.images.length 
-  ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) 
-  : [];
+      // --- Images ---
+      allImages = product.images.length 
+        ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) 
+        : [];
 
-if(allImages.length) switchImage(0);
+      if(allImages.length) switchImage(0);
 
-// Thumbnails
-if(thumbsEl){
-  thumbsEl.innerHTML = "";
-  allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
-}
+      // Thumbnails
+      if(thumbsEl){
+        thumbsEl.innerHTML = "";
+        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
+      }
 
-// Dots
-if(dotsEl){
-  dotsEl.innerHTML = "";
-  allImages.forEach((_,i)=>{
-    const dot = document.createElement("span");
-    dot.className="dot";
-    if(i===0) dot.classList.add("active");
-    dot.onclick = () => switchImage(i);
-    dotsEl.appendChild(dot);
-  });
-}
+      // Dots
+      if(dotsEl){
+        dotsEl.innerHTML = "";
+        allImages.forEach((_,i)=>{
+          const dot = document.createElement("span");
+          dot.className="dot";
+          if(i===0) dot.classList.add("active");
+          dot.onclick = () => switchImage(i);
+          dotsEl.appendChild(dot);
+        });
+      }
 
       // Buy button
       buyBtn.onclick = () => {
