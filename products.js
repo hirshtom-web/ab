@@ -69,49 +69,44 @@ card.innerHTML = `
 }
 
 // ============================
-// GRID IMAGE TOGGLE WITH MEMORY
+// GRID IMAGE TOGGLE (Cover / Lifestyle)
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
   if (!imgButtons.length) return;
 
-  // Load last selection from localStorage, default to 0 (Cover)
-  let currentImageIndex = parseInt(localStorage.getItem("selectedImageIndex") || 0);
+  // Load last selected image index or default to 0
+  let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
-  // Set active button based on saved value
-  imgButtons.forEach(b => b.classList.remove("active"));
-  const activeBtn = document.querySelector(`.image-selector .img-btn[data-index="${currentImageIndex}"]`);
-  if (activeBtn) activeBtn.classList.add("active");
-
+  // Set active button based on stored value
   imgButtons.forEach(btn => {
+    btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
     btn.addEventListener("click", () => {
       // Update active button
       imgButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
       currentImageIndex = parseInt(btn.dataset.index);
+      localStorage.setItem("gridImageIndex", currentImageIndex);
 
-      // Save selection
-      localStorage.setItem("selectedImageIndex", currentImageIndex);
-
-      // Update all product images in the grid
-      const productCards = document.querySelectorAll("#productGrid .product-card");
-      productCards.forEach(card => {
-        const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
-        const newImg = imgList[currentImageIndex] || imgList[0];
-        card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-      });
+      updateGridImages();
     });
   });
 
-  // Trigger initial update on page load
-  const productCards = document.querySelectorAll("#productGrid .product-card");
-  productCards.forEach(card => {
-    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
-    const newImg = imgList[currentImageIndex] || imgList[0];
-    card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-  });
+  // Function to update all product images
+  function updateGridImages() {
+    const productCards = document.querySelectorAll("#productGrid .product-card");
+    productCards.forEach(card => {
+      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
+      const newImg = imgList[currentImageIndex] || imgList[0];
+      card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+    });
+  }
+
+  // Initial update on page load
+  updateGridImages();
 });
+
 
 // ============================
 // SHUFFLE AND SORT
