@@ -48,25 +48,28 @@ const bannerColors = ["#f7c59f", "#9fd3f7", "#c5f79f"]; // different color for e
 
 slice.forEach((p, index) => {
   let card;
+  
+  // Calculate absolute index
+  const absoluteIndex = (page - 1) * productsPerPage + index;
 
   // Every 7th card is a banner
-  if ((index + 1) % 7 === 0) {
+  if ((absoluteIndex + 1) % 7 === 0) {
     card = document.createElement("div");
     card.className = "banner-card";
 
-    // Alternate: use video if index divisible by 14, else colored block
-    if (((index + 1) / 7) % 2 === 1) { // 1st, 3rd, 5th, etc banner -> video
-      const videoIndex = Math.floor((index + 1) / 7) % bannerVideos.length;
+    // Alternate: video for odd banners, color block for even banners
+    if (((absoluteIndex + 1) / 7) % 2 === 1) {
+      const videoIndex = Math.floor((absoluteIndex + 1) / 7) % bannerVideos.length;
       card.innerHTML = `
         <video autoplay muted loop playsinline>
           <source src="${bannerVideos[videoIndex]}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       `;
-    } else { // 2nd, 4th, 6th banner -> color block
-      const colorIndex = Math.floor((index + 1) / 7) % bannerColors.length;
+    } else {
+      const colorIndex = Math.floor((absoluteIndex + 1) / 7) % bannerColors.length;
       card.style.background = bannerColors[colorIndex];
-      card.innerHTML = `<span>Banner</span>`; // optional placeholder text
+      card.innerHTML = `<span>Banner</span>`;
     }
 
   } else {
@@ -95,7 +98,6 @@ slice.forEach((p, index) => {
 
   grid.appendChild(card);
 });
-
 
 
     const totalPages = Math.ceil(allProducts.length / productsPerPage);
