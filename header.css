@@ -153,7 +153,7 @@ nav a:hover {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  height: 13px;
+  height: 15px;
 }
 
 .mobile-header .material-symbols-outlined {
@@ -306,6 +306,13 @@ nav a:hover {
   #mobile-bar { display: block; }
   .mobile-header { display: flex; }
 }
+@media(max-width: 700px){
+  .mobile-header {
+    display: flex;
+    padding: 15px 15px; /* increased top & bottom padding */
+  }
+}
+
 
 /* ===============================
    HERO & SLIDER STYLES
