@@ -3,17 +3,43 @@
 ================================ */
 const cartItemsEl = document.getElementById("cart-items");
 const cartSummaryEl = document.getElementById("cart-summary");
+const cartIconEl = document.getElementById("cartIcon");
 const isCartPage = !!cartItemsEl && !!cartSummaryEl;
 
 /* ================================
-   ADD TO CART (PRODUCT PAGES)
+   CART BADGE
+================================ */
+function updateCartBadge() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Only show badge if 1 or more items
+  if (!cartIconEl) return;
+  let badge = cartIconEl.querySelector(".cart-badge");
+
+  if (count > 0) {
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "cart-badge";
+      cartIconEl.appendChild(badge);
+    }
+    badge.textContent = count;
+    badge.style.display = "flex";
+  } else {
+    if (badge) badge.style.display = "none";
+  }
+}
+
+/* ================================
+   ADD TO CART
 ================================ */
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existing = cart.find(item => item.id === product.id);
 
-  const exists = cart.find(item => item.id === product.id);
-
-  if (!exists) {
+  if (existing) {
+    existing.quantity += 1;
+  } else {
     cart.push({
       id: product.id,
       title: product.title,
@@ -21,34 +47,34 @@ function addToCart(product) {
       image: product.image,
       quantity: 1
     });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${product.title} added to cart!`);
-  } else {
-    alert(`${product.title} is already in your cart`);
   }
 
+  localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
   updateCartBadge();
 }
 
 /* ================================
-   CART ICON BADGE
+   REMOVE ITEM
 ================================ */
-function updateCartBadge() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+function removeFromCart(id) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.filter(item => item.id !== id);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  updateCartBadge();
+}
 
-  const icon = document.getElementById("cartIcon");
-  if (icon) {
-    icon.setAttribute("data-count", count);
-    icon.classList.toggle("has-items", count > 0);
-  }
-
-  const badge = document.getElementById("cartBadge");
-  if (badge) {
-    badge.textContent = count;
-    badge.style.display = count > 0 ? "inline-block" : "none";
-  }
+/* ================================
+   UPDATE QUANTITY
+================================ */
+function updateQuantity(id, qty) {
+  qty = Math.max(1, Number(qty));
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.map(item => item.id === id ? {...item, quantity: qty} : item);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  updateCartBadge();
 }
 
 /* ================================
@@ -63,7 +89,7 @@ function renderCart() {
   if (cart.length === 0) {
     cartItemsEl.innerHTML =
       `<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>`;
-    cartSummaryEl.textContent = "Total: $0";
+    if (cartSummaryEl) cartSummaryEl.textContent = "Total: $0";
     return;
   }
 
@@ -90,49 +116,19 @@ function renderCart() {
         </td>
         <td>$${itemTotal.toFixed(2)}</td>
         <td>
-          <button class="remove-btn" onclick="removeFromCart('${item.id}')">
-            Remove
-          </button>
+          <button class="remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
         </td>
       </tr>
     `;
   });
 
-  cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
+  if (cartSummaryEl) cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
 }
 
 /* ================================
-   UPDATE QUANTITY
-================================ */
-function updateQuantity(id, qty) {
-  qty = Math.max(1, Number(qty));
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart = cart.map(item =>
-    item.id === id ? { ...item, quantity: qty } : item
-  );
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-  updateCartBadge();
-}
-
-/* ================================
-   REMOVE ITEM
-================================ */
-function removeFromCart(id) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart = cart.filter(item => item.id !== id);
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-  updateCartBadge();
-}
-
-/* ================================
-   INITIALIZE
+   INIT ON PAGE LOAD
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  if (isCartPage) renderCart();
+  renderCart();
   updateCartBadge();
 });
