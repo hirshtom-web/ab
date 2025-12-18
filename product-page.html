@@ -139,22 +139,26 @@
 <script src="header.js"></script>
 <script src="product-page.js"></script>
 <script>
+  // 1️⃣ Wait until everything is loaded
   window.addEventListener("load", () => {
-    // 1️⃣ Load header first
+
+    // 2️⃣ Load header
     fetch("header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("header-placeholder").innerHTML = html;
-
-        // 2️⃣ Initialize header
         if (typeof initHeader === "function") initHeader();
 
-        // 3️⃣ Initialize product page AFTER header is in DOM
-        if (typeof initProductsPage === "function") initProductsPage();
+        // 3️⃣ Wait a tiny tick to ensure DOM updates are reflected
+        setTimeout(() => {
+          if (typeof initProductsPage === "function") initProductsPage();
+        }, 50);
       })
       .catch(err => console.error("Header load failed:", err));
+
   });
 </script>
+
 
 
 </body>
