@@ -37,17 +37,23 @@ function initProductsPage() {
       return;
     }
 
-    slice.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "product-card";
-      card.innerHTML = `
-        <img src="${p.image.includes("http") ? p.image : 'https://static.wixstatic.com/media/' + p.image}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>$${p.price}</p>
-      `;
-      card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
-      grid.appendChild(card);
-    });
+  slice.forEach(p => {
+  const card = document.createElement("div");
+  card.className = "product-card";
+
+  // Store all images in a JSON array for toggle
+  const imagesArray = (p.productImageUrl || p.image).split(";").map(i => i.trim());
+  card.dataset.images = JSON.stringify(imagesArray);
+
+  card.innerHTML = `
+    <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+    <h3>${p.name}</h3>
+    <p>$${p.price}</p>
+  `;
+  card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+  grid.appendChild(card);
+});
+
 
     const totalPages = Math.ceil(allProducts.length / productsPerPage);
     pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
