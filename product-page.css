@@ -88,12 +88,13 @@
 /* =====================
    RIGHT CONTENT
 ===================== */
-.right {
+.product-right {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
+
 
 /* =====================
    PRICING CARD
@@ -361,10 +362,8 @@
     margin-top: 16px;
   }
 
-  .right {
-    width: 100%;
-    gap: 24px;
-  }
+.product-right { width: 100%; gap: 24px; }
+
 
   .buttons button {
     width: 100%;
@@ -420,7 +419,7 @@
     max-height: 20px;
   }
 
-  .gallery, .right {
+  .gallery, .product-right {
     width: 100%;
   }
 }
