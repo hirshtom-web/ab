@@ -149,25 +149,19 @@ async function initProductsPage() {
   });
 }
 
-   // Timer
-function startSaleTimer(durationSeconds = 36000) { // default 10 hours
-  const saleEl = document.getElementById("saleInfo");
-  let seconds = durationSeconds;
-
-  function update() {
+// Start sale countdown AFTER DOM has updated
+const saleEl = document.getElementById("saleInfo");
+if(saleEl){
+  let seconds = 36000; // 10 hours
+  function updateTimer() {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-
-    if (saleEl) {
-      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    }
-
-    if (seconds > 0) {
+    saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    if(seconds > 0){
       seconds--;
-      setTimeout(update, 1000);
+      setTimeout(updateTimer, 1000);
     }
   }
-
-  update();
+  updateTimer();
 }
