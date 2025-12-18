@@ -247,3 +247,26 @@
   .desktop-only { display: none; }
   .mobile-only { display: inline-flex; }
 }
+
+.banner-card {
+  background: #f7f7f7;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.banner-card img,
+.banner-card video {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.banner-card video {
+  max-height: 300px;  /* optional max height */
+}
