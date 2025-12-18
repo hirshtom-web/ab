@@ -1,4 +1,9 @@
+// product-page.js
 async function initProductsPage() {
+  // Wait for DOM fully loaded
+  await new Promise(res => window.addEventListener("load", res));
+
+  // --- Elements ---
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -20,6 +25,7 @@ async function initProductsPage() {
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
+  // --- Image Functions ---
   function switchImage(index) {
     if(!allImages.length) return;
     currentIndex = index;
@@ -29,7 +35,7 @@ async function initProductsPage() {
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-      // Update thumbs & dots
+
       thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
       dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
@@ -42,6 +48,7 @@ async function initProductsPage() {
     return img;
   }
 
+  // --- Accordion ---
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
@@ -61,7 +68,54 @@ async function initProductsPage() {
     });
   }
 
-  // ---------------- LOAD CSV ----------------
+  // --- Instant Delivery ---
+  function addInstantDelivery() {
+    if(!descEl) return;
+    descEl.querySelectorAll(".dynamic-description-text, .instant-delivery").forEach(el => el.remove());
+
+    const dynamicTexts = [
+      "This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.",
+      "Add a touch of elegance and sophistication to your home with this piece.",
+      "Perfect for creating a calm, serene atmosphere in any room.",
+      "A bold statement piece that sparks conversation and creativity.",
+      "Infuse your space with color, energy, and modern flair."
+    ];
+
+    const p = document.createElement("p");
+    p.className = "dynamic-description-text";
+    p.innerText = dynamicTexts[Math.floor(Math.random() * dynamicTexts.length)];
+    descEl.prepend(p);
+
+    const a = document.createElement("a");
+    a.href = "#"; // replace with product.downloadLink if needed
+    a.className = "ai-color-link instant-delivery";
+    a.innerHTML = `<span class="material-symbols-outlined">cloud_download</span> Instant Delivery`;
+    descEl.appendChild(a);
+  }
+
+  // --- Countdown Timer ---
+  function startTimer(durationHours = 24) {
+    const saleEl = document.getElementById("saleInfo");
+    if(!saleEl) return;
+
+    const endTime = new Date().getTime() + durationHours * 60 * 60 * 1000;
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      let distance = endTime - now;
+      if(distance < 0){
+        saleEl.innerText = "Sale ended";
+        clearInterval(interval);
+        return;
+      }
+      const hrs = Math.floor((distance/(1000*60*60))%24);
+      const mins = Math.floor((distance/(1000*60))%60);
+      const secs = Math.floor((distance/1000)%60);
+      saleEl.innerText = `Sale ends in ${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    }, 1000);
+  }
+
+  // --- Load CSV ---
   Papa.parse(csvUrl, {
     download: true,
     header: true,
@@ -89,14 +143,15 @@ async function initProductsPage() {
         return;
       }
 
-      // ---------------- DOM Updates ----------------
+      // --- DOM Updates ---
       titleEl.innerText = product.name;
       titleEl.after(categoryEl);
       categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
       artistEl.innerText = product.artist;
       descEl.innerHTML = product.description;
+      addInstantDelivery();
 
-      // --- Price ---
+      // Price
       let finalPrice = product.price;
       if(product.discount){
         finalPrice = product.discountMode === "PERCENT"
@@ -111,30 +166,21 @@ async function initProductsPage() {
         } else oldPriceEl.style.display="none";
       }
 
-      // --- Images ---
-      allImages = product.images.length
-        ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
-        : [];
-
+      // Images
+      allImages = product.images.length ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u) : [];
       if(allImages.length) switchImage(0);
 
-      // Thumbnails
-      if(thumbsEl){
-        thumbsEl.innerHTML = "";
-        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
-      }
+      thumbsEl && (thumbsEl.innerHTML = "");
+      allImages.forEach((src,i) => thumbsEl?.appendChild(createThumbnail(src,i)));
 
-      // Dots
-      if(dotsEl){
-        dotsEl.innerHTML = "";
-        allImages.forEach((_,i)=>{
-          const dot = document.createElement("span");
-          dot.className="dot";
-          if(i===0) dot.classList.add("active");
-          dot.onclick = () => switchImage(i);
-          dotsEl.appendChild(dot);
-        });
-      }
+      dotsEl && (dotsEl.innerHTML = "");
+      allImages.forEach((_,i)=>{
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        if(i===0) dot.classList.add("active");
+        dot.onclick = () => switchImage(i);
+        dotsEl?.appendChild(dot);
+      });
 
       // Buy button
       buyBtn.onclick = () => {
@@ -144,6 +190,9 @@ async function initProductsPage() {
 
       // Accordion
       initAccordion();
+
+      // Start timer (example: 10 hours)
+      startTimer(10);
     },
     error: err => console.error("CSV load failed:", err)
   });
