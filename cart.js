@@ -1,72 +1,13 @@
-  const cartItemsEl = document.getElementById("cart-items");
-  const cartSummaryEl = document.getElementById("cart-summary");
+/* ================================
+   SAFE ELEMENT LOOKUPS
+================================ */
+const cartItemsEl = document.getElementById("cart-items");
+const cartSummaryEl = document.getElementById("cart-summary");
+const isCartPage = !!cartItemsEl && !!cartSummaryEl;
 
-  function renderCart() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cartItemsEl.innerHTML = "";
-
-    if (cart.length === 0) {
-      cartItemsEl.innerHTML =
-        `<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>`;
-      cartSummaryEl.textContent = "Total: $0";
-      return;
-    }
-
-    let total = 0;
-
-    cart.forEach(item => {
-      const itemTotal = item.price * item.quantity;
-      total += itemTotal;
-
-      cartItemsEl.innerHTML += `
-        <tr>
-          <td>
-            <div class="cart-product">
-              <img src="${item.image}" alt="${item.title}">
-              <span>${item.title}</span>
-            </div>
-          </td>
-          <td>$${item.price.toFixed(2)}</td>
-          <td>
-            <input type="number" min="1"
-              class="quantity-input"
-              value="${item.quantity}"
-              onchange="updateQuantity('${item.id}', this.value)">
-          </td>
-          <td>$${itemTotal.toFixed(2)}</td>
-          <td>
-            <button class="remove-btn" onclick="removeFromCart('${item.id}')">
-              Remove
-            </button>
-          </td>
-        </tr>
-      `;
-    });
-
-    cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
-  }
-
-  function updateQuantity(id, qty) {
-  qty = Math.max(1, Number(qty));
-
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart = cart.map(item =>
-    item.id === id ? { ...item, quantity: qty } : item
-  );
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-
-  function removeFromCart(id) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart = cart.filter(item => item.id !== id);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
-  }
-
-  document.addEventListener("DOMContentLoaded", renderCart);
- 
+/* ================================
+   ADD TO CART (PRODUCT PAGES)
+================================ */
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -85,5 +26,105 @@ function addToCart(product) {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartIcon(); // optional but recommended
+  updateCartIcon();
 }
+
+/* ================================
+   CART ICON BADGE
+================================ */
+function updateCartIcon() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const icon = document.getElementById("cartIcon");
+  if (!icon) return;
+
+  icon.setAttribute("data-count", count);
+  icon.classList.toggle("has-items", count > 0);
+}
+
+/* ================================
+   CART PAGE RENDER
+================================ */
+function renderCart() {
+  if (!isCartPage) return;
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cartItemsEl.innerHTML = "";
+
+  if (cart.length === 0) {
+    cartItemsEl.innerHTML =
+      `<tr><td colspan="5" style="text-align:center;">Your cart is empty</td></tr>`;
+    cartSummaryEl.textContent = "Total: $0";
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(item => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+
+    cartItemsEl.innerHTML += `
+      <tr>
+        <td>
+          <div class="cart-product">
+            <img src="${item.image}" alt="${item.title}">
+            <span>${item.title}</span>
+          </div>
+        </td>
+        <td>$${item.price.toFixed(2)}</td>
+        <td>
+          <input type="number" min="1"
+            class="quantity-input"
+            value="${item.quantity}"
+            onchange="updateQuantity('${item.id}', this.value)">
+        </td>
+        <td>$${itemTotal.toFixed(2)}</td>
+        <td>
+          <button class="remove-btn" onclick="removeFromCart('${item.id}')">
+            Remove
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+
+  cartSummaryEl.textContent = `Total: $${total.toFixed(2)}`;
+}
+
+/* ================================
+   UPDATE QUANTITY
+================================ */
+function updateQuantity(id, qty) {
+  qty = Math.max(1, Number(qty));
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.map(item =>
+    item.id === id ? { ...item, quantity: qty } : item
+  );
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  updateCartIcon();
+}
+
+/* ================================
+   REMOVE ITEM
+================================ */
+function removeFromCart(id) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.filter(item => item.id !== id);
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  updateCartIcon();
+}
+
+/* ================================
+   INIT ON PAGE LOAD
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  if (isCartPage) renderCart();
+  updateCartIcon();
+});
