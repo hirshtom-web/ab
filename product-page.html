@@ -135,21 +135,29 @@
 </div>
 
 <!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="header.js"></script>
 <script src="product-page.js"></script>
 <script>
-  // ✅ FULL INIT
-  fetch("header.html")
-    .then(res => res.text())
-    .then(html => {
+  // ✅ Full init after header + DOM
+  async function fullInit() {
+    // 1️⃣ Load header
+    try {
+      const res = await fetch("header.html");
+      const html = await res.text();
       document.getElementById("header-placeholder").innerHTML = html;
       if (typeof initHeader === "function") initHeader();
+    } catch (err) {
+      console.error("Header load failed:", err);
+    }
 
-      // Initialize product page AFTER header loaded
-      if (typeof initProductsPage === "function") initProductsPage();
-    })
-    .catch(err => console.error("Header load failed:", err));
+    // 2️⃣ Initialize product page AFTER header + DOM exists
+    if (typeof initProductsPage === "function") initProductsPage();
+  }
+
+  window.addEventListener("load", fullInit);
 </script>
+
 
 
 
