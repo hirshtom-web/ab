@@ -10,11 +10,10 @@ const isCartPage = !!cartItemsEl && !!cartSummaryEl;
 ================================ */
 function addToCart(product) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const existing = cart.find(item => item.id === product.id);
 
-  if (existing) {
-    existing.quantity += 1;
-  } else {
+  const exists = cart.find(item => item.id === product.id);
+
+  if (!exists) {
     cart.push({
       id: product.id,
       title: product.title,
@@ -22,9 +21,12 @@ function addToCart(product) {
       image: product.image,
       quantity: 1
     });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`${product.title} added to cart!`);
+  } else {
+    alert(`${product.title} is already in your cart`);
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
   updateCartBadge();
 }
@@ -34,11 +36,19 @@ function addToCart(product) {
 ================================ */
 function updateCartBadge() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const icon = document.getElementById("cartIcon");
+  if (icon) {
+    icon.setAttribute("data-count", count);
+    icon.classList.toggle("has-items", count > 0);
+  }
+
   const badge = document.getElementById("cartBadge");
-  if (!badge) return;
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  badge.textContent = totalItems;
-  badge.style.display = totalItems > 0 ? "inline-block" : "none";
+  if (badge) {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? "inline-block" : "none";
+  }
 }
 
 /* ================================
@@ -120,9 +130,9 @@ function removeFromCart(id) {
 }
 
 /* ================================
-   INIT ON PAGE LOAD
+   INITIALIZE
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  renderCart();
+  if (isCartPage) renderCart();
   updateCartBadge();
 });
