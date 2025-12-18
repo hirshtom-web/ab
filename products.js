@@ -23,6 +23,14 @@ function initProductsPage() {
   images: (p.productImageUrl || "").split(";").map(i => i.trim())  // store all images
 }));
 
+      const bannerVideos = [
+  "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4",
+  "https://video.wixstatic.com/video/1799ca_4a4a7105ce284ce5928b811120fef2fc/1080p/mp4/file.mp4",
+  "https://video.wixstatic.com/video/1799ca_9ac7f684c40e4b1db1cb7d8f644c1d77/1080p/mp4/file.mp4"
+];
+
+const bannerColors = ["#f7c59f", "#9fd3f7", "#c5f79f"]; // different color for each color banner
+
       renderPage(currentPage);
     },
     error: err => console.error("CSV load failed:", err)
@@ -46,22 +54,23 @@ slice.forEach((p, index) => {
     card = document.createElement("div");
     card.className = "banner-card";
 
-    // Example: use a video if p.videoUrl exists, otherwise use image
-    if (p.videoUrl) {
+    // Alternate: use video if index divisible by 14, else colored block
+    if (((index + 1) / 7) % 2 === 1) { // 1st, 3rd, 5th, etc banner -> video
+      const videoIndex = Math.floor((index + 1) / 7) % bannerVideos.length;
       card.innerHTML = `
         <video autoplay muted loop playsinline>
-          <source src="${p.videoUrl}" type="video/mp4">
+          <source src="${bannerVideos[videoIndex]}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       `;
-    } else {
-      card.innerHTML = `
-        <img src="${p.image || 'default-banner.jpg'}" alt="Banner">
-      `;
+    } else { // 2nd, 4th, 6th banner -> color block
+      const colorIndex = Math.floor((index + 1) / 7) % bannerColors.length;
+      card.style.background = bannerColors[colorIndex];
+      card.innerHTML = `<span>Banner</span>`; // optional placeholder text
     }
 
   } else {
-    // Regular product card
+    // Normal product card
     card = document.createElement("div");
     card.className = "product-card";
 
