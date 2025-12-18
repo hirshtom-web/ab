@@ -148,3 +148,26 @@ async function initProductsPage() {
     error: err => console.error("CSV load failed:", err)
   });
 }
+
+   // Timer
+function startSaleTimer(durationSeconds = 36000) { // default 10 hours
+  const saleEl = document.getElementById("saleInfo");
+  let seconds = durationSeconds;
+
+  function update() {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    if (saleEl) {
+      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    if (seconds > 0) {
+      seconds--;
+      setTimeout(update, 1000);
+    }
+  }
+
+  update();
+}
