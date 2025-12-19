@@ -1,21 +1,17 @@
 <style>
-.features-section {
-  width: 100%;
-  padding: 60px 20px;
-  background: #fff;
-  text-align: center;
-}
 
 .features-container {
   display: flex;
+  text-align: center;
   flex-wrap: wrap;
   justify-content: center;
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 50px 20px;
+  padding: 100px 20px;
   box-sizing: border-box;
+  background: #fff;
 }
 
 .feature-card {
@@ -25,10 +21,6 @@
   flex: 1 1 220px;
   max-width: 250px;
 
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
 }
 
 .feature-card .icon {
