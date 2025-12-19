@@ -2,7 +2,7 @@
 
 .features-section {
   width: 100%;
-  background: #fff;
+  background: #f5f5f5;
   padding: 60px 20px;
   text-align: center;
 }
@@ -18,7 +18,7 @@
   width: 100%;
   padding: 100px 20px;
   box-sizing: border-box;
-  background: #fff;
+  background: #f5f5f5;
 }
 
 .feature-card {
