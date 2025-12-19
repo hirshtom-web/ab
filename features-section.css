@@ -1,6 +1,13 @@
 <style>
 
-.section-container .features-container {
+.features-section {
+  width: 100%;
+  background: #fff;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.features-container {
   display: flex;
   text-align: center;
   flex-wrap: wrap;
