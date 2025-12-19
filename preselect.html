@@ -170,6 +170,7 @@ Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
 
 function renderProducts() {
   grid.innerHTML = "";
+
   allProducts.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
@@ -197,22 +198,24 @@ function renderProducts() {
         selectedProducts.push(p.id);
         card.classList.add("selected");
       }
+      // Refresh Sortable draggable items whenever selection changes
+      sortable.option("draggable", ".product-card.selected");
     });
 
     grid.appendChild(card);
   });
+}
 
-  // Enable drag-and-drop for selected products only
-new Sortable(grid, {
-    animation: 150,
-    draggable: ".product-card.selected", // only selected cards can be dragged
-    onEnd: () => {
-        const newOrder = [];
-        grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
-        selectedProducts = newOrder;
-    }
+// Initialize Sortable **once**, after products are rendered
+const sortable = new Sortable(grid, {
+  animation: 150,
+  draggable: ".product-card.selected", // only selected cards can be dragged
+  onEnd: () => {
+    const newOrder = [];
+    grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
+    selectedProducts = newOrder;
+  }
 });
-
 
 // Save selection
 document.getElementById("saveSelection").addEventListener("click", () => {
@@ -220,5 +223,6 @@ document.getElementById("saveSelection").addEventListener("click", () => {
   alert("Selection saved! You can now render this order on the public page.");
 });
 </script>
+
 </body>
 </html>
