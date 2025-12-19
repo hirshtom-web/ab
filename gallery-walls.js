@@ -19,19 +19,29 @@ function initProductsPage() {
     { type: "color", color: "#c5f79f" }
   ];
 
-  // Load CSV (no type filtering)
+  // Allowed types
+  const allowedTypes = ["gallery", "bundle", "combination"];
+
+  // Load CSV
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      allProducts = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.price ? parseFloat(p.price) : 1,
-        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-        images: (p.productImageUrl || "").split(";").map(i => i.trim())
-      }));
+      allProducts = res.data
+        .filter(p => {
+          if (!p.type) return false;
+          // Split type by semicolon, lowercase, and trim
+          const types = p.type.split(";").map(t => t.trim().toLowerCase());
+          return types.some(t => allowedTypes.includes(t));
+        })
+        .map(p => ({
+          id: (p.productId || "").trim(),
+          name: (p.name || "Unnamed Product").trim(),
+          price: p.price ? parseFloat(p.price) : 1,
+          oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
+          images: (p.productImageUrl || "").split(";").map(i => i.trim())
+        }));
 
       renderPage(currentPage);
     },
