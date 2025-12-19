@@ -3,215 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preselect Products</title>
-<link rel="stylesheet" href="your-existing-styles.css">
+<title>Product Pre-Selector</title>
 <style>
-/* ===============================
-   General
-================================ */
-body { font-family: Arial, sans-serif; margin:0; padding:0; }
-h1 { text-align:center; margin:20px 0; }
-#saveSelection { margin: 20px auto; display: block; padding: 10px 20px; font-size: 16px; cursor: pointer; }
-
-/* ===============================
-   PRODUCTS GRID
-================================ */
-.products-grid {
-  display: grid;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 10px;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-/* Tablet: 3 per row */
-@media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
-/* Mobile: 2 per row */
-@media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-
-/* Product Card */
-.product-card {
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  min-height: 350px; background: transparent; cursor: pointer; position: relative;
-  border: 1px solid transparent; border-radius: 8px;
-}
-.product-card.selected { border: 2px solid #007bff; background: #e6f0ff; }
-
-/* Image wrapper */
-.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display:flex; justify-content:center; align-items:center; margin-bottom:8px; position: relative; }
-.img-wrapper img { width: 100%; height: auto; object-fit: cover; display: block; }
-/* Settings button */
-.settings-btn { position:absolute; top:6px; right:6px; background:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; }
-
-/* Product Info */
-.product-info { display:flex; flex-direction: column; gap:4px; }
-.product-info h3 { margin:0; font-size:14px; font-weight:500; color:#111; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.price-wrapper { display:flex; justify-content:center; align-items:baseline; gap:6px; }
-.price-old { font-size:13px; color:#999; text-decoration:line-through; }
-.price-new { font-size:14px; font-weight:600; color:#111; }
-
-/* Pagination divider */
-.page-divider { grid-column: 1 / -1; text-align:center; margin:20px 0; font-weight:bold; font-size:18px; background:#f0f0f0; padding:10px; border-radius:8px; }
-
-/* Popup */
-#organizePopup {
-  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  background:#fff; padding:20px; border:1px solid #ccc; border-radius:8px; z-index:1000;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-#organizePopup input { width:60px; margin-left:5px; }
-#organizePopup button { margin-top:10px; margin-right:5px; padding:6px 12px; cursor:pointer; }
-#popupOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:900; }
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  img { max-width: 80px; max-height: 80px; object-fit: cover; }
+  input, textarea, select { width: 100%; }
+  textarea { resize: vertical; }
+  .multi-select { height: 60px; }
+  button { margin-top: 10px; padding: 8px 12px; }
 </style>
 </head>
 <body>
 
-<h1>Preselect Products</h1>
-<button id="saveSelection">Save Selection</button>
-<div id="productGrid" class="products-grid"></div>
+<h1>Product Pre-Selector Dashboard</h1>
 
-<!-- Popup for organizing -->
-<div id="popupOverlay"></div>
-<div id="organizePopup">
-  <h3>Organize Product</h3>
-  <label>Page: <input type="number" id="popupPage" min="1" value="1"></label><br>
-  <label>Row: <input type="number" id="popupRow" min="1" value="1"></label><br>
-  <button id="popupHideBtn">Hide</button>
-  <button id="popupSaveBtn">Save</button>
-  <button id="popupCloseBtn">X</button>
-</div>
+<input type="file" id="csvFile" accept=".csv">
+<button id="exportBtn">Export JSON</button>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<table id="productTable">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Bio</th>
+      <th>Artist</th>
+      <th>Price</th>
+      <th>Old Price</th>
+      <th>Category</th>
+      <th>Collection</th>
+      <th>Color</th>
+      <th>Keywords</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-const grid = document.getElementById("productGrid");
-const popup = document.getElementById("organizePopup");
-const overlay = document.getElementById("popupOverlay");
-let allProducts = [];
-let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-let currentProduct = null;
+const categories = ["Abstract","Architecture","Botanic","Drawings","Figurative","Geometric Shapes","Line Art","Photo Art","Other Categories","Bauhaus"];
+const collections = ["Best Sellers","New In","Trending","Limited Edition","Other Collections"];
+const colors = ["Black","Rose","White","Beige","Burgundy","Light Blue","Plum","Black/White","Blue","Brown","Green","Grey","Orange","Pink","Purple","Red","Yellow","Multi","Other Colors"];
+const artists = ["Famous Artists","Featured Artists","Other Artists"];
 
-// Load CSV
-Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
-  complete: res => {
-    allProducts = res.data.map((p,i) => ({
-      id: (p.productId || `p${i}`).trim(),
-      name: (p.name || "Unnamed Product").trim(),
-      price: p.price ? parseFloat(p.price) : 1,
-      oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
-      images: (p.productImageUrl || "").split(";").map(i => i.trim()),
-      page: 1
-    }));
-    renderProducts();
-    initSortable();
-  },
-  error: err => console.error("CSV load failed:", err)
+let allProducts = [];
+
+document.getElementById("csvFile").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    complete: (res) => {
+      allProducts = res.data.map(p => ({
+        productId: p.productId || "",
+        name: p.name || "",
+        bio: p.bio || "",
+        artist: p.artist || "",
+        price: p.price ? parseFloat(p.price) : 0,
+        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
+        category: p.category ? p.category.split(";").map(x=>x.trim()) : [],
+        collection: p.collection ? p.collection.split(";").map(x=>x.trim()) : [],
+        color: p.color ? p.color.split(";").map(x=>x.trim()) : [],
+        keywords: p.keywords ? p.keywords.split(";").map(x=>x.trim()) : [],
+        image: p.productImageUrl || ""
+      }));
+      renderTable();
+    },
+    error: (err) => console.error("CSV load failed:", err)
+  });
 });
 
-// Render products with page dividers
-function renderProducts(){
-  grid.innerHTML = "";
-  // Sort by page first
-  const sorted = allProducts.slice().sort((a,b)=> (a.page||1)-(b.page||1));
-  let currentPage = 1;
-  let countInPage = 0;
-  sorted.forEach((p,i)=>{
-    if(countInPage === 0){
-      const divider = document.createElement("div");
-      divider.className = "page-divider";
-      divider.textContent = `Page ${currentPage}`;
-      grid.appendChild(divider);
-    }
+function renderTable() {
+  const tbody = document.querySelector("#productTable tbody");
+  tbody.innerHTML = "";
 
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.dataset.id = p.id;
-    if(selectedProducts.includes(p.id)) card.classList.add("selected");
+  allProducts.forEach((p, index) => {
+    const tr = document.createElement("tr");
 
-    const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
-
-    card.innerHTML = `
-      <div class="img-wrapper">
-        <img src="${imgSrc}" alt="${p.name}">
-        <button class="settings-btn" title="Organize">⚙️</button>
-      </div>
-      <div class="product-info">
-        <h3>${p.name}</h3>
-        <div class="price-wrapper">
-          ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
-          <span class="price-new">$${p.price}</span>
-        </div>
-      </div>
+    tr.innerHTML = `
+      <td><img src="${p.image}" alt="${p.name}"></td>
+      <td><input type="text" value="${p.name}" data-field="name" data-index="${index}"></td>
+      <td><textarea data-field="bio" data-index="${index}">${p.bio}</textarea></td>
+      <td><select data-field="artist" data-index="${index}">
+        ${artists.map(a => `<option ${a===p.artist?'selected':''}>${a}</option>`).join("")}
+      </select></td>
+      <td><input type="number" value="${p.price}" data-field="price" data-index="${index}"></td>
+      <td><input type="number" value="${p.oldPrice}" data-field="oldPrice" data-index="${index}"></td>
+      <td><select multiple class="multi-select" data-field="category" data-index="${index}">
+        ${categories.map(c => `<option ${p.category.includes(c)?'selected':''}>${c}</option>`).join("")}
+      </select></td>
+      <td><select multiple class="multi-select" data-field="collection" data-index="${index}">
+        ${collections.map(c => `<option ${p.collection.includes(c)?'selected':''}>${c}</option>`).join("")}
+      </select></td>
+      <td><select multiple class="multi-select" data-field="color" data-index="${index}">
+        ${colors.map(c => `<option ${p.color.includes(c)?'selected':''}>${c}</option>`).join("")}
+      </select></td>
+      <td><input type="text" value="${p.keywords.join("; ")}" data-field="keywords" data-index="${index}"></td>
     `;
 
-    // Click to select
-    card.addEventListener("click", e=>{
-      if(e.target.classList.contains("settings-btn")) return; // ignore settings click
-      if(selectedProducts.includes(p.id)){
-        selectedProducts = selectedProducts.filter(id=>id!==p.id);
-        card.classList.remove("selected");
+    tbody.appendChild(tr);
+  });
+
+  // Add change listeners to inputs
+  tbody.querySelectorAll("input, textarea, select").forEach(el => {
+    el.addEventListener("change", (e) => {
+      const index = parseInt(el.dataset.index);
+      const field = el.dataset.field;
+
+      if (el.multiple) {
+        const selected = Array.from(el.selectedOptions).map(o => o.value);
+        allProducts[index][field] = selected;
+      } else if (field === "keywords") {
+        allProducts[index][field] = el.value.split(";").map(x=>x.trim());
+      } else if (field === "price" || field === "oldPrice") {
+        allProducts[index][field] = parseFloat(el.value);
       } else {
-        selectedProducts.push(p.id);
-        card.classList.add("selected");
+        allProducts[index][field] = el.value;
       }
     });
-
-    // Settings popup
-    card.querySelector(".settings-btn").addEventListener("click", ()=>{
-      currentProduct = p;
-      document.getElementById("popupPage").value = p.page || 1;
-      document.getElementById("popupRow").value = 1; // simplified
-      popup.style.display = "block"; overlay.style.display = "block";
-    });
-
-    grid.appendChild(card);
-
-    countInPage++;
-    if(countInPage>=60){ currentPage++; countInPage=0; }
   });
 }
 
-// Popup controls
-document.getElementById("popupCloseBtn").addEventListener("click", ()=>{
-  popup.style.display = overlay.style.display = "none";
-});
-document.getElementById("popupSaveBtn").addEventListener("click", ()=>{
-  currentProduct.page = parseInt(document.getElementById("popupPage").value);
-  popup.style.display = overlay.style.display = "none";
-  renderProducts();
-});
-document.getElementById("popupHideBtn").addEventListener("click", ()=>{
-  currentProduct.page = Math.max(...allProducts.map(p=>p.page))+1; // last page
-  popup.style.display = overlay.style.display = "none";
-  renderProducts();
-});
-
-// Sortable drag & drop for selected products
-function initSortable(){
-  new Sortable(grid,{
-    animation:150,
-    draggable:".product-card.selected",
-    handle:".product-card",
-    filter:".product-card:not(.selected)",
-    onMove:(evt)=>evt.related.classList.contains("selected"),
-    onEnd:()=>{
-      const newOrder=[];
-      grid.querySelectorAll(".product-card.selected").forEach(card=>newOrder.push(card.dataset.id));
-      selectedProducts = newOrder;
-    }
-  });
-}
-
-// Save selection
-document.getElementById("saveSelection").addEventListener("click", ()=>{
-  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
-  alert("✅ Selection saved!");
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allProducts, null, 2));
+  const dlAnchor = document.createElement("a");
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "products.json");
+  dlAnchor.click();
 });
 </script>
-
 </body>
 </html>
