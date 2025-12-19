@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Product Admin Editor</title>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <style>
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ccc; padding: 4px; text-align: left; }
-    img { max-width: 50px; }
-    select, input, textarea { width: 100%; box-sizing: border-box; }
-    textarea { resize: vertical; }
-  </style>
+<meta charset="UTF-8">
+<title>Product Admin Cards</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+  body { font-family: sans-serif; margin: 20px; }
+  .card-grid { display: flex; flex-direction: column; gap: 20px; }
+  .product-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .product-card img { width: 100%; max-width: 150px; border-radius: 4px; }
+  .column { display: flex; flex-direction: column; gap: 6px; }
+  .column input, .column select, .column textarea { width: 100%; box-sizing: border-box; }
+  .column textarea { resize: vertical; }
+  .column h4 { margin: 0 0 4px 0; font-size: 0.9rem; color: #555; }
+</style>
 </head>
 <body>
 
@@ -19,38 +29,9 @@
 <button onclick="exportJSON()">Export JSON</button>
 <button onclick="exportCSV()">Export CSV</button>
 
-<h2>Products Table</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Price</th>
-      <th>Category</th>
-      <th>Collection</th>
-      <th>Artist</th>
-      <th>Artist Name</th>
-      <th>Color</th>
-      <th>Color Story</th>
-      <th>Room</th>
-      <th>Emotional Energy</th>
-      <th>Scale</th>
-      <th>Quantity</th>
-      <th>Ribbon</th>
-      <th>Keywords</th>
-      <th>Bio</th>
-      <th>Meaning</th>
-      <th>Download</th>
-      <th>Visible</th>
-    </tr>
-  </thead>
-  <tbody id="rows"></tbody>
-</table>
+<div class="card-grid" id="productGrid"></div>
 
 <script>
-// ------------------ YOUR FULL JS HERE ------------------
 const productTypes = ["single","pair","trio","bundle"];
 const categories = ["Abstract","Architecture","Botanic","Figurative","Geometric","Line Art","Photo Art","Bauhaus"];
 const collections = ["Best Sellers","New In","Trending","Limited Edition"];
@@ -92,51 +73,72 @@ document.getElementById("csvFile").addEventListener("change", e => {
         downloadLinkUrl: p.downloadLinkUrl || "",
         visible: p.visible !== "false"
       }));
-      render();
+      renderCards();
     }
   });
 });
 
 function split(v){ return v ? v.split(";").map(x=>x.trim()) : []; }
 
-// ------------------ RENDER TABLE ------------------
-function render(){
-  const tbody = document.getElementById("rows");
-  tbody.innerHTML = "";
+function renderCards(){
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = "";
 
   products.forEach((p,i)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-<td><img src="${img(p.productImageUrl)}" width="50"></td>
-<td><input value="${p.productId||""}" onchange="u(${i},'productId',this.value)"></td>
-<td><input value="${p.name||""}" onchange="u(${i},'name',this.value)"></td>
-<td>${select(productTypes,p.productType,i,"productType")}</td>
-<td><input type="number" value="${p.price||0}" onchange="u(${i},'price',+this.value)"></td>
-<td>${multi(categories,p.category,i,"category")}</td>
-<td>${multi(collections,p.collection,i,"collection")}</td>
-<td>${select(artistTypes,p.artist,i,"artist")}</td>
-<td><input value="${p.artistName||""}" onchange="u(${i},'artistName',this.value)"></td>
-<td>${multi(colors,p.color,i,"color")}</td>
-<td><input value="${p.colorStory||""}" onchange="u(${i},'colorStory',this.value)"></td>
-<td>${multi(rooms,p.room,i,"room")}</td>
-<td>${multi(energies,p.emotionalEnergy,i,"emotionalEnergy")}</td>
-<td>${select(scales,p.scalePresence,i,"scalePresence")}</td>
-<td><input type="number" value="${p.quantity||1}" onchange="u(${i},'quantity',+this.value)"></td>
-<td>${select(ribbons,p.ribbon,i,"ribbon")}</td>
-<td><input value="${(p.keywords||[]).join('; ')}" onchange="u(${i},'keywords',split(this.value))"></td>
-<td><textarea onchange="u(${i},'bio',this.value)">${p.bio||""}</textarea></td>
-<td><textarea onchange="u(${i},'meaning',this.value)">${p.meaning||""}</textarea></td>
-<td><input value="${p.downloadLinkUrl||""}" onchange="u(${i},'downloadLinkUrl',this.value)"></td>
-<td><input type="checkbox" ${p.visible?"checked":""} onchange="u(${i},'visible',this.checked)"></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    const card = document.createElement("div");
+    card.className = "product-card";
 
-function img(arr){
-  const v = arr && arr[0];
-  if(!v) return "";
-  return v.includes("http") ? v : 'https://static.wixstatic.com/media/' + v;
+    // Column 1 - Image / Gallery
+    const col1 = document.createElement("div");
+    col1.className = "column";
+    const imgSrc = p.productImageUrl[0] ? (p.productImageUrl[0].includes("http") ? p.productImageUrl[0] : 'https://static.wixstatic.com/media/' + p.productImageUrl[0]) : "";
+    col1.innerHTML = `<h4>Image</h4><img src="${imgSrc}" alt="${p.name}">`;
+
+    // Column 2 - Basic info
+    const col2 = document.createElement("div");
+    col2.className = "column";
+    col2.innerHTML = `
+<h4>ID</h4><input value="${p.productId||""}" onchange="u(${i},'productId',this.value)">
+<h4>Name</h4><input value="${p.name||""}" onchange="u(${i},'name',this.value)">
+<h4>Type</h4>${select(productTypes,p.productType,i,"productType")}
+<h4>Price</h4><input type="number" value="${p.price||0}" onchange="u(${i},'price',+this.value)">
+<h4>Quantity</h4><input type="number" value="${p.quantity||1}" onchange="u(${i},'quantity',+this.value)">
+<h4>Visible</h4><input type="checkbox" ${p.visible?"checked":""} onchange="u(${i},'visible',this.checked)">
+    `;
+
+    // Column 3 - Attributes
+    const col3 = document.createElement("div");
+    col3.className = "column";
+    col3.innerHTML = `
+<h4>Category</h4>${multi(categories,p.category,i,"category")}
+<h4>Collection</h4>${multi(collections,p.collection,i,"collection")}
+<h4>Color</h4>${multi(colors,p.color,i,"color")}
+<h4>Room</h4>${multi(rooms,p.room,i,"room")}
+<h4>Energy</h4>${multi(energies,p.emotionalEnergy,i,"emotionalEnergy")}
+<h4>Scale</h4>${select(scales,p.scalePresence,i,"scalePresence")}
+<h4>Ribbon</h4>${select(ribbons,p.ribbon,i,"ribbon")}
+    `;
+
+    // Column 4 - Text fields
+    const col4 = document.createElement("div");
+    col4.className = "column";
+    col4.innerHTML = `
+<h4>Artist</h4>${select(artistTypes,p.artist,i,"artist")}
+<h4>Artist Name</h4><input value="${p.artistName||""}" onchange="u(${i},'artistName',this.value)">
+<h4>Color Story</h4><input value="${p.colorStory||""}" onchange="u(${i},'colorStory',this.value)">
+<h4>Keywords</h4><input value="${(p.keywords||[]).join('; ')}" onchange="u(${i},'keywords',split(this.value))">
+<h4>Bio</h4><textarea onchange="u(${i},'bio',this.value)">${p.bio||""}</textarea>
+<h4>Meaning</h4><textarea onchange="u(${i},'meaning',this.value)">${p.meaning||""}</textarea>
+<h4>Download</h4><input value="${p.downloadLinkUrl||""}" onchange="u(${i},'downloadLinkUrl',this.value)">
+    `;
+
+    card.appendChild(col1);
+    card.appendChild(col2);
+    card.appendChild(col3);
+    card.appendChild(col4);
+
+    grid.appendChild(card);
+  });
 }
 
 function select(opts,val,i,f){
@@ -153,25 +155,14 @@ function multi(opts,vals,i,f){
 
 function u(i,f,v){ products[i][f]=v; }
 
-// ------------------ EXPORT JSON ------------------
+// ------------------ EXPORT ------------------
 function exportJSON(){
-  const clean = products.map(p=>({
-    ...p,
-    productImageUrl: p.productImageUrl,
-    category: p.category,
-    collection: p.collection,
-    color: p.color,
-    room: p.room,
-    emotionalEnergy: p.emotionalEnergy,
-    keywords: p.keywords
-  }));
   const a=document.createElement("a");
-  a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(clean,null,2));
+  a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(products,null,2));
   a.download="products.json";
   a.click();
 }
 
-// ------------------ EXPORT CSV ------------------
 function exportCSV(){
   const data = products.map(p=>{
     return {
