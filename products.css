@@ -155,7 +155,7 @@
   margin: 0;
   font-size: 12px;
   font-weight: 500;
-  color: #111;
+  color: #000;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -178,7 +178,7 @@
 .price-new {
   font-size: 12px;
   font-weight: 500;
-  color: #111;
+  color: #999;
 }
 
 /* ===============================
@@ -200,7 +200,7 @@
 .price {
   font-size: 10px;
   font-weight: 500;
-  color: #333;
+  color: #999;
 }
 
 /* ===============================
