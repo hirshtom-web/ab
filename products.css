@@ -114,13 +114,12 @@
   cursor: pointer;
 }
 
-/* Image wrapper with shadow */
+/* Image wrapper */
 .img-wrapper {
   width: 100%;
   aspect-ratio: 3 / 4;          /* image 3:4 ratio */
   overflow: hidden;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* shadow only around image */
   margin-bottom: 8px;           /* space between image and text */
 }
 
