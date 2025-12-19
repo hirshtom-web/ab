@@ -287,3 +287,42 @@
   height: 100%;
   line-height: 250px;
 }
+
+@media (max-width: 768px) {
+  .controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap; /* keep everything in one row */
+  }
+
+  .controls-left {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+    flex: 1;
+  }
+
+  .controls-center {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .controls-right {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    flex: 1;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-flex;
+  }
+}
