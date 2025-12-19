@@ -78,7 +78,7 @@ if ((index + 1) % 7 === 0) {
 
     // Regular product card
     card = document.createElement("div");
-    card.className = "product-card";
+card.className = "product-card is-product";
 
     const imagesArray = p.images.length ? p.images : [p.image];
     card.dataset.images = JSON.stringify(imagesArray);
@@ -142,7 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to update all product images
   function updateGridImages() {
-    const productCards = document.querySelectorAll("#productGrid .product-card");
+const productCards = document.querySelectorAll(
+  "#productGrid .product-card.is-product"
+);
     productCards.forEach(card => {
       const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
       const newImg = imgList[currentImageIndex] || imgList[0];
