@@ -1,4 +1,6 @@
+<style>
 .features-section {
+  width: 100%;
   padding: 60px 20px;
   background: #f9f9f9;
   text-align: center;
@@ -11,6 +13,9 @@
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .feature-card {
@@ -44,3 +49,4 @@
   color: #555;
   line-height: 1.5;
 }
+</style>
