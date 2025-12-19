@@ -153,7 +153,7 @@
 /* Product name */
 .product-info h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #111;
   overflow: hidden;
@@ -170,14 +170,14 @@
 }
 
 .price-old {
-  font-size: 13px;
+  font-size: 12px;
   color: #999;
   text-decoration: line-through;
 }
 
 .price-new {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: #111;
 }
 
@@ -193,13 +193,13 @@
 
 .product-info h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .price {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: #333;
 }
 
