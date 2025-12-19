@@ -166,7 +166,7 @@ if(saleEl){
   updateTimer();
 }
 
-<script>
+
 const buyNowBtn = document.getElementById('buyNowBtn');
 const addToCartBtn = document.getElementById('addToCartBtn');
 
@@ -222,4 +222,3 @@ addToCartBtn.addEventListener('click', () => {
   });
   alert(`Added to cart: ${product.type} ${product.size ? '- ' + product.size : ''} - $${product.price}`);
 });
-</script>
