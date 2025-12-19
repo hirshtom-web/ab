@@ -10,6 +10,16 @@ function initProductsPage() {
   let currentPage = 1;
   const productsPerPage = 60;
 
+  const banners = [
+  { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
+  { type: "color", color: "#f7c59f" },
+  { type: "video", src: "https://video.wixstatic.com/video/1799ca_4a4a7105ce284ce5928b811120fef2fc/1080p/mp4/file.mp4" },
+  { type: "color", color: "#9fd3f7" },
+  { type: "video", src: "https://video.wixstatic.com/video/1799ca_9ac7f684c40e4b1db1cb7d8f644c1d77/1080p/mp4/file.mp4" },
+  { type: "color", color: "#c5f79f" }
+];
+
+  
   // Load CSV
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
@@ -41,26 +51,26 @@ function initProductsPage() {
 slice.forEach((p, index) => {
   let card;
 
-  // Every 7th card is a banner
-  if ((index + 1) % 7 === 0) {
-    card = document.createElement("div");
-    card.className = "banner-card";
+// Every 7th card is a banner
+if ((index + 1) % 7 === 0) {
+  card = document.createElement("div");
+  card.className = "banner-card";
 
-    // Example: use a video if p.videoUrl exists, otherwise use image
-    if (p.videoUrl) {
-      card.innerHTML = `
-        <video autoplay muted loop playsinline>
-          <source src="${p.videoUrl}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      `;
-    } else {
-      card.innerHTML = `
-        <img src="${p.image || 'default-banner.jpg'}" alt="Banner">
-      `;
-    }
+  const bannerIndex = Math.floor(index / 7) % banners.length;
+  const banner = banners[bannerIndex];
 
+  if (banner.type === "video") {
+    card.innerHTML = `
+      <video autoplay muted loop playsinline>
+        <source src="${banner.src}" type="video/mp4">
+      </video>
+    `;
   } else {
+    card.style.background = banner.color;
+  }
+
+} else {
+
     // Regular product card
     card = document.createElement("div");
     card.className = "product-card";
