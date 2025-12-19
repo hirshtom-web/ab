@@ -203,16 +203,16 @@ function renderProducts() {
   });
 
   // Enable drag-and-drop for selected products only
-  new Sortable(grid, {
+new Sortable(grid, {
     animation: 150,
-    filter: '.product-card:not(.selected)',
+    draggable: ".product-card.selected", // only selected cards can be dragged
     onEnd: () => {
-      const newOrder = [];
-      grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
-      selectedProducts = newOrder;
+        const newOrder = [];
+        grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
+        selectedProducts = newOrder;
     }
-  });
-}
+});
+
 
 // Save selection
 document.getElementById("saveSelection").addEventListener("click", () => {
