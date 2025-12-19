@@ -4,96 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preselect Products</title>
+<link rel="stylesheet" href="your-existing-styles.css">
 <style>
-  body { font-family: sans-serif; margin: 20px; }
-  h1 { text-align: center; }
-  #productGrid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 15px; margin-top: 20px; }
-  .product-card { border: 1px solid #ccc; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .product-card.selected { border-color: #007bff; background: #e6f0ff; }
-  .product-card img { width: 100%; border-radius: 8px; margin-bottom: 8px; }
-  .price-old { text-decoration: line-through; color: #999; margin-right: 5px; }
-  button { margin: 10px; padding: 8px 16px; cursor: pointer; }
+  /* Highlight selected products */
+  .product-card.selected { border: 2px solid #007bff; background: #e6f0ff; }
+  #saveSelection { margin: 20px auto; display: block; padding: 10px 20px; font-size: 16px; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<h1>Preselect Products</h1>
-<div style="text-align:center;">
-  <button id="saveSelection">Save Selection</button>
-</div>
+<h1 style="text-align:center;">Preselect Products</h1>
+<button id="saveSelection">Save Selection</button>
 
-<div id="productGrid"></div>
+<div id="productGrid" class="products-grid"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
-// Example products (replace with CSV/JSON fetch)
-let allProducts = [
-  {id: "1", name: "Product 1", price: 20, oldPrice: 25, image: "https://via.placeholder.com/150"},
-  {id: "2", name: "Product 2", price: 15, oldPrice: 0, image: "https://via.placeholder.com/150"},
-  {id: "3", name: "Product 3", price: 40, oldPrice: 50, image: "https://via.placeholder.com/150"},
-  {id: "4", name: "Product 4", price: 30, oldPrice: 0, image: "https://via.placeholder.com/150"},
-  {id: "5", name: "Product 5", price: 10, oldPrice: 12, image: "https://via.placeholder.com/150"}
-];
+const grid = document.getElementById("productGrid");
+let allProducts = [];
+let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
-// Load previous selection from localStorage
-let selectedProducts = JSON.parse(localStorage.getItem('selectedProducts')) || [];
+// Load CSV
+Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  complete: res => {
+    allProducts = res.data.map(p => ({
+      id: (p.productId || "").trim(),
+      name: (p.name || "Unnamed Product").trim(),
+      price: p.price ? parseFloat(p.price) : 1,
+      oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
+      images: (p.productImageUrl || "").split(";").map(i => i.trim())
+    }));
+    renderProducts();
+  },
+  error: err => console.error("CSV load failed:", err)
+});
 
-const productGrid = document.getElementById('productGrid');
-
-// Render all products
 function renderProducts() {
-  productGrid.innerHTML = "";
+  grid.innerHTML = "";
   allProducts.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'product-card';
+    const card = document.createElement("div");
+    card.className = "product-card";
     card.dataset.id = p.id;
-    if (selectedProducts.includes(p.id)) card.classList.add('selected');
+    if (selectedProducts.includes(p.id)) card.classList.add("selected");
+
+    const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
 
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <strong>${p.name}</strong>
-      <div class="price-wrapper">
-        ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ''}
-        <span class="price-new">$${p.price}</span>
+      <div class="img-wrapper"><img src="${imgSrc}" alt="${p.name}"></div>
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <div class="price-wrapper">
+          ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
+          <span class="price-new">$${p.price}</span>
+        </div>
       </div>
     `;
 
-    card.addEventListener('click', () => {
+    card.addEventListener("click", () => {
       if (selectedProducts.includes(p.id)) {
         selectedProducts = selectedProducts.filter(id => id !== p.id);
-        card.classList.remove('selected');
+        card.classList.remove("selected");
       } else {
         selectedProducts.push(p.id);
-        card.classList.add('selected');
+        card.classList.add("selected");
       }
     });
 
-    productGrid.appendChild(card);
+    grid.appendChild(card);
+  });
+
+  // Enable drag-and-drop for selected products only
+  new Sortable(grid, {
+    animation: 150,
+    filter: '.product-card:not(.selected)',
+    onEnd: () => {
+      const newOrder = [];
+      grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
+      selectedProducts = newOrder;
+    }
   });
 }
 
-// Enable drag-and-drop **only for selected products**
-new Sortable(productGrid, {
-  animation: 150,
-  filter: '.product-card:not(.selected)', // only selected are draggable
-  onEnd: () => {
-    // Update selectedProducts order based on visible order
-    const newOrder = [];
-    productGrid.querySelectorAll('.product-card.selected').forEach(card => {
-      newOrder.push(card.dataset.id);
-    });
-    selectedProducts = newOrder;
-  }
-});
-
-renderProducts();
-
 // Save selection
-document.getElementById('saveSelection').addEventListener('click', () => {
-  localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
-  alert('Selection saved! You can now render this order on the public page.');
+document.getElementById("saveSelection").addEventListener("click", () => {
+  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
+  alert("Selection saved! You can now render this order on the public page.");
 });
 </script>
-
 </body>
 </html>
