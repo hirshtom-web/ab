@@ -26,11 +26,12 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-     allProducts = res.data.map(p => ({
+   allProducts = res.data.map(p => ({
   id: (p.productId || "").trim(),
   name: (p.name || "Unnamed Product").trim(),
   price: p.price ? parseFloat(p.price) : 1,
-  images: (p.productImageUrl || "").split(";").map(i => i.trim())  // store all images
+  oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,  // <-- add this
+  images: (p.productImageUrl || "").split(";").map(i => i.trim())
 }));
 
       renderPage(currentPage);
