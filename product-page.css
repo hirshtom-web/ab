@@ -450,43 +450,50 @@
 }
 
 /* =====================
-   ARTWORK OPTION DROPDOWN
+   OPTION BUTTONS (match Buy Now / Add to Cart)
 ===================== */
-.artwork-options {
+.product-options {
+  display: flex;
+  flex-direction: column; /* stack on mobile */
+  gap: 10px;
   margin: 20px 0;
-  max-width: 100%; /* match container width */
-  width: 100%; /* make it same width as buttons */
-  font-family: 'Poppins', Arial, sans-serif;
 }
 
-.artwork-options label {
+.option-button label {
   display: block;
   margin-bottom: 6px;
-  font-weight: 500;
-  color: #111;
+  font-weight: 600;
   font-size: 12px;
-  text-transform: uppercase; /* optional for styling */
+  color: #111;
 }
 
-.artwork-options select {
+.option-button select {
   width: 100%;
-  padding: 12px 16px; /* same vertical padding as buttons */
-  border-radius: 10px; /* match buttons */
-  border: 1px solid #ccc;
+  padding: 12px;               /* same as buttons */
+  border-radius: 10px;          /* match buttons */
   font-size: 12px;
+  font-weight: 600;
+  border: none;                 /* match Buy Now/Add to Cart */
   cursor: pointer;
-  appearance: none; /* remove default arrow */
-  background: #fff url('data:image/svg+xml;utf8,<svg fill="%237d8796" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+  background: #daf2e8;          /* default color like Buy Now */
+  color: #22afa1;
+  appearance: none;             /* remove default arrow */
+  position: relative;
+  transition: background 0.3s, color 0.3s;
+  background: #daf2e8 url('data:image/svg+xml;utf8,<svg fill="%2322afa1" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
   background-size: 16px 16px;
 }
 
-.artwork-options select:focus {
+.option-button select:focus {
   outline: none;
-  border-color: #116dff; /* optional focus effect */
+  background: #cdece2; /* slightly darker on focus */
 }
 
-.artwork-options #selectedPrice {
-  font-weight: 600;
-  margin-top: 6px;
-  color: #333;
+.option-button.select-size select {
+  background: #22afa1;
+  color: #fff;
+}
+
+.option-button.select-size select:focus {
+  background: #1b8d88;
 }
