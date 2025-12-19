@@ -1,140 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product Pre-Selector</title>
+<meta charset="UTF-8" />
+<title>Product Admin Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
-  th { background: #eee; }
-  img { max-width: 80px; max-height: 80px; object-fit: cover; }
-  input, textarea, select { width: 100%; }
-  textarea { resize: vertical; }
-  .multi-select { height: 60px; }
-  button { margin-top: 10px; padding: 8px 12px; }
+body {
+  font-family: Inter, Arial, sans-serif;
+  background:#f6f6f6;
+  padding:20px;
+}
+h1 { margin-bottom:10px; }
+
+.controls {
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+button {
+  padding:8px 14px;
+  cursor:pointer;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+}
+
+th, td {
+  border:1px solid #ddd;
+  padding:6px;
+  vertical-align:top;
+  font-size:12px;
+}
+
+th {
+  background:#eee;
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+
+img {
+  width:80px;
+  height:80px;
+  object-fit:cover;
+}
+
+input, textarea, select {
+  width:100%;
+  font-size:12px;
+}
+
+textarea { resize:vertical; }
+
+.multi {
+  height:60px;
+}
+
+.toggle {
+  transform:scale(1.2);
+}
 </style>
 </head>
 <body>
 
-<h1>Product Pre-Selector Dashboard</h1>
+<h1>Product Admin Editor</h1>
 
-<input type="file" id="csvFile" accept=".csv">
-<button id="exportBtn">Export JSON</button>
+<div class="controls">
+  <input type="file" id="csvFile" accept=".csv" />
+  <button onclick="exportJSON()">Export JSON</button>
+</div>
 
-<table id="productTable">
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>Name</th>
-      <th>Bio</th>
-      <th>Artist</th>
-      <th>Price</th>
-      <th>Old Price</th>
-      <th>Category</th>
-      <th>Collection</th>
-      <th>Color</th>
-      <th>Keywords</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+<table>
+<thead>
+<tr>
+  <th>Image</th>
+  <th>ID</th>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Price</th>
+  <th>Category</th>
+  <th>Collection</th>
+  <th>Artist</th>
+  <th>Artist Name</th>
+  <th>Color</th>
+  <th>Color Story</th>
+  <th>Room</th>
+  <th>Emotional Energy</th>
+  <th>Scale</th>
+  <th>Quantity</th>
+  <th>Ribbon</th>
+  <th>Keywords</th>
+  <th>Bio</th>
+  <th>Meaning</th>
+  <th>Download</th>
+  <th>Visible</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
 </table>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-const categories = ["Abstract","Architecture","Botanic","Drawings","Figurative","Geometric Shapes","Line Art","Photo Art","Other Categories","Bauhaus"];
-const collections = ["Best Sellers","New In","Trending","Limited Edition","Other Collections"];
-const colors = ["Black","Rose","White","Beige","Burgundy","Light Blue","Plum","Black/White","Blue","Brown","Green","Grey","Orange","Pink","Purple","Red","Yellow","Multi","Other Colors"];
-const artists = ["Famous Artists","Featured Artists","Other Artists"];
+const productTypes = ["single","pair","trio","bundle"];
+const categories = ["Abstract","Architecture","Botanic","Figurative","Geometric","Line Art","Photo Art","Bauhaus"];
+const collections = ["Best Sellers","New In","Trending","Limited Edition"];
+const artistTypes = ["famous","featured","other"];
+const colors = ["Black","White","Beige","Blue","Green","Red","Multi"];
+const rooms = ["Living Room","Bedroom","Office","Hallway"];
+const energies = ["Calm","Bold","Energetic","Minimal","Romantic"];
+const scales = ["Small","Medium","Large","Statement"];
+const ribbons = ["","New","Best Seller","Limited"];
 
-let allProducts = [];
+let products = [];
 
-document.getElementById("csvFile").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    complete: (res) => {
-      allProducts = res.data.map(p => ({
-        productId: p.productId || "",
-        name: p.name || "",
-        bio: p.bio || "",
-        artist: p.artist || "",
-        price: p.price ? parseFloat(p.price) : 0,
-        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
-        category: p.category ? p.category.split(";").map(x=>x.trim()) : [],
-        collection: p.collection ? p.collection.split(";").map(x=>x.trim()) : [],
-        color: p.color ? p.color.split(";").map(x=>x.trim()) : [],
-        keywords: p.keywords ? p.keywords.split(";").map(x=>x.trim()) : [],
-        image: p.productImageUrl || ""
+document.getElementById("csvFile").addEventListener("change", e => {
+  Papa.parse(e.target.files[0], {
+    header:true,
+    skipEmptyLines:true,
+    complete: res => {
+      products = res.data.map(p => ({
+        ...p,
+        productImageUrl: split(p.productImageUrl),
+        category: split(p.category),
+        collection: split(p.collection),
+        color: split(p.color),
+        room: split(p.room),
+        emotionalEnergy: split(p.emotionalEnergy),
+        keywords: split(p.keywords),
+        visible: p.visible !== "false"
       }));
-      renderTable();
-    },
-    error: (err) => console.error("CSV load failed:", err)
+      render();
+    }
   });
 });
 
-function renderTable() {
-  const tbody = document.querySelector("#productTable tbody");
+function split(v){ return v ? v.split(";").map(x=>x.trim()) : []; }
+
+function render(){
+  const tbody = document.getElementById("rows");
   tbody.innerHTML = "";
 
-  allProducts.forEach((p, index) => {
+  products.forEach((p,i)=>{
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
-      <td><img src="${p.image}" alt="${p.name}"></td>
-      <td><input type="text" value="${p.name}" data-field="name" data-index="${index}"></td>
-      <td><textarea data-field="bio" data-index="${index}">${p.bio}</textarea></td>
-      <td><select data-field="artist" data-index="${index}">
-        ${artists.map(a => `<option ${a===p.artist?'selected':''}>${a}</option>`).join("")}
-      </select></td>
-      <td><input type="number" value="${p.price}" data-field="price" data-index="${index}"></td>
-      <td><input type="number" value="${p.oldPrice}" data-field="oldPrice" data-index="${index}"></td>
-      <td><select multiple class="multi-select" data-field="category" data-index="${index}">
-        ${categories.map(c => `<option ${p.category.includes(c)?'selected':''}>${c}</option>`).join("")}
-      </select></td>
-      <td><select multiple class="multi-select" data-field="collection" data-index="${index}">
-        ${collections.map(c => `<option ${p.collection.includes(c)?'selected':''}>${c}</option>`).join("")}
-      </select></td>
-      <td><select multiple class="multi-select" data-field="color" data-index="${index}">
-        ${colors.map(c => `<option ${p.color.includes(c)?'selected':''}>${c}</option>`).join("")}
-      </select></td>
-      <td><input type="text" value="${p.keywords.join("; ")}" data-field="keywords" data-index="${index}"></td>
-    `;
+<td><img src="${img(p.productImageUrl)}"></td>
+<td><input value="${p.productId||""}" onchange="u(${i},'productId',this.value)"></td>
+<td><input value="${p.name||""}" onchange="u(${i},'name',this.value)"></td>
 
+<td>${select(productTypes,p.productType,i,"productType")}</td>
+<td><input type="number" value="${p.price||0}" onchange="u(${i},'price',+this.value)"></td>
+
+<td>${multi(categories,p.category,i,"category")}</td>
+<td>${multi(collections,p.collection,i,"collection")}</td>
+
+<td>${select(artistTypes,p.artist,i,"artist")}</td>
+<td><input value="${p.artistName||""}" onchange="u(${i},'artistName',this.value)"></td>
+
+<td>${multi(colors,p.color,i,"color")}</td>
+<td><input value="${p.colorStory||""}" onchange="u(${i},'colorStory',this.value)"></td>
+
+<td>${multi(rooms,p.room,i,"room")}</td>
+<td>${multi(energies,p.emotionalEnergy,i,"emotionalEnergy")}</td>
+<td>${select(scales,p.scalePresence,i,"scalePresence")}</td>
+
+<td><input type="number" value="${p.quantity||1}" onchange="u(${i},'quantity',+this.value)"></td>
+<td>${select(ribbons,p.ribbon,i,"ribbon")}</td>
+
+<td><input value="${(p.keywords||[]).join('; ')}" onchange="u(${i},'keywords',split(this.value))"></td>
+
+<td><textarea onchange="u(${i},'bio',this.value)">${p.bio||""}</textarea></td>
+<td><textarea onchange="u(${i},'meaning',this.value)">${p.meaning||""}</textarea></td>
+
+<td><input value="${p.downloadLinkUrl||""}" onchange="u(${i},'downloadLinkUrl',this.value)"></td>
+<td><input type="checkbox" class="toggle" ${p.visible?"checked":""} onchange="u(${i},'visible',this.checked)"></td>
+`;
     tbody.appendChild(tr);
-  });
-
-  // Add change listeners to inputs
-  tbody.querySelectorAll("input, textarea, select").forEach(el => {
-    el.addEventListener("change", (e) => {
-      const index = parseInt(el.dataset.index);
-      const field = el.dataset.field;
-
-      if (el.multiple) {
-        const selected = Array.from(el.selectedOptions).map(o => o.value);
-        allProducts[index][field] = selected;
-      } else if (field === "keywords") {
-        allProducts[index][field] = el.value.split(";").map(x=>x.trim());
-      } else if (field === "price" || field === "oldPrice") {
-        allProducts[index][field] = parseFloat(el.value);
-      } else {
-        allProducts[index][field] = el.value;
-      }
-    });
   });
 }
 
-document.getElementById("exportBtn").addEventListener("click", () => {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allProducts, null, 2));
-  const dlAnchor = document.createElement("a");
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", "products.json");
-  dlAnchor.click();
-});
+function img(arr){
+  const v = arr && arr[0];
+  if(!v) return "";
+  return v.includes("http") ? v : "https://static.wixstatic.com/media/" + v;
+}
+
+function select(opts,val,i,f){
+  return `<select onchange="u(${i},'${f}',this.value)">
+    ${opts.map(o=>`<option ${o===val?"selected":""}>${o}</option>`).join("")}
+  </select>`;
+}
+
+function multi(opts,vals,i,f){
+  return `<select multiple class="multi" onchange="u(${i},'${f}',[...this.selectedOptions].map(o=>o.value))">
+    ${opts.map(o=>`<option ${vals?.includes(o)?"selected":""}>${o}</option>`).join("")}
+  </select>`;
+}
+
+function u(i,f,v){ products[i][f]=v; }
+
+function exportJSON(){
+  const clean = products.map(p=>({
+    ...p,
+    productImageUrl: p.productImageUrl,
+    category:p.category,
+    collection:p.collection,
+    color:p.color,
+    room:p.room,
+    emotionalEnergy:p.emotionalEnergy,
+    keywords:p.keywords
+  }));
+  const a=document.createElement("a");
+  a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(clean,null,2));
+  a.download="products.json";
+  a.click();
+}
 </script>
 </body>
 </html>
