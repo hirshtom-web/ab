@@ -6,12 +6,16 @@
 <title>Preselect Products</title>
 <link rel="stylesheet" href="your-existing-styles.css">
 <style>
-/* === General === */
-body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f9f9f9; }
-h1 { text-align: center; }
+/* ===============================
+   General
+================================ */
+body { font-family: Arial, sans-serif; margin:0; padding:0; }
+h1 { text-align:center; margin:20px 0; }
 #saveSelection { margin: 20px auto; display: block; padding: 10px 20px; font-size: 16px; cursor: pointer; }
 
-/* === Products Grid === */
+/* ===============================
+   PRODUCTS GRID
+================================ */
 .products-grid {
   display: grid;
   gap: 20px;
@@ -20,197 +24,191 @@ h1 { text-align: center; }
   padding: 0 10px;
   grid-template-columns: repeat(4, 1fr);
 }
-@media (max-width:1024px){.products-grid{grid-template-columns:repeat(3,1fr);}}
-@media (max-width:768px){.products-grid{grid-template-columns:repeat(2,1fr);}}
 
+/* Tablet: 3 per row */
+@media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+/* Mobile: 2 per row */
+@media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* Product Card */
 .product-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-height: 350px;
-  background: #fff;
-  border-radius: 12px;
-  cursor: pointer;
-  position: relative;
-  padding: 5px;
-  transition: 0.2s;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  min-height: 350px; background: transparent; cursor: pointer; position: relative;
+  border: 1px solid transparent; border-radius: 8px;
 }
 .product-card.selected { border: 2px solid #007bff; background: #e6f0ff; }
-.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display: flex; justify-content: center; align-items: center; position: relative; margin-bottom:8px;}
-.img-wrapper img { width: 100%; height: auto; object-fit: cover; display: block; }
-.select-icon, .hide-icon { position: absolute; top: 6px; right: 6px; background:#fff; border-radius:50%; padding:4px 6px; cursor:pointer; font-size:14px; border:1px solid #ccc; margin-left:2px; }
-.hide-icon { right:30px; }
-.product-info { display:flex; flex-direction: column; gap:4px; }
-.product-info h3 { margin:0; font-size:14px; font-weight:500; color:#111; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.price-wrapper{display:flex; justify-content:center; align-items:baseline; gap:6px;}
-.price-old{font-size:13px;color:#999;text-decoration:line-through;}
-.price-new{font-size:14px;font-weight:600;color:#111;}
 
-/* Page Divider */
-.page-divider { grid-column:1/-1; text-align:center; font-weight:600; font-size:18px; margin:20px 0 10px; padding:10px; background:#f2f2f2; border-radius:8px; color:#333; }
+/* Image wrapper */
+.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display:flex; justify-content:center; align-items:center; margin-bottom:8px; position: relative; }
+.img-wrapper img { width: 100%; height: auto; object-fit: cover; display: block; }
+/* Settings button */
+.settings-btn { position:absolute; top:6px; right:6px; background:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; line-height:1; }
+
+/* Product Info */
+.product-info { display:flex; flex-direction: column; gap:4px; }
+.product-info h3 { margin:0; font-size:14px; font-weight:500; color:#111; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.price-wrapper { display:flex; justify-content:center; align-items:baseline; gap:6px; }
+.price-old { font-size:13px; color:#999; text-decoration:line-through; }
+.price-new { font-size:14px; font-weight:600; color:#111; }
+
+/* Pagination divider */
+.page-divider { grid-column: 1 / -1; text-align:center; margin:20px 0; font-weight:bold; font-size:18px; background:#f0f0f0; padding:10px; border-radius:8px; }
 
 /* Popup */
-#popupOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;}
-#popup { background:#fff; padding:20px; border-radius:12px; width:300px; text-align:center; position:relative;}
-#popup input { width:60px; margin:5px; padding:4px; text-align:center; }
-#popup button { margin-top:10px; padding:6px 12px; cursor:pointer; }
-#popup h2 { margin-top:0; font-size:18px; }
-#popupClose { position:absolute; top:6px; right:10px; cursor:pointer; font-weight:bold; font-size:18px; }
+#organizePopup {
+  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:#fff; padding:20px; border:1px solid #ccc; border-radius:8px; z-index:1000;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+#organizePopup input { width:60px; margin-left:5px; }
+#organizePopup button { margin-top:10px; margin-right:5px; padding:6px 12px; cursor:pointer; }
+#popupOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:900; }
 </style>
 </head>
 <body>
 
 <h1>Preselect Products</h1>
 <button id="saveSelection">Save Selection</button>
-
 <div id="productGrid" class="products-grid"></div>
 
-<!-- Popup for Page/Row/Position -->
-<div id="popupOverlay">
-  <div id="popup">
-    <span id="popupClose">&times;</span>
-    <h2>Organize Product</h2>
-    <div>
-      <label>Page: <input type="number" id="popupPage" min="1"></label><br>
-      <label>Row: <input type="number" id="popupRow" min="1"></label><br>
-      <label>Position: <input type="number" id="popupPos" min="1"></label>
-    </div>
-    <button id="popupSave">Save</button>
-  </div>
+<!-- Popup for organizing -->
+<div id="popupOverlay"></div>
+<div id="organizePopup">
+  <h3>Organize Product</h3>
+  <label>Page: <input type="number" id="popupPage" min="1" value="1"></label><br>
+  <label>Row: <input type="number" id="popupRow" min="1" value="1"></label><br>
+  <button id="popupHideBtn">Hide</button>
+  <button id="popupSaveBtn">Save</button>
+  <button id="popupCloseBtn">X</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
-const productsPerPage = 60;
+const popup = document.getElementById("organizePopup");
+const overlay = document.getElementById("popupOverlay");
 let allProducts = [];
 let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-
-// Popup
-const popupOverlay = document.getElementById("popupOverlay");
-const popupPage = document.getElementById("popupPage");
-const popupRow = document.getElementById("popupRow");
-const popupPos = document.getElementById("popupPos");
-let currentEditingId = null;
-
-function openPopup(product) {
-  currentEditingId = product.id;
-  const pageIndex = Math.floor(product._index / productsPerPage) + 1;
-  popupPage.value = pageIndex;
-  popupRow.value = Math.floor((product._index % productsPerPage) / 4) + 1;
-  popupPos.value = (product._index % 4) + 1;
-  popupOverlay.style.display = "flex";
-}
-
-document.getElementById("popupClose").addEventListener("click", ()=> popupOverlay.style.display="none");
-
-document.getElementById("popupSave").addEventListener("click", () => {
-  const product = allProducts.find(p=>p.id===currentEditingId);
-  if(!product) return;
-  const newPage = parseInt(popupPage.value) || 1;
-  const newRow = parseInt(popupRow.value) || 1;
-  const newPos = parseInt(popupPos.value) || 1;
-  // Calculate new index
-  let newIndex = (newPage-1)*productsPerPage + (newRow-1)*4 + (newPos-1);
-  if(newIndex >= allProducts.length) newIndex = allProducts.length-1;
-  // Remove and insert at new position
-  allProducts = allProducts.filter(p=>p.id!==product.id);
-  allProducts.splice(newIndex,0,product);
-  renderProducts();
-  popupOverlay.style.display="none";
-});
+let currentProduct = null;
 
 // Load CSV
 Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
-  download:true,
-  header:true,
-  skipEmptyLines:true,
+  download: true,
+  header: true,
+  skipEmptyLines: true,
   complete: res => {
-    allProducts = res.data.map((p,i)=>({
-      id: (p.productId||"").trim(),
-      name: (p.name||"Unnamed Product").trim(),
-      price: p.price?parseFloat(p.price):1,
-      oldPrice: p.oldPrice?parseFloat(p.oldPrice):0,
-      images: (p.productImageUrl||"").split(";").map(i=>i.trim()),
-      _index: i
+    allProducts = res.data.map((p,i) => ({
+      id: (p.productId || `p${i}`).trim(),
+      name: (p.name || "Unnamed Product").trim(),
+      price: p.price ? parseFloat(p.price) : 1,
+      oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
+      images: (p.productImageUrl || "").split(";").map(i => i.trim()),
+      page: 1
     }));
     renderProducts();
     initSortable();
-  }
+  },
+  error: err => console.error("CSV load failed:", err)
 });
 
+// Render products with page dividers
 function renderProducts(){
-  grid.innerHTML="";
-  allProducts.forEach((p,index)=>{
-    if(index%productsPerPage===0){
-      const divider=document.createElement("div");
-      divider.className="page-divider";
-      divider.textContent="Page "+(Math.floor(index/productsPerPage)+1);
+  grid.innerHTML = "";
+  // Sort by page first
+  const sorted = allProducts.slice().sort((a,b)=> (a.page||1)-(b.page||1));
+  let currentPage = 1;
+  let countInPage = 0;
+  sorted.forEach((p,i)=>{
+    if(countInPage === 0){
+      const divider = document.createElement("div");
+      divider.className = "page-divider";
+      divider.textContent = `Page ${currentPage}`;
       grid.appendChild(divider);
     }
-    const card=document.createElement("div");
-    card.className="product-card";
-    card.dataset.id=p.id;
-    card._index = index;
+
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.dataset.id = p.id;
     if(selectedProducts.includes(p.id)) card.classList.add("selected");
-    const imgSrc = p.images[0].includes("http")?p.images[0]:'https://static.wixstatic.com/media/'+p.images[0];
-    card.innerHTML=`
+
+    const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
+
+    card.innerHTML = `
       <div class="img-wrapper">
         <img src="${imgSrc}" alt="${p.name}">
-        <button class="select-icon" title="Organize">⚙️</button>
-        <button class="hide-icon" title="Hide">❌</button>
+        <button class="settings-btn" title="Organize">⚙️</button>
       </div>
       <div class="product-info">
         <h3>${p.name}</h3>
         <div class="price-wrapper">
-          ${p.oldPrice?`<span class="price-old">$${p.oldPrice}</span>`:""}
+          ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
           <span class="price-new">$${p.price}</span>
         </div>
       </div>
     `;
-    // Selection toggle
-    card.addEventListener("click",(e)=>{
-      if(e.target.classList.contains("select-icon")){
-        openPopup(p);
-        return;
-      }
-      if(e.target.classList.contains("hide-icon")){
-        // move to end
-        allProducts = allProducts.filter(prod=>prod.id!==p.id);
-        allProducts.push(p);
-        renderProducts();
-        return;
-      }
+
+    // Click to select
+    card.addEventListener("click", e=>{
+      if(e.target.classList.contains("settings-btn")) return; // ignore settings click
       if(selectedProducts.includes(p.id)){
         selectedProducts = selectedProducts.filter(id=>id!==p.id);
         card.classList.remove("selected");
-      } else{
+      } else {
         selectedProducts.push(p.id);
         card.classList.add("selected");
       }
     });
+
+    // Settings popup
+    card.querySelector(".settings-btn").addEventListener("click", ()=>{
+      currentProduct = p;
+      document.getElementById("popupPage").value = p.page || 1;
+      document.getElementById("popupRow").value = 1; // simplified
+      popup.style.display = "block"; overlay.style.display = "block";
+    });
+
     grid.appendChild(card);
+
+    countInPage++;
+    if(countInPage>=60){ currentPage++; countInPage=0; }
   });
 }
 
-// Drag-and-drop only for selected products
+// Popup controls
+document.getElementById("popupCloseBtn").addEventListener("click", ()=>{
+  popup.style.display = overlay.style.display = "none";
+});
+document.getElementById("popupSaveBtn").addEventListener("click", ()=>{
+  currentProduct.page = parseInt(document.getElementById("popupPage").value);
+  popup.style.display = overlay.style.display = "none";
+  renderProducts();
+});
+document.getElementById("popupHideBtn").addEventListener("click", ()=>{
+  currentProduct.page = Math.max(...allProducts.map(p=>p.page))+1; // last page
+  popup.style.display = overlay.style.display = "none";
+  renderProducts();
+});
+
+// Sortable drag & drop for selected products
 function initSortable(){
   new Sortable(grid,{
     animation:150,
     draggable:".product-card.selected",
+    handle:".product-card",
+    filter:".product-card:not(.selected)",
+    onMove:(evt)=>evt.related.classList.contains("selected"),
     onEnd:()=>{
       const newOrder=[];
       grid.querySelectorAll(".product-card.selected").forEach(card=>newOrder.push(card.dataset.id));
-      selectedProducts=newOrder;
+      selectedProducts = newOrder;
     }
   });
 }
 
 // Save selection
-document.getElementById("saveSelection").addEventListener("click",()=>{
-  localStorage.setItem("selectedProducts",JSON.stringify(selectedProducts));
+document.getElementById("saveSelection").addEventListener("click", ()=>{
+  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
   alert("✅ Selection saved!");
 });
 </script>
