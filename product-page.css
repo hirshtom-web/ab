@@ -449,9 +449,13 @@
   }
 }
 
+/* =====================
+   ARTWORK OPTION DROPDOWN
+===================== */
 .artwork-options {
   margin: 20px 0;
-  max-width: 320px;
+  max-width: 100%; /* match container width */
+  width: 100%; /* make it same width as buttons */
   font-family: 'Poppins', Arial, sans-serif;
 }
 
@@ -460,26 +464,29 @@
   margin-bottom: 6px;
   font-weight: 500;
   color: #111;
-  font-size: 14px;
+  font-size: 12px;
+  text-transform: uppercase; /* optional for styling */
 }
 
 .artwork-options select {
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 12px 16px; /* same vertical padding as buttons */
+  border-radius: 10px; /* match buttons */
   border: 1px solid #ccc;
-  font-size: 14px;
-  margin-bottom: 12px;
-  appearance: none;
+  font-size: 12px;
   cursor: pointer;
+  appearance: none; /* remove default arrow */
+  background: #fff url('data:image/svg+xml;utf8,<svg fill="%237d8796" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+  background-size: 16px 16px;
+}
+
+.artwork-options select:focus {
+  outline: none;
+  border-color: #116dff; /* optional focus effect */
 }
 
 .artwork-options #selectedPrice {
   font-weight: 600;
   margin-top: 6px;
   color: #333;
-}
-
-.hidden {
-  display: none;
 }
