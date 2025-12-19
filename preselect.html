@@ -6,148 +6,212 @@
 <title>Preselect Products</title>
 <link rel="stylesheet" href="your-existing-styles.css">
 <style>
-  /* Highlight selected products */
-  .product-card.selected { border: 2px solid #007bff; background: #e6f0ff; }
-  #saveSelection { margin: 20px auto; display: block; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+/* === General === */
+body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f9f9f9; }
+h1 { text-align: center; }
+#saveSelection { margin: 20px auto; display: block; padding: 10px 20px; font-size: 16px; cursor: pointer; }
 
-  /* ===============================
-   PRODUCTS GRID
-================================ */
+/* === Products Grid === */
 .products-grid {
   display: grid;
   gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 10px;
-  grid-template-columns: repeat(4, 1fr); /* 4 per row desktop */
+  grid-template-columns: repeat(4, 1fr);
 }
+@media (max-width:1024px){.products-grid{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:768px){.products-grid{grid-template-columns:repeat(2,1fr);}}
 
-/* Tablet: 3 per row */
-@media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
-/* Mobile: 2 per row */
-@media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-
-.product-card { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 350px; background: transparent; cursor: pointer; }
-.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; position: relative; }
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 350px;
+  background: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  padding: 5px;
+  transition: 0.2s;
+}
+.product-card.selected { border: 2px solid #007bff; background: #e6f0ff; }
+.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display: flex; justify-content: center; align-items: center; position: relative; margin-bottom:8px;}
 .img-wrapper img { width: 100%; height: auto; object-fit: cover; display: block; }
+.select-icon, .hide-icon { position: absolute; top: 6px; right: 6px; background:#fff; border-radius:50%; padding:4px 6px; cursor:pointer; font-size:14px; border:1px solid #ccc; margin-left:2px; }
+.hide-icon { right:30px; }
+.product-info { display:flex; flex-direction: column; gap:4px; }
+.product-info h3 { margin:0; font-size:14px; font-weight:500; color:#111; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.price-wrapper{display:flex; justify-content:center; align-items:baseline; gap:6px;}
+.price-old{font-size:13px;color:#999;text-decoration:line-through;}
+.price-new{font-size:14px;font-weight:600;color:#111;}
 
-/* small icon for popup */
-.select-icon { position: absolute; top: 6px; right: 6px; background: #fff; border-radius: 50%; padding: 4px 6px; cursor: pointer; font-size: 14px; border: 1px solid #ccc; }
+/* Page Divider */
+.page-divider { grid-column:1/-1; text-align:center; font-weight:600; font-size:18px; margin:20px 0 10px; padding:10px; background:#f2f2f2; border-radius:8px; color:#333; }
 
-.product-info { display: flex; flex-direction: column; gap: 4px; }
-.product-info h3 { margin: 0; font-size: 14px; font-weight: 500; color: #111; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.price-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 6px; }
-.price-old { font-size: 13px; color: #999; text-decoration: line-through; }
-.price-new { font-size: 14px; font-weight: 600; color: #111; }
-
-/* Page divider */
-.page-divider { grid-column: 1 / -1; text-align: center; font-weight: 600; font-size: 18px; margin: 20px 0 10px; padding: 10px; background: #f2f2f2; border-radius: 8px; color: #333; }
+/* Popup */
+#popupOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;}
+#popup { background:#fff; padding:20px; border-radius:12px; width:300px; text-align:center; position:relative;}
+#popup input { width:60px; margin:5px; padding:4px; text-align:center; }
+#popup button { margin-top:10px; padding:6px 12px; cursor:pointer; }
+#popup h2 { margin-top:0; font-size:18px; }
+#popupClose { position:absolute; top:6px; right:10px; cursor:pointer; font-weight:bold; font-size:18px; }
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center;">Preselect Products</h1>
+<h1>Preselect Products</h1>
 <button id="saveSelection">Save Selection</button>
 
 <div id="productGrid" class="products-grid"></div>
+
+<!-- Popup for Page/Row/Position -->
+<div id="popupOverlay">
+  <div id="popup">
+    <span id="popupClose">&times;</span>
+    <h2>Organize Product</h2>
+    <div>
+      <label>Page: <input type="number" id="popupPage" min="1"></label><br>
+      <label>Row: <input type="number" id="popupRow" min="1"></label><br>
+      <label>Position: <input type="number" id="popupPos" min="1"></label>
+    </div>
+    <button id="popupSave">Save</button>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
 const grid = document.getElementById("productGrid");
+const productsPerPage = 60;
 let allProducts = [];
 let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
-const productsPerPage = 60;
+
+// Popup
+const popupOverlay = document.getElementById("popupOverlay");
+const popupPage = document.getElementById("popupPage");
+const popupRow = document.getElementById("popupRow");
+const popupPos = document.getElementById("popupPos");
+let currentEditingId = null;
+
+function openPopup(product) {
+  currentEditingId = product.id;
+  const pageIndex = Math.floor(product._index / productsPerPage) + 1;
+  popupPage.value = pageIndex;
+  popupRow.value = Math.floor((product._index % productsPerPage) / 4) + 1;
+  popupPos.value = (product._index % 4) + 1;
+  popupOverlay.style.display = "flex";
+}
+
+document.getElementById("popupClose").addEventListener("click", ()=> popupOverlay.style.display="none");
+
+document.getElementById("popupSave").addEventListener("click", () => {
+  const product = allProducts.find(p=>p.id===currentEditingId);
+  if(!product) return;
+  const newPage = parseInt(popupPage.value) || 1;
+  const newRow = parseInt(popupRow.value) || 1;
+  const newPos = parseInt(popupPos.value) || 1;
+  // Calculate new index
+  let newIndex = (newPage-1)*productsPerPage + (newRow-1)*4 + (newPos-1);
+  if(newIndex >= allProducts.length) newIndex = allProducts.length-1;
+  // Remove and insert at new position
+  allProducts = allProducts.filter(p=>p.id!==product.id);
+  allProducts.splice(newIndex,0,product);
+  renderProducts();
+  popupOverlay.style.display="none";
+});
 
 // Load CSV
 Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
+  download:true,
+  header:true,
+  skipEmptyLines:true,
   complete: res => {
-    allProducts = res.data.map(p => ({
-      id: (p.productId || "").trim(),
-      name: (p.name || "Unnamed Product").trim(),
-      price: p.price ? parseFloat(p.price) : 1,
-      oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : 0,
-      images: (p.productImageUrl || "").split(";").map(i => i.trim())
+    allProducts = res.data.map((p,i)=>({
+      id: (p.productId||"").trim(),
+      name: (p.name||"Unnamed Product").trim(),
+      price: p.price?parseFloat(p.price):1,
+      oldPrice: p.oldPrice?parseFloat(p.oldPrice):0,
+      images: (p.productImageUrl||"").split(";").map(i=>i.trim()),
+      _index: i
     }));
     renderProducts();
     initSortable();
-  },
-  error: err => console.error("CSV load failed:", err)
+  }
 });
 
-function renderProducts() {
-  grid.innerHTML = "";
-
-  allProducts.forEach((p, index) => {
-    // Add page divider every 60 products
-    if (index % productsPerPage === 0) {
-      const divider = document.createElement("div");
-      divider.className = "page-divider";
-      const pageNum = Math.floor(index / productsPerPage) + 1;
-      divider.textContent = `Page ${pageNum}`;
+function renderProducts(){
+  grid.innerHTML="";
+  allProducts.forEach((p,index)=>{
+    if(index%productsPerPage===0){
+      const divider=document.createElement("div");
+      divider.className="page-divider";
+      divider.textContent="Page "+(Math.floor(index/productsPerPage)+1);
       grid.appendChild(divider);
     }
-
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.dataset.id = p.id;
-    if (selectedProducts.includes(p.id)) card.classList.add("selected");
-
-    const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
-
-    card.innerHTML = `
+    const card=document.createElement("div");
+    card.className="product-card";
+    card.dataset.id=p.id;
+    card._index = index;
+    if(selectedProducts.includes(p.id)) card.classList.add("selected");
+    const imgSrc = p.images[0].includes("http")?p.images[0]:'https://static.wixstatic.com/media/'+p.images[0];
+    card.innerHTML=`
       <div class="img-wrapper">
         <img src="${imgSrc}" alt="${p.name}">
         <button class="select-icon" title="Organize">⚙️</button>
+        <button class="hide-icon" title="Hide">❌</button>
       </div>
       <div class="product-info">
         <h3>${p.name}</h3>
         <div class="price-wrapper">
-          ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
+          ${p.oldPrice?`<span class="price-old">$${p.oldPrice}</span>`:""}
           <span class="price-new">$${p.price}</span>
         </div>
       </div>
     `;
-
-    // Toggle selection on click
-    card.addEventListener("click", (e) => {
-      if (e.target.classList.contains("select-icon")) {
-        alert(`Open popup to assign page/row for ${p.name}`); // placeholder
+    // Selection toggle
+    card.addEventListener("click",(e)=>{
+      if(e.target.classList.contains("select-icon")){
+        openPopup(p);
         return;
       }
-      if (selectedProducts.includes(p.id)) {
-        selectedProducts = selectedProducts.filter(id => id !== p.id);
+      if(e.target.classList.contains("hide-icon")){
+        // move to end
+        allProducts = allProducts.filter(prod=>prod.id!==p.id);
+        allProducts.push(p);
+        renderProducts();
+        return;
+      }
+      if(selectedProducts.includes(p.id)){
+        selectedProducts = selectedProducts.filter(id=>id!==p.id);
         card.classList.remove("selected");
-      } else {
+      } else{
         selectedProducts.push(p.id);
         card.classList.add("selected");
       }
     });
-
     grid.appendChild(card);
   });
 }
 
-// Init drag-and-drop for selected products only
-function initSortable() {
-  new Sortable(grid, {
-    animation: 150,
-    draggable: ".product-card.selected",
-    onEnd: () => {
-      const newOrder = [];
-      grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
-      selectedProducts = newOrder;
+// Drag-and-drop only for selected products
+function initSortable(){
+  new Sortable(grid,{
+    animation:150,
+    draggable:".product-card.selected",
+    onEnd:()=>{
+      const newOrder=[];
+      grid.querySelectorAll(".product-card.selected").forEach(card=>newOrder.push(card.dataset.id));
+      selectedProducts=newOrder;
     }
   });
 }
 
 // Save selection
-document.getElementById("saveSelection").addEventListener("click", () => {
-  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
-  alert("✅ Selection saved! You can now render this order on the public page.");
+document.getElementById("saveSelection").addEventListener("click",()=>{
+  localStorage.setItem("selectedProducts",JSON.stringify(selectedProducts));
+  alert("✅ Selection saved!");
 });
 </script>
 
