@@ -19,26 +19,19 @@ function initProductsPage() {
     { type: "color", color: "#c5f79f" }
   ];
 
-  // Load CSV
+  // Load CSV (no type filtering)
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      // Only include gallery, combination, or bundle products
-      allProducts = res.data
-        .filter(p => {
-          const type = (p.type || "").toLowerCase();
-          return type === "gallery" || type === "combination" || type === "bundle";
-        })
-        .map(p => ({
-          id: (p.productId || "").trim(),
-          name: (p.name || "Unnamed Product").trim(),
-          type: (p.type || "").trim(),
-          price: p.price ? parseFloat(p.price) : 1,
-          oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-          images: (p.productImageUrl || "").split(";").map(i => i.trim())
-        }));
+      allProducts = res.data.map(p => ({
+        id: (p.productId || "").trim(),
+        name: (p.name || "Unnamed Product").trim(),
+        price: p.price ? parseFloat(p.price) : 1,
+        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
+        images: (p.productImageUrl || "").split(";").map(i => i.trim())
+      }));
 
       renderPage(currentPage);
     },
@@ -75,9 +68,7 @@ function initProductsPage() {
             </div>
           `;
         } else {
-          card.innerHTML = `
-            <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
-          `;
+          card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
         }
 
       } else {
@@ -85,7 +76,7 @@ function initProductsPage() {
         card = document.createElement("div");
         card.className = "product-card is-product";
 
-        const imagesArray = p.images.length ? p.images : [p.image];
+        const imagesArray = p.images.length ? p.images : [""];
         card.dataset.images = JSON.stringify(imagesArray);
 
         card.innerHTML = `
