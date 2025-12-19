@@ -23,117 +23,25 @@
 }
 
 /* Tablet: 3 per row */
-@media (max-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
+@media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
 /* Mobile: 2 per row */
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+@media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ===============================
-   PRODUCT CARD
-================================ */
-.product-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-height: 350px;      /* uniform card height */
-  background: transparent;
-  cursor: pointer;
-}
+.product-card { display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 350px; background: transparent; cursor: pointer; }
+.img-wrapper { width: 100%; max-height: 250px; overflow: hidden; border-radius: 16px; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; position: relative; }
+.img-wrapper img { width: 100%; height: auto; object-fit: cover; display: block; }
 
-/* ===============================
-   IMAGE WRAPPER
-================================ */
-.img-wrapper {
-  width: 100%;
-  max-height: 250px;       /* limit height */
-  overflow: hidden;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 8px;
-}
+/* small icon for popup */
+.select-icon { position: absolute; top: 6px; right: 6px; background: #fff; border-radius: 50%; padding: 4px 6px; cursor: pointer; font-size: 14px; border: 1px solid #ccc; }
 
-.img-wrapper img {
-  width: 100%;
-  height: auto;            /* maintain aspect ratio */
-  object-fit: cover;       /* crop if necessary */
-  display: block;
-}
+.product-info { display: flex; flex-direction: column; gap: 4px; }
+.product-info h3 { margin: 0; font-size: 14px; font-weight: 500; color: #111; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.price-wrapper { display: flex; justify-content: center; align-items: baseline; gap: 6px; }
+.price-old { font-size: 13px; color: #999; text-decoration: line-through; }
+.price-new { font-size: 14px; font-weight: 600; color: #111; }
 
-/* ===============================
-   PRODUCT INFO
-================================ */
-.product-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.product-info h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: #111;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.price-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 6px;
-}
-
-.price-old {
-  font-size: 13px;
-  color: #999;
-  text-decoration: line-through;
-}
-
-.price-new {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111;
-}
-
-/* ===============================
-   BANNER / VIDEO CARDS
-================================ */
-.banner-card,
-.banner-wrapper video {
-  max-height: 250px;       /* match product images */
-  width: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  font-weight: 600;
-  font-size: 18px;
-  text-align: center;
-  color: #fff;
-}
-
-.banner-card span {
-  display: block;
-  width: 100%;
-  height: 100%;
-  line-height: 250px;
-}
-
+/* Page divider */
+.page-divider { grid-column: 1 / -1; text-align: center; font-weight: 600; font-size: 18px; margin: 20px 0 10px; padding: 10px; background: #f2f2f2; border-radius: 8px; color: #333; }
 </style>
 </head>
 <body>
@@ -149,6 +57,7 @@
 const grid = document.getElementById("productGrid");
 let allProducts = [];
 let selectedProducts = JSON.parse(localStorage.getItem("selectedProducts")) || [];
+const productsPerPage = 60;
 
 // Load CSV
 Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
@@ -171,7 +80,17 @@ Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
 
 function renderProducts() {
   grid.innerHTML = "";
-  allProducts.forEach(p => {
+
+  allProducts.forEach((p, index) => {
+    // Add page divider every 60 products
+    if (index % productsPerPage === 0) {
+      const divider = document.createElement("div");
+      divider.className = "page-divider";
+      const pageNum = Math.floor(index / productsPerPage) + 1;
+      divider.textContent = `Page ${pageNum}`;
+      grid.appendChild(divider);
+    }
+
     const card = document.createElement("div");
     card.className = "product-card";
     card.dataset.id = p.id;
@@ -180,7 +99,10 @@ function renderProducts() {
     const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
 
     card.innerHTML = `
-      <div class="img-wrapper"><img src="${imgSrc}" alt="${p.name}"></div>
+      <div class="img-wrapper">
+        <img src="${imgSrc}" alt="${p.name}">
+        <button class="select-icon" title="Organize">⚙️</button>
+      </div>
       <div class="product-info">
         <h3>${p.name}</h3>
         <div class="price-wrapper">
@@ -190,7 +112,12 @@ function renderProducts() {
       </div>
     `;
 
-    card.addEventListener("click", () => {
+    // Toggle selection on click
+    card.addEventListener("click", (e) => {
+      if (e.target.classList.contains("select-icon")) {
+        alert(`Open popup to assign page/row for ${p.name}`); // placeholder
+        return;
+      }
       if (selectedProducts.includes(p.id)) {
         selectedProducts = selectedProducts.filter(id => id !== p.id);
         card.classList.remove("selected");
@@ -204,15 +131,11 @@ function renderProducts() {
   });
 }
 
+// Init drag-and-drop for selected products only
 function initSortable() {
   new Sortable(grid, {
     animation: 150,
-    draggable: ".product-card",
-    handle: ".product-card",
-    filter: ".product-card:not(.selected)", // can't drag unselected
-    onMove: (evt) => {
-      return evt.related.classList.contains("selected"); // allow dragging only over selected
-    },
+    draggable: ".product-card.selected",
     onEnd: () => {
       const newOrder = [];
       grid.querySelectorAll(".product-card.selected").forEach(card => newOrder.push(card.dataset.id));
@@ -227,7 +150,6 @@ document.getElementById("saveSelection").addEventListener("click", () => {
   alert("✅ Selection saved! You can now render this order on the public page.");
 });
 </script>
-
 
 </body>
 </html>
