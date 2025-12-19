@@ -39,24 +39,51 @@
        <!-- RIGHT -->
 <div class="product-right">
   
-      <div class="pricing">
-        <h2>Landscape at Collioure</h2>
-        <div class="artist">By Henri Matisse</div>
-<div class="price">
-  $6.98
-  <span class="old-price">$19.99</span>
-  <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
-</div>
-
-        <div class="description">
-          This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
-        <a href="#" class="ai-color-link">
-  <span class="material-symbols-outlined">cloud_download</span>
-  Instant Delivery
-</a>
+  <div class="pricing">
+    <h2>Landscape at Collioure</h2>
+    <div class="artist">By Henri Matisse</div>
+    <div class="price">
+      $6.98
+      <span class="old-price">$19.99</span>
+      <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
     </div>
-        <div class="buttons">
-          <button class="buy">Buy Now</button>
+
+    <div class="description">
+      This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
+      <a href="#" class="ai-color-link">
+        <span class="material-symbols-outlined">cloud_download</span>
+        Instant Delivery
+      </a>
+    </div>
+
+    <!-- ✅ Insert product options here -->
+    <div class="product-options">
+      <label for="artType">Artwork Type</label>
+      <select id="artType">
+        <option value="digital">Digital Fine Art - Instant Download</option>
+        <option value="physical">Physical Artwork - Quick Delivery</option>
+      </select>
+
+      <div id="sizeContainer" class="hidden">
+        <label for="artSize">Select Size</label>
+        <select id="artSize">
+          <option value="5x8">5 x 8 in - $30</option>
+          <option value="8x11">8 x 11 in - $36</option>
+          <option value="11x15">11 x 15 in - $44</option>
+          <option value="11x16">11 x 16 in - $52</option>
+          <option value="15x19">15 x 19 in - $60</option>
+          <option value="16x23">16 x 23 in - $72</option>
+          <option value="19x27">19 x 27 in - $76</option>
+          <option value="23x33">23 x 33 in - $120</option>
+          <option value="27x39">27 x 39 in - $160</option>
+          <option value="39x55">39 x 55 in - $360</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button class="buy" id="buyNowBtn">Buy Now</button>
           <button class="cart" onclick="addToCart({
   id: 'art_102',
   title: 'Abstract Blue No.4',
