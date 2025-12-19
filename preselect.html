@@ -77,36 +77,11 @@ textarea { resize:vertical; }
   <button onclick="exportJSON()">Export JSON</button>
 </div>
 
-<table>
-<thead>
-<tr>
-  <th>Image</th>
-  <th>ID</th>
-  <th>Name</th>
-  <th>Type</th>
-  <th>Price</th>
-  <th>Category</th>
-  <th>Collection</th>
-  <th>Artist</th>
-  <th>Artist Name</th>
-  <th>Color</th>
-  <th>Color Story</th>
-  <th>Room</th>
-  <th>Emotional Energy</th>
-  <th>Scale</th>
-  <th>Quantity</th>
-  <th>Ribbon</th>
-  <th>Keywords</th>
-  <th>Bio</th>
-  <th>Meaning</th>
-  <th>Download</th>
-  <th>Visible</th>
-</tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
+/* ============================
+   CONFIG
+============================ */
 const productTypes = ["single","pair","trio","bundle"];
 const categories = ["Abstract","Architecture","Botanic","Figurative","Geometric","Line Art","Photo Art","Bauhaus"];
 const collections = ["Best Sellers","New In","Trending","Limited Edition"];
@@ -119,107 +94,157 @@ const ribbons = ["","New","Best Seller","Limited"];
 
 let products = [];
 
-document.getElementById("csvFile").addEventListener("change", e => {
-  Papa.parse(e.target.files[0], {
-    header:true,
-    skipEmptyLines:true,
-    complete: res => {
-      products = res.data.map(p => ({
-        ...p,
-        productImageUrl: split(p.productImageUrl),
-        category: split(p.category),
-        collection: split(p.collection),
-        color: split(p.color),
-        room: split(p.room),
-        emotionalEnergy: split(p.emotionalEnergy),
-        keywords: split(p.keywords),
-        visible: p.visible !== "false"
-      }));
-      render();
-    }
+/* ============================
+   LOAD CSV (UPLOAD)
+============================ */
+const fileInput = document.getElementById("csvFile");
+if (fileInput) {
+  fileInput.addEventListener("change", e => {
+    Papa.parse(e.target.files[0], {
+      header: true,
+      skipEmptyLines: true,
+      complete: res => loadProducts(res.data),
+      error: err => console.error("CSV load error", err)
+    });
   });
-});
+}
 
-function split(v){ return v ? v.split(";").map(x=>x.trim()) : []; }
+/* ============================
+   NORMALIZE CSV DATA
+============================ */
+function loadProducts(data) {
+  products = data.map(p => ({
+    productId: p.productId || "",
+    name: p.name || "",
+    price: Number(p.price) || 0,
 
-function render(){
+    // 🔧 SAFE TYPE MAPPING
+    productType: p.productType || p.type || p.kind || "single",
+
+    productImageUrl: split(p.productImageUrl),
+    category: split(p.category),
+    collection: split(p.collection),
+    color: split(p.color),
+
+    artist: p.artist || "other",
+    artistName: p.artistName || "",
+
+    room: split(p.room),
+    emotionalEnergy: split(p.emotionalEnergy),
+    scalePresence: p.scalePresence || "Medium",
+
+    colorStory: p.colorStory || "",
+    meaning: p.meaning || "",
+
+    quantity: Number(p.quantity) || 1,
+    keywords: split(p.keywords),
+
+    ribbon: p.ribbon || "",
+    bio: p.bio || "",
+    downloadLinkUrl: p.downloadLinkUrl || "",
+
+    visible: p.visible !== "false"
+  }));
+
+  render();
+}
+
+/* ============================
+   HELPERS
+============================ */
+function split(v) {
+  return v ? v.split(";").map(x => x.trim()).filter(Boolean) : [];
+}
+
+function img(arr) {
+  const v = arr && arr[0];
+  if (!v) return "";
+  return v.includes("http")
+    ? v
+    : "https://static.wixstatic.com/media/" + v;
+}
+
+function update(i, field, value) {
+  products[i][field] = value;
+}
+
+/* ============================
+   RENDER TABLE
+============================ */
+function render() {
   const tbody = document.getElementById("rows");
+  if (!tbody) return;
+
   tbody.innerHTML = "";
 
-  products.forEach((p,i)=>{
+  products.forEach((p, i) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
 <td><img src="${img(p.productImageUrl)}"></td>
-<td><input value="${p.productId||""}" onchange="u(${i},'productId',this.value)"></td>
-<td><input value="${p.name||""}" onchange="u(${i},'name',this.value)"></td>
+<td><input value="${p.productId}" onchange="update(${i},'productId',this.value)"></td>
+<td><input value="${p.name}" onchange="update(${i},'name',this.value)"></td>
 
-<td>${select(productTypes,p.productType,i,"productType")}</td>
-<td><input type="number" value="${p.price||0}" onchange="u(${i},'price',+this.value)"></td>
+<td>${select(productTypes, p.productType, i, "productType")}</td>
+<td><input type="number" value="${p.price}" onchange="update(${i},'price',+this.value)"></td>
 
-<td>${multi(categories,p.category,i,"category")}</td>
-<td>${multi(collections,p.collection,i,"collection")}</td>
+<td>${multi(categories, p.category, i, "category")}</td>
+<td>${multi(collections, p.collection, i, "collection")}</td>
 
-<td>${select(artistTypes,p.artist,i,"artist")}</td>
-<td><input value="${p.artistName||""}" onchange="u(${i},'artistName',this.value)"></td>
+<td>${select(artistTypes, p.artist, i, "artist")}</td>
+<td><input value="${p.artistName}" onchange="update(${i},'artistName',this.value)"></td>
 
-<td>${multi(colors,p.color,i,"color")}</td>
-<td><input value="${p.colorStory||""}" onchange="u(${i},'colorStory',this.value)"></td>
+<td>${multi(colors, p.color, i, "color")}</td>
+<td><input value="${p.colorStory}" onchange="update(${i},'colorStory',this.value)"></td>
 
-<td>${multi(rooms,p.room,i,"room")}</td>
-<td>${multi(energies,p.emotionalEnergy,i,"emotionalEnergy")}</td>
-<td>${select(scales,p.scalePresence,i,"scalePresence")}</td>
+<td>${multi(rooms, p.room, i, "room")}</td>
+<td>${multi(energies, p.emotionalEnergy, i, "emotionalEnergy")}</td>
+<td>${select(scales, p.scalePresence, i, "scalePresence")}</td>
 
-<td><input type="number" value="${p.quantity||1}" onchange="u(${i},'quantity',+this.value)"></td>
-<td>${select(ribbons,p.ribbon,i,"ribbon")}</td>
+<td><input type="number" value="${p.quantity}" onchange="update(${i},'quantity',+this.value)"></td>
+<td>${select(ribbons, p.ribbon, i, "ribbon")}</td>
 
-<td><input value="${(p.keywords||[]).join('; ')}" onchange="u(${i},'keywords',split(this.value))"></td>
+<td><input value="${p.keywords.join('; ')}" onchange="update(${i},'keywords',split(this.value))"></td>
 
-<td><textarea onchange="u(${i},'bio',this.value)">${p.bio||""}</textarea></td>
-<td><textarea onchange="u(${i},'meaning',this.value)">${p.meaning||""}</textarea></td>
+<td><textarea onchange="update(${i},'bio',this.value)">${p.bio}</textarea></td>
+<td><textarea onchange="update(${i},'meaning',this.value)">${p.meaning}</textarea></td>
 
-<td><input value="${p.downloadLinkUrl||""}" onchange="u(${i},'downloadLinkUrl',this.value)"></td>
-<td><input type="checkbox" class="toggle" ${p.visible?"checked":""} onchange="u(${i},'visible',this.checked)"></td>
+<td><input value="${p.downloadLinkUrl}" onchange="update(${i},'downloadLinkUrl',this.value)"></td>
+<td><input type="checkbox" ${p.visible ? "checked" : ""} onchange="update(${i},'visible',this.checked)"></td>
 `;
     tbody.appendChild(tr);
   });
 }
 
-function img(arr){
-  const v = arr && arr[0];
-  if(!v) return "";
-  return v.includes("http") ? v : "https://static.wixstatic.com/media/" + v;
+/* ============================
+   SELECT HELPERS
+============================ */
+function select(opts, val, i, field) {
+  const safe = opts.includes(val) ? val : opts[0];
+  return `
+<select onchange="update(${i},'${field}',this.value)">
+  ${opts.map(o => `<option ${o === safe ? "selected" : ""}>${o}</option>`).join("")}
+</select>`;
 }
 
-function select(opts,val,i,f){
-  return `<select onchange="u(${i},'${f}',this.value)">
-    ${opts.map(o=>`<option ${o===val?"selected":""}>${o}</option>`).join("")}
-  </select>`;
+function multi(opts, vals, i, field) {
+  vals = Array.isArray(vals) ? vals : [];
+  return `
+<select multiple class="multi" onchange="update(${i},'${field}',[...this.selectedOptions].map(o=>o.value))">
+  ${opts.map(o => `<option ${vals.includes(o) ? "selected" : ""}>${o}</option>`).join("")}
+</select>`;
 }
 
-function multi(opts,vals,i,f){
-  return `<select multiple class="multi" onchange="u(${i},'${f}',[...this.selectedOptions].map(o=>o.value))">
-    ${opts.map(o=>`<option ${vals?.includes(o)?"selected":""}>${o}</option>`).join("")}
-  </select>`;
-}
-
-function u(i,f,v){ products[i][f]=v; }
-
-function exportJSON(){
-  const clean = products.map(p=>({
-    ...p,
-    productImageUrl: p.productImageUrl,
-    category:p.category,
-    collection:p.collection,
-    color:p.color,
-    room:p.room,
-    emotionalEnergy:p.emotionalEnergy,
-    keywords:p.keywords
-  }));
-  const a=document.createElement("a");
-  a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(clean,null,2));
-  a.download="products.json";
+/* ============================
+   EXPORT JSON
+============================ */
+function exportJSON() {
+  const data = JSON.stringify(products, null, 2);
+  const a = document.createElement("a");
+  a.href = "data:text/json;charset=utf-8," + encodeURIComponent(data);
+  a.download = "products.json";
   a.click();
 }
 </script>
+
 </body>
 </html>
