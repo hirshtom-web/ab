@@ -1,86 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Product Admin Editor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-<style>
-body {
-  font-family: Inter, Arial, sans-serif;
-  background:#f6f6f6;
-  padding:20px;
-}
-h1 { margin-bottom:10px; }
-
-.controls {
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-button {
-  padding:8px 14px;
-  cursor:pointer;
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-}
-
-th, td {
-  border:1px solid #ddd;
-  padding:6px;
-  vertical-align:top;
-  font-size:12px;
-}
-
-th {
-  background:#eee;
-  position:sticky;
-  top:0;
-  z-index:2;
-}
-
-img {
-  width:80px;
-  height:80px;
-  object-fit:cover;
-}
-
-input, textarea, select {
-  width:100%;
-  font-size:12px;
-}
-
-textarea { resize:vertical; }
-
-.multi {
-  height:60px;
-}
-
-.toggle {
-  transform:scale(1.2);
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Product Admin Editor</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 4px; text-align: left; }
+    img { max-width: 50px; }
+    select, input, textarea { width: 100%; box-sizing: border-box; }
+    textarea { resize: vertical; }
+  </style>
 </head>
 <body>
 
-<h1>Product Admin Editor</h1>
-
-<div class="controls">
-  <input type="file" id="csvFile" accept=".csv" />
-  <button onclick="exportJSON()">Export JSON</button>
-</div>
-
+<h2>Upload CSV</h2>
 <input type="file" id="csvFile" accept=".csv">
 <button onclick="exportJSON()">Export JSON</button>
 <button onclick="exportCSV()">Export CSV</button>
 
+<h2>Products Table</h2>
 <table>
   <thead>
     <tr>
@@ -110,8 +49,8 @@ textarea { resize:vertical; }
   <tbody id="rows"></tbody>
 </table>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
+// ------------------ YOUR FULL JS HERE ------------------
 const productTypes = ["single","pair","trio","bundle"];
 const categories = ["Abstract","Architecture","Botanic","Figurative","Geometric","Line Art","Photo Art","Bauhaus"];
 const collections = ["Best Sellers","New In","Trending","Limited Edition"];
@@ -266,7 +205,6 @@ function exportCSV(){
   a.click();
 }
 </script>
-
 
 </body>
 </html>
