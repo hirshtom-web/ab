@@ -54,22 +54,27 @@ slice.forEach((p, index) => {
 // Every 7th card is a banner
 if ((index + 1) % 7 === 0) {
   card = document.createElement("div");
-  card.className = "banner-card";
+  card.className = "product-card banner-only";
 
   const bannerIndex = Math.floor(index / 7) % banners.length;
   const banner = banners[bannerIndex];
 
   if (banner.type === "video") {
     card.innerHTML = `
-      <video autoplay muted loop playsinline>
-        <source src="${banner.src}" type="video/mp4">
-      </video>
+      <div class="img-wrapper banner-wrapper">
+        <video autoplay muted loop playsinline>
+          <source src="${banner.src}" type="video/mp4">
+        </video>
+      </div>
     `;
   } else {
-    card.style.background = banner.color;
+    card.innerHTML = `
+      <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
+    `;
   }
 
 } else {
+
 
     // Regular product card
     card = document.createElement("div");
