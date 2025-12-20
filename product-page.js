@@ -166,7 +166,7 @@ if(saleEl){
   updateTimer();
 }
 
-<script>
+
   document.addEventListener("DOMContentLoaded", () => {
     const tabs = document.querySelectorAll(".artwork-tabs .tab");
     const panels = document.querySelectorAll(".tab-panel");
@@ -181,4 +181,3 @@ if(saleEl){
       });
     });
   });
-</script>
