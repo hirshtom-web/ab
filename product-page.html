@@ -57,14 +57,17 @@
     </div>
 
     <!-- ✅ Insert product options here -->
- <div class="product-options">
+<div class="product-options">
+
   <div class="option-button artwork-type">
     <label for="artworkType">Artwork Type</label>
-    <select id="artworkType">        <option value="digital">Digital Fine Art - Instant Download</option>
-        <option value="physical">Physical Artwork - Quick Delivery</option>
-      </select>
+    <select id="artworkType">
+      <option value="digital">Digital</option>
+      <option value="physical">Physical</option>
+    </select>
+  </div>
 
-<div class="option-button select-size">
+  <div class="option-button select-size hidden" id="sizeWrapper">
     <label for="size">Select Size</label>
     <select id="size">          <option value="5x8">5 x 8 in - $30</option>
           <option value="8x11">8 x 11 in - $36</option>
