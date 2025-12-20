@@ -106,8 +106,8 @@
 }
 
 .pricing h2 {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 25px;
+  font-weight: 600;
   margin-bottom: 5px;
 }
 
@@ -119,8 +119,8 @@
 }
 
 .price {
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: #116dff;
   display: flex;
   align-items: baseline;
