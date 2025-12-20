@@ -475,7 +475,7 @@
   font-weight: 600;
   border: none;                 /* match Buy Now/Add to Cart */
   cursor: pointer;
-  background: #daf2e8;          /* default color like Buy Now */
+  background: #f5fffa;          /* default color like Buy Now */
   color: #22afa1;
   appearance: none;             /* remove default arrow */
   position: relative;
