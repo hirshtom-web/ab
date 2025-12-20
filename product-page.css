@@ -497,3 +497,10 @@
 .option-button.select-size select:focus {
   background: #1b8d88;
 }
+
+/* =====================
+   UTILITIES
+===================== */
+.hidden {
+  display: none !important;
+}
