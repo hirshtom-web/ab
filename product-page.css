@@ -504,3 +504,59 @@
 .hidden {
   display: none !important;
 }
+
+/* =====================
+   RADIO CARDS
+===================== */
+
+.option-group {
+  margin: 20px 0;
+}
+
+.group-label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.radio-cards {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-card {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #d6e4ff;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: all 0.25s ease;
+}
+
+.radio-card input {
+  display: none;
+}
+
+.radio-card strong {
+  color: #000;
+}
+
+.radio-card:has(input:checked) {
+  background: #eef4ff;
+  border-color: #116dff;
+}
+
+.radio-card:hover {
+  border-color: #116dff;
+}
+
+/* =====================
+   HIDDEN
+===================== */
+.hidden {
+  display: none;
+}
