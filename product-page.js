@@ -166,3 +166,17 @@ if(saleEl){
   updateTimer();
 }
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const radios = document.querySelectorAll('input[name="artType"]');
+    const physicalOptions = document.getElementById("physicalOptions");
+
+    function toggleOptions() {
+      const selected = document.querySelector('input[name="artType"]:checked').value;
+      physicalOptions.classList.toggle("hidden", selected !== "physical");
+    }
+
+    radios.forEach(r => r.addEventListener("change", toggleOptions));
+    toggleOptions(); // run once on load
+  });
+</script>
