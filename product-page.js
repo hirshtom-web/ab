@@ -168,15 +168,17 @@ if(saleEl){
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const radios = document.querySelectorAll('input[name="artType"]');
-    const physicalOptions = document.getElementById("physicalOptions");
+    const tabs = document.querySelectorAll(".artwork-tabs .tab");
+    const panels = document.querySelectorAll(".tab-panel");
 
-    function toggleOptions() {
-      const selected = document.querySelector('input[name="artType"]:checked').value;
-      physicalOptions.classList.toggle("hidden", selected !== "physical");
-    }
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        panels.forEach(p => p.classList.remove("active"));
 
-    radios.forEach(r => r.addEventListener("change", toggleOptions));
-    toggleOptions(); // run once on load
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
+      });
+    });
   });
 </script>
