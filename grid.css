@@ -18,16 +18,15 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 250px;
+  min-width: 250px; /* prevents shrinking too much */
 }
 
 /* ===========================
-   MEDIA CONTAINER
+   MEDIA CONTAINER & IMAGE RATIO FIX
 =========================== */
-/* Fix the top-level wrapper for ratio */
 .product-card .mockup-stage {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* ratio applied here */
+  aspect-ratio: 1 / 1.25; /* fixed ratio */
   overflow: hidden;
   display: block;
   position: relative;
@@ -36,7 +35,7 @@
 .product-card .poster-frame,
 .product-card .mat {
   width: 100%;
-  height: 100%; /* match parent height */
+  height: 100%; /* fill parent */
   padding: 0;
   display: block;
 }
@@ -51,8 +50,21 @@
 .product-card .media-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* cover container exactly */
   display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover effect for second image if available */
+.product-card .media-container img.second-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.product-card .media-container:hover img.second-image {
+  opacity: 1;
 }
 
 /* ===========================
