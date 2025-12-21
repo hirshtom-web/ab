@@ -38,3 +38,23 @@
   font-size:14px;
   text-align:center;
 }
+/* Ensure grid mockups align nicely */
+.product-card.is-product {
+  align-items:center;
+}
+
+/* Reuse your mockup look */
+.poster-frame.grid {
+  width:220px;
+}
+
+/* Frame overlay visible in grid */
+.product-card .frame-overlay {
+  display:block;
+  pointer-events:none;
+}
+
+/* Optional: visual hierarchy */
+.variant-frame-mat .poster-frame {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
