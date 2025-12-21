@@ -73,9 +73,10 @@ slice.forEach((p, index) => {
     <div class="mockup-stage">
       <div class="poster-frame grid">
         <div class="mat with-padding with-color" style="--mat-color:#ffffff">
-          <div class="artwork">
-            <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
-          </div>
+        <div class="media-container">
+  <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
+</div>
+
         </div>
         <img src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png" class="frame-overlay">
       </div>
