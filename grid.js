@@ -62,19 +62,20 @@ slice.forEach((p, index) => {
   // Extra images (full-width)
   const extraImages = imagesArray.slice(1);
 
-  let extraImagesHTML = "";
-  if (extraImages.length) {
-    extraImagesHTML = `<div class="extra-images">
-      ${extraImages.map(img => `<img src="${img.includes("http") ? img : 'https://static.wixstatic.com/media/' + img}" alt="${p.name}">`).join("")}
-    </div>`;
-  }
+ let extraImagesHTML = "";
+if (extraImages.length) {
+  extraImagesHTML = extraImages.map(img => `
+    <img class="extra-image" 
+         src="${img.includes("http") ? img : 'https://static.wixstatic.com/media/' + img}" 
+         alt="${p.name}">
+  `).join("");
+}
 
 card.innerHTML = `
   <div class="media-container">
     <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
+    ${extraImagesHTML}
   </div>
-
-  ${extraImagesHTML}
 
   <div class="product-info">
     <h3>${p.name}</h3>
@@ -84,7 +85,6 @@ card.innerHTML = `
     </div>
   </div>
 `;
-
 
   card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
 
