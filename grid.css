@@ -18,13 +18,14 @@
   min-width: 250px; /* don't shrink too much */
 }
 
-/* MEDIA CONTAINER (1:1 ratio) */
+/* MEDIA CONTAINER (slightly taller ratio) */
 .product-card .media-container {
   width: 100%;
-  aspect-ratio: 1 / 1; /* square for image */
+  aspect-ratio: 1 / 1.25; /* updated from 1 / 1 */
   overflow: hidden;
   position: relative;
 }
+
 
 /* MEDIA IMAGE */
 .product-card .media-container img {
