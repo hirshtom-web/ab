@@ -48,15 +48,7 @@
   height: 100%;
   max-width: 100%;
   max-height: 100%;
-
   object-fit: contain;          /* IMPORTANT: no crop */
-  background: #fff;             /* paper color */
-  border-radius: 6px;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.08),
-    inset 0 0 0 1px rgba(0,0,0,0.04);
-
   transition: opacity 0.4s ease;
 }
 
