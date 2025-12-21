@@ -1,100 +1,86 @@
-/* Product card container */
-.product-card.is-product {
+/* Products grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 0 40px;
+  width: calc(100% - 80px);
+  box-sizing: border-box;
+}
+
+/* Product card wrapper: no background, no shadow */
+.product-card {
   display: flex;
   flex-direction: column;
-  width: 300px; /* adjust as needed */
-  aspect-ratio: 1 / 1.25; /* card ratio */
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent; /* card itself has no background */
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  align-items: stretch;
+  gap: 0;           /* spacing handled inside */
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
 }
 
-/* Media container (1:1 square) */
-.product-card.is-product .mockup-stage {
+/* Card media container: 1:1 ratio */
+.product-media {
   width: 100%;
-  aspect-ratio: 1 / 1; /* square */
-  background: #f9f5f2;  /* only behind media */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-/* Poster frame inside media */
-.product-card.is-product .poster-frame {
+  aspect-ratio: 1 / 1;   /* square container for media */
+  overflow: hidden;
   position: relative;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  border-radius: 3px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08),
-              inset 0 0 0 1px rgba(0,0,0,0.03);
-  overflow: hidden;
 }
 
-/* Passepartout inside poster frame */
-.product-card.is-product .mat.with-padding {
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--mat-color, #ffffff);
-}
-
-/* Artwork image */
-.product-card.is-product .artwork img {
+/* Images inside media */
+.product-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 2px;
-}
-
-/* Optional frame overlay */
-.product-card.is-product .frame-overlay {
+  transition: opacity 0.25s ease;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 
-/* Info container at bottom (0.25 of card) */
-.product-card.is-product .product-info {
-  flex: 1; /* takes remaining 0.25 */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
+/* Hide second image by default */
+.product-media img.second-image {
+  opacity: 0;
+}
+
+/* Hover effect: show second image */
+.product-card:hover .product-media img.first-image {
+  opacity: 0;
+}
+.product-card:hover .product-media img.second-image {
+  opacity: 1;
+}
+
+/* Info section: 1:4 of card height (adjust as needed) */
+.product-info {
+  padding: 10px 0;
   text-align: center;
-  background: transparent; /* no background */
 }
-
-.product-card.is-product .product-info h3 {
+.product-info h3 {
   font-size: 14px;
-  margin: 2px 0;
+  margin: 4px 0;
 }
-
-.product-card.is-product .price-wrapper {
+.product-info .price-wrapper {
+  font-size: 14px;
   display: flex;
   justify-content: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
 }
-
-.product-card.is-product .price-old {
+.price-old {
   text-decoration: line-through;
   color: #888;
 }
+.price-new {
+  color: #000;
+  font-weight: 600;
+}
 
-.product-card.is-product .price-new {
-  font-weight: bold;
-  color: #222;
+/* Responsive tweak */
+@media (max-width: 800px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    margin: 0 20px;
+    gap: 15px;
+  }
 }
