@@ -68,3 +68,58 @@
     width:180px;
   }
 }
+/* Ensure product card acts as the shell */
+.product-card.is-product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Mockup background and padding */
+.product-card.is-product .mockup-stage {
+  background: #f9f5f2;   /* this is your grey-beige mockup bg */
+  padding: 60px;          /* space around poster */
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Poster frame in the grid */
+.product-card.is-product .poster-frame.grid {
+  width: 220px;           /* grid size */
+  aspect-ratio: 210/297;  /* A4 */
+  background: #fff;
+  border-radius: 3px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    inset 0 0 0 1px rgba(0,0,0,0.03);
+  overflow: hidden;
+}
+
+/* Passepartout inside frame */
+.product-card.is-product .mat.with-padding {
+  padding: 22px 12px;
+  background-color: var(--mat-color, #fff);
+}
+
+/* Image fills passepartout */
+.product-card.is-product .artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+}
+
+/* Frame overlay */
+.product-card.is-product .frame-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: block;
+}
