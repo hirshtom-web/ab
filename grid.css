@@ -24,40 +24,35 @@
 /* ===========================
    MEDIA CONTAINER
 =========================== */
-.product-card .mockup-stage,
+/* Fix the top-level wrapper for ratio */
+.product-card .mockup-stage {
+  width: 100%;
+  aspect-ratio: 1 / 1.25; /* ratio applied here */
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
+
 .product-card .poster-frame,
 .product-card .mat {
-  display: block;   /* prevent flex/grid stretching */
   width: 100%;
+  height: 100%; /* match parent height */
   padding: 0;
+  display: block;
 }
 
 .product-card .media-container {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* fixed ratio */
-  overflow: hidden;
+  height: 100%; /* fill parent */
   position: relative;
-  flex-shrink: 0;  /* prevent shrinking in flex layouts */
+  overflow: hidden;
 }
 
 .product-card .media-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* fills container exactly */
+  object-fit: cover;
   display: block;
-  transition: opacity 0.3s ease;
-}
-
-/* Hover effect: show second image if available */
-.product-card .media-container img.second-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-}
-
-.product-card .media-container:hover img.second-image {
-  opacity: 1;
 }
 
 /* ===========================
