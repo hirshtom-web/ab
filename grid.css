@@ -1,13 +1,12 @@
 /* ------------------ GRID ------------------ */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   margin: 0 40px;
-  width: calc(100% - 80px);
+  width: calc(100% - 80px); /* 40px margins each side */
   box-sizing: border-box;
 }
-
 
 /* ------------------ CARD ------------------ */
 .product-card {
