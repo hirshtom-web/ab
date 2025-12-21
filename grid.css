@@ -18,9 +18,7 @@
   align-items: stretch;
   gap: 0;
   min-width: 250px; /* prevents shrinking too much */
-  background: #fff;    /* optional: ensures card background */
-  overflow: hidden;    /* prevents overflow from images */
-  border-radius: 4px;  /* optional rounded corners */
+  /* no background here */
 }
 
 /* ===========================
@@ -31,7 +29,8 @@
   aspect-ratio: 1 / 1.25; /* taller image ratio */
   overflow: hidden;
   position: relative;
-  flex-shrink: 0;       /* ensures container doesn't shrink in flex layout */
+  flex-shrink: 0;       /* prevents shrinking */
+  background: #fff;      /* only the image area has white background */
 }
 
 /* ===========================
@@ -43,7 +42,7 @@
   object-fit: cover;     /* keeps image scaled & cropped nicely */
   display: block;
   transition: opacity 0.3s ease; /* for hover fade effect */
-  backface-visibility: hidden;   /* smooths hover transitions */
+  backface-visibility: hidden;   /* smooth hover transitions */
 }
 
 
