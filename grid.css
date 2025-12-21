@@ -1,12 +1,14 @@
-/* GRID CONTAINER */
+/* ===========================
+   GRID CONTAINER
+=========================== */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
   gap: 20px;
-  padding: 0 40px; /* side margins */
+  padding: 0 40px;
   box-sizing: border-box;
-  max-width: calc(4 * 320px + 3 * 20px + 80px); /* optional max width for very wide screens */
-  margin: 0 auto; /* center the grid */
+  max-width: calc(4 * 320px + 3 * 20px + 80px);
+  margin: 0 auto;
 }
 
 /* ===========================
@@ -18,30 +20,36 @@
   align-items: stretch;
   gap: 0;
   min-width: 250px; /* prevents shrinking too much */
-  /* no background here */
+}
+
+/* ===========================
+   MEDIA CONTAINER
+=========================== */
+.product-card .mockup-stage,
+.product-card .poster-frame,
+.product-card .mat {
+  display: block; /* prevents parent flex/grid from stretching */
+  padding: 0;
 }
 
 .product-card .media-container {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* taller image */
+  aspect-ratio: 1 / 1.25; /* fixed ratio */
   overflow: hidden;
   position: relative;
-  flex-shrink: 0;
+  flex-shrink: 0; /* prevent shrinking */
+  background: #f9f5f2; /* placeholder */
 }
 
 .product-card .media-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* fill ratio without stretching */
   display: block;
   transition: opacity 0.3s ease;
 }
 
-.media-container {
-  background: #f9f5f2; /* placeholder background */
-}
-
-/* HOVER EFFECT: show second image */
+/* Hover effect: show second image if available */
 .product-card .media-container img.second-image {
   position: absolute;
   top: 0;
@@ -53,11 +61,13 @@
   opacity: 1;
 }
 
-/* INFO AREA (bottom 0.25 height) */
+/* ===========================
+   PRODUCT INFO
+=========================== */
 .product-card .product-info {
   padding: 10px 0;
   text-align: center;
-  flex-shrink: 0;
+  flex-shrink: 0; /* prevent from stretching image */
 }
 
 .product-card .product-info h3 {
@@ -80,7 +90,9 @@
   color: #000;
 }
 
-/* RESPONSIVE: reduce columns on smaller screens */
+/* ===========================
+   RESPONSIVE
+=========================== */
 @media (max-width: 1200px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -98,25 +110,4 @@
     grid-template-columns: 1fr;
     padding: 0 20px;
   }
-}
-.product-card .mockup-stage,
-.product-card .poster-frame,
-.product-card .mat {
-  display: block;      /* avoid flex/grid stretch */
-  padding: 0;          /* remove any parent padding affecting height */
-}
-
-.product-card .media-container {
-  width: 100%;
-  aspect-ratio: 1 / 1.25; 
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;       /* prevent shrinking in flex containers */
-}
-
-.product-card .media-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* cover entire 1:1.25 box */
-  display: block;
 }
