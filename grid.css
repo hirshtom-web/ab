@@ -1,95 +1,53 @@
-/* GRID LAYOUT */
-.products-grid {
-  display:grid;
+/* =========================
+   PRODUCT GRID
+========================= */
+#productGrid {
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap:60px;
+  gap: 60px;
 }
 
-/* PRODUCT CARD */
-.product-card.is-product {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:16px;
-}
-
-/* MOCKUP BACKGROUND */
-.product-card.is-product .mockup-stage {
-  background:#f9f5f2;
-  padding:60px;
-  border-radius:20px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* POSTER FRAME */
-.product-card.is-product .poster-frame {
-  position:relative;
-  width:220px;
-  aspect-ratio:210 / 297;
-  background:#fff;
-  border-radius:3px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.08),
-    inset 0 0 0 1px rgba(0,0,0,0.03);
-  overflow:hidden;
-}
-
-/* PASSEPARTOUT */
-.product-card.is-product .mat.with-padding {
-  padding:22px 12px;
-}
-
-/* FRAME OVERLAY */
-.product-card.is-product .frame-overlay {
-  display:block;
-  pointer-events:none;
-}
-
-/* OPTIONAL DEPTH VARIANT */
-.variant-frame-mat .poster-frame {
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-}
-
-/* PRODUCT TITLE */
-.product-title {
-  font-size:14px;
-  text-align:center;
-}
-
-/* RESPONSIVE */
-@media (max-width:800px) {
-  .product-card.is-product .mockup-stage {
-    padding:40px;
-  }
-
-  .product-card.is-product .poster-frame {
-    width:180px;
-  }
-}
-/* Ensure product card acts as the shell */
-.product-card.is-product {
+/* =========================
+   PRODUCT CARD
+========================= */
+.product-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  min-width: 220px;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
-/* Mockup background and padding */
+/* Regular product card */
+.product-card.is-product {
+  background: #f9f5f2;        /* card background color */
+  padding: 20px;               /* spacing around inner mockup */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card.is-product:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+}
+
+/* Inner mockup stage */
 .product-card.is-product .mockup-stage {
-  background: #f9f5f2;   /* this is your grey-beige mockup bg */
-  padding: 60px;          /* space around poster */
+  background: transparent;     /* let card bg show */
+  padding: 60px;               /* inside spacing */
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Poster frame in the grid */
-.product-card.is-product .poster-frame.grid {
-  width: 220px;           /* grid size */
-  aspect-ratio: 210/297;  /* A4 */
+/* Poster frame */
+.poster-frame.grid {
+  position: relative;
+  width: 220px;
+  aspect-ratio: 210 / 297;   /* A4 ratio */
   background: #fff;
   border-radius: 3px;
   box-shadow:
@@ -98,14 +56,23 @@
   overflow: hidden;
 }
 
-/* Passepartout inside frame */
-.product-card.is-product .mat.with-padding {
+/* Passepartout / Mat */
+.poster-frame.grid .mat.with-padding {
   padding: 22px 12px;
   background-color: var(--mat-color, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Image fills passepartout */
-.product-card.is-product .artwork img {
+/* Artwork inside mat */
+.artwork {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.artwork img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -113,8 +80,8 @@
   border-radius: 2px;
 }
 
-/* Frame overlay */
-.product-card.is-product .frame-overlay {
+/* Optional static frame overlay */
+.frame-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -123,11 +90,71 @@
   pointer-events: none;
   display: block;
 }
-.product-card.is-product .mockup-stage {
-  background:#f9f5f2;
-  padding:60px;
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+
+/* Product info (name + price) */
+.product-info {
+  text-align: center;
+}
+
+.product-info h3 {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.price-wrapper {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 12px;
+}
+
+.price-new {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+/* =========================
+   BANNER CARDS
+========================= */
+.product-card.banner-only .banner-wrapper {
+  width: 100%;
+  aspect-ratio: 210 / 297;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.product-card.banner-only video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 800px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 40px;
+  }
+
+  .product-card.is-product {
+    padding: 15px;
+  }
+
+  .poster-frame.grid {
+    width: 180px;
+  }
+
+  .poster-frame.grid .mat.with-padding {
+    padding: 18px 10px;
+  }
 }
