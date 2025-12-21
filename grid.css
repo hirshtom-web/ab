@@ -123,3 +123,11 @@
   pointer-events: none;
   display: block;
 }
+.product-card.is-product .mockup-stage {
+  background:#f9f5f2;
+  padding:60px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
