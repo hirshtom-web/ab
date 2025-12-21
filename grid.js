@@ -144,9 +144,11 @@ const productCards = document.querySelectorAll(
     productCards.forEach(card => {
       const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
       const newImg = imgList[currentImageIndex] || imgList[0];
-      card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-    });
-  }
+const imgEl = card.querySelector(".media-container img");
+if (imgEl) {
+  imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+}
+
 
   // Initial update on page load
   updateGridImages();
