@@ -2,29 +2,34 @@
 .product-card.is-product {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
   width: 300px; /* adjust as needed */
+  aspect-ratio: 1 / 1.25; /* card ratio */
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent; /* card itself has no background */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
-/* Mockup / media area */
+/* Media container (1:1 square) */
 .product-card.is-product .mockup-stage {
-  background: #f9f5f2; /* only behind media */
-  padding: 30px;        /* adjust for spacing inside the frame */
-  border-radius: 20px;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* square */
+  background: #f9f5f2;  /* only behind media */
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  padding: 20px;
   box-sizing: border-box;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 /* Poster frame inside media */
 .product-card.is-product .poster-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; /* square by default, adjust if needed */
-  background: #fff;    /* actual “paper” color */
+  height: 100%;
+  background: #fff;
   border-radius: 3px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08),
               inset 0 0 0 1px rgba(0,0,0,0.03);
@@ -33,6 +38,8 @@
 
 /* Passepartout inside poster frame */
 .product-card.is-product .mat.with-padding {
+  width: 100%;
+  height: 100%;
   padding: 20px;
   display: flex;
   align-items: center;
@@ -40,7 +47,7 @@
   background-color: var(--mat-color, #ffffff);
 }
 
-/* Artwork inside mat */
+/* Artwork image */
 .product-card.is-product .artwork img {
   width: 100%;
   height: 100%;
@@ -58,31 +65,21 @@
   pointer-events: none;
 }
 
-/* Extra images below media */
-.product-card.is-product .extra-images {
+/* Info container at bottom (0.25 of card) */
+.product-card.is-product .product-info {
+  flex: 1; /* takes remaining 0.25 */
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
-.product-card.is-product .extra-images img {
-  width: 100%;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-/* Product info below media */
-.product-card.is-product .product-info {
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
   text-align: center;
-  padding: 0;
-  margin: 0;
+  background: transparent; /* no background */
 }
 
 .product-card.is-product .product-info h3 {
   font-size: 14px;
-  margin: 4px 0 2px;
+  margin: 2px 0;
 }
 
 .product-card.is-product .price-wrapper {
