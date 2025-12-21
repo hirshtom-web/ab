@@ -99,3 +99,24 @@
     padding: 0 20px;
   }
 }
+.product-card .mockup-stage,
+.product-card .poster-frame,
+.product-card .mat {
+  display: block;      /* avoid flex/grid stretch */
+  padding: 0;          /* remove any parent padding affecting height */
+}
+
+.product-card .media-container {
+  width: 100%;
+  aspect-ratio: 1 / 1.25; 
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;       /* prevent shrinking in flex containers */
+}
+
+.product-card .media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* cover entire 1:1.25 box */
+  display: block;
+}
