@@ -50,69 +50,49 @@ function initProductsPage() {
     }
 
 slice.forEach((p, index) => {
-  let card;
+  let card = document.createElement("div");
+  card.className = "product-card is-product variant-frame-mat";
 
-  // Every 7th card is a banner
-  if ((index + 1) % 7 === 0) {
-    card = document.createElement("div");
-    card.className = "product-card banner-only";
+  const imagesArray = p.images.length ? p.images : [p.image];
+  card.dataset.images = JSON.stringify(imagesArray);
 
-    const bannerIndex = Math.floor(index / 7) % banners.length;
-    const banner = banners[bannerIndex];
+  // First image for mockup
+  const firstImage = imagesArray[0] || "";
 
-    if (banner.type === "video") {
-      card.innerHTML = `
-        <div class="img-wrapper banner-wrapper">
-          <video autoplay muted loop playsinline>
-            <source src="${banner.src}" type="video/mp4">
-          </video>
-        </div>
-      `;
-    } else {
-      card.innerHTML = `
-        <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
-      `;
-    }
+  // Extra images (full-width)
+  const extraImages = imagesArray.slice(1);
 
-  } else {
-    // Regular product card
-    card = document.createElement("div");
-    card.className = "product-card is-product variant-frame-mat";
-
-    const imagesArray = p.images.length ? p.images : [p.image];
-    card.dataset.images = JSON.stringify(imagesArray);
-
-    // Build the full mockup HTML
-    card.innerHTML = `
-      <div class="mockup-stage">
-        <div class="poster-frame grid">
-          <div class="mat with-padding with-color" style="--mat-color:#ffffff">
-            <div class="artwork">
-              <img
-                src="${imagesArray[0].includes('http') ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}"
-                alt="${p.name}"
-              >
-            </div>
-          </div>
-          <img
-            src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png"
-            class="frame-overlay"
-          >
-        </div>
-      </div>
-
-      <div class="product-info">
-        <h3>${p.name}</h3>
-        <div class="price-wrapper">
-          <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-          <span class="price-new">$${p.price}</span>
-        </div>
-      </div>
-    `;
-
-    // Click to product page
-    card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+  let extraImagesHTML = "";
+  if (extraImages.length) {
+    extraImagesHTML = `<div class="extra-images">
+      ${extraImages.map(img => `<img src="${img.includes("http") ? img : 'https://static.wixstatic.com/media/' + img}" alt="${p.name}">`).join("")}
+    </div>`;
   }
+
+  card.innerHTML = `
+    <div class="mockup-stage">
+      <div class="poster-frame grid">
+        <div class="mat with-padding with-color" style="--mat-color:#ffffff">
+          <div class="artwork">
+            <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
+          </div>
+        </div>
+        <img src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png" class="frame-overlay">
+      </div>
+    </div>
+
+    ${extraImagesHTML}
+
+    <div class="product-info">
+      <h3>${p.name}</h3>
+      <div class="price-wrapper">
+        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+        <span class="price-new">$${p.price}</span>
+      </div>
+    </div>
+  `;
+
+  card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
 
   grid.appendChild(card);
 });
