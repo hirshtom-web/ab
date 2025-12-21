@@ -79,3 +79,39 @@
   font-weight: bold;
   color: #000;
 }
+.product-card .media-container {
+  width: 100%;
+  aspect-ratio: 1 / 1.25; /* fixed container ratio */
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff; /* optional, for padding around first image */
+}
+
+/* FIRST IMAGE (print/design) */
+.product-card .media-container img:first-child {
+  max-width: 80%;  /* keeps gap inside container */
+  max-height: 80%;
+  object-fit: contain; /* keep original ratio, not stretched */
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* EXTRA IMAGES (full images) */
+.product-card .media-container img.extra-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Show extra image on hover */
+.product-card .media-container:hover img.extra-image {
+  opacity: 1;
+}
