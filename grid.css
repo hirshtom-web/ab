@@ -1,64 +1,11 @@
-.product-grid {
+/* GRID LAYOUT */
+.products-grid {
   display:grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap:60px;
 }
 
-.product-card {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-}
-
-/* Same background feel as mockup */
-.product-card .mockup-stage {
-  background:#f9f5f2;
-  padding:60px;
-  border-radius:20px;
-}
-
-/* Same ratio & depth */
-.poster-frame.grid {
-  width:220px;
-  aspect-ratio:210/297;
-  background:#fff;
-  border-radius:3px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.08),
-    inset 0 0 0 1px rgba(0,0,0,0.03);
-}
-
-/* Slightly tighter mat for grid */
-.poster-frame.grid .mat.with-padding {
-  padding:22px 12px;
-}
-
-.product-title {
-  font-size:14px;
-  text-align:center;
-}
-/* Ensure grid mockups align nicely */
-.product-card.is-product {
-  align-items:center;
-}
-
-/* Reuse your mockup look */
-.poster-frame.grid {
-  width:220px;
-}
-
-/* Frame overlay visible in grid */
-.product-card .frame-overlay {
-  display:block;
-  pointer-events:none;
-}
-
-/* Optional: visual hierarchy */
-.variant-frame-mat .poster-frame {
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-}
-/* PRODUCT CARD = MOCKUP STAGE */
+/* PRODUCT CARD */
 .product-card.is-product {
   display:flex;
   flex-direction:column;
@@ -66,20 +13,20 @@
   gap:16px;
 }
 
-/* Background + spacing shell */
+/* MOCKUP BACKGROUND */
 .product-card.is-product .mockup-stage {
   background:#f9f5f2;
-  padding:60px;          /* scaled from 100px */
+  padding:60px;
   border-radius:20px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
-/* Poster frame scaled for grid */
+/* POSTER FRAME */
 .product-card.is-product .poster-frame {
   position:relative;
-  width:220px;           /* grid size */
+  width:220px;
   aspect-ratio:210 / 297;
   background:#fff;
   border-radius:3px;
@@ -89,17 +36,29 @@
   overflow:hidden;
 }
 
-/* Passepartout */
+/* PASSEPARTOUT */
 .product-card.is-product .mat.with-padding {
-  padding:22px 12px;     /* scaled from 30/15 */
+  padding:22px 12px;
 }
 
-/* Frame overlay visible in grid */
+/* FRAME OVERLAY */
 .product-card.is-product .frame-overlay {
   display:block;
+  pointer-events:none;
 }
 
-/* Responsive tweak */
+/* OPTIONAL DEPTH VARIANT */
+.variant-frame-mat .poster-frame {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+/* PRODUCT TITLE */
+.product-title {
+  font-size:14px;
+  text-align:center;
+}
+
+/* RESPONSIVE */
 @media (max-width:800px) {
   .product-card.is-product .mockup-stage {
     padding:40px;
