@@ -1,20 +1,13 @@
 /* =====================
-   RESET
-===================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* =====================
    CONTAINER
 ===================== */
 .product-container {
   max-width: 1400px;
   margin: 40px auto;
   padding: 0 40px;
+  box-sizing: border-box;
 }
+
 
 /* =====================
    LAYOUT
@@ -33,16 +26,13 @@
   flex-direction: column;
 }
 
-/* =====================
-   MAIN IMAGE STAGE
-===================== */
 .gallery-main {
   flex: 1;
   height: 700px;
 
-  /* DEFAULT = FIRST IMAGE (PRINT / MOCKUP) */
-  background: #f9f5f2;
-  padding: 60px 40px;
+  /* mockup stage */
+  background: #f9f5f2;          /* soft wall / mat background */
+  padding: 60px 40px;           /* passepartout gap */
   border-radius: 20px;
 
   display: flex;
@@ -52,12 +42,15 @@
   overflow: hidden;
 }
 
-/* FIRST IMAGE */
+
 .gallery-main img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  background: #fff;
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;          /* IMPORTANT: no crop */
+  background: #fff;             /* paper color */
   border-radius: 6px;
 
   box-shadow:
@@ -67,24 +60,7 @@
   transition: opacity 0.4s ease;
 }
 
-/* =====================
-   FULL BLEED MODE (2nd+ IMAGE)
-===================== */
-.gallery-main.full-bleed {
-  padding: 0;
-  background: transparent;
-}
 
-.gallery-main.full-bleed img {
-  object-fit: cover;
-  border-radius: 20px;
-  background: none;
-  box-shadow: none;
-}
-
-/* =====================
-   THUMBNAILS
-===================== */
 .gallery-thumbs {
   display: grid;
   grid-auto-flow: column;
@@ -108,9 +84,6 @@
   border: 1px solid #555;
 }
 
-/* =====================
-   DOTS (MOBILE)
-===================== */
 .gallery-dots {
   display: none;
   justify-content: center;
@@ -123,6 +96,7 @@
   height: 8px;
   background: #ccc;
   border-radius: 50%;
+  transition: background 0.3s;
 }
 
 .gallery-dots .dot.active {
@@ -130,7 +104,7 @@
 }
 
 /* =====================
-   RIGHT COLUMN
+   RIGHT CONTENT
 ===================== */
 .product-right {
   flex: 1;
@@ -138,6 +112,7 @@
   flex-direction: column;
   gap: 40px;
 }
+
 
 /* =====================
    PRICING CARD
@@ -158,6 +133,7 @@
   font-size: 12px;
   color: #7d8796;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 .price {
@@ -165,26 +141,40 @@
   font-weight: 600;
   color: #116dff;
   display: flex;
-  gap: 6px;
   align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 
 .price .old-price {
   font-size: 12px;
-  text-decoration: line-through;
   color: #7d8796;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.sale-info {
+  font-size: 11px;
+  font-weight: 600;
+  color: #116dff;
+  white-space: nowrap;
+}
+
+.price span {
+  font-size: 12px;
+  color: #116dff;
+  margin-left: 5px;
+  font-weight: 500;
 }
 
 .description {
   font-size: 12px;
   color: #7d8796;
-  line-height: 1.6;
   margin: 20px 0;
+  font-weight: 500;
+  line-height: 1.6;
 }
 
-/* =====================
-   BUTTONS
-===================== */
 .buttons {
   display: flex;
   flex-direction: column;
@@ -229,12 +219,29 @@
   padding: 14px 32px;
   font-size: 12px;
   font-weight: 600;
-  background: #fff;
   border: none;
+  background: #fff;
   width: 100%;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  color: #000;
+  position: relative;
+}
+
+.accordion-header .header-title {
+  display: inline-block;
+}
+
+.accordion-header .material-icons-outlined {
+  color: #7d8796;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.accordion-item.active .accordion-header .material-icons-outlined {
+  transform: rotate(180deg);
 }
 
 .accordion-content {
@@ -247,23 +254,112 @@
 .accordion-content p {
   font-size: 12px;
   color: #7d8796;
+  font-weight: 500;
   line-height: 1.6;
-  padding: 10px 0;
+  padding: 10px 0 14px;
+  margin: 0;
+}
+
+.accordion-content p + p {
+  padding-top: 10px;
 }
 
 /* =====================
-   UTILITIES
+   RADIO BUTTON CARDS
 ===================== */
-.hidden {
-  display: none !important;
+.license-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 20px;
+}
+
+.license-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border: 0.5px solid #d6e4ff;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #7d8796;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.license-option input[type="radio"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  accent-color: #116dff;
+}
+
+.license-option:has(input[type="radio"]:checked) {
+  background: #eef4ff;
+  border-color: #116dff;
 }
 
 /* =====================
-   MOBILE
+   AI COLOR EFFECT
+===================== */
+.ai-color-icon,
+.ai-color-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(90deg, #ff3cac, #784ba0, #2b86c5, #22afa1, #ff3cac);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: aiRainbow 7s linear infinite;
+}
+
+.ai-color-icon.material-icons-outlined,
+.ai-color-link .material-icons-outlined {
+  font-size: 15px;
+}
+
+@keyframes aiRainbow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ai-color-link:hover,
+.ai-color-icon:hover {
+  filter: drop-shadow(0 0 6px rgba(34, 175, 161, 0.6));
+  transform: translateY(-1px);
+}
+
+/* =====================
+   SVG SECTION
+===================== */
+.section-svg {
+  display: flex;
+  justify-content: center;
+  margin: -30px 0;
+}
+
+.section-svg img {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  opacity: 0.3;
+}
+
+/* =====================
+   MEDIA QUERIES: MOBILE
 ===================== */
 @media (max-width: 768px) {
   .product-container {
     padding: 0 16px;
+    width: 100%;
   }
 
   .layout {
@@ -284,29 +380,217 @@
     margin-top: 16px;
   }
 
-  .product-right {
-    gap: 24px;
+.product-right { width: 100%; gap: 24px; }
+
+
+  .buttons button {
+    width: 100%;
+  }
+
+  .ai-color-link {
+    display: inline-block;
+    width: fit-content;
+    white-space: nowrap;
+    color: #22afa1;
+    -webkit-text-fill-color: initial;
+    background: none;
+    animation: none;
+  }
+
+  .accordion {
+    margin-top: 0;
+    gap: 10px;
+  }
+
+  .accordion-item {
+    border-radius: 12px;
+  }
+
+  .accordion-header {
+    padding: 10px 16px;
+    height: 48px;
+    font-size: 12px;
+    line-height: 1;
+    align-items: center;
+  }
+
+  .accordion-content {
+    padding: 0 16px 10px;
+  }
+
+  .accordion-content p {
+    padding: 10px 0 0 0;
+  }
+
+  .section-svg {
+    position: relative;
+    height: 20px;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .section-svg img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 20px;
+  }
+
+  .gallery, .product-right {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .gallery {
+    flex-direction: row; /* horizontal layout */
+  }
+
+  .gallery-thumbs {
+    display: grid;
+    grid-auto-flow: row; /* vertical stacking */
+    grid-auto-rows: 72px;
+    gap: 8px;
+    margin-top: 0;
+    margin-right: 16px; /* space between thumbs and main image */
+    overflow-y: auto;
+    flex: 0 0 80px; /* fixed width for thumbs column */
+    height: 700px; /* match main image height */
+    order: 0; /* render first */
+  }
+
+  .gallery-main {
+    flex: 1;
+    height: 700px;
+    order: 1; /* render after thumbnails */
   }
 }
 
 /* =====================
-   DESKTOP THUMB COLUMN
+   OPTION BUTTONS (match Buy Now / Add to Cart)
 ===================== */
-@media (min-width: 769px) {
-  .gallery {
-    flex-direction: row;
-  }
+.product-options {
+  display: flex;
+  flex-direction: column; /* stack on mobile */
+  gap: 10px;
+  margin: 20px 0;
+}
 
-  .gallery-thumbs {
-    grid-auto-flow: row;
-    grid-auto-rows: 72px;
-    margin-right: 16px;
-    flex: 0 0 80px;
-    height: 700px;
-    overflow-y: auto;
-  }
+.option-button label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #111;
+}
 
-  .gallery-main {
-    height: 700px;
-  }
+.option-button select {
+  width: 100%;
+  padding: 12px;               /* same as buttons */
+  border-radius: 10px;          /* match buttons */
+  font-size: 12px;
+  font-weight: 600;
+  border: none;                 /* match Buy Now/Add to Cart */
+  cursor: pointer;
+  background: #f5fffa;          /* default color like Buy Now */
+  color: #22afa1;
+  appearance: none;             /* remove default arrow */
+  position: relative;
+  transition: background 0.3s, color 0.3s;
+  background: #daf2e8 url('data:image/svg+xml;utf8,<svg fill="%2322afa1" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+  background-size: 16px 16px;
+}
+
+.option-button select:focus {
+  outline: none;
+  background: #cdece2; /* slightly darker on focus */
+}
+
+.option-button.select-size select {
+  background: #22afa1;
+  color: #fff;
+}
+
+.option-button.select-size select:focus {
+  background: #1b8d88;
+}
+
+/* =====================
+   UTILITIES
+===================== */
+.hidden {
+  display: none !important;
+}
+
+/* =====================
+   ARTWORK TABS
+===================== */
+
+.artwork-tabs {
+  display: flex;
+  background: #f4f7ff;
+  border-radius: 14px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.artwork-tabs .tab {
+  flex: 1;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: transparent;
+  color: #7d8796;
+  transition: all 0.25s ease;
+}
+
+.artwork-tabs .tab.active {
+  background: #116dff;
+  color: #fff;
+}
+
+/* =====================
+   TAB PANELS
+===================== */
+
+.tab-panels {
+  position: relative;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* =====================
+   DIGITAL CARD
+===================== */
+
+.tab-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  background: #daf2e8;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #22afa1;
+}
+
+.tab-card span {
+  font-size: 22px;
+}
+
+.tab-card p {
+  font-size: 11px;
+  margin-top: 2px;
+  color: #22afa1;
 }
