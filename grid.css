@@ -1,11 +1,12 @@
-/* GRID CONTAINER */
+whats the hight / width of the img? /* GRID CONTAINER */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
   gap: 20px;
-  padding: 0 40px;
+  padding: 0 40px; /* side margins */
   box-sizing: border-box;
-  margin: 0 auto;
+  max-width: calc(4 * 320px + 3 * 20px + 80px); /* optional max width for very wide screens */
+  margin: 0 auto; /* center the grid */
 }
 
 /* PRODUCT CARD */
@@ -13,27 +14,28 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  min-width: 250px; /* can grow with screen */
+  gap: 0;
+  min-width: 250px; /* don't shrink too much */
 }
 
-/* MEDIA CONTAINER: always square */
+/* MEDIA CONTAINER (1:1 ratio) */
 .product-card .media-container {
   width: 100%;
-  aspect-ratio: 1 / 1; /* ensures square */
+  aspect-ratio: 1 / 1; /* square for image */
   overflow: hidden;
   position: relative;
 }
 
-/* IMAGE */
+/* MEDIA IMAGE */
 .product-card .media-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
   transition: opacity 0.3s ease;
+  display: block;
 }
 
-/* Hover: show second image */
+/* HOVER EFFECT: show second image */
 .product-card .media-container img.second-image {
   position: absolute;
   top: 0;
@@ -45,10 +47,11 @@
   opacity: 1;
 }
 
-/* INFO AREA (flexible, below image) */
+/* INFO AREA (bottom 0.25 height) */
 .product-card .product-info {
   padding: 10px 0;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .product-card .product-info h3 {
@@ -71,7 +74,7 @@
   color: #000;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE: reduce columns on smaller screens */
 @media (max-width: 1200px) {
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
