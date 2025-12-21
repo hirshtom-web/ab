@@ -84,18 +84,37 @@ card.className = "product-card is-product";
     const imagesArray = p.images.length ? p.images : [p.image];
     card.dataset.images = JSON.stringify(imagesArray);
 
-    card.innerHTML = `
-      <div class="img-wrapper">
-        <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
-      </div>
-      <div class="product-info">
-        <h3>${p.name}</h3>
-        <div class="price-wrapper">
-          <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-          <span class="price-new">$${p.price}</span>
+card.classList.add("variant-frame-mat"); // choose variant here
+
+card.innerHTML = `
+  <div class="mockup-stage">
+    <div class="poster-frame grid">
+      <div class="mat with-padding with-color" style="--mat-color:#ffffff">
+        <div class="artwork">
+          <img
+            src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}"
+            alt="${p.name}"
+          >
         </div>
       </div>
-    `;
+
+      <!-- Optional static frame -->
+      <img
+        src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png"
+        class="frame-overlay"
+      >
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3>${p.name}</h3>
+    <div class="price-wrapper">
+      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+      <span class="price-new">$${p.price}</span>
+    </div>
+  </div>
+`;
+
 
     card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
   }
