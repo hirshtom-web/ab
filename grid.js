@@ -70,10 +70,8 @@ slice.forEach((p, index) => {
   }
 
   card.innerHTML = `
-    <div class="mockup-stage">
-      <div class="poster-frame grid">
-        <div class="mat with-padding with-color" style="--mat-color:#ffffff">
-        <div class="media-container">
+<div class="product-card">
+  <div class="media-container">
   <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
 </div>
 
