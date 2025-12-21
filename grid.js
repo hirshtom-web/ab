@@ -52,70 +52,65 @@ function initProductsPage() {
 slice.forEach((p, index) => {
   let card;
 
-// Every 7th card is a banner
-if ((index + 1) % 7 === 0) {
-  card = document.createElement("div");
-  card.className = "product-card banner-only";
+  // Every 7th card is a banner
+  if ((index + 1) % 7 === 0) {
+    card = document.createElement("div");
+    card.className = "product-card banner-only";
 
-  const bannerIndex = Math.floor(index / 7) % banners.length;
-  const banner = banners[bannerIndex];
+    const bannerIndex = Math.floor(index / 7) % banners.length;
+    const banner = banners[bannerIndex];
 
-  if (banner.type === "video") {
-    card.innerHTML = `
-      <div class="img-wrapper banner-wrapper">
-        <video autoplay muted loop playsinline>
-          <source src="${banner.src}" type="video/mp4">
-        </video>
-      </div>
-    `;
+    if (banner.type === "video") {
+      card.innerHTML = `
+        <div class="img-wrapper banner-wrapper">
+          <video autoplay muted loop playsinline>
+            <source src="${banner.src}" type="video/mp4">
+          </video>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
+      `;
+    }
+
   } else {
-    card.innerHTML = `
-      <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
-    `;
-  }
-
-} else {
-
-
     // Regular product card
     card = document.createElement("div");
-card.className = "product-card is-product";
+    card.className = "product-card is-product variant-frame-mat";
 
     const imagesArray = p.images.length ? p.images : [p.image];
     card.dataset.images = JSON.stringify(imagesArray);
 
-card.classList.add("variant-frame-mat"); // choose variant here
-
-card.innerHTML = `
-  <div class="mockup-stage">
-    <div class="poster-frame grid">
-      <div class="mat with-padding with-color" style="--mat-color:#ffffff">
-        <div class="artwork">
+    // Build the full mockup HTML
+    card.innerHTML = `
+      <div class="mockup-stage">
+        <div class="poster-frame grid">
+          <div class="mat with-padding with-color" style="--mat-color:#ffffff">
+            <div class="artwork">
+              <img
+                src="${imagesArray[0].includes('http') ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}"
+                alt="${p.name}"
+              >
+            </div>
+          </div>
           <img
-            src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}"
-            alt="${p.name}"
+            src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png"
+            class="frame-overlay"
           >
         </div>
       </div>
 
-      <!-- Optional static frame -->
-      <img
-        src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png"
-        class="frame-overlay"
-      >
-    </div>
-  </div>
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <div class="price-wrapper">
+          <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+          <span class="price-new">$${p.price}</span>
+        </div>
+      </div>
+    `;
 
-  <div class="product-info">
-    <h3>${p.name}</h3>
-    <div class="price-wrapper">
-      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-      <span class="price-new">$${p.price}</span>
-    </div>
-  </div>
-`;
-
-
+    // Click to product page
     card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
   }
 
