@@ -21,30 +21,25 @@
   /* no background here */
 }
 
-/* ===========================
-   MEDIA CONTAINER (1:1.25 ratio)
-=========================== */
 .product-card .media-container {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* taller image ratio */
+  aspect-ratio: 1 / 1.25; /* taller image */
   overflow: hidden;
   position: relative;
-  flex-shrink: 0;       /* prevents shrinking */
-  background: #fff;      /* only the image area has white background */
+  flex-shrink: 0;
 }
 
-/* ===========================
-   MEDIA IMAGE
-=========================== */
 .product-card .media-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;     /* keeps image scaled & cropped nicely */
+  object-fit: cover;
   display: block;
-  transition: opacity 0.3s ease; /* for hover fade effect */
-  backface-visibility: hidden;   /* smooth hover transitions */
+  transition: opacity 0.3s ease;
 }
 
+.media-container {
+  background: #f9f5f2; /* placeholder background */
+}
 
 /* HOVER EFFECT: show second image */
 .product-card .media-container img.second-image {
