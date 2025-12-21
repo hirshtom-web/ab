@@ -69,27 +69,22 @@ slice.forEach((p, index) => {
     </div>`;
   }
 
-  card.innerHTML = `
-<div class="product-card">
+card.innerHTML = `
   <div class="media-container">
-  <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
-</div>
+    <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
+  </div>
 
-        </div>
-        <img src="https://static.wixstatic.com/media/1799ca_8de39f4ba84849c496fc95ad16f62e04~mv2.png" class="frame-overlay">
-      </div>
+  ${extraImagesHTML}
+
+  <div class="product-info">
+    <h3>${p.name}</h3>
+    <div class="price-wrapper">
+      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+      <span class="price-new">$${p.price}</span>
     </div>
+  </div>
+`;
 
-    ${extraImagesHTML}
-
-    <div class="product-info">
-      <h3>${p.name}</h3>
-      <div class="price-wrapper">
-        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-        <span class="price-new">$${p.price}</span>
-      </div>
-    </div>
-  `;
 
   card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
 
