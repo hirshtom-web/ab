@@ -47,36 +47,28 @@ function initProductsPage() {
       card.dataset.images = JSON.stringify(imagesArray);
 
       const firstImage = imagesArray[0];
-      const extraImages = imagesArray.slice(1);
+      const firstImageUrl = firstImage.includes("http")
+        ? firstImage
+        : 'https://static.wixstatic.com/media/' + firstImage;
 
-      let extraImagesHTML = "";
-      if (extraImages.length) {
-        extraImagesHTML = extraImages.map(img => `
-          <img class="extra-image" 
-               src="${img.includes("http") ? img : 'https://static.wixstatic.com/media/' + img}" 
-               alt="${p.name}">
-        `).join("");
-      }
-
-     card.innerHTML = `
-  <div class="mockup-stage">
-    <div class="poster-frame">
-      <div class="mat with-padding with-color">
-        <div class="artwork">
-          <img src="${firstImage}" alt="${p.name}">
+      card.innerHTML = `
+        <div class="mockup-stage">
+          <div class="poster-frame">
+            <div class="mat with-padding with-color">
+              <div class="artwork">
+                <img src="${firstImageUrl}" alt="${p.name}">
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="product-info">
-    <h3>${p.name}</h3>
-    <div class="price-wrapper">
-      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-      <span class="price-new">$${p.price}</span>
-    </div>
-  </div>
-`;
-
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">
+            <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+            <span class="price-new">$${p.price}</span>
+          </div>
+        </div>
+      `;
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
       grid.appendChild(card);
@@ -88,8 +80,9 @@ function initProductsPage() {
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
   }
 
-  if (prevBtn) prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
-  if (nextBtn) nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
+  // Pagination buttons
+  if (prevBtn) prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); updateGridImages(); } };
+  if (nextBtn) nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); updateGridImages(); } };
 
   // IMAGE TOGGLE (Cover / Lifestyle)
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
@@ -108,18 +101,17 @@ function initProductsPage() {
     });
   });
 
-function updateGridImages() {
-  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-  productCards.forEach(card => {
-    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    const newImg = imgList[currentImageIndex] || imgList[0];
-    const imgEl = card.querySelector(".mockup-stage .poster-frame .artwork img"); // <-- updated selector
-    if (imgEl) imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-  });
-}
+  function updateGridImages() {
+    const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+    productCards.forEach(card => {
+      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
+      const newImg = imgList[currentImageIndex] || imgList[0];
+      const imgEl = card.querySelector(".mockup-stage .poster-frame .artwork img");
+      if (imgEl) imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+    });
+  }
 
-
-  // Initial update
+  // Initial image update
   updateGridImages();
 
   // SHUFFLE & SORT
@@ -132,6 +124,7 @@ function updateGridImages() {
       [allProducts[i], allProducts[j]] = [allProducts[j], allProducts[i]];
     }
     renderPage(currentPage);
+    updateGridImages();
   });
 
   if (sortBtn) {
@@ -164,6 +157,7 @@ function updateGridImages() {
       el.onclick = () => {
         allProducts.sort(opt.fn);
         renderPage(currentPage);
+        updateGridImages();
         sortBubble.style.display = "none";
       };
       sortBubble.appendChild(el);
