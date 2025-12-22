@@ -41,24 +41,27 @@
    MOCKUP STAGE / POSTER FRAME
 =========================== */
 .product-card .mockup-stage {
-  width: 100%;        /* fits the column */
-  max-width: 240px;   /* scale down from 320px to fit 4 in row */
+  width: 100%;
+  max-width: 280px;    /* bigger than 240px */
   background: #f9f5f2;
-  padding: 20px;      /* reduce padding for smaller card */
+  padding: 25px;       /* slightly bigger padding */
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* align top instead of stretching */
+  justify-content: center;
   box-sizing: border-box;
   margin: 0 auto;
 }
 
 .product-card .mockup-stage .poster-frame {
   width: 100%;
-  max-width: 200px;       /* width of poster inside mockup */
-  max-height: 300px;      /* limit height so it doesn't overflow */
-  aspect-ratio: 210 / 297; /* maintain A4 ratio */
+  max-width: 240px;  /* bigger poster */
+  aspect-ratio: 210 / 297;
+}
+
+
+.product-card .mockup-stage .poster-frame {
   position: relative;
   background: #fff;
   border-radius: 3px;
