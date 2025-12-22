@@ -23,7 +23,7 @@
   <!-- HEADER -->
   <div id="header-placeholder"></div>
 
- <!-- PRODUCT -->
+  <!-- PRODUCT -->
   <div class="product-container">
     <div class="layout">
 
@@ -60,8 +60,7 @@
 
         <!-- OPTIONS -->
         <div class="product-options">
-          <label class="group-label">Artwork Type</label>
-
+          <label class="group-label" for="artworkType">Artwork Type</label>
           <div class="option-button">
             <select id="artworkType">
               <option value="digital">Digital file — Instant download</option>
@@ -86,7 +85,6 @@
         <!-- BUTTONS -->
         <div class="buttons">
           <button class="buy" id="buyNowBtn">Buy Now</button>
-
           <button class="cart" onclick="addToCart({
             id: 'art_102',
             title: 'Abstract Blue No.4',
@@ -124,101 +122,91 @@
       </div>
     </div>
 
-        <div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Instant Download via Email</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Your files will be sent straight to your email after purchase for quick and easy access.
-              No waiting, no shipping — download and print right away.
-            </p>
-          </div>
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Instant Download via Email</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <p>
+          Your files will be sent straight to your email after purchase for quick and easy access.
+          No waiting, no shipping — download and print right away.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Easy to Print & Frame</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <p>
+          Print effortlessly at home, online, or through a professional print shop.
+          Once printed, your artwork is ready to frame and hang,
+          instantly adding beauty to your space.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Usage License</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <div class="license-options">
+          <label class="license-option">
+            <input type="radio" name="license" checked>
+            <span class="radio-label">
+              <strong>Personal Use</strong>
+              Personal use only — perfect for home décor or gifting.
+            </span>
+          </label>
+
+          <label class="license-option">
+            <input type="radio" name="license">
+            <span class="radio-label">
+              <strong>Commercial Use</strong>
+              Commercial licensing for online, digital, and resale purposes.
+            </span>
+          </label>
         </div>
-
-<div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Easy to Print & Frame</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Print effortlessly at home, online, or through a professional print shop.
-              Once printed, your artwork is ready to frame and hang,
-              instantly adding beauty to your space.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-  <button class="accordion-header">
-    <span class="header-title">Usage License</span>
-    <span class="material-symbols-outlined">expand_more</span>
-  </button>
-
-  <div class="accordion-content">
-    <div class="license-options">
-      <label class="license-option">
-        <input type="radio" name="license" checked>
-        <span class="radio-label">
-          <strong>Personal Use</strong>
-          Personal use only — perfect for home décor or gifting.
-        </span>
-      </label>
-
-      <label class="license-option">
-        <input type="radio" name="license">
-        <span class="radio-label">
-          <strong>Commercial Use</strong>
-          Commercial licensing for online, digital, and resale purposes.
-        </span>
-      </label>
-    </div>
-  </div>
-</div>
-</div>
-  </div>
-        </div>
-  
-       <section class="features-section">
-  <div class="features-container">
-
-    <div class="feature-card">
-      <span class="material-symbols-outlined feature-icon">
-        sentiment_satisfied
-      </span>
-      <h3>Happy Clients</h3>
-      <p>Join over tons of satisfied customers who love our art!</p>
-    </div>
-
-    <div class="feature-card">
-      <span class="material-symbols-outlined feature-icon">
-        auto_awesome
-      </span>
-      <h3>Instant Magic</h3>
-      <p>Click, buy, and your digital art arrives instantly.</p>
-    </div>
-
-    <div class="feature-card">
-      <span class="material-symbols-outlined feature-icon">
-        favorite
-      </span>
-      <h3>20.1k Loved Our Website</h3>
-      <p>Discover why so many visitors rave about our site!</p>
-    </div>
-
-    <div class="feature-card">
-      <span class="material-symbols-outlined feature-icon">
-        eco
-      </span>
-      <h3>Eco Friendly</h3>
-      <p>Enjoy sustainable art that’s kind to the planet.</p>
+      </div>
     </div>
 
   </div>
-</section>
 
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="features-container">
+
+      <div class="feature-card">
+        <span class="material-symbols-outlined feature-icon">sentiment_satisfied</span>
+        <h3>Happy Clients</h3>
+        <p>Join over tons of satisfied customers who love our art!</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="material-symbols-outlined feature-icon">auto_awesome</span>
+        <h3>Instant Magic</h3>
+        <p>Click, buy, and your digital art arrives instantly.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="material-symbols-outlined feature-icon">favorite</span>
+        <h3>20.1k Loved Our Website</h3>
+        <p>Discover why so many visitors rave about our site!</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="material-symbols-outlined feature-icon">eco</span>
+        <h3>Eco Friendly</h3>
+        <p>Enjoy sustainable art that’s kind to the planet.</p>
+      </div>
+
+    </div>
+  </section>
 
         
 <!-- Scripts -->
