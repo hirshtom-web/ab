@@ -60,50 +60,31 @@
 
   <label class="group-label">Artwork Type</label>
 
-  <!-- TABS -->
-  <div class="artwork-tabs">
-    <button class="tab active" data-tab="digital">Digital</button>
-    <button class="tab" data-tab="physical">Physical</button>
+  <!-- Artwork type -->
+  <div class="option-button">
+    <select id="artworkType">
+      <option value="digital">Digital file — Instant download</option>
+      <option value="print-5x8">Print 5 × 8 in — $30</option>
+      <option value="print-8x11">Print 8 × 11 in — $36</option>
+      <option value="print-11x15">Print 11 × 15 in — $44</option>
+      <option value="print-15x19">Print 15 × 19 in — $60</option>
+    </select>
   </div>
 
-  <!-- TAB CONTENT -->
-  <div class="tab-panels">
+  <!-- Frame (hidden by default) -->
+  <div class="option-button" id="frameWrapper" style="display:none;">
+    <label for="frame">Frame</label>
+    <select id="frame">
+      <option value="none">No frame</option>
+      <option value="black">Black frame</option>
+      <option value="white">White frame</option>
+      <option value="oak">Oak frame</option>
+    </select>
+  </div>
 
-    <!-- DIGITAL -->
-    <div class="tab-panel active" id="digital">
-      <div class="tab-card">
-        <span class="material-symbols-outlined">cloud_download</span>
-        <div>
-          <strong>Instant Download</strong>
-          <p>High-resolution files delivered immediately.</p>
-        </div>
-      </div>
-    </div>
+</div>
 
-    <!-- PHYSICAL -->
-    <div class="tab-panel" id="physical">
 
-      <div class="option-button">
-        <label for="size">Print Size</label>
-        <select id="size">
-          <option value="5x8">5 × 8 in — $30</option>
-          <option value="8x11">8 × 11 in — $36</option>
-          <option value="11x15">11 × 15 in — $44</option>
-          <option value="15x19">15 × 19 in — $60</option>
-        </select>
-      </div>
-
-      <div class="option-button">
-        <label for="frame">Frame</label>
-        <select id="frame">
-          <option value="none">No Frame</option>
-          <option value="black">Black Frame</option>
-          <option value="white">White Frame</option>
-          <option value="oak">Oak Frame</option>
-        </select>
-      </div>
-
-    </div>
 
   </div>
 </div>
