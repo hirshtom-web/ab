@@ -21,10 +21,22 @@
   min-width: 250px;
   align-items: center;
 }
+.product-card .media-container {
+  width: 100%;
+  max-width: 200px;
+  max-height: 300px;  /* limit size */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* ===========================
-   MOCKUP STAGE / POSTER FRAME
-=========================== */
+.product-card .media-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 /* ===========================
    MOCKUP STAGE / POSTER FRAME
 =========================== */
