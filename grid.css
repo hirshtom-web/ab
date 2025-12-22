@@ -63,7 +63,7 @@
 
 .product-card .mockup-stage .poster-frame {
   position: relative;
-  background: #fff;
+  background: transparent;
   border-radius: 3px;
   overflow: hidden;
   display: flex;
