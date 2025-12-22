@@ -108,15 +108,16 @@ function initProductsPage() {
     });
   });
 
-  function updateGridImages() {
-    const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-    productCards.forEach(card => {
-      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
-      const newImg = imgList[currentImageIndex] || imgList[0];
-      const imgEl = card.querySelector(".media-container img");
-      if (imgEl) imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-    });
-  }
+function updateGridImages() {
+  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+  productCards.forEach(card => {
+    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
+    const newImg = imgList[currentImageIndex] || imgList[0];
+    const imgEl = card.querySelector(".mockup-stage .poster-frame .artwork img"); // <-- updated selector
+    if (imgEl) imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+  });
+}
+
 
   // Initial update
   updateGridImages();
