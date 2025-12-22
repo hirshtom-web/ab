@@ -17,18 +17,6 @@
 
   <!-- PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-  <style>
-    /* Ensure dropdowns are vertical and full width */
-    .product-options .option-button {
-      width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .product-options select {
-      width: 100%;
-    }
-  </style>
 </head>
 <body>
 
@@ -47,28 +35,28 @@
         <div class="gallery-thumbs"></div>
       </div>
 
-      <!-- RIGHT -->
-      <div class="product-right">
+    
+       <!-- RIGHT -->
+<div class="product-right">
+  
+  <div class="pricing">
+    <h2>Landscape at Collioure</h2>
+    <div class="artist">By Henri Matisse</div>
+    <div class="price">
+      $6.98
+      <span class="old-price">$19.99</span>
+      <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
+    </div>
 
-        <div class="pricing">
-          <h2>Landscape at Collioure</h2>
-          <div class="artist">By Henri Matisse</div>
-          <div class="price">
-            $6.98
-            <span class="old-price">$19.99</span>
-            <span id="saleInfo" class="sale-info">Sale ends in 10:33:11</span>
-          </div>
+    <div class="description">
+      This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
+      <a href="#" class="ai-color-link">
+        <span class="material-symbols-outlined">cloud_download</span>
+        Instant Delivery
+      </a>
+    </div>
 
-          <div class="description">
-            This artwork complements modern living spaces with a light, airy, effortlessly stylish vibe.<br>
-            <a href="#" class="ai-color-link">
-              <span class="material-symbols-outlined">cloud_download</span>
-              Instant Delivery
-            </a>
-          </div>
-        </div>
-
-        <!-- OPTIONS -->
+  <!-- OPTIONS -->
         <div class="product-options">
           <label class="group-label" for="artworkType">Artwork Type</label>
           <div class="option-button">
@@ -92,156 +80,170 @@
           </div>
         </div>
 
-        <!-- BUTTONS -->
-        <div class="buttons">
-          <button class="buy" id="buyNowBtn">Buy Now</button>
+  </div>
+</div>
+
+   
+  
+    <!-- Buttons -->
+    <div class="buttons">
+      <button class="buy" id="buyNowBtn">Buy Now</button>
           <button class="cart" onclick="addToCart({
-            id: 'art_102',
-            title: 'Abstract Blue No.4',
-            price: 49.00,
-            image: 'images/art102.jpg'
-          })">
-            Add to Cart
-          </button>
+  id: 'art_102',
+  title: 'Abstract Blue No.4',
+  price: 49.00,
+  image: 'images/art102.jpg'
+})">
+  Add to Cart
+</button>
+
         </div>
-
       </div>
-    </div>
-  </div>
-
-  <div class="section-svg">
-    <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
-  </div>
       
-  <div class="accordion">
-    <div class="accordion-item">
-      <button class="accordion-header">
-        <span class="header-title">High-Resolution Digital Art Prints</span>
-        <span class="material-symbols-outlined">expand_more</span>
-      </button>
-      <div class="accordion-content">
-        <p>
-          You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
-          Print in any size at home or through a local or online printing service.
-          Perfect for framing, gifts, or decorating your space.
-        </p>
+      <div class="section-svg">
+        <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
       </div>
-    </div>
+      
+      <div class="accordion">
+        <div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">High-Resolution Digital Art Prints</span>
+  <span class="material-symbols-outlined">expand_more</span>
+</button>
 
-    <div class="accordion-item">
-      <button class="accordion-header">
-        <span class="header-title">Instant Download via Email</span>
-        <span class="material-symbols-outlined">expand_more</span>
-      </button>
-      <div class="accordion-content">
-        <p>
-          Your files will be sent straight to your email after purchase for quick and easy access.
-          No waiting, no shipping — download and print right away.
-        </p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <button class="accordion-header">
-        <span class="header-title">Easy to Print & Frame</span>
-        <span class="material-symbols-outlined">expand_more</span>
-      </button>
-      <div class="accordion-content">
-        <p>
-          Print effortlessly at home, online, or through a professional print shop.
-          Once printed, your artwork is ready to frame and hang,
-          instantly adding beauty to your space.
-        </p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <button class="accordion-header">
-        <span class="header-title">Usage License</span>
-        <span class="material-symbols-outlined">expand_more</span>
-      </button>
-      <div class="accordion-content">
-        <div class="license-options">
-          <label class="license-option">
-            <input type="radio" name="license" checked>
-            <span class="radio-label">
-              <strong>Personal Use</strong>
-              Personal use only — perfect for home décor or gifting.
-            </span>
-          </label>
-
-          <label class="license-option">
-            <input type="radio" name="license">
-            <span class="radio-label">
-              <strong>Commercial Use</strong>
-              Commercial licensing for online, digital, and resale purposes.
-            </span>
-          </label>
+          <div class="accordion-content">
+            <p>
+              You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
+              Print in any size at home or through a local or online printing service.
+              Perfect for framing, gifts, or decorating your space.
+            </p>
+          </div>
         </div>
-      </div>
+
+        <div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">Instant Download via Email</span>
+  <span class="material-symbols-outlined">expand_more</span>
+</button>
+          <div class="accordion-content">
+            <p>
+              Your files will be sent straight to your email after purchase for quick and easy access.
+              No waiting, no shipping — download and print right away.
+            </p>
+          </div>
+        </div>
+
+<div class="accordion-item">
+<button class="accordion-header">
+  <span class="header-title">Easy to Print & Frame</span>
+  <span class="material-symbols-outlined">expand_more</span>
+</button>
+          <div class="accordion-content">
+            <p>
+              Print effortlessly at home, online, or through a professional print shop.
+              Once printed, your artwork is ready to frame and hang,
+              instantly adding beauty to your space.
+            </p>
+          </div>
+        </div>
+
+<div class="accordion-item">
+  <button class="accordion-header">
+    <span class="header-title">Usage License</span>
+    <span class="material-symbols-outlined">expand_more</span>
+  </button>
+
+  <div class="accordion-content">
+    <div class="license-options">
+      <label class="license-option">
+        <input type="radio" name="license" checked>
+        <span class="radio-label">
+          <strong>Personal Use</strong>
+          Personal use only — perfect for home décor or gifting.
+        </span>
+      </label>
+
+      <label class="license-option">
+        <input type="radio" name="license">
+        <span class="radio-label">
+          <strong>Commercial Use</strong>
+          Commercial licensing for online, digital, and resale purposes.
+        </span>
+      </label>
     </div>
   </div>
+</div>
+</div>
+  </div>
+        </div>
+  
+       <section class="features-section">
+  <div class="features-container">
 
-  <section class="features-section">
-    <div class="features-container">
-      <div class="feature-card">
-        <span class="material-symbols-outlined feature-icon">sentiment_satisfied</span>
-        <h3>Happy Clients</h3>
-        <p>Join over tons of satisfied customers who love our art!</p>
-      </div>
-      <div class="feature-card">
-        <span class="material-symbols-outlined feature-icon">auto_awesome</span>
-        <h3>Instant Magic</h3>
-        <p>Click, buy, and your digital art arrives instantly.</p>
-      </div>
-      <div class="feature-card">
-        <span class="material-symbols-outlined feature-icon">favorite</span>
-        <h3>20.1k Loved Our Website</h3>
-        <p>Discover why so many visitors rave about our site!</p>
-      </div>
-      <div class="feature-card">
-        <span class="material-symbols-outlined feature-icon">eco</span>
-        <h3>Eco Friendly</h3>
-        <p>Enjoy sustainable art that’s kind to the planet.</p>
-      </div>
+    <div class="feature-card">
+      <span class="material-symbols-outlined feature-icon">
+        sentiment_satisfied
+      </span>
+      <h3>Happy Clients</h3>
+      <p>Join over tons of satisfied customers who love our art!</p>
     </div>
-  </section>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="header.js"></script>
-  <script src="product-page.js"></script>
-  <script src="cart.js"></script>
+    <div class="feature-card">
+      <span class="material-symbols-outlined feature-icon">
+        auto_awesome
+      </span>
+      <h3>Instant Magic</h3>
+      <p>Click, buy, and your digital art arrives instantly.</p>
+    </div>
 
-  <script>
-    // Show frame dropdown only for printed sizes
-    const artworkType = document.getElementById("artworkType");
-    const frameWrapper = document.getElementById("frameWrapper");
+    <div class="feature-card">
+      <span class="material-symbols-outlined feature-icon">
+        favorite
+      </span>
+      <h3>20.1k Loved Our Website</h3>
+      <p>Discover why so many visitors rave about our site!</p>
+    </div>
 
-    artworkType.addEventListener("change", () => {
-      if (artworkType.value.startsWith("print")) {
-        frameWrapper.style.display = "block";
-      } else {
-        frameWrapper.style.display = "none";
-      }
-    });
+    <div class="feature-card">
+      <span class="material-symbols-outlined feature-icon">
+        eco
+      </span>
+      <h3>Eco Friendly</h3>
+      <p>Enjoy sustainable art that’s kind to the planet.</p>
+    </div>
 
-    // Full init after header + DOM
-    async function fullInit() {
-      try {
-        const res = await fetch("header.html");
-        const html = await res.text();
-        document.getElementById("header-placeholder").innerHTML = html;
-        if (typeof initHeader === "function") initHeader();
-      } catch (err) {
-        console.error("Header load failed:", err);
-      }
+  </div>
+</section>
 
-      if (typeof initProductsPage === "function") initProductsPage();
+
+        
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="header.js"></script>
+<script src="product-page.js"></script>
+<script>
+  // ✅ Full init after header + DOM
+  async function fullInit() {
+    // 1️⃣ Load header
+    try {
+      const res = await fetch("header.html");
+      const html = await res.text();
+      document.getElementById("header-placeholder").innerHTML = html;
+      if (typeof initHeader === "function") initHeader();
+    } catch (err) {
+      console.error("Header load failed:", err);
     }
 
-    window.addEventListener("load", fullInit);
-  </script>
+    // 2️⃣ Initialize product page AFTER header + DOM exists
+    if (typeof initProductsPage === "function") initProductsPage();
+  }
+
+  window.addEventListener("load", fullInit);
+</script>
+<script src="cart.js"></script>
+
+
+
 
 </body>
 </html>
