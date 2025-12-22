@@ -181,3 +181,21 @@ if(saleEl){
       });
     });
   });
+
+const artworkTypeSelect = document.getElementById("artworkType");
+const frameWrapper = document.getElementById("frameWrapper");
+
+function updateArtworkOptions() {
+  const value = artworkTypeSelect.value;
+
+  // Show frame options only for prints
+  if (value.startsWith("print")) {
+    frameWrapper.style.display = "block";
+  } else {
+    frameWrapper.style.display = "none";
+  }
+}
+
+// Init
+updateArtworkOptions();
+artworkTypeSelect.addEventListener("change", updateArtworkOptions);
