@@ -43,13 +43,7 @@
   width: 100%;
   max-width: 200px;  /* scale poster itself */
   aspect-ratio: 210 / 297; /* maintain A4 ratio */
-}
-
-
-.product-card .mockup-stage .poster-frame {
   position: relative;
-  width: 100%;
-  aspect-ratio: 210 / 297; /* A4 ratio */
   background: #fff;
   border-radius: 3px;
   overflow: hidden;
@@ -91,7 +85,7 @@
 .product-card .mockup-stage .artwork img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;  /* <-- fixed: keep artwork ratio */
   border-radius: 2px;
 }
 
@@ -105,6 +99,7 @@
   pointer-events: none;
   display: none;
 }
+
 
 /* ===========================
    PRODUCT INFO
