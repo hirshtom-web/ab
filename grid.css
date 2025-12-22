@@ -3,7 +3,7 @@
 =========================== */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  grid-template-columns: repeat(4, 1fr); /* ALWAYS 4 columns */
   gap: 20px;
   padding: 0 40px;
   box-sizing: border-box;
@@ -64,7 +64,7 @@
 }
 
 .product-card .mockup-stage .mat.with-padding {
-  padding: 20px 10px; /* optional padding inside passepartout */
+  padding: 20px 10px;
 }
 
 .product-card .mockup-stage .mat.with-color {
@@ -127,16 +127,12 @@
 }
 
 /* ===========================
-   RESPONSIVE
+   RESPONSIVE (just scale padding)
 =========================== */
-@media(max-width:1200px){
-  .products-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
 @media(max-width:900px){
-  .products-grid { grid-template-columns: repeat(2, 1fr); padding:0 20px; }
+  .products-grid { padding:0 20px; }
 }
 
 @media(max-width:600px){
-  .products-grid { grid-template-columns: 1fr; padding:0 10px; }
+  .products-grid { padding:0 10px; }
 }
