@@ -90,7 +90,8 @@
 }
 
 .product-card .mockup-stage .mat.with-color {
-  background-color: var(--mat-color,#fff);
+  background-color: transparent;  /* remove white */
+
 }
 
 .product-card .mockup-stage .artwork {
