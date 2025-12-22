@@ -54,7 +54,6 @@ function initProductsPage() {
       card.innerHTML = `
         <div class="mockup-stage">
           <div class="poster-frame">
-            <div class="mat with-padding with-color">
               <div class="artwork">
                 <img src="${firstImageUrl}" alt="${p.name}">
               </div>
