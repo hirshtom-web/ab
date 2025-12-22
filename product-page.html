@@ -36,9 +36,10 @@
       </div>
 
     
-       <!-- RIGHT -->
+<!-- RIGHT -->
 <div class="product-right">
-  
+
+  <!-- PRICING + DESCRIPTION -->
   <div class="pricing">
     <h2>Landscape at Collioure</h2>
     <div class="artist">By Henri Matisse</div>
@@ -56,124 +57,119 @@
       </a>
     </div>
 
-  <!-- OPTIONS -->
-        <div class="product-options">
-          <label class="group-label" for="artworkType">Artwork Type</label>
-          <div class="option-button">
-            <select id="artworkType">
-              <option value="digital">Digital — Instant download</option>
-              <option value="print-5x8">Print 5 × 8 in — $30</option>
-              <option value="print-8x11">Print 8 × 11 in — $36</option>
-              <option value="print-11x15">Print 11 × 15 in — $44</option>
-              <option value="print-15x19">Print 15 × 19 in — $60</option>
-            </select>
-          </div>
+    <!-- OPTIONS -->
+    <div class="product-options">
+      <label class="group-label" for="artworkType">Artwork Type</label>
+      <div class="option-button">
+        <select id="artworkType">
+          <option value="digital">Digital — Instant download</option>
+          <option value="print-5x8">Print 5 × 8 in — $30</option>
+          <option value="print-8x11">Print 8 × 11 in — $36</option>
+          <option value="print-11x15">Print 11 × 15 in — $44</option>
+          <option value="print-15x19">Print 15 × 19 in — $60</option>
+        </select>
+      </div>
 
-          <div class="option-button" id="frameWrapper" style="display:none;">
-            <label for="frame">Frame</label>
-            <select id="frame">
-              <option value="none">No frame</option>
-              <option value="black">Black frame</option>
-              <option value="white">White frame</option>
-              <option value="oak">Oak frame</option>
-            </select>
-          </div>
-        </div>
+      <div class="option-button" id="frameWrapper" style="display:none;">
+        <label for="frame">Frame</label>
+        <select id="frame">
+          <option value="none">No frame</option>
+          <option value="black">Black frame</option>
+          <option value="white">White frame</option>
+          <option value="oak">Oak frame</option>
+        </select>
+      </div>
+    </div>
 
-   
-  
-    <!-- Buttons -->
+    <!-- BUTTONS -->
     <div class="buttons">
       <button class="buy" id="buyNowBtn">Buy Now</button>
-          <button class="cart" onclick="addToCart({
-  id: 'art_102',
-  title: 'Abstract Blue No.4',
-  price: 49.00,
-  image: 'images/art102.jpg'
-})">
-  Add to Cart
-</button>
-
-        </div>
-      </div>
-     </div>
-      
-      <div class="section-svg">
-        <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
-      </div>
-      
-      <div class="accordion">
-        <div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">High-Resolution Digital Art Prints</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-
-          <div class="accordion-content">
-            <p>
-              You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
-              Print in any size at home or through a local or online printing service.
-              Perfect for framing, gifts, or decorating your space.
-            </p>
-          </div>
-        </div>
-
-        <div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Instant Download via Email</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Your files will be sent straight to your email after purchase for quick and easy access.
-              No waiting, no shipping — download and print right away.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-<button class="accordion-header">
-  <span class="header-title">Easy to Print & Frame</span>
-  <span class="material-symbols-outlined">expand_more</span>
-</button>
-          <div class="accordion-content">
-            <p>
-              Print effortlessly at home, online, or through a professional print shop.
-              Once printed, your artwork is ready to frame and hang,
-              instantly adding beauty to your space.
-            </p>
-          </div>
-        </div>
-
-<div class="accordion-item">
-  <button class="accordion-header">
-    <span class="header-title">Usage License</span>
-    <span class="material-symbols-outlined">expand_more</span>
-  </button>
-
-  <div class="accordion-content">
-    <div class="license-options">
-      <label class="license-option">
-        <input type="radio" name="license" checked>
-        <span class="radio-label">
-          <strong>Personal Use</strong>
-          Personal use only — perfect for home décor or gifting.
-        </span>
-      </label>
-
-      <label class="license-option">
-        <input type="radio" name="license">
-        <span class="radio-label">
-          <strong>Commercial Use</strong>
-          Commercial licensing for online, digital, and resale purposes.
-        </span>
-      </label>
+      <button class="cart" onclick="addToCart({
+        id: 'art_102',
+        title: 'Abstract Blue No.4',
+        price: 49.00,
+        image: 'images/art102.jpg'
+      })">Add to Cart</button>
     </div>
+  </div> <!-- End pricing container -->
+
+  <!-- SVG UNDERNEATH -->
+  <div class="section-svg">
+    <img src="https://static.wixstatic.com/shapes/1799ca_c0e00af88c3f4418b0341c09126c2b81.svg" alt="Section Divider">
   </div>
-</div>
-</div>
-  </div>
+
+  <!-- ACCORDION -->
+  <div class="accordion">
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">High-Resolution Digital Art Prints</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <p>
+          You’ll receive high-resolution files with crisp detail, vibrant color, and easy resizing.
+          Print in any size at home or through a local or online printing service.
+          Perfect for framing, gifts, or decorating your space.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Instant Download via Email</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <p>
+          Your files will be sent straight to your email after purchase for quick and easy access.
+          No waiting, no shipping — download and print right away.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Easy to Print & Frame</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <p>
+          Print effortlessly at home, online, or through a professional print shop.
+          Once printed, your artwork is ready to frame and hang,
+          instantly adding beauty to your space.
+        </p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-header">
+        <span class="header-title">Usage License</span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div class="accordion-content">
+        <div class="license-options">
+          <label class="license-option">
+            <input type="radio" name="license" checked>
+            <span class="radio-label">
+              <strong>Personal Use</strong>
+              Personal use only — perfect for home décor or gifting.
+            </span>
+          </label>
+
+          <label class="license-option">
+            <input type="radio" name="license">
+            <span class="radio-label">
+              <strong>Commercial Use</strong>
+              Commercial licensing for online, digital, and resale purposes.
+            </span>
+          </label>
         </div>
+      </div>
+    </div>
+  </div> <!-- End accordion -->
+
+</div> <!-- End product-right -->
+
   
        <section class="features-section">
   <div class="features-container">
