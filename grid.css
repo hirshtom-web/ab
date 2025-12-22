@@ -17,38 +17,84 @@
 .product-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   min-width: 250px;
+  align-items: center;
 }
 
 /* ===========================
-   MEDIA CONTAINER RATIO FIX
+   MOCKUP STAGE / POSTER FRAME
 =========================== */
-.product-card .media-container {
+.product-card .mockup-stage {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* fixed ratio applied here */
-  overflow: hidden;
-  position: relative;
+  background: #f9f5f2;
+  padding: 40px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-.product-card .media-container img {
+.product-card .mockup-stage .poster-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 210 / 297; /* A4 ratio */
+  background: #fff;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08),
+              inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+.product-card .mockup-stage .mat {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* cover ratio without stretching */
-  display: block;
-  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: .25s ease;
+  background: transparent;
+  border-radius: 3px;
 }
 
-/* Hover effect for second image if available */
-.product-card .media-container img.second-image {
+.product-card .mockup-stage .mat.with-padding {
+  padding: 20px 10px; /* optional padding inside passepartout */
+}
+
+.product-card .mockup-stage .mat.with-color {
+  background-color: var(--mat-color,#fff);
+}
+
+.product-card .mockup-stage .artwork {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-card .mockup-stage .artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* FRAME OVERLAYS */
+.product-card .mockup-stage .frame-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
-}
-
-.product-card .media-container:hover img.second-image {
-  opacity: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
 }
 
 /* ===========================
@@ -79,40 +125,18 @@
   font-weight: bold;
   color: #000;
 }
-.product-card .media-container {
-  width: 100%;
-  aspect-ratio: 1 / 1.25; /* fixed container ratio */
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fff; /* optional, for padding around first image */
-  border-radius: 14px;
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media(max-width:1200px){
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* FIRST IMAGE (print/design) */
-.product-card .media-container img:first-child {
-  max-width: 80%;  /* keeps gap inside container */
-  max-height: 80%;
-  object-fit: contain; /* keep original ratio, not stretched */
-  display: block;
-  transition: opacity 0.3s ease;
+@media(max-width:900px){
+  .products-grid { grid-template-columns: repeat(2, 1fr); padding:0 20px; }
 }
 
-/* EXTRA IMAGES (full images) */
-.product-card .media-container img.extra-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-/* Show extra image on hover */
-.product-card .media-container:hover img.extra-image {
-  opacity: 1;
+@media(max-width:600px){
+  .products-grid { grid-template-columns: 1fr; padding:0 10px; }
 }
