@@ -58,19 +58,25 @@ function initProductsPage() {
         `).join("");
       }
 
-      card.innerHTML = `
-        <div class="media-container">
-          <img src="${firstImage.includes("http") ? firstImage : 'https://static.wixstatic.com/media/' + firstImage}" alt="${p.name}">
-          ${extraImagesHTML}
+     card.innerHTML = `
+  <div class="mockup-stage">
+    <div class="poster-frame">
+      <div class="mat with-padding with-color">
+        <div class="artwork">
+          <img src="${firstImage}" alt="${p.name}">
         </div>
-        <div class="product-info">
-          <h3>${p.name}</h3>
-          <div class="price-wrapper">
-            <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-            <span class="price-new">$${p.price}</span>
-          </div>
-        </div>
-      `;
+      </div>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3>${p.name}</h3>
+    <div class="price-wrapper">
+      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+      <span class="price-new">$${p.price}</span>
+    </div>
+  </div>
+`;
+
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
       grid.appendChild(card);
