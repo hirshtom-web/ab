@@ -9,8 +9,6 @@
   box-sizing: border-box;
   max-width: calc(4 * 320px + 3 * 20px + 80px);
   margin: 0 auto;
-  background: #fff;
-
 }
 
 /* ===========================
