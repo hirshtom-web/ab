@@ -25,6 +25,9 @@
 /* ===========================
    MOCKUP STAGE / POSTER FRAME
 =========================== */
+/* ===========================
+   MOCKUP STAGE / POSTER FRAME
+=========================== */
 .product-card .mockup-stage {
   width: 100%;        /* fits the column */
   max-width: 240px;   /* scale down from 320px to fit 4 in row */
@@ -34,14 +37,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* align top instead of stretching */
   box-sizing: border-box;
   margin: 0 auto;
 }
 
 .product-card .mockup-stage .poster-frame {
   width: 100%;
-  max-width: 200px;  /* scale poster itself */
+  max-width: 200px;       /* width of poster inside mockup */
+  max-height: 300px;      /* limit height so it doesn't overflow */
   aspect-ratio: 210 / 297; /* maintain A4 ratio */
   position: relative;
   background: #fff;
@@ -83,21 +87,10 @@
 }
 
 .product-card .mockup-stage .artwork img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;  /* <-- fixed: keep artwork ratio */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;  /* keep artwork ratio */
   border-radius: 2px;
-}
-
-/* FRAME OVERLAYS */
-.product-card .mockup-stage .frame-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  display: none;
 }
 
 
