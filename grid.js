@@ -100,22 +100,21 @@ function updateGridImages() {
 
   productCards.forEach(card => {
     const imgList = JSON.parse(card.dataset.images || "[]");
-    const mockup = card.querySelector(".mockup-stage");
     const artworkImg = card.querySelector(".artwork img");
     const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-    const newImg = imgList[currentImageIndex] || imgList[0];
-    const imgUrl = newImg.includes("http")
-      ? newImg
-      : "https://static.wixstatic.com/media/" + newImg;
+    const img = imgList[currentImageIndex] || imgList[0];
+    const url = img.includes("http")
+      ? img
+      : "https://static.wixstatic.com/media/" + img;
 
     if (currentImageIndex === 1 && lifestyleImg) {
-      // LIFESTYLE MODE
-      lifestyleImg.src = imgUrl;
+      // LIFESTYLE LOOK
+      lifestyleImg.src = url;
       card.classList.add("is-lifestyle");
     } else {
-      // ARTWORK MODE
-      if (artworkImg) artworkImg.src = imgUrl;
+      // ARTWORK LOOK
+      if (artworkImg) artworkImg.src = url;
       card.classList.remove("is-lifestyle");
     }
   });
