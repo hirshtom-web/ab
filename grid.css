@@ -11,6 +11,7 @@
   box-sizing: border-box;
 }
 
+
 /* ===========================
    PRODUCT CARD
 =========================== */
@@ -28,7 +29,7 @@
 .product-card .mockup-stage {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: none;
   aspect-ratio: 3 / 4;
   background: #f9f5f2;
   padding: 55px;
