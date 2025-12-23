@@ -10,7 +10,7 @@ function initProductsPage() {
   let currentPage = 1;
   const productsPerPage = 60;
 
-  // Load CSV
+  // LOAD CSV (UNCHANGED)
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
@@ -21,16 +21,21 @@ function initProductsPage() {
         name: (p.name || "Unnamed Product").trim(),
         price: p.price ? parseFloat(p.price) : 1,
         oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-        images: (p.productImageUrl || "").split(";").map(i => i.trim()).filter(i => i)
+        images: (p.productImageUrl || "")
+          .split(";")
+          .map(i => i.trim())
+          .filter(Boolean)
       }));
 
       renderPage(currentPage);
+      updateGridImages();
     },
     error: err => console.error("CSV load failed:", err)
   });
 
   function renderPage(page) {
     grid.innerHTML = "";
+
     const start = (page - 1) * productsPerPage;
     const slice = allProducts.slice(start, start + productsPerPage);
 
@@ -40,43 +45,30 @@ function initProductsPage() {
     }
 
     slice.forEach(p => {
-      let card = document.createElement("div");
-      card.className = "product-card is-product variant-frame-mat";
+      const card = document.createElement("div");
+      card.className = "product-card is-product";
+      card.dataset.images = JSON.stringify(p.images);
 
-    const imagesArray = p.images.length ? p.images : [""];
-card.dataset.images = JSON.stringify(imagesArray);
+      card.innerHTML = `
+        <div class="mockup-stage">
+          <img class="lifestyle-bg" alt="">
+          <div class="artwork">
+            <img alt="${p.name}">
+          </div>
+        </div>
 
-const firstImage = imagesArray[0];
-const firstImageUrl = firstImage.includes("http")
-  ? firstImage
-  : "https://static.wixstatic.com/media/" + firstImage;
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">
+            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
+            <span class="price-new">$${p.price}</span>
+          </div>
+        </div>
+      `;
 
-const lifestyleImage = imagesArray[1];
-const lifestyleUrl = lifestyleImage
-  ? (lifestyleImage.includes("http")
-      ? lifestyleImage
-      : "https://static.wixstatic.com/media/" + lifestyleImage)
-  : "";
+      card.onclick = () =>
+        (window.location.href = `product-page.html?id=${p.id}`);
 
-card.innerHTML = `
-  <div class="mockup-stage">
-    ${lifestyleUrl ? `<img class="lifestyle-bg" src="${lifestyleUrl}" alt="">` : ""}
-
-    <div class="artwork">
-      <img src="${firstImageUrl}" alt="${p.name}">
-    </div>
-  </div>
-
-  <div class="product-info">
-    <h3>${p.name}</h3>
-    <div class="price-wrapper">
-      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ""}</span>
-      <span class="price-new">$${p.price}</span>
-    </div>
-  </div>
-`;
-
-      card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
       grid.appendChild(card);
     });
 
@@ -86,14 +78,10 @@ card.innerHTML = `
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
   }
 
-  // Pagination buttons
-  if (prevBtn) prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); updateGridImages(); } };
-  if (nextBtn) nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); updateGridImages(); } };
-
-  // IMAGE TOGGLE (Cover / Lifestyle)
-  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
+  // IMAGE TOGGLE STATE
   let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
+  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
   imgButtons.forEach(btn => {
     btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
     btn.addEventListener("click", () => {
@@ -102,86 +90,56 @@ card.innerHTML = `
 
       currentImageIndex = parseInt(btn.dataset.index);
       localStorage.setItem("gridImageIndex", currentImageIndex);
-
       updateGridImages();
     });
   });
 
+  // 🔑 IMAGE UPDATE (FIXED)
   function updateGridImages() {
-    const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-    productCards.forEach(card => {
-      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-      const newImg = imgList[currentImageIndex] || imgList[0];
-      const imgEl = card.querySelector(".mockup-stage .poster-frame .artwork img");
-      if (imgEl) imgEl.src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-    });
-  }
+    document.querySelectorAll("#productGrid .product-card").forEach(card => {
+      const imgs = JSON.parse(card.dataset.images || "[]");
 
-  // Initial image update
-  updateGridImages();
+      const artworkImg = card.querySelector(".artwork img");
+      const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-  // SHUFFLE & SORT
-  const shuffleBtn = document.querySelector('.control-btn[title="Shuffle"]');
-  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
+      const artworkSrc = imgs[0];
+      const lifestyleSrc = imgs[1];
 
-  if (shuffleBtn) shuffleBtn.addEventListener("click", () => {
-    for (let i = allProducts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allProducts[i], allProducts[j]] = [allProducts[j], allProducts[i]];
-    }
-    renderPage(currentPage);
-    updateGridImages();
-  });
+      if (artworkImg && artworkSrc) {
+        artworkImg.src = artworkSrc.includes("http")
+          ? artworkSrc
+          : "https://static.wixstatic.com/media/" + artworkSrc;
+      }
 
-  if (sortBtn) {
-    const sortOptions = [
-      { label: "Price: Low → High", fn: (a, b) => a.price - b.price },
-      { label: "Price: High → Low", fn: (a, b) => b.price - a.price },
-      { label: "Name: A → Z", fn: (a, b) => a.name.localeCompare(b.name) },
-      { label: "Name: Z → A", fn: (a, b) => b.name.localeCompare(a.name) }
-    ];
-
-    const sortBubble = document.createElement("div");
-    sortBubble.className = "sort-bubble";
-    sortBubble.style.position = "absolute";
-    sortBubble.style.background = "#fff";
-    sortBubble.style.border = "1px solid #ccc";
-    sortBubble.style.borderRadius = "8px";
-    sortBubble.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-    sortBubble.style.padding = "8px 0";
-    sortBubble.style.display = "none";
-    sortBubble.style.zIndex = 9999;
-
-    sortOptions.forEach(opt => {
-      const el = document.createElement("div");
-      el.textContent = opt.label;
-      el.style.padding = "8px 16px";
-      el.style.cursor = "pointer";
-      el.style.whiteSpace = "nowrap";
-      el.onmouseenter = () => el.style.background = "#f5f5f5";
-      el.onmouseleave = () => el.style.background = "transparent";
-      el.onclick = () => {
-        allProducts.sort(opt.fn);
-        renderPage(currentPage);
-        updateGridImages();
-        sortBubble.style.display = "none";
-      };
-      sortBubble.appendChild(el);
-    });
-
-    document.body.appendChild(sortBubble);
-
-    sortBtn.addEventListener("click", () => {
-      const rect = sortBtn.getBoundingClientRect();
-      sortBubble.style.top = rect.bottom + window.scrollY + "px";
-      sortBubble.style.left = rect.left + window.scrollX + "px";
-      sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
-    });
-
-    document.addEventListener("click", e => {
-      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
-        sortBubble.style.display = "none";
+      if (lifestyleImg) {
+        if (currentImageIndex === 1 && lifestyleSrc) {
+          lifestyleImg.src = lifestyleSrc.includes("http")
+            ? lifestyleSrc
+            : "https://static.wixstatic.com/media/" + lifestyleSrc;
+          lifestyleImg.style.display = "block";
+        } else {
+          lifestyleImg.style.display = "none";
+        }
       }
     });
   }
+
+  // PAGINATION
+  if (prevBtn)
+    prevBtn.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage(currentPage);
+        updateGridImages();
+      }
+    };
+
+  if (nextBtn)
+    nextBtn.onclick = () => {
+      if (currentPage * productsPerPage < allProducts.length) {
+        currentPage++;
+        renderPage(currentPage);
+        updateGridImages();
+      }
+    };
 }
