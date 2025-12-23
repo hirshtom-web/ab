@@ -53,11 +53,9 @@ function initProductsPage() {
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <div class="poster-frame">
               <div class="artwork">
                 <img src="${firstImageUrl}" alt="${p.name}">
               </div>
-            </div>
         </div>
         <div class="product-info">
           <h3>${p.name}</h3>
