@@ -3,17 +3,13 @@
 =========================== */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 per row */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 
-  padding-left: 40px;
-  padding-right: 40px;
-
   width: 100%;
+  padding: 0 40px;
   box-sizing: border-box;
 }
-
-
 
 /* ===========================
    PRODUCT CARD
@@ -24,83 +20,39 @@
   gap: 12px;
   align-items: center;
 }
-.product-card {
-  max-width: 620px;
-  margin: 0 auto;
-}
 
-.product-card .media-container {
+/* ===========================
+   MOCKUP STAGE
+=========================== */
+.product-card .mockup-stage {
+  position: relative;
   width: 100%;
+  aspect-ratio: 210 / 297; /* controls height */
+  background: #f9f5f2;
+  border-radius: 20px;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.product-card .media-container img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  padding: 40px;
+  box-sizing: border-box;
 }
 
 /* ===========================
-   MOCKUP STAGE / POSTER FRAME
+   LIFESTYLE BACKGROUND
 =========================== */
-.product-card .mockup-stage {
-  width: 100%;
-  max-width: 500px;    /* bigger than 240px */
-  background: #f9f5f2;
-  padding: 55px;       /* slightly bigger padding */
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  margin: 0 auto;
-}
-
-.product-card .mockup-stage .poster-frame {
-  width: 100%;
-  max-width: 240px;  /* bigger poster */
-  aspect-ratio: 210 / 297;
-}
-
-
-.product-card .mockup-stage .poster-frame {
-  position: relative;
-  background: transparent;
-  border-radius: 3px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08),
-              inset 0 0 0 1px rgba(0,0,0,0.03);
-}
-
-.product-card .mockup-stage .mat {
+.product-card .mockup-stage .lifestyle-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  transition: .25s ease;
-  background: transparent;
-  border-radius: 3px;
+  object-fit: cover;
+  z-index: 0;
 }
 
-.product-card .mockup-stage .mat.with-padding {
-  padding: 20px 10px;
-}
-
-.product-card .mockup-stage .mat.with-color {
-  background-color: transparent;  /* remove white */
-
-}
-
+/* ===========================
+   ARTWORK (CENTERED & SAFE)
+=========================== */
 .product-card .mockup-stage .artwork {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   display: flex;
@@ -111,56 +63,47 @@
 .product-card .mockup-stage .artwork img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;  /* keep artwork ratio */
-  border-radius: 2px;
+  object-fit: contain;
 }
-
 
 /* ===========================
    PRODUCT INFO
 =========================== */
 .product-card .product-info {
-  padding: 10px 0;
   text-align: center;
-  flex-shrink: 0;
 }
 
 .product-card .product-info h3 {
   font-size: 14px;
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
 }
 
-.product-card .product-info .price-wrapper {
+.product-card .price-wrapper {
   font-size: 14px;
 }
 
-.product-card .product-info .price-old {
+.product-card .price-old {
   text-decoration: line-through;
   margin-right: 6px;
   color: #999;
 }
 
-.product-card .product-info .price-new {
-  font-weight: bold;
-  color: #000;
+.product-card .price-new {
+  font-weight: 600;
 }
 
 /* ===========================
-   RESPONSIVE (just scale padding)
+   RESPONSIVE
 =========================== */
-@media(max-width:900px){
-  .products-grid { padding:0 20px; }
-}
-
-@media(max-width:600px){
-  .products-grid { padding:0 10px; }
-}
-
 @media (max-width: 900px) {
   .products-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 per row */
-    padding-left: 24px;
-    padding-right: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 24px;
   }
 }
 
+@media (max-width: 600px) {
+  .products-grid {
+    padding: 0 16px;
+  }
+}
