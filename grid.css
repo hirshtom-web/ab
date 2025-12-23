@@ -31,8 +31,6 @@
 
 .product-card .media-container {
   width: 100%;
-  max-width: 200px;
-  max-height: 300px;  /* limit size */
   overflow: hidden;
   display: flex;
   align-items: center;
