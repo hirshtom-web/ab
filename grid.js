@@ -43,28 +43,38 @@ function initProductsPage() {
       let card = document.createElement("div");
       card.className = "product-card is-product variant-frame-mat";
 
-      const imagesArray = p.images.length ? p.images : [""]; // fallback
-      card.dataset.images = JSON.stringify(imagesArray);
+    const imagesArray = p.images.length ? p.images : [""];
+card.dataset.images = JSON.stringify(imagesArray);
 
-      const firstImage = imagesArray[0];
-      const firstImageUrl = firstImage.includes("http")
-        ? firstImage
-        : 'https://static.wixstatic.com/media/' + firstImage;
+const firstImage = imagesArray[0];
+const firstImageUrl = firstImage.includes("http")
+  ? firstImage
+  : "https://static.wixstatic.com/media/" + firstImage;
 
-      card.innerHTML = `
-        <div class="mockup-stage">
-              <div class="artwork">
-                <img src="${firstImageUrl}" alt="${p.name}">
-              </div>
-        </div>
-        <div class="product-info">
-          <h3>${p.name}</h3>
-          <div class="price-wrapper">
-            <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-            <span class="price-new">$${p.price}</span>
-          </div>
-        </div>
-      `;
+const lifestyleImage = imagesArray[1];
+const lifestyleUrl = lifestyleImage
+  ? (lifestyleImage.includes("http")
+      ? lifestyleImage
+      : "https://static.wixstatic.com/media/" + lifestyleImage)
+  : "";
+
+card.innerHTML = `
+  <div class="mockup-stage">
+    ${lifestyleUrl ? `<img class="lifestyle-bg" src="${lifestyleUrl}" alt="">` : ""}
+
+    <div class="artwork">
+      <img src="${firstImageUrl}" alt="${p.name}">
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3>${p.name}</h3>
+    <div class="price-wrapper">
+      <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ""}</span>
+      <span class="price-new">$${p.price}</span>
+    </div>
+  </div>
+`;
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
       grid.appendChild(card);
