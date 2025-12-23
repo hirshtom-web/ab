@@ -50,9 +50,9 @@
 =========================== */
 .product-card .mockup-stage {
   width: 100%;
-  max-width: 420px;    /* bigger than 240px */
+  max-width: 500px;    /* bigger than 240px */
   background: #f9f5f2;
-  padding: 45px;       /* slightly bigger padding */
+  padding: 55px;       /* slightly bigger padding */
   border-radius: 20px;
   display: flex;
   flex-direction: column;
