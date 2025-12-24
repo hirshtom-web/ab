@@ -100,15 +100,17 @@
 ========================= */
 
 @media (max-width: 600px) {
-  /* Grid: 1 column centered */
+  /* Grid: single column */
   .products-grid {
-    grid-template-columns: 1fr; /* only one product per row */
+    display: grid;
+    grid-template-columns: 1fr; /* one product per row */
     gap: 20px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 0 16px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  /* Product card: full width, centered content */
+  /* Product card: centered */
   .product-card {
     display: flex !important;
     flex-direction: column;
@@ -116,12 +118,11 @@
     gap: 12px;
   }
 
-  /* Mockup stage: fixed aspect ratio, background visible */
+  /* Mockup stage: fixed aspect ratio with background */
   .product-card .mockup-stage {
     width: 100%;
-    max-width: 400px;  /* optional max width */
-    height: 0;
-    padding-top: 133.33%; /* 3/4 aspect ratio */
+    max-width: 400px;       /* optional: prevent huge stretching */
+    aspect-ratio: 3 / 4;    /* ensures consistent height */
     background: #f9f5f2;
     border-radius: 20px;
     overflow: hidden;
@@ -143,7 +144,7 @@
     display: block;
   }
 
-  /* Lifestyle background: covers the stage */
+  /* Lifestyle background: cover stage */
   .product-card .lifestyle-bg {
     position: absolute;
     inset: 0;
@@ -153,11 +154,10 @@
     display: block;
   }
 
-  /* Product info: centered below stage */
+  /* Product info: centered */
   .product-card .product-info {
     width: 100%;
     text-align: center;
-    margin-top: auto;
   }
 
   /* Show more button: full width */
