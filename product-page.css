@@ -590,15 +590,17 @@
 /* ===============================
    PRODUCT PAGE IMAGE WRAPPER
 ================================ */
+
 .main-image-wrapper {
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
+  background: #eee;
 }
 
-/* ---------- ARTWORK (PRINT) ---------- */
+/* PRINT / ARTWORK */
 .main-image-wrapper.artwork {
   background: #f9f5f2;
   padding: 60px;
@@ -613,7 +615,7 @@
   object-fit: contain;
 }
 
-/* ---------- LIFESTYLE ---------- */
+/* LIFESTYLE */
 .main-image-wrapper.lifestyle {
   background: none;
   padding: 0;
@@ -622,12 +624,13 @@
 .main-image-wrapper.lifestyle img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;   /* 🔥 THIS is the key */
+  display: block;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .main-image-wrapper.artwork {
     padding: 24px;
   }
 }
+
