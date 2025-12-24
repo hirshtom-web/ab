@@ -6,10 +6,14 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 
-  width: 100%;
+  width: 100vw;
   padding: 0 40px;
   box-sizing: border-box;
+
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
+
 
 
 /* ===========================
