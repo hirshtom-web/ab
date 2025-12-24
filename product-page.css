@@ -595,7 +595,7 @@
 }
 
 .main-image-wrapper.artwork {
-  background: #f9f5f2;
+  background: #fffff;
   padding: 48px;          /* space around artwork */
   display: flex;
   align-items: center;
@@ -622,7 +622,7 @@
 
 @media (max-width: 768px) {
   .main-image-wrapper.artwork {
-    padding: 24px;
+  padding: 48px; 
   }
 }
 
