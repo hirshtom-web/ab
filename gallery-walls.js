@@ -1,13 +1,13 @@
-function initProductsPage() {
+document.addEventListener("DOMContentLoaded", () => {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
-
   if (!grid) return console.error("❌ productGrid not found");
   if (!showMoreBtn) console.warn("⚠️ Show More button not found");
 
+  const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
+  const productsPerPage = 20; // initial batch
   let allProducts = [];
-  let currentIndex = 0; // tracks how many products are shown
-  const productsPerPage = 60;
+  let currentIndex = 0;
 
   const banners = [
     { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
@@ -18,105 +18,101 @@ function initProductsPage() {
     { type: "color", color: "#c5f79f" }
   ];
 
+  function createProductCard(p, index) {
+    let card;
+
+    if ((index + 1) % 7 === 0) {
+      // Banner
+      card = document.createElement("div");
+      card.className = "product-card banner-only";
+      const bannerIndex = Math.floor(index / 7) % banners.length;
+      const banner = banners[bannerIndex];
+      if (banner.type === "video") {
+        card.innerHTML = `
+          <div class="img-wrapper banner-wrapper">
+            <video autoplay muted loop playsinline>
+              <source src="${banner.src}" type="video/mp4">
+            </video>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
+      }
+    } else {
+      // Regular product
+      card = document.createElement("div");
+      card.className = "product-card is-product";
+      const imagesArray = p.images.length ? p.images : ["https://via.placeholder.com/300x300"];
+      card.dataset.images = JSON.stringify(imagesArray);
+
+      card.innerHTML = `
+        <div class="img-wrapper">
+          <img src="${imagesArray[0].startsWith('http') ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+        </div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">
+            <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+            <span class="price-new">$${p.price}</span>
+          </div>
+        </div>
+      `;
+
+      card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+    }
+
+    return card;
+  }
+
+  function renderNextBatch() {
+    const slice = allProducts.slice(currentIndex, currentIndex + productsPerPage);
+    if (!slice.length) {
+      showMoreBtn.style.display = "none";
+      return;
+    }
+    slice.forEach((p, idx) => grid.appendChild(createProductCard(p, currentIndex + idx)));
+    currentIndex += slice.length;
+
+    // Hide button if no more products
+    if (currentIndex >= allProducts.length) showMoreBtn.style.display = "none";
+  }
+
+  showMoreBtn?.addEventListener("click", renderNextBatch);
+
   // Load CSV
-  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+  Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
-    complete: res => {
+    complete: (res) => {
       if (!res.data || !res.data.length) {
-        console.error("❌ CSV loaded but no data found", res);
+        console.error("❌ CSV loaded but no data");
         grid.innerHTML = "<p>No products available.</p>";
+        showMoreBtn.style.display = "none";
         return;
       }
 
-      allProducts = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.price ? parseFloat(p.price) : 1,
-        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-        images: (p.productImageUrl || "").split(";").map(i => i.trim()).filter(Boolean)
-      }));
+      allProducts = res.data.map(p => {
+        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+        let lifestyle = (p.lifestyleUrl || "").trim();
+        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+        return {
+          id: (p.productId || "").trim(),
+          name: (p.name || "").trim(),
+          price: p.newPrice ? parseFloat(p.newPrice) : 0,
+          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+          images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+        };
+      });
 
       console.log("✅ Products loaded:", allProducts.length);
-
-      renderProducts(); // first batch
+      renderNextBatch();
     },
     error: err => {
       console.error("❌ CSV load failed:", err);
       grid.innerHTML = "<p>Failed to load products.</p>";
+      showMoreBtn.style.display = "none";
     }
   });
-
-  function renderProducts() {
-    const slice = allProducts.slice(currentIndex, currentIndex + productsPerPage);
-
-    if (!slice.length) {
-      if (showMoreBtn) showMoreBtn.style.display = "none";
-      if (currentIndex === 0) grid.innerHTML = "<p>No products found.</p>";
-      return;
-    }
-
-    slice.forEach((p, index) => {
-      let card;
-
-      // Banner every 7th card
-      if ((currentIndex + index + 1) % 7 === 0) {
-        card = document.createElement("div");
-        card.className = "product-card banner-only";
-
-        const bannerIndex = Math.floor((currentIndex + index) / 7) % banners.length;
-        const banner = banners[bannerIndex];
-
-        if (banner.type === "video") {
-          card.innerHTML = `
-            <div class="img-wrapper banner-wrapper">
-              <video autoplay muted loop playsinline>
-                <source src="${banner.src}" type="video/mp4">
-              </video>
-            </div>
-          `;
-        } else {
-          card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
-        }
-      } else {
-        // Regular product card
-        card = document.createElement("div");
-        card.className = "product-card is-product";
-
-        const imagesArray = p.images.length ? p.images : ["https://via.placeholder.com/300x300"];
-        card.dataset.images = JSON.stringify(imagesArray);
-
-        card.innerHTML = `
-          <div class="img-wrapper">
-            <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
-          </div>
-          <div class="product-info">
-            <h3>${p.name}</h3>
-            <div class="price-wrapper">
-              <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-              <span class="price-new">$${p.price}</span>
-            </div>
-          </div>
-        `;
-
-        card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
-      }
-
-      grid.appendChild(card);
-    });
-
-    currentIndex += slice.length;
-
-    // Hide Show More if no more products
-    if (currentIndex >= allProducts.length && showMoreBtn) {
-      showMoreBtn.style.display = "none";
-    } else if (showMoreBtn) {
-      showMoreBtn.style.display = "block";
-    }
-  }
-
-  if (showMoreBtn) {
-    showMoreBtn.onclick = () => renderProducts();
-  }
-}
+});
