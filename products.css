@@ -128,7 +128,7 @@
 ================================ */
 .product-card.artwork .img-wrapper {
   background: #f9f5f2;
-  padding: 32px;
+  padding: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,4 +226,10 @@
   display: flex;
   justify-content: center;
   margin: 30px 0;
+}
+
+@media (max-width: 768px) {
+  .product-card.artwork .img-wrapper {
+    padding: 24px;  /* reduce spacing on mobile */
+  }
 }
