@@ -105,32 +105,34 @@
     gap: 12px;
     padding-left: 16px;
     padding-right: 16px;
-    align-items: stretch; /* ensure equal height for cards */
   }
 
   .product-card {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-items: stretch; /* stretch children to same width */
+    align-items: stretch; /* ensure grid items stretch */
   }
 
   .product-card .mockup-stage {
-    flex: 1; /* stretch mockup-stage to fill card height */
-    aspect-ratio: 3 / 4;
+    width: 100%;
+    aspect-ratio: 3 / 4;       /* keep consistent height */
     background: #f9f5f2;
     border-radius: 20px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 15px;              /* small padding for gaps */
+    box-sizing: border-box;
   }
 
-  .product-card .mockup-stage .artwork,
-  .product-card .mockup-stage .artwork img {
-    max-width: 80%;
+  .product-card .artwork img {
+    max-width: 80%;             /* leave gaps */
     max-height: 80%;
     object-fit: contain;
+    display: block;
+    margin: auto;
   }
 
   .product-card .lifestyle-bg {
@@ -140,6 +142,11 @@
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  /* Ensure text below doesn't cause big height differences */
+  .product-card .product-info {
+    text-align: center;
   }
 }
 
