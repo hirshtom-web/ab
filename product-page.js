@@ -20,7 +20,17 @@ async function initProductsPage() {
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-  function switchImage(index) {
+  function updateImageStyle(index) {
+  const wrapper = document.querySelector(".main-image-wrapper");
+  if (!wrapper) return;
+
+  wrapper.classList.remove("artwork", "lifestyle");
+  wrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
+}
+
+function switchImage(index) {
+  updateImageStyle(index); // ✅ ADD THIS LINE
+
     if(!allImages.length) return;
     currentIndex = index;
     mainImage.style.opacity = 0;
