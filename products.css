@@ -241,7 +241,7 @@
   background: #e74c3c; /* red bubble */
   color: #fff;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 500;
   padding: 4px 6px;
   border-radius: 6px;
   z-index: 10;
