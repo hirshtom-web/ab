@@ -92,19 +92,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      allProducts = res.data.map(p => {
-        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-        let lifestyle = (p.lifestyleUrl || "").trim();
-        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
-        return {
-          id: (p.productId || "").trim(),
-          name: (p.name || "").trim(),
-          price: p.newPrice ? parseFloat(p.newPrice) : 0,
-          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-          images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
-        };
-      });
+    allProducts = res.data.map(p => {
+  const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+  const lifestyle = (p.lifestyleUrl || "").trim();
+  const more = (p.moreImages || "").split(";").map(i => i.trim()).filter(Boolean);
+  const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(1), more);
+
+  return {
+    id: (p.productId || "").trim(),
+    name: (p.name || "").trim(),
+    price: p.newPrice ? parseFloat(p.newPrice) : 0,
+    oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+    discount: p.discount || null,
+    artist: (p.artistName || "").trim(),
+    images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+  };
+});
+
 
       console.log("✅ Products loaded:", allProducts.length);
       renderNextBatch();
