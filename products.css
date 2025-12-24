@@ -59,12 +59,6 @@
 .controls-center { justify-content: center; }
 .controls-right { justify-content: flex-end; }
 
-/* ===============================
-   RESPONSIVE CONTROLS
-================================ */
-.mobile-only { display: none; }
-.desktop-only { display: inline-flex; }
-
 @media (max-width: 768px) {
   .controls-bar {
     display: flex;
@@ -87,27 +81,7 @@
 }
 
 /* ===============================
-   BANNER CARD
-================================ */
-.banner-card {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  border-radius: 16px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.banner-card video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ===============================
    PRODUCTS GRID
-   - Full width with 40px side padding
 ================================ */
 .products-grid {
   display: grid;
@@ -141,12 +115,11 @@
 ================================ */
 .img-wrapper {
   width: 100%;
-  aspect-ratio: 3 / 4;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
   margin-bottom: 8px;
-  background: #eee; /* default fallback */
+  background: #eee;
 }
 
 /* ===============================
@@ -154,17 +127,17 @@
 ================================ */
 .product-card.artwork .img-wrapper {
   background: #f9f5f2;
-  padding: 32px;              /* show beige */
-  border-radius: 16px;
+  padding: 32px;               /* beige padding */
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 16px;
 }
 
 .product-card.artwork img {
   width: 100%;
   height: 100%;
-  object-fit: contain;        /* no cropping */
+  object-fit: contain;         /* keeps full image inside padding */
   display: block;
 }
 
@@ -173,18 +146,39 @@
 ================================ */
 .product-card.lifestyle .img-wrapper {
   background: none;
-  padding: 0;                 /* remove beige padding */
-  border-radius: 0;            /* remove rounded corners if needed */
+  padding: 0;                  /* remove beige padding */
+  border-radius: 0;             /* optional */
   width: 100%;
-  aspect-ratio: auto;          /* let it stretch freely */
-  position: relative;
+  aspect-ratio: auto;           /* flexible height */
 }
 
 .product-card.lifestyle img {
-  position: relative;         /* normal flow */
   width: 100%;
-  height: auto;               /* maintain image ratio */
-  object-fit: cover;          /* fills container horizontally */
+  height: auto;                /* maintain aspect ratio */
+  object-fit: cover;           /* fills container */
+  display: block;
+}
+
+/* ===============================
+   BANNER CARD
+================================ */
+.product-card.banner-only .img-wrapper,
+.banner-card {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.product-card.banner-only video,
+.banner-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -233,25 +227,4 @@
   display: flex;
   justify-content: center;
   margin: 30px 0;
-}
-
-/* ===============================
-   HARD SIZE LOCK
-================================ */
-.products-grid > .product-card {
-  width: 100%;
-}
-
-.product-card .img-wrapper {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-}
-
-.product-card .img-wrapper img,
-.product-card .img-wrapper video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
