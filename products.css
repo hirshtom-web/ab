@@ -187,29 +187,30 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;           /* 2px gap between name and price */
   align-items: center;
   text-align: center;
+  margin-top: 5px;    /* push name down from the image wrapper */
+  gap: 2px;            /* space between name and price */
 }
 
 .product-info h3 {
   font-size: 12px;    /* name font size */
-  font-weight: 600;   /* name font weight */
-  color: #000;        /* name color black */
+  font-weight: 600;   /* name weight */
+  color: #000;        /* black */
   margin: 0;
-  line-height: 1.2;   /* tighten vertical spacing */
+  line-height: 1.2;
 }
 
 .price-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;           /* small gap between prices */
+  gap: 2px;           /* spacing between prices */
 }
 
 .price-from {
   color: #e60023;     /* red */
-  font-weight: 500;   /* pricing weight */
+  font-weight: 500;
   font-size: 12px;
   line-height: 1.2;
 }
@@ -237,7 +238,7 @@
   .price-from,
   .price-old,
   .price-new {
-    font-size: 10px;   /* smaller on mobile */
+    font-size: 10px;
   }
 }
 
