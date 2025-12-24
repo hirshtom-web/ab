@@ -594,39 +594,27 @@
 .main-image-wrapper {
   width: 100%;
   aspect-ratio: 3 / 4;
-  border-radius: 16px;
-  overflow: hidden;
   position: relative;
-  background: #eee;
+  overflow: hidden;
+  border-radius: 16px;
 }
 
-/* PRINT / ARTWORK */
-.main-image-wrapper.artwork {
-  background: #f9f5f2;
-  padding: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.main-image-wrapper.artwork img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* LIFESTYLE */
+/* LIFESTYLE = FULL CONTAINER */
 .main-image-wrapper.lifestyle {
-  background: none;
-  padding: 0;
+  padding: 0 !important;
+  background: none !important;
+  display: block !important;
 }
 
 .main-image-wrapper.lifestyle img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* 🔥 THIS is the key */
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
   display: block;
 }
+
 
 @media (max-width: 768px) {
   .main-image-wrapper.artwork {
