@@ -105,24 +105,29 @@
     gap: 12px;
     padding-left: 16px;
     padding-right: 16px;
+    align-items: stretch; /* ensure equal height for cards */
+  }
+
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch; /* stretch children to same width */
   }
 
   .product-card .mockup-stage {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-top: 133.33%; /* 3/4 aspect ratio (height/width*100) */
+    flex: 1; /* stretch mockup-stage to fill card height */
+    aspect-ratio: 3 / 4;
     background: #f9f5f2;
     border-radius: 20px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .product-card .mockup-stage .artwork,
   .product-card .mockup-stage .artwork img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
@@ -137,6 +142,7 @@
     display: block;
   }
 }
+
 
 /* =========================
    SHOW MORE BUTTON
