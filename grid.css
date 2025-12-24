@@ -98,27 +98,22 @@
 /* =========================
    RESPONSIVE GRID
 ========================= */
-/* Tablets & small desktops → 2 items per row */
-@media (max-width: 1000px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    padding-left: 20px;
-    padding-right: 20px;
-    gap: 16px;
-  }
-
-  .product-card .mockup-stage {
-    padding: min(10%, 40px);
-  }
-}
-
-/* Mobile → 2 columns consistent */
+/* Mobile → 2 columns consistent + adjust mockup padding */
 @media (max-width: 600px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     padding-left: 16px;
     padding-right: 16px;
     gap: 12px;
+  }
+
+  .product-card .mockup-stage {
+    padding: 20px; /* smaller padding for mobile */
+  }
+
+  .product-card .artwork img {
+    max-width: 90%;  /* slightly smaller to leave gaps */
+    max-height: 90%;
   }
 }
 
