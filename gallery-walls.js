@@ -1,16 +1,12 @@
 function initProductsPage() {
   const grid = document.getElementById("productGrid");
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-  const pageNumber = document.getElementById("pageNumber");
+  const showMoreBtn = document.getElementById("showMoreBtn");
 
   if (!grid) return console.error("❌ productGrid not found");
-  if (!prevBtn || !nextBtn || !pageNumber) {
-    console.warn("⚠️ Pagination buttons or pageNumber not found");
-  }
+  if (!showMoreBtn) console.warn("⚠️ Show More button not found");
 
   let allProducts = [];
-  let currentPage = 1;
+  let currentIndex = 0; // tracks how many products are shown
   const productsPerPage = 60;
 
   const banners = [
@@ -34,7 +30,6 @@ function initProductsPage() {
         return;
       }
 
-      // Map CSV data to products
       allProducts = res.data.map(p => ({
         id: (p.productId || "").trim(),
         name: (p.name || "Unnamed Product").trim(),
@@ -45,7 +40,7 @@ function initProductsPage() {
 
       console.log("✅ Products loaded:", allProducts.length);
 
-      renderPage(currentPage);
+      renderProducts(); // first batch
     },
     error: err => {
       console.error("❌ CSV load failed:", err);
@@ -53,13 +48,12 @@ function initProductsPage() {
     }
   });
 
-  function renderPage(page) {
-    grid.innerHTML = "";
-    const start = (page - 1) * productsPerPage;
-    const slice = allProducts.slice(start, start + productsPerPage);
+  function renderProducts() {
+    const slice = allProducts.slice(currentIndex, currentIndex + productsPerPage);
 
     if (!slice.length) {
-      grid.innerHTML = "<p>No products found on this page.</p>";
+      if (showMoreBtn) showMoreBtn.style.display = "none";
+      if (currentIndex === 0) grid.innerHTML = "<p>No products found.</p>";
       return;
     }
 
@@ -67,11 +61,11 @@ function initProductsPage() {
       let card;
 
       // Banner every 7th card
-      if ((index + 1) % 7 === 0) {
+      if ((currentIndex + index + 1) % 7 === 0) {
         card = document.createElement("div");
         card.className = "product-card banner-only";
 
-        const bannerIndex = Math.floor(index / 7) % banners.length;
+        const bannerIndex = Math.floor((currentIndex + index) / 7) % banners.length;
         const banner = banners[bannerIndex];
 
         if (banner.type === "video") {
@@ -85,7 +79,6 @@ function initProductsPage() {
         } else {
           card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
         }
-
       } else {
         // Regular product card
         card = document.createElement("div");
@@ -113,12 +106,17 @@ function initProductsPage() {
       grid.appendChild(card);
     });
 
-    const totalPages = Math.ceil(allProducts.length / productsPerPage);
-    if (pageNumber) pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
-    if (prevBtn) prevBtn.disabled = currentPage === 1;
-    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+    currentIndex += slice.length;
+
+    // Hide Show More if no more products
+    if (currentIndex >= allProducts.length && showMoreBtn) {
+      showMoreBtn.style.display = "none";
+    } else if (showMoreBtn) {
+      showMoreBtn.style.display = "block";
+    }
   }
 
-  if (prevBtn) prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
-  if (nextBtn) nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
+  if (showMoreBtn) {
+    showMoreBtn.onclick = () => renderProducts();
+  }
 }
