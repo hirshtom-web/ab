@@ -77,25 +77,25 @@ function initProductsPage() {
   // =========================
   // SHOW MORE
   // =========================
-  function showNextBatch() {
-    const products = document.querySelectorAll(".product-card");
-    const nextCount = visibleCount + ITEMS_PER_LOAD;
+function showNextBatch() {
+  const products = document.querySelectorAll(".product-card");
+  const nextCount = visibleCount + ITEMS_PER_LOAD;
 
-    for (let i = visibleCount; i < nextCount && i < products.length; i++) {
-      products[i].style.display = "flex";
-    }
-
-    visibleCount = nextCount;
-
-    if (visibleCount >= products.length && showMoreBtn) {
-      showMoreBtn.style.display = "none";
-    }
+  for (let i = visibleCount; i < nextCount && i < products.length; i++) {
+    products[i].style.display = "flex";      // show the card
   }
 
-  if (showMoreBtn) {
-    showMoreBtn.addEventListener("click", showNextBatch);
-  }
+  visibleCount = nextCount;
 
+  // ✅ Make sure images appear correctly
+  updateGridImages();
+
+  // Hide the button if all products are visible
+  if (visibleCount >= products.length && showMoreBtn) {
+    showMoreBtn.style.display = "none";
+  }
+}
+  
   // =========================
   // IMAGE TOGGLE STATE
   // =========================
