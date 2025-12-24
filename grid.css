@@ -140,7 +140,7 @@
 
 @media (max-width: 600px) {
   #showMoreBtn {
-    width: calc(100% - 32px);
+    width: calc(50% - 32px);
     margin: 48px auto 32px;
   }
 }
