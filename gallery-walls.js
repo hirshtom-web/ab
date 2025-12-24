@@ -16,22 +16,26 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
+      console.log("✅ CSV loaded, total rows:", res.data.length);
+
       allProducts = res.data.map(p => ({
         id: (p.productId || "").trim(),
         name: (p.name || "Unnamed Product").trim(),
-        price: p.price ? parseFloat(p.price) : 1,
-        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-        images: (p.productImageUrl || "")
-          .split(";")
-          .map(i => i.trim())
-          .filter(Boolean)
+        price: p.newPrice ? parseFloat(p.newPrice) : 1,
+        oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+        images: [
+          ...(p.mainImageUrl ? p.mainImageUrl.split(";").map(i => i.trim()) : []),
+          ...(p.lifestyleUrl ? [p.lifestyleUrl.trim()] : [])
+        ].filter(Boolean)
       }));
+
+      console.log("🟢 Products parsed:", allProducts);
 
       renderAllProducts();
       initImageSelector();
       showNextBatch(); // show first batch
     },
-    error: err => console.error("CSV load failed:", err)
+    error: err => console.error("❌ CSV load failed:", err)
   });
 
   // =========================
@@ -48,17 +52,17 @@ function initProductsPage() {
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="" loading="lazy">
+          <img class="lifestyle-bg" alt="" loading="lazy" style="display:none">
           <div class="artwork">
-            <img alt="${p.name}" loading="lazy">
+            <img alt="${p.name}" loading="lazy" style="display:none">
           </div>
         </div>
 
         <div class="product-info">
           <h3>${p.name}</h3>
           <div class="price-wrapper">
-            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
-            <span class="price-new">$${p.price}</span>
+            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice.toFixed(2)}</span>` : ""}
+            <span class="price-new">$${p.price.toFixed(2)}</span>
           </div>
         </div>
       `;
@@ -143,15 +147,16 @@ function initProductsPage() {
         ? img
         : "https://static.wixstatic.com/media/" + img;
 
-      if (currentImageIndex === 1) {
+      console.log("📷 Loading image for", card.querySelector("h3").textContent, "->", url);
+
+      if (currentImageIndex === 1 && lifestyleImg) {
         // lifestyle mode
         lifestyleImg.src = url;
         lifestyleImg.style.display = "block";
         artworkImg.style.display = "none";
-        // fade in
         lifestyleImg.classList.remove("loaded");
         lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
-      } else {
+      } else if (artworkImg) {
         // artwork mode
         artworkImg.src = url;
         artworkImg.style.display = "block";
