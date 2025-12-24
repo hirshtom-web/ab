@@ -121,22 +121,28 @@ function updateGridImages() {
 }
 
 
-  // PAGINATION
-  if (prevBtn)
-    prevBtn.onclick = () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderPage(currentPage);
-        updateGridImages();
-      }
-    };
+  const itemsPerLoad = 36;
+  const products = document.querySelectorAll('.product-card');
+  const showMoreBtn = document.getElementById('showMoreBtn');
 
-  if (nextBtn)
-    nextBtn.onclick = () => {
-      if (currentPage * productsPerPage < allProducts.length) {
-        currentPage++;
-        renderPage(currentPage);
-        updateGridImages();
-      }
-    };
-}
+  let visibleCount = 0;
+
+  function showItems() {
+    const nextCount = visibleCount + itemsPerLoad;
+
+    for (let i = visibleCount; i < nextCount && i < products.length; i++) {
+      products[i].classList.add('is-visible');
+    }
+
+    visibleCount = nextCount;
+
+    if (visibleCount >= products.length) {
+      showMoreBtn.style.display = 'none';
+    }
+  }
+
+  showMoreBtn.addEventListener('click', showItems);
+
+  // Initial load
+  showItems();
+
