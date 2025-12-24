@@ -100,47 +100,28 @@
 ========================= */
 
 @media (max-width: 600px) {
-  /* TWO columns on mobile */
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 0 16px;
   }
 
-  /* Keep card logic untouched */
-  .product-card {
-    display: flex;
-    width: 100%;
-  }
-
-  /* SAME aspect ratio, just smaller padding */
   .product-card .mockup-stage {
     aspect-ratio: 3 / 4;
-    padding: 20px;          /* ↓ smaller = fits 2 columns */
+    padding: 18px;
     border-radius: 16px;
   }
 
-  /* Scale artwork down proportionally */
   .product-card .artwork img {
     max-width: 75%;
     max-height: 75%;
-    object-fit: contain;
   }
 
-  /* Lifestyle still fills stage */
-  .product-card .lifestyle-bg {
-    object-fit: cover;
-  }
-
-  /* Button stays normal */
   #showMoreBtn {
     width: calc(100% - 32px);
     margin: 32px auto;
   }
 }
-
-
 
 /* =========================
    SHOW MORE BUTTON
