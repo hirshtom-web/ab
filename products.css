@@ -273,3 +273,18 @@
 .product-card .img-wrapper {
   position: relative; /* needed for absolute discount bubble */
 }
+
+@media (max-width: 768px) {
+.discount-bubble {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e74c3c; /* red bubble */
+  color: #fff;
+  font-size: 7px;
+  font-weight: 500;
+  padding: 4px 6px;
+  border-radius: 6px;
+  z-index: 10;
+  pointer-events: none;
+}
