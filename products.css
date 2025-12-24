@@ -38,9 +38,9 @@
    TOP CONTROLS BAR
 ================================ */
 .controls-bar {
-  max-width: 1200px;
-  margin: 10px auto 20px;
-  padding: 0 10px;
+  width: 100%;
+  margin: 10px 0 20px;
+  padding: 0 40px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -71,6 +71,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    padding: 0 20px;
   }
 
   .controls-left,
@@ -83,7 +84,7 @@
 
   .desktop-only { display: none; }
   .mobile-only { display: inline-flex; }
-} /* ✅ CLOSED PROPERLY */
+}
 
 /* ===============================
    BANNER CARD
@@ -106,19 +107,21 @@
 
 /* ===============================
    PRODUCTS GRID
+   - Full width with 40px side padding
 ================================ */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 10px;
+  margin: 0;
+  padding: 0 40px;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px;
   }
 }
 
@@ -149,7 +152,8 @@
 }
 
 /* CRITICAL IMAGE SAFETY */
-.img-wrapper img {
+.img-wrapper img,
+.img-wrapper video {
   width: 100%;
   height: 100%;
   max-width: 100%;
@@ -160,10 +164,11 @@
 
 /* ===============================
    ARTWORK VIEW
+   - Print, soft beige with padding
 ================================ */
 .product-card.artwork .img-wrapper {
   background: #f9f5f2;
-  padding: 16px;
+  padding: 32px; /* increase gap to show more beige */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,6 +180,7 @@
 
 /* ===============================
    LIFESTYLE VIEW
+   - Interior, full-bleed
 ================================ */
 .product-card.lifestyle .img-wrapper {
   padding: 0;
