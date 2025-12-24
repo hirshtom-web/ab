@@ -98,7 +98,7 @@
 /* =========================
    RESPONSIVE GRID
 ========================= */
-/* Mobile → 2 columns consistent + adjust mockup padding */
+
 @media (max-width: 600px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -107,13 +107,16 @@
     gap: 12px;
   }
 
+  /* Make the mockup stage smaller and consistent */
   .product-card .mockup-stage {
-    padding: 20px; /* smaller padding for mobile */
+    padding: 12px; /* smaller padding for mobile */
+    aspect-ratio: 3 / 4; /* keep consistent height */
   }
 
+  /* Make artwork slightly smaller inside the mockup stage */
   .product-card .artwork img {
-    max-width: 90%;  /* slightly smaller to leave gaps */
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
   }
 }
 
