@@ -133,67 +133,61 @@ function switchImage(index) {
       }
 
      // --- Images ---
+// --- Images Setup ---
 allImages = product.images;
-if(allImages.length) switchImage(0);
 
-// --- Thumbnails ---
-if (thumbsEl) {
-  thumbsEl.innerHTML = "";
-  allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
-}
+if(allImages.length){
 
-// --- Dots (create dynamically) ---
-if (dotsEl) {
-  dotsEl.innerHTML = "";
-  allImages.forEach((_, i) => {
-    const dot = document.createElement("div");
-    dot.className = "dot";
-    dot.addEventListener("click", () => switchImage(i));
-    dotsEl.appendChild(dot);
-  });
-}
+  // --- Set initial image ---
+  switchImage(0);
 
-function updateDots() {
-  if (!dotsEl) return;
-  const dots = Array.from(dotsEl.querySelectorAll(".dot"));
-  dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
-}
+  // --- Thumbnails (desktop only) ---
+  if(thumbsEl){
+    thumbsEl.innerHTML = "";
+    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+  }
 
-// --- Modify switchImage to update dots automatically ---
-const originalSwitchImage = switchImage;
-switchImage = function(index) {
-  originalSwitchImage(index);
+  // --- Dots ---
+  if(dotsEl){
+    dotsEl.innerHTML = "";
+    allImages.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.className = "dot";
+      dot.addEventListener("click", () => switchImage(i));
+      dotsEl.appendChild(dot);
+    });
+  }
+
+  function updateDots(){
+    if(!dotsEl) return;
+    const dots = Array.from(dotsEl.querySelectorAll(".dot"));
+    dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
+  }
+
+  // Update dots inside switchImage
+  const originalSwitchImage = switchImage;
+  switchImage = function(index){
+    originalSwitchImage(index);
+    updateDots();
+  };
+
+  // --- Mobile swipe ---
+  const galleryWrapper = document.querySelector(".main-image-wrapper");
+  if(allImages.length > 1 && galleryWrapper){
+    let startX = 0;
+    let endX = 0;
+
+    galleryWrapper.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
+    galleryWrapper.addEventListener("touchmove", (e) => { endX = e.touches[0].clientX; });
+    galleryWrapper.addEventListener("touchend", () => {
+      if(startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
+      else if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+    });
+  }
+
+  // --- Initialize dots on load ---
   updateDots();
-};
-
-// --- Mobile swipe ---
-if (allImages.length > 1 && galleryMain) {
-  let startX = 0;
-  let endX = 0;
-
-  galleryMain.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
-
-  galleryMain.addEventListener("touchmove", (e) => {
-    endX = e.touches[0].clientX;
-  });
-
-  galleryMain.addEventListener("touchend", () => {
-    if (startX - endX > 50) {
-      // swipe left → next image
-      switchImage((currentIndex + 1) % allImages.length);
-    } else if (endX - startX > 50) {
-      // swipe right → previous image
-      switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    }
-  });
 }
-
-// --- Initialize dots on load ---
-updateDots();
-
-
 
       // Buy button
       buyBtn.onclick = () => {
