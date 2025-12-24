@@ -71,3 +71,18 @@ function initProductsPage() {
 
   if (showMoreBtn) showMoreBtn.addEventListener("click", renderProducts);
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("productGrid");
+  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+    download: true,
+    header: true,
+    complete: res => {
+      res.data.slice(0, 5).forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `<h3>${p.name}</h3><img src="${p.mainImageUrl.split(";")[0]}" />`;
+        grid.appendChild(card);
+      });
+    }
+  });
+});
