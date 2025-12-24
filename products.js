@@ -107,10 +107,15 @@ if(p.discount){
 // Build price display
 let priceHTML = '';
 if(p.oldPrice && p.oldPrice > p.price){
-  priceHTML = `From $${p.price.toFixed(2)} <span class="price-old">$${p.oldPrice.toFixed(2)}</span>`;
+  priceHTML = `
+    <span class="price-from">From $${p.price.toFixed(2)}</span>
+    <span class="price-old">$${p.oldPrice.toFixed(2)}</span>
+    <span class="price-new">$${p.price.toFixed(2)}</span>
+  `;
 } else {
-  priceHTML = `$${p.price.toFixed(2)}`;
+  priceHTML = `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 }
+
 
 // Insert into card
 card.innerHTML = `<div class="img-wrapper">
