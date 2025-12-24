@@ -132,27 +132,56 @@ function switchImage(index) {
         } else oldPriceEl.style.display="none";
       }
 
-      // --- Images ---
-      allImages = product.images;
-      if(allImages.length) switchImage(0);
+     // --- Images ---
+allImages = product.images;
+if(allImages.length) switchImage(0);
 
-      // Thumbnails
-      if(thumbsEl){
-        thumbsEl.innerHTML = "";
-        allImages.forEach((src,i) => thumbsEl.appendChild(createThumbnail(src,i)));
-      }
+// --- Thumbnails ---
+if(thumbsEl){
+  thumbsEl.innerHTML = "";
+  allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+}
 
-      // Dots
-      if(dotsEl){
-        dotsEl.innerHTML = "";
-        allImages.forEach((_,i)=>{
-          const dot = document.createElement("span");
-          dot.className="dot";
-          if(i===0) dot.classList.add("active");
-          dot.onclick = () => switchImage(i);
-          dotsEl.appendChild(dot);
-        });
-      }
+// --- Dots ---
+const dots = dotsEl ? Array.from(dotsEl.querySelectorAll('.dot')) : [];
+function updateDots() {
+  dots.forEach((dot, index) => dot.classList.toggle('active', index === currentIndex));
+}
+
+// Update dots inside switchImage
+const originalSwitchImage = switchImage;
+switchImage = function(index) {
+  originalSwitchImage(index);
+  updateDots();
+};
+
+// --- Mobile swipe ---
+if(allImages.length > 1 && galleryMain){
+  let startX = 0;
+  let endX = 0;
+
+  galleryMain.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  galleryMain.addEventListener('touchmove', (e) => {
+    endX = e.touches[0].clientX;
+  });
+
+  galleryMain.addEventListener('touchend', () => {
+    if(startX - endX > 50){
+      // swipe left → next image
+      switchImage((currentIndex + 1) % allImages.length);
+    } else if(endX - startX > 50){
+      // swipe right → previous image
+      switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+    }
+  });
+}
+
+// Initialize dots on load
+updateDots();
+
 
       // Buy button
       buyBtn.onclick = () => {
