@@ -137,18 +137,29 @@ allImages = product.images;
 if(allImages.length) switchImage(0);
 
 // --- Thumbnails ---
-if(thumbsEl){
+if (thumbsEl) {
   thumbsEl.innerHTML = "";
   allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
 }
 
-// --- Dots ---
-const dots = dotsEl ? Array.from(dotsEl.querySelectorAll('.dot')) : [];
-function updateDots() {
-  dots.forEach((dot, index) => dot.classList.toggle('active', index === currentIndex));
+// --- Dots (create dynamically) ---
+if (dotsEl) {
+  dotsEl.innerHTML = "";
+  allImages.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dot.addEventListener("click", () => switchImage(i));
+    dotsEl.appendChild(dot);
+  });
 }
 
-// Update dots inside switchImage
+function updateDots() {
+  if (!dotsEl) return;
+  const dots = Array.from(dotsEl.querySelectorAll(".dot"));
+  dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
+}
+
+// --- Modify switchImage to update dots automatically ---
 const originalSwitchImage = switchImage;
 switchImage = function(index) {
   originalSwitchImage(index);
@@ -156,31 +167,32 @@ switchImage = function(index) {
 };
 
 // --- Mobile swipe ---
-if(allImages.length > 1 && galleryMain){
+if (allImages.length > 1 && galleryMain) {
   let startX = 0;
   let endX = 0;
 
-  galleryMain.addEventListener('touchstart', (e) => {
+  galleryMain.addEventListener("touchstart", (e) => {
     startX = e.touches[0].clientX;
   });
 
-  galleryMain.addEventListener('touchmove', (e) => {
+  galleryMain.addEventListener("touchmove", (e) => {
     endX = e.touches[0].clientX;
   });
 
-  galleryMain.addEventListener('touchend', () => {
-    if(startX - endX > 50){
+  galleryMain.addEventListener("touchend", () => {
+    if (startX - endX > 50) {
       // swipe left → next image
       switchImage((currentIndex + 1) % allImages.length);
-    } else if(endX - startX > 50){
+    } else if (endX - startX > 50) {
       // swipe right → previous image
       switchImage((currentIndex - 1 + allImages.length) % allImages.length);
     }
   });
 }
 
-// Initialize dots on load
+// --- Initialize dots on load ---
 updateDots();
+
 
 
       // Buy button
