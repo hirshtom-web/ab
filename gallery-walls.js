@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", initProductsPage);
+
 function initProductsPage() {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
@@ -7,14 +9,17 @@ function initProductsPage() {
   let currentIndex = 0;
   const productsPerBatch = 12;
 
-  // banners etc...
-  const banners = [ /* ... your banners ... */ ];
+  const banners = [
+    { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
+    { type: "color", color: "#f7c59f" }
+  ];
 
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: res => {
+      console.log("CSV data loaded:", res.data);
       allProducts = res.data.map(p => {
         const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
         let lifestyle = (p.lifestyleUrl || "").trim();
@@ -43,7 +48,6 @@ function initProductsPage() {
     if (!slice.length) return;
 
     slice.forEach((p, index) => {
-      // Render cards (same as your previous code)
       let card = document.createElement("div");
       card.className = `product-card is-product artwork`;
       card.dataset.images = JSON.stringify(p.images);
@@ -58,7 +62,6 @@ function initProductsPage() {
         <div class="product-info"><h3>${p.name}</h3><div class="price-wrapper">${priceHTML}</div></div>`;
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
-
       grid.appendChild(card);
     });
 
