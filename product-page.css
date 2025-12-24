@@ -594,6 +594,15 @@
   border-radius: 16px;
 }
 
+.main-image-wrapper.artwork {
+  background: #f9f5f2;
+  padding: 48px;          /* space around artwork */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* LIFESTYLE = FULL CONTAINER */
 .main-image-wrapper.lifestyle {
   padding: 0 !important;
