@@ -84,29 +84,37 @@ function initProductsPage() {
 
       } else {
         // Regular product card
-        card = document.createElement("div");
-        const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
-        card.className = `product-card is-product ${productClass}`;
+card = document.createElement("div");
 
-        card.dataset.images = JSON.stringify(p.images);
+// Determine class based on toggle
+const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
+card.className = `product-card is-product ${productClass}`;
 
-        const imgSrc = p.images[currentImageIndex] 
-          ? (p.images[currentImageIndex].includes("http") 
-              ? p.images[currentImageIndex] 
-              : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
-          : "";
+card.dataset.images = JSON.stringify(p.images);
 
-        card.innerHTML = `<div class="img-wrapper">
-            <img src="${imgSrc}" alt="${p.name}">
-          </div>
-          <div class="product-info">
-            <h3>${p.name}</h3>
-            <div class="price-wrapper">
-              <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-              <span class="price-new">$${p.price}</span>
-              <span class="discount">${p.discount || ''}</span>
-            </div>
-          </div>`;
+const imgSrc = p.images[currentImageIndex] 
+  ? (p.images[currentImageIndex].includes("http") 
+      ? p.images[currentImageIndex] 
+      : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
+  : "";
+
+let discountBubble = '';
+if(p.discount){
+  discountBubble = `<div class="discount-bubble">${p.discount}</div>`;
+}
+
+card.innerHTML = `<div class="img-wrapper">
+      ${discountBubble}
+      <img src="${imgSrc}" alt="${p.name}">
+    </div>
+    <div class="product-info">
+      <h3>${p.name}</h3>
+      <div class="price-wrapper">
+        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+        <span class="price-new">$${p.price}</span>
+      </div>
+    </div>`;
+
 
         card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
       }
