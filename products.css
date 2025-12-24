@@ -191,9 +191,9 @@
 }
 
 .price-wrapper span {
-  font-size: 16px;       /* same size for all */
+  font-size: 12px;       /* same size for all */
   line-height: 1.2;      /* same height */
-  font-weight: 600;      /* same weight */
+  font-weight: 500;      /* same weight */
 }
 
 .price-from, .price-old, .price-new {
@@ -203,21 +203,21 @@
 }
 
 .price-from {
-  color: #111;            /* your main color */
+  color: #e60023;            /* your main color */
   font-weight: 500;
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
 .price-old {
   color: #999;            /* gray color */
   text-decoration: line-through;
   font-weight: 500;       /* match weight with "from" */
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
 .price-new {
   color: #e60023;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
