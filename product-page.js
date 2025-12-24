@@ -1,4 +1,4 @@
-function initProductsPage() {
+async function initProductsPage() {
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
