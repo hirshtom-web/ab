@@ -113,9 +113,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  width: 100%;
   margin: 0;
   padding: 0 40px;
-  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -138,69 +138,52 @@
 
 /* ===============================
    IMAGE WRAPPER
-   - HARD SIZE CLAMP
 ================================ */
 .img-wrapper {
   width: 100%;
   aspect-ratio: 3 / 4;
-  max-width: 100%;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
   margin-bottom: 8px;
-  background: #eee;
-}
-
-/* CRITICAL IMAGE SAFETY */
-.img-wrapper img,
-.img-wrapper video {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
-  display: block;
+  background: #eee; /* default fallback */
 }
 
 /* ===============================
-   ARTWORK VIEW
-   - Print, soft beige with padding
+   ARTWORK VIEW – PRINT
 ================================ */
 .product-card.artwork .img-wrapper {
   background: #f9f5f2;
-  padding: 32px; /* increase gap to show more beige */
+  padding: 32px; /* more padding = more beige around */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .product-card.artwork img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  display: block;
 }
 
 /* ===============================
-   LIFESTYLE VIEW
-   - Interior, full-bleed
+   LIFESTYLE VIEW – INTERIOR
 ================================ */
-/* LIFESTYLE VIEW – full bleed, replace entire beige */
 .product-card.lifestyle .img-wrapper {
-  padding: 0 !important;   /* remove padding entirely */
   background: none;
-  width: 100%;
-  aspect-ratio: 3 / 4;      /* keep card ratio */
-  position: relative;        /* needed for absolute fill */
-  overflow: hidden;
+  padding: 0;
 }
 
-.product-card.lifestyle .img-wrapper img {
-  position: absolute;       /* fill the entire wrapper */
+.product-card.lifestyle img {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;        /* full cover */
+  object-fit: cover; /* fills entire wrapper */
+  display: block;
 }
-
 
 /* ===============================
    PRODUCT INFO
@@ -222,8 +205,8 @@
 
 .price-wrapper {
   display: flex;
-  gap: 6px;
   justify-content: center;
+  gap: 6px;
 }
 
 .price-old,
@@ -249,31 +232,23 @@
   margin: 30px 0;
 }
 
-/* =========================================
-   HARD SIZE LOCK – DO NOT REMOVE
-========================================= */
-
-/* 1️⃣ Lock every card to the same 3:4 size */
+/* ===============================
+   HARD SIZE LOCK
+================================ */
 .products-grid > .product-card {
   width: 100%;
 }
 
-/* 2️⃣ Absolutely clamp the image container */
 .product-card .img-wrapper {
   width: 100%;
   aspect-ratio: 3 / 4;
-  height: auto;
-  max-height: none;
   overflow: hidden;
 }
 
-/* 3️⃣ Absolutely clamp all media inside */
 .product-card .img-wrapper img,
 .product-card .img-wrapper video {
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
   object-fit: cover;
   display: block;
 }
