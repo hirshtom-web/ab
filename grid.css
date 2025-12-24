@@ -108,25 +108,29 @@
   }
 
   .product-card .mockup-stage {
-    padding: 20px;              /* keep enough padding to show background */
+    padding: 20px;              /* fixed padding */
     aspect-ratio: 3 / 4;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f9f5f2;        /* ensure background stays visible */
+    background: #f9f5f2;        
     border-radius: 20px;
     overflow: hidden;
+
+    box-sizing: border-box;     /* ensure padding is included in total height */
   }
 
   .product-card .artwork img {
-    max-width: 80%;             /* smaller to leave gaps */
-    max-height: 80%;
+    width: 100%;                 /* fill the inner stage minus padding */
+    height: 100%;
+    max-width: calc(100% - 20px);  /* inner gap inside stage */
+    max-height: calc(100% - 20px);
     object-fit: contain;
-    margin: auto;               /* center inside the stage */
+    margin: auto;
   }
 
   .product-card .lifestyle-bg {
-    display: block;             /* keep lifestyle working */
+    display: block;
     object-fit: cover;
   }
 }
