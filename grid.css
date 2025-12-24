@@ -87,3 +87,37 @@
     padding: 0 20px;
   }
 }
+#showMoreBtn {
+  display: block;
+  margin: 60px auto 40px;
+  padding: 14px 36px;
+
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  color: #111;
+  background: transparent;
+  border: 1.5px solid #111;
+  border-radius: 999px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+#showMoreBtn:hover {
+  background: #111;
+  color: #fff;
+}
+
+#showMoreBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  #showMoreBtn {
+    width: calc(100% - 32px);
+    margin: 48px auto 32px;
+  }
+}
