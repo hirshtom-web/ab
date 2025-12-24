@@ -128,7 +128,7 @@ function initProductsPage() {
   // IMAGE UPDATE (ARTWORK / LIFESTYLE)
   // =========================
 function updateGridImages() {
-  const cards = document.querySelectorAll(".product-card.is-product");
+  const cards = document.querySelectorAll(".product-card");
 
   cards.forEach(card => {
     const imgList = JSON.parse(card.dataset.images || "[]");
@@ -138,27 +138,22 @@ function updateGridImages() {
     const lifestyleImg = card.querySelector(".lifestyle-bg");
 
     const img = imgList[currentImageIndex] || imgList[0];
-    const url = img.includes("http")
+    const url = img.startsWith("http")
       ? img
       : "https://static.wixstatic.com/media/" + img;
 
-    if (currentImageIndex === 1 && lifestyleImg) {
+    if (currentImageIndex === 1) {
       lifestyleImg.src = url;
       lifestyleImg.style.display = "block";
-      if (artworkImg) artworkImg.style.display = "none";
-      card.classList.add("is-lifestyle");
+      artworkImg.style.display = "none";
     } else {
-      if (artworkImg) {
-        artworkImg.src = url;
-        artworkImg.style.display = "block";
-      }
-      if (lifestyleImg) {
-        lifestyleImg.style.display = "none";
-      }
-      card.classList.remove("is-lifestyle");
+      artworkImg.src = url;
+      artworkImg.style.display = "block";
+      lifestyleImg.style.display = "none";
     }
   });
 }
+
 
 // INIT
 document.addEventListener("DOMContentLoaded", initProductsPage);
