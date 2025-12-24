@@ -39,7 +39,6 @@ function initProductsPage() {
     error: err => console.error("CSV load failed:", err)
   });
 
-  // Render page
   function renderPage(page) {
     grid.innerHTML = "";
     const start = (page - 1) * productsPerPage;
@@ -53,7 +52,7 @@ function initProductsPage() {
     slice.forEach((p, index) => {
       let card;
 
-      // Every 7th card is a banner
+      // Banner every 7th card
       if ((index + 1) % 7 === 0) {
         card = document.createElement("div");
         card.className = "product-card banner-only";
@@ -70,18 +69,17 @@ function initProductsPage() {
         } else {
           card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
         }
+
       } else {
         // Regular product card
         card = document.createElement("div");
 
-        // Set class based on image toggle
+        // Determine class based on toggle
         const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
         card.className = `product-card is-product ${productClass}`;
 
-        // Store images in data attribute
         card.dataset.images = JSON.stringify(p.images);
 
-        // Show selected image
         const imgSrc = p.images[currentImageIndex] 
           ? (p.images[currentImageIndex].includes("http") 
               ? p.images[currentImageIndex] 
@@ -111,6 +109,7 @@ function initProductsPage() {
     nextBtn.disabled = currentPage === totalPages;
   }
 
+  // Pagination
   prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
   nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
 
@@ -135,7 +134,6 @@ function initProductsPage() {
       const newImg = imgList[currentImageIndex] || imgList[0];
       card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
 
-      // Update class
       card.classList.remove("artwork", "lifestyle");
       card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
     });
@@ -143,10 +141,8 @@ function initProductsPage() {
 
   updateGridImages();
 
-  // Shuffle and Sort
+  // Shuffle
   const shuffleBtn = document.querySelector('.control-btn[title="Shuffle"]');
-  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
-
   if (shuffleBtn) shuffleBtn.addEventListener("click", () => {
     for (let i = allProducts.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -155,6 +151,8 @@ function initProductsPage() {
     renderPage(currentPage);
   });
 
+  // Sort
+  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
   if (sortBtn) {
     const sortOptions = [
       { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
