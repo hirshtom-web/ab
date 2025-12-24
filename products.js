@@ -106,12 +106,13 @@ if(p.discount){
 
 // Build price display
 let priceHTML = '';
-if(p.oldPrice && p.oldPrice > p.price){
+if (p.oldPrice && p.oldPrice > p.price) {
   priceHTML = `
-    <span class="price-from">From $${p.price.toFixed(2)}</span>
-    <span class="price-old">$${p.oldPrice.toFixed(2)}</span>
+    <span class="price-from">From</span>
     <span class="price-new">$${p.price.toFixed(2)}</span>
+    <span class="price-old">$${p.oldPrice.toFixed(2)}</span>
   `;
+
 } else {
   priceHTML = `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 }
