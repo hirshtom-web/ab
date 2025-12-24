@@ -1,16 +1,19 @@
 function initProductsPage() {
   const grid = document.getElementById("productGrid");
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-  const pageNumber = document.getElementById("pageNumber");
+  const showMoreBtn = document.getElementById("showMoreBtn");
 
-  if (!grid) return console.error("❌ productGrid not found");
+  if (!grid) {
+    console.error("❌ productGrid not found");
+    return;
+  }
 
   let allProducts = [];
-  let currentPage = 1;
-  const productsPerPage = 60;
+  const ITEMS_PER_LOAD = 36;
+  let visibleCount = 0;
 
-  // LOAD CSV (UNCHANGED)
+  // =========================
+  // LOAD CSV (UNCHANGED LOGIC)
+  // =========================
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
@@ -27,26 +30,23 @@ function initProductsPage() {
           .filter(Boolean)
       }));
 
-      renderPage(currentPage);
-      updateGridImages();
+      renderAllProducts();
+      initImageSelector();
+      showNextBatch();
     },
     error: err => console.error("CSV load failed:", err)
   });
 
-  function renderPage(page) {
+  // =========================
+  // RENDER ALL PRODUCTS (HIDDEN)
+  // =========================
+  function renderAllProducts() {
     grid.innerHTML = "";
 
-    const start = (page - 1) * productsPerPage;
-    const slice = allProducts.slice(start, start + productsPerPage);
-
-    if (!slice.length) {
-      grid.innerHTML = "<p>No products found.</p>";
-      return;
-    }
-
-    slice.forEach(p => {
+    allProducts.forEach(p => {
       const card = document.createElement("div");
       card.className = "product-card is-product";
+      card.style.display = "none";
       card.dataset.images = JSON.stringify(p.images);
 
       card.innerHTML = `
@@ -66,83 +66,92 @@ function initProductsPage() {
         </div>
       `;
 
-      card.onclick = () =>
-        (window.location.href = `product-page.html?id=${p.id}`);
+      card.onclick = () => {
+        window.location.href = `product-page.html?id=${p.id}`;
+      };
 
       grid.appendChild(card);
     });
-
-    const totalPages = Math.ceil(allProducts.length / productsPerPage);
-    if (pageNumber) pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
-    if (prevBtn) prevBtn.disabled = currentPage === 1;
-    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
   }
 
-  // IMAGE TOGGLE STATE
-  let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
-
-  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
-  imgButtons.forEach(btn => {
-    btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
-    btn.addEventListener("click", () => {
-      imgButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      currentImageIndex = parseInt(btn.dataset.index);
-      localStorage.setItem("gridImageIndex", currentImageIndex);
-      updateGridImages();
-    });
-  });
-
-  // 🔑 IMAGE UPDATE (FIXED)
-function updateGridImages() {
-  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-
-  productCards.forEach(card => {
-    const imgList = JSON.parse(card.dataset.images || "[]");
-    const artworkImg = card.querySelector(".artwork img");
-    const lifestyleImg = card.querySelector(".lifestyle-bg");
-
-    const img = imgList[currentImageIndex] || imgList[0];
-    const url = img.includes("http")
-      ? img
-      : "https://static.wixstatic.com/media/" + img;
-
-    if (currentImageIndex === 1 && lifestyleImg) {
-      // LIFESTYLE LOOK
-      lifestyleImg.src = url;
-      card.classList.add("is-lifestyle");
-    } else {
-      // ARTWORK LOOK
-      if (artworkImg) artworkImg.src = url;
-      card.classList.remove("is-lifestyle");
-    }
-  });
-}
-
-
-  const itemsPerLoad = 36;
-  const products = document.querySelectorAll('.product-card');
-  const showMoreBtn = document.getElementById('showMoreBtn');
-
-  let visibleCount = 0;
-
-  function showItems() {
-    const nextCount = visibleCount + itemsPerLoad;
+  // =========================
+  // SHOW MORE LOGIC
+  // =========================
+  function showNextBatch() {
+    const products = document.querySelectorAll(".product-card");
+    const nextCount = visibleCount + ITEMS_PER_LOAD;
 
     for (let i = visibleCount; i < nextCount && i < products.length; i++) {
-      products[i].classList.add('is-visible');
+      products[i].style.display = "flex";
     }
 
     visibleCount = nextCount;
 
-    if (visibleCount >= products.length) {
-      showMoreBtn.style.display = 'none';
+    if (visibleCount >= products.length && showMoreBtn) {
+      showMoreBtn.style.display = "none";
     }
   }
 
-  showMoreBtn.addEventListener('click', showItems);
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", showNextBatch);
+  }
 
-  // Initial load
-  showItems();
+  // =========================
+  // IMAGE TOGGLE STATE
+  // =========================
+  let currentImageIndex =
+    parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
+  function initImageSelector() {
+    const imgButtons = document.querySelectorAll(".image-selector .img-btn");
+
+    imgButtons.forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        parseInt(btn.dataset.index) === currentImageIndex
+      );
+
+      btn.addEventListener("click", () => {
+        imgButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        currentImageIndex = parseInt(btn.dataset.index);
+        localStorage.setItem("gridImageIndex", currentImageIndex);
+        updateGridImages();
+      });
+    });
+
+    updateGridImages();
+  }
+
+  // =========================
+  // IMAGE UPDATE (ARTWORK / LIFESTYLE)
+  // =========================
+  function updateGridImages() {
+    const cards = document.querySelectorAll(".product-card.is-product");
+
+    cards.forEach(card => {
+      const imgList = JSON.parse(card.dataset.images || "[]");
+      const artworkImg = card.querySelector(".artwork img");
+      const lifestyleImg = card.querySelector(".lifestyle-bg");
+
+      if (!imgList.length) return;
+
+      const img = imgList[currentImageIndex] || imgList[0];
+      const url = img.includes("http")
+        ? img
+        : "https://static.wixstatic.com/media/" + img;
+
+      if (currentImageIndex === 1 && lifestyleImg) {
+        lifestyleImg.src = url;
+        card.classList.add("is-lifestyle");
+      } else {
+        if (artworkImg) artworkImg.src = url;
+        card.classList.remove("is-lifestyle");
+      }
+    });
+  }
+}
+
+// INIT
+document.addEventListener("DOMContentLoaded", initProductsPage);
