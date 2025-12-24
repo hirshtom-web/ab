@@ -102,36 +102,39 @@
 @media (max-width: 600px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     padding-left: 16px;
     padding-right: 16px;
-    gap: 12px;
   }
 
   .product-card .mockup-stage {
-    padding: 20px;              /* fixed padding */
-    aspect-ratio: 3 / 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f9f5f2;        
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 133.33%; /* 3/4 aspect ratio (height/width*100) */
+    background: #f9f5f2;
     border-radius: 20px;
     overflow: hidden;
-
-    box-sizing: border-box;     /* ensure padding is included in total height */
   }
 
-  .product-card .artwork img {
-    width: 100%;                 /* fill the inner stage minus padding */
-    height: 100%;
-    max-width: calc(100% - 20px);  /* inner gap inside stage */
-    max-height: calc(100% - 20px);
+  .product-card .mockup-stage .artwork,
+  .product-card .mockup-stage .artwork img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    max-height: 80%;
     object-fit: contain;
-    margin: auto;
   }
 
   .product-card .lifestyle-bg {
-    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    display: block;
   }
 }
 
