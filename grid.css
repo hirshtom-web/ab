@@ -20,7 +20,7 @@
    PRODUCT CARD
 =========================== */
 .product-card {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 12px;
   align-items: center;
