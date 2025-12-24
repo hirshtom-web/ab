@@ -190,11 +190,10 @@
   gap: 4px;
 }
 
-.price-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  align-items: center; /* ensures vertical alignment */
+.price-wrapper span {
+  font-size: 16px;       /* same size for all */
+  line-height: 1.2;      /* same height */
+  font-weight: 600;      /* same weight */
 }
 
 .price-from, .price-old, .price-new {
@@ -206,19 +205,20 @@
 .price-from {
   color: #111;            /* your main color */
   font-weight: 500;
+  margin-right: 5px;
 }
 
 .price-old {
   color: #999;            /* gray color */
   text-decoration: line-through;
   font-weight: 500;       /* match weight with "from" */
+  margin-right: 5px;
 }
 
 .price-new {
-  color: #111;
+  color: #e60023;
   font-weight: 600;
 }
-
 
 @media (max-width: 768px) {
   .product-info h3,
