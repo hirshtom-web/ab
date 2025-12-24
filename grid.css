@@ -108,16 +108,19 @@
   }
 
   .product-card .mockup-stage {
-    padding: 0;            /* remove padding completely */
-    aspect-ratio: 3 / 4;   /* keep consistent height */
+    padding: 15px;           /* small padding to show background */
+    aspect-ratio: 3 / 4;      /* keep consistent height */
   }
 
   .product-card .artwork img {
-    width: 100%;           /* fill the mockup stage */
+    width: 100%;
     height: 100%;
-    object-fit: contain;    /* maintain proportions */
+    max-width: calc(100% - 30px);  /* leave gaps inside padding */
+    max-height: calc(100% - 30px);
+    object-fit: contain;
   }
 }
+
 
 
 /* =========================
