@@ -49,22 +49,23 @@ function initProductsPage() {
       card.style.display = "none";
       card.dataset.images = JSON.stringify(p.images);
 
-      card.innerHTML = `
-        <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="">
-          <div class="artwork">
-            <img alt="${p.name}">
-          </div>
-        </div>
+card.innerHTML = `
+  <div class="mockup-stage">
+    <img class="lifestyle-bg" alt="" loading="lazy">
+    <div class="artwork">
+      <img alt="${p.name}" loading="lazy">
+    </div>
+  </div>
 
-        <div class="product-info">
-          <h3>${p.name}</h3>
-          <div class="price-wrapper">
-            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
-            <span class="price-new">$${p.price}</span>
-          </div>
-        </div>
-      `;
+  <div class="product-info">
+    <h3>${p.name}</h3>
+    <div class="price-wrapper">
+      ${p.oldPrice ? `<span class="price-old">$${p.oldPrice}</span>` : ""}
+      <span class="price-new">$${p.price}</span>
+    </div>
+  </div>
+`;
+
 
       card.onclick = () => {
         window.location.href = `product-page.html?id=${p.id}`;
