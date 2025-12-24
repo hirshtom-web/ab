@@ -106,59 +106,7 @@
     padding-left: 16px;
     padding-right: 16px;
   }
-
-  .product-card {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  /* Fixed aspect ratio for consistent card height */
-  .product-card .mockup-stage {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 3 / 4;     /* keeps consistent height */
-    background: #f9f5f2;
-    border-radius: 20px;
-    overflow: hidden;
-    padding: 0;              /* padding handled inside img container */
-  }
-
-  /* Artwork image centered absolutely inside stage */
-  .product-card .mockup-stage .artwork {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .product-card .mockup-stage .artwork img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-
-  .product-card .lifestyle-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Product info centered below */
-  .product-card .product-info {
-    text-align: center;
-  }
 }
-
 /* =========================
    SHOW MORE BUTTON
 ========================= */
