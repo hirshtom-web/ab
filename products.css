@@ -184,33 +184,60 @@
 /* ===============================
    PRODUCT INFO
 ================================ */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;           /* 2px gap between name and price */
+  align-items: center;
+  text-align: center;
+}
+
+.product-info h3 {
+  font-size: 12px;    /* name font size */
+  font-weight: 600;   /* name font weight */
+  color: #000;        /* name color black */
+  margin: 0;
+  line-height: 1.2;   /* tighten vertical spacing */
+}
+
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;           /* small gap between prices */
+}
+
 .price-from {
-  color: #e60023;       /* red */
-  font-weight: 500;
+  color: #e60023;     /* red */
+  font-weight: 500;   /* pricing weight */
   font-size: 12px;
-  margin-right: 2px;    /* gap between lines */
+  line-height: 1.2;
 }
 
 .price-old {
-  color: #999;          /* gray */
+  color: #999;        /* gray */
   text-decoration: line-through;
   font-weight: 500;
   font-size: 12px;
-  margin-left: 2px;     /* gap from new price */
+  line-height: 1.2;
 }
 
 .price-new {
   color: #e60023;
   font-weight: 500;
   font-size: 12px;
+  line-height: 1.2;
 }
 
-
+/* ===============================
+   MOBILE ADJUSTMENTS
+================================ */
 @media (max-width: 768px) {
-  .price-old,
+  .product-info h3,
   .price-from,
+  .price-old,
   .price-new {
-    font-size: 10px;
+    font-size: 10px;   /* smaller on mobile */
   }
 }
 
