@@ -182,14 +182,25 @@
    LIFESTYLE VIEW
    - Interior, full-bleed
 ================================ */
+/* LIFESTYLE VIEW – full bleed, replace entire beige */
 .product-card.lifestyle .img-wrapper {
-  padding: 0;
+  padding: 0 !important;   /* remove padding entirely */
   background: none;
+  width: 100%;
+  aspect-ratio: 3 / 4;      /* keep card ratio */
+  position: relative;        /* needed for absolute fill */
+  overflow: hidden;
 }
 
-.product-card.lifestyle img {
-  object-fit: cover;
+.product-card.lifestyle .img-wrapper img {
+  position: absolute;       /* fill the entire wrapper */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* full cover */
 }
+
 
 /* ===============================
    PRODUCT INFO
