@@ -26,14 +26,26 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      allProducts = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.price ? parseFloat(p.price) : 1,
-        oldPrice: p.oldPrice ? parseFloat(p.oldPrice) : null,
-        images: (p.productImageUrl || "").split(";").map(i => i.trim()),
-        type: p.type ? p.type.trim() : "artwork"
-      }));
+      allProducts = res.data.map(p => {
+        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+        let lifestyle = (p.lifestyleUrl || "").trim();
+        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback to 2nd main image
+        const images = [
+          mainImages[0] || "",   // artwork
+          lifestyle               // lifestyle
+        ].concat(mainImages.slice(2)); // append remaining main images
+
+        return {
+          type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+          id: (p.productId || "").trim(),
+          name: (p.name || "Unnamed Product").trim(),
+          images: images,
+          video: (p["video/s"] || "").trim(),
+          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+          discount: p.discount ? p.discount.trim() : null,
+          price: p.newPrice ? parseFloat(p.newPrice) : 1
+        };
+      });
       renderPage(currentPage);
     },
     error: err => console.error("CSV load failed:", err)
@@ -73,8 +85,6 @@ function initProductsPage() {
       } else {
         // Regular product card
         card = document.createElement("div");
-
-        // Determine class based on toggle
         const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
         card.className = `product-card is-product ${productClass}`;
 
@@ -94,6 +104,7 @@ function initProductsPage() {
             <div class="price-wrapper">
               <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
               <span class="price-new">$${p.price}</span>
+              <span class="discount">${p.discount || ''}</span>
             </div>
           </div>`;
 
@@ -131,7 +142,8 @@ function initProductsPage() {
     const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
     productCards.forEach(card => {
       const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-      const newImg = imgList[currentImageIndex] || imgList[0];
+      let newImg = imgList[currentImageIndex] || imgList[0] || "";
+      if (!newImg && imgList.length > 1) newImg = imgList[1]; // fallback
       card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
 
       card.classList.remove("artwork", "lifestyle");
