@@ -29,7 +29,7 @@ function initProductsPage() {
 
       renderAllProducts();
       initImageSelector();
-      showNextBatch(); // show first 36 items
+      showNextBatch(); // show first batch
     },
     error: err => console.error("CSV load failed:", err)
   });
@@ -43,7 +43,7 @@ function initProductsPage() {
     allProducts.forEach(p => {
       const card = document.createElement("div");
       card.className = "product-card is-product";
-      card.style.display = "none";  // hidden until shown
+      card.style.display = "none"; // hidden initially
       card.dataset.images = JSON.stringify(p.images);
 
       card.innerHTML = `
@@ -80,7 +80,7 @@ function initProductsPage() {
 
     for (let i = visibleCount; i < nextCount && i < products.length; i++) {
       const card = products[i];
-      card.style.display = "flex"; // show the card
+      card.style.display = "flex"; // reveal the card
     }
 
     visibleCount = nextCount;
@@ -88,7 +88,6 @@ function initProductsPage() {
     // Update images for newly revealed products
     updateGridImages();
 
-    // Hide button if all products are visible
     if (visibleCount >= products.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
     }
@@ -144,16 +143,22 @@ function initProductsPage() {
         ? img
         : "https://static.wixstatic.com/media/" + img;
 
-      const targetImg = currentImageIndex === 1 ? lifestyleImg : artworkImg;
-      const otherImg = currentImageIndex === 1 ? artworkImg : lifestyleImg;
-
-      // hide target while loading
-      targetImg.classList.remove("loaded");
-      targetImg.src = url;
-      targetImg.onload = () => targetImg.classList.add("loaded");
-
-      // hide the other image
-      otherImg.classList.remove("loaded");
+      if (currentImageIndex === 1) {
+        // lifestyle mode
+        lifestyleImg.src = url;
+        lifestyleImg.style.display = "block";
+        artworkImg.style.display = "none";
+        // fade in
+        lifestyleImg.classList.remove("loaded");
+        lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
+      } else {
+        // artwork mode
+        artworkImg.src = url;
+        artworkImg.style.display = "block";
+        lifestyleImg.style.display = "none";
+        artworkImg.classList.remove("loaded");
+        artworkImg.onload = () => artworkImg.classList.add("loaded");
+      }
     });
   }
 }
