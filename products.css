@@ -120,6 +120,7 @@
   position: relative;
   margin-bottom: 8px;
   background: #eee;
+  aspect-ratio: 3/4; /* unified height for all cards */
 }
 
 /* ===============================
@@ -127,7 +128,7 @@
 ================================ */
 .product-card.artwork .img-wrapper {
   background: #f9f5f2;
-  padding: 32px;               /* beige padding */
+  padding: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,7 +138,7 @@
 .product-card.artwork img {
   width: 100%;
   height: 100%;
-  object-fit: contain;         /* keeps full image inside padding */
+  object-fit: contain;
   display: block;
 }
 
@@ -146,16 +147,14 @@
 ================================ */
 .product-card.lifestyle .img-wrapper {
   background: none;
-  padding: 0;                  /* remove beige padding */
-  border-radius: 0;             /* optional */
-  width: 100%;
-  aspect-ratio: auto;           /* flexible height */
+  padding: 0;
+  border-radius: 16px; /* keep corners consistent */
 }
 
 .product-card.lifestyle img {
   width: 100%;
-  height: auto;                /* maintain aspect ratio */
-  object-fit: cover;           /* fills container */
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
