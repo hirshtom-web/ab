@@ -592,6 +592,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 16px;
+  touch-action: pan-y;
 }
 
 .main-image-wrapper.artwork {
@@ -625,4 +626,3 @@
   padding: 48px; 
   }
 }
-
