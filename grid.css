@@ -100,63 +100,40 @@
 ========================= */
 
 @media (max-width: 600px) {
-  /* One column only */
+  /* TWO columns on mobile */
   .products-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* one product per row */
-    gap: 20px;
-    padding: 0 16px;
-    max-width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-
-  .product-card {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
-  .product-card .mockup-stage {
-    width: 100%;
-    max-width: 400px; /* optional, keeps card from being huge */
-    aspect-ratio: 3 / 4;
-    background: #f9f5f2;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
+  /* Keep card logic untouched */
+  .product-card {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
   }
 
+  /* SAME aspect ratio, just smaller padding */
+  .product-card .mockup-stage {
+    aspect-ratio: 3 / 4;
+    padding: 20px;          /* ↓ smaller = fits 2 columns */
+    border-radius: 16px;
+  }
+
+  /* Scale artwork down proportionally */
   .product-card .artwork img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 80%;
-    max-height: 80%;
+    max-width: 75%;
+    max-height: 75%;
     object-fit: contain;
-    display: block;
   }
 
+  /* Lifestyle still fills stage */
   .product-card .lifestyle-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
     object-fit: cover;
-    display: block;
   }
 
-  .product-card .product-info {
-    width: 100%;
-    text-align: center;
-  }
-
+  /* Button stays normal */
   #showMoreBtn {
     width: calc(100% - 32px);
     margin: 32px auto;
