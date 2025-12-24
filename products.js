@@ -98,11 +98,21 @@ const imgSrc = p.images[currentImageIndex]
       : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
   : "";
 
+// Build discount bubble
 let discountBubble = '';
 if(p.discount){
   discountBubble = `<div class="discount-bubble">${p.discount}</div>`;
 }
 
+// Build price display
+let priceHTML = '';
+if(p.oldPrice && p.oldPrice > p.price){
+  priceHTML = `From $${p.price.toFixed(2)} <span class="price-old">$${p.oldPrice.toFixed(2)}</span>`;
+} else {
+  priceHTML = `$${p.price.toFixed(2)}`;
+}
+
+// Insert into card
 card.innerHTML = `<div class="img-wrapper">
       ${discountBubble}
       <img src="${imgSrc}" alt="${p.name}">
@@ -110,10 +120,10 @@ card.innerHTML = `<div class="img-wrapper">
     <div class="product-info">
       <h3>${p.name}</h3>
       <div class="price-wrapper">
-        <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
-        <span class="price-new">$${p.price}</span>
+        ${priceHTML}
       </div>
     </div>`;
+
 
 
         card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
