@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", initProductsPage);
-
 function initProductsPage() {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
