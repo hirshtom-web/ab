@@ -67,24 +67,33 @@ async function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: function(res) {
-      const products = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "").trim(),
-        price: parseFloat(p.price || 0),
-        discount: parseFloat(p.discountValue || 0),
-        discountMode: (p.discountMode || "").trim(),
-        category: (p.category || "").trim(),
-        color: (p.color || "").trim(),
-        artist: (p.artist || "").trim(),
-        description: p.description || "",
-        downloadLink: (p.downloadLink || "").trim(),
-        visible: (p.visible || "true") === "true",
-        images: (p.productImageUrl || "").split(";").map(u => u.trim()).filter(Boolean)
-      }));
+      const products = res.data.map(p => {
+        // Handle images
+        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+        let lifestyle = (p.lifestyleUrl || "").trim();
+        if(!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
+        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+
+        return {
+          id: (p.productId || "").trim(),
+          name: (p.name || "").trim(),
+          type: (p.type || "").toLowerCase(),
+          price: p.newPrice ? parseFloat(p.newPrice) : 0,
+          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+          discount: p.discount || null,
+          category: (p.category || "").trim(),
+          color: (p.color || "").trim(),
+          artist: (p.artistName || p.artist || "").trim(),
+          description: p.bio || "",
+          downloadLink: (p.downloadLinkUrl || "").trim(),
+          visible: true, // all products visible
+          images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+        };
+      });
 
       const product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
 
-      if(!product || !product.visible){
+      if(!product){
         document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
         return;
       }
@@ -99,9 +108,11 @@ async function initProductsPage() {
       // --- Price ---
       let finalPrice = product.price;
       if(product.discount){
-        finalPrice = product.discountMode === "PERCENT"
-          ? product.price*(1-product.discount/100)
-          : product.price-product.discount;
+        if(product.discount.includes("%")){
+          finalPrice = product.price*(1 - parseFloat(product.discount)/100);
+        } else {
+          finalPrice = product.price - parseFloat(product.discount);
+        }
       }
       priceEl.innerText = "$"+finalPrice.toFixed(2);
       if(oldPriceEl){
@@ -112,10 +123,7 @@ async function initProductsPage() {
       }
 
       // --- Images ---
-      allImages = product.images.length
-        ? product.images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
-        : [];
-
+      allImages = product.images;
       if(allImages.length) switchImage(0);
 
       // Thumbnails
@@ -149,7 +157,7 @@ async function initProductsPage() {
   });
 }
 
-// Start sale countdown AFTER DOM has updated
+// Sale countdown
 const saleEl = document.getElementById("saleInfo");
 if(saleEl){
   let seconds = 36000; // 10 hours
@@ -166,36 +174,30 @@ if(saleEl){
   updateTimer();
 }
 
+// Tabs
+document.addEventListener("DOMContentLoaded", () => {
+  const tabs = document.querySelectorAll(".artwork-tabs .tab");
+  const panels = document.querySelectorAll(".tab-panel");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const tabs = document.querySelectorAll(".artwork-tabs .tab");
-    const panels = document.querySelectorAll(".tab-panel");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      panels.forEach(p => p.classList.remove("active"));
 
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        panels.forEach(p => p.classList.remove("active"));
-
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.tab).classList.add("active");
-      });
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.tab).classList.add("active");
     });
   });
+});
 
+// Artwork type select
 const artworkTypeSelect = document.getElementById("artworkType");
 const frameWrapper = document.getElementById("frameWrapper");
 
 function updateArtworkOptions() {
   const value = artworkTypeSelect.value;
-
-  // Show frame options only for prints
-  if (value.startsWith("print")) {
-    frameWrapper.style.display = "block";
-  } else {
-    frameWrapper.style.display = "none";
-  }
+  frameWrapper.style.display = value.startsWith("print") ? "block" : "none";
 }
 
-// Init
 updateArtworkOptions();
 artworkTypeSelect.addEventListener("change", updateArtworkOptions);
