@@ -233,3 +233,20 @@
     padding: 24px;  /* reduce spacing on mobile */
   }
 }
+
+.discount-bubble {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e74c3c; /* red bubble */
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 6px;
+  border-radius: 6px;
+  z-index: 10;
+  pointer-events: none;
+}
+.product-card .img-wrapper {
+  position: relative; /* needed for absolute discount bubble */
+}
