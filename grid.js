@@ -2,17 +2,14 @@ function initProductsPage() {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
 
-  if (!grid) {
-    console.error("❌ productGrid not found");
-    return;
-  }
+  if (!grid) return console.error("❌ productGrid not found");
 
   let allProducts = [];
   const ITEMS_PER_LOAD = 36;
   let visibleCount = 0;
 
   // =========================
-  // LOAD CSV (UNCHANGED LOGIC)
+  // LOAD CSV
   // =========================
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
@@ -32,13 +29,13 @@ function initProductsPage() {
 
       renderAllProducts();
       initImageSelector();
-      showNextBatch();
+      showNextBatch(); // show first 36 items
     },
     error: err => console.error("CSV load failed:", err)
   });
 
   // =========================
-  // RENDER ALL PRODUCTS
+  // RENDER ALL PRODUCTS (hidden initially)
   // =========================
   function renderAllProducts() {
     grid.innerHTML = "";
@@ -46,14 +43,14 @@ function initProductsPage() {
     allProducts.forEach(p => {
       const card = document.createElement("div");
       card.className = "product-card is-product";
-      card.style.display = "none";
+      card.style.display = "none";  // hidden until shown
       card.dataset.images = JSON.stringify(p.images);
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="">
+          <img class="lifestyle-bg" alt="" loading="lazy">
           <div class="artwork">
-            <img alt="${p.name}">
+            <img alt="${p.name}" loading="lazy">
           </div>
         </div>
 
@@ -75,27 +72,32 @@ function initProductsPage() {
   }
 
   // =========================
-  // SHOW MORE
+  // SHOW MORE ITEMS
   // =========================
-function showNextBatch() {
-  const products = document.querySelectorAll(".product-card");
-  const nextCount = visibleCount + ITEMS_PER_LOAD;
+  function showNextBatch() {
+    const products = document.querySelectorAll(".product-card");
+    const nextCount = visibleCount + ITEMS_PER_LOAD;
 
-  for (let i = visibleCount; i < nextCount && i < products.length; i++) {
-    products[i].style.display = "flex";      // show the card
+    for (let i = visibleCount; i < nextCount && i < products.length; i++) {
+      const card = products[i];
+      card.style.display = "flex"; // show the card
+    }
+
+    visibleCount = nextCount;
+
+    // Update images for newly revealed products
+    updateGridImages();
+
+    // Hide button if all products are visible
+    if (visibleCount >= products.length && showMoreBtn) {
+      showMoreBtn.style.display = "none";
+    }
   }
 
-  visibleCount = nextCount;
-
-  // ✅ Make sure images appear correctly
-  updateGridImages();
-
-  // Hide the button if all products are visible
-  if (visibleCount >= products.length && showMoreBtn) {
-    showMoreBtn.style.display = "none";
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", showNextBatch);
   }
-}
-  
+
   // =========================
   // IMAGE TOGGLE STATE
   // =========================
@@ -125,7 +127,7 @@ function showNextBatch() {
   }
 
   // =========================
-  // IMAGE UPDATE
+  // UPDATE IMAGES (artwork / lifestyle + fade-in)
   // =========================
   function updateGridImages() {
     const cards = document.querySelectorAll(".product-card");
@@ -142,18 +144,19 @@ function showNextBatch() {
         ? img
         : "https://static.wixstatic.com/media/" + img;
 
-      if (currentImageIndex === 1) {
-        lifestyleImg.src = url;
-        lifestyleImg.style.display = "block";
-        artworkImg.style.display = "none";
-      } else {
-        artworkImg.src = url;
-        artworkImg.style.display = "block";
-        lifestyleImg.style.display = "none";
-      }
+      const targetImg = currentImageIndex === 1 ? lifestyleImg : artworkImg;
+      const otherImg = currentImageIndex === 1 ? artworkImg : lifestyleImg;
+
+      // hide target while loading
+      targetImg.classList.remove("loaded");
+      targetImg.src = url;
+      targetImg.onload = () => targetImg.classList.add("loaded");
+
+      // hide the other image
+      otherImg.classList.remove("loaded");
     });
   }
-} // ✅ THIS WAS MISSING
+}
 
 // INIT
 document.addEventListener("DOMContentLoaded", initProductsPage);
