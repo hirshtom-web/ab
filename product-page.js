@@ -1,248 +1,118 @@
-async function initProductsPage() {
-  const titleEl = document.querySelector(".pricing h2");
-  const artistEl = document.querySelector(".artist");
-  const priceEl = document.querySelector(".price");
-  const oldPriceEl = document.querySelector(".old-price");
-  const descEl = document.querySelector(".description");
-  const mainImage = document.getElementById("mainImg");
-  const thumbsEl = document.querySelector(".gallery-thumbs");
-  const dotsEl = document.querySelector(".gallery-dots");
-  const buyBtn = document.querySelector(".buy");
-  const categoryEl = document.createElement("div");
-  categoryEl.className = "product-category";
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("productGrid");
+  const showMoreBtn = document.getElementById("showMoreBtn");
+  if (!grid) return console.error("❌ productGrid not found");
+  if (!showMoreBtn) console.warn("⚠️ Show More button not found");
 
   const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productId = new URLSearchParams(location.search).get("id")?.trim().toLowerCase();
-
-  let allImages = [];
+  const productsPerPage = 20; // initial batch
+  let allProducts = [];
   let currentIndex = 0;
 
-  const slugify = str =>
-    str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const banners = [
+    { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
+    { type: "color", color: "#f7c59f" },
+    { type: "video", src: "https://video.wixstatic.com/video/1799ca_4a4a7105ce284ce5928b811120fef2fc/1080p/mp4/file.mp4" },
+    { type: "color", color: "#9fd3f7" },
+    { type: "video", src: "https://video.wixstatic.com/video/1799ca_9ac7f684c40e4b1db1cb7d8f644c1d77/1080p/mp4/file.mp4" },
+    { type: "color", color: "#c5f79f" }
+  ];
 
-  function updateImageStyle(index) {
-  const wrapper = document.querySelector(".main-image-wrapper");
-  if (!wrapper) return;
+  function createProductCard(p, index) {
+    let card;
 
-  wrapper.classList.remove("artwork", "lifestyle");
-  wrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
-}
+    if ((index + 1) % 7 === 0) {
+      // Banner
+      card = document.createElement("div");
+      card.className = "product-card banner-only";
+      const bannerIndex = Math.floor(index / 7) % banners.length;
+      const banner = banners[bannerIndex];
+      if (banner.type === "video") {
+        card.innerHTML = `
+          <div class="img-wrapper banner-wrapper">
+            <video autoplay muted loop playsinline>
+              <source src="${banner.src}" type="video/mp4">
+            </video>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
+      }
+    } else {
+      // Regular product
+      card = document.createElement("div");
+      card.className = "product-card is-product";
+      const imagesArray = p.images.length ? p.images : ["https://via.placeholder.com/300x300"];
+      card.dataset.images = JSON.stringify(imagesArray);
 
-function switchImage(index) {
-  updateImageStyle(index); // ✅ ADD THIS LINE
+      card.innerHTML = `
+        <div class="img-wrapper">
+          <img src="${imagesArray[0].startsWith('http') ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+        </div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">
+            <span class="price-old">${p.oldPrice ? `$${p.oldPrice}` : ''}</span>
+            <span class="price-new">$${p.price}</span>
+          </div>
+        </div>
+      `;
 
-    if(!allImages.length) return;
-    currentIndex = index;
-    mainImage.style.opacity = 0;
-    const img = new Image();
-    img.src = allImages[currentIndex];
-    img.onload = () => {
-      mainImage.src = img.src;
-      mainImage.style.opacity = 1;
-      // Update thumbs & dots
-      thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
-      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
-    };
+      card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+    }
+
+    return card;
   }
 
-  function createThumbnail(src, index) {
-    const img = document.createElement("img");
-    img.src = src;
-    img.onclick = () => switchImage(index);
-    return img;
+  function renderNextBatch() {
+    const slice = allProducts.slice(currentIndex, currentIndex + productsPerPage);
+    if (!slice.length) {
+      showMoreBtn.style.display = "none";
+      return;
+    }
+    slice.forEach((p, idx) => grid.appendChild(createProductCard(p, currentIndex + idx)));
+    currentIndex += slice.length;
+
+    // Hide button if no more products
+    if (currentIndex >= allProducts.length) showMoreBtn.style.display = "none";
   }
 
-  function initAccordion() {
-    document.querySelectorAll(".accordion-header").forEach(btn => {
-      const item = btn.closest(".accordion-item");
-      const content = btn.nextElementSibling;
-      btn.addEventListener("click", () => {
-        const isActive = item.classList.contains("active");
-        document.querySelectorAll(".accordion-item").forEach(i => {
-          i.classList.remove("active");
-          const c = i.querySelector(".accordion-content");
-          if(c) c.style.maxHeight = null;
-        });
-        if(!isActive){
-          item.classList.add("active");
-          if(content) content.style.maxHeight = content.scrollHeight + "px";
-        }
-      });
-    });
-  }
+  showMoreBtn?.addEventListener("click", renderNextBatch);
 
-  // ---------------- LOAD CSV ----------------
+  // Load CSV
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
-    complete: function(res) {
-      const products = res.data.map(p => {
-        // Handle images
+    complete: (res) => {
+      if (!res.data || !res.data.length) {
+        console.error("❌ CSV loaded but no data");
+        grid.innerHTML = "<p>No products available.</p>";
+        showMoreBtn.style.display = "none";
+        return;
+      }
+
+      allProducts = res.data.map(p => {
         const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
         let lifestyle = (p.lifestyleUrl || "").trim();
-        if(!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
+        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
         const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
-
         return {
           id: (p.productId || "").trim(),
           name: (p.name || "").trim(),
-          type: (p.type || "").toLowerCase(),
           price: p.newPrice ? parseFloat(p.newPrice) : 0,
           oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-          discount: p.discount || null,
-          category: (p.category || "").trim(),
-          color: (p.color || "").trim(),
-          artist: (p.artistName || p.artist || "").trim(),
-          description: p.bio || "",
-          downloadLink: (p.downloadLinkUrl || "").trim(),
-          visible: true, // all products visible
           images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
         };
       });
 
-      const product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
-
-      if(!product){
-        document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
-        return;
-      }
-
-      // ---------------- DOM Updates ----------------
-      titleEl.innerText = product.name;
-      titleEl.after(categoryEl);
-      categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
-      artistEl.innerText = product.artist;
-      descEl.innerHTML = product.description;
-
-      // --- Price ---
-      let finalPrice = product.price;
-      if(product.discount){
-        if(product.discount.includes("%")){
-          finalPrice = product.price*(1 - parseFloat(product.discount)/100);
-        } else {
-          finalPrice = product.price - parseFloat(product.discount);
-        }
-      }
-      priceEl.innerText = "$"+finalPrice.toFixed(2);
-      if(oldPriceEl){
-        if(product.discount){
-          oldPriceEl.innerText = "$"+product.price.toFixed(2);
-          oldPriceEl.style.textDecoration = "line-through";
-        } else oldPriceEl.style.display="none";
-      }
-
-     // --- Images ---
-// --- Images Setup ---
-allImages = product.images;
-
-if(allImages.length){
-
-  // --- Set initial image ---
-  switchImage(0);
-
-  // --- Thumbnails (desktop only) ---
-  if(thumbsEl){
-    thumbsEl.innerHTML = "";
-    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
-  }
-
-  // --- Dots ---
-  if(dotsEl){
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.addEventListener("click", () => switchImage(i));
-      dotsEl.appendChild(dot);
-    });
-  }
-
-  function updateDots(){
-    if(!dotsEl) return;
-    const dots = Array.from(dotsEl.querySelectorAll(".dot"));
-    dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
-  }
-
-  // Update dots inside switchImage
-  const originalSwitchImage = switchImage;
-  switchImage = function(index){
-    originalSwitchImage(index);
-    updateDots();
-  };
-
-  // --- Mobile swipe ---
-  const galleryWrapper = document.querySelector(".main-image-wrapper");
-  if(allImages.length > 1 && galleryWrapper){
-    let startX = 0;
-    let endX = 0;
-
-    galleryWrapper.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchmove", (e) => { endX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchend", () => {
-      if(startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
-      else if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    });
-  }
-
-  // --- Initialize dots on load ---
-  updateDots();
-}
-
-      // Buy button
-      buyBtn.onclick = () => {
-        if(product.downloadLink) window.open(product.downloadLink,"_blank");
-        else alert("Download not available");
-      };
-
-      // Accordion
-      initAccordion();
+      console.log("✅ Products loaded:", allProducts.length);
+      renderNextBatch();
     },
-    error: err => console.error("CSV load failed:", err)
-  });
-}
-
-// Sale countdown
-const saleEl = document.getElementById("saleInfo");
-if(saleEl){
-  let seconds = 36000; // 10 hours
-  function updateTimer() {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    if(seconds > 0){
-      seconds--;
-      setTimeout(updateTimer, 1000);
+    error: err => {
+      console.error("❌ CSV load failed:", err);
+      grid.innerHTML = "<p>Failed to load products.</p>";
+      showMoreBtn.style.display = "none";
     }
-  }
-  updateTimer();
-}
-
-// Tabs
-document.addEventListener("DOMContentLoaded", () => {
-  const tabs = document.querySelectorAll(".artwork-tabs .tab");
-  const panels = document.querySelectorAll(".tab-panel");
-
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      panels.forEach(p => p.classList.remove("active"));
-
-      tab.classList.add("active");
-      document.getElementById(tab.dataset.tab).classList.add("active");
-    });
   });
 });
-
-// Artwork type select
-const artworkTypeSelect = document.getElementById("artworkType");
-const frameWrapper = document.getElementById("frameWrapper");
-
-function updateArtworkOptions() {
-  const value = artworkTypeSelect.value;
-  frameWrapper.style.display = value.startsWith("print") ? "block" : "none";
-}
-
-updateArtworkOptions();
-artworkTypeSelect.addEventListener("change", updateArtworkOptions);
