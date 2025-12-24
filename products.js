@@ -52,41 +52,51 @@ function initProductsPage() {
 slice.forEach((p, index) => {
   let card;
 
-// Every 7th card is a banner
-if ((index + 1) % 7 === 0) {
-  card = document.createElement("div");
-  card.className = "product-card banner-only";
+  // Every 7th card is a banner
+  if ((index + 1) % 7 === 0) {
+    card = document.createElement("div");
+    card.className = "product-card banner-only";
 
-  const bannerIndex = Math.floor(index / 7) % banners.length;
-  const banner = banners[bannerIndex];
+    const bannerIndex = Math.floor(index / 7) % banners.length;
+    const banner = banners[bannerIndex];
 
-  if (banner.type === "video") {
-    card.innerHTML = `
-      <div class="img-wrapper banner-wrapper">
-        <video autoplay muted loop playsinline>
-          <source src="${banner.src}" type="video/mp4">
-        </video>
-      </div>
-    `;
+    if (banner.type === "video") {
+      card.innerHTML = `
+        <div class="img-wrapper banner-wrapper">
+          <video autoplay muted loop playsinline>
+            <source src="${banner.src}" type="video/mp4">
+          </video>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
+      `;
+    }
+
   } else {
-    card.innerHTML = `
-      <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>
-    `;
-  }
-
-} else {
-
 
     // Regular product card
     card = document.createElement("div");
-card.className = "product-card is-product artwork";
 
-    const imagesArray = p.images.length ? p.images : [p.image];
-    card.dataset.images = JSON.stringify(imagesArray);
+    // Determine class based on first or second image
+    let productClass = "artwork"; // default
+    if (p.images.length > 1) {
+      // use first image as artwork, second as lifestyle
+      productClass = "artwork"; 
+    }
+
+    card.className = `product-card is-product ${productClass}`;
+
+    // store images in data attribute
+    card.dataset.images = JSON.stringify(p.images);
+
+    // show first image (artwork) by default
+    const imgSrc = p.images[0].includes("http") ? p.images[0] : 'https://static.wixstatic.com/media/' + p.images[0];
 
     card.innerHTML = `
       <div class="img-wrapper">
-        <img src="${imagesArray[0].includes("http") ? imagesArray[0] : 'https://static.wixstatic.com/media/' + imagesArray[0]}" alt="${p.name}">
+        <img src="${imgSrc}" alt="${p.name}">
       </div>
       <div class="product-info">
         <h3>${p.name}</h3>
@@ -141,22 +151,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Function to update all product images
-  function updateGridImages() {
-const productCards = document.querySelectorAll(
-  "#productGrid .product-card.is-product"
-);
-    productCards.forEach(card => {
-      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
-      const newImg = imgList[currentImageIndex] || imgList[0];
-      card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-    });
-  }
+function updateGridImages() {
+  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+  productCards.forEach(card => {
+    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [card.querySelector("img").src];
+    const newImg = imgList[currentImageIndex] || imgList[0];
+    card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
 
-  // Initial update on page load
-  updateGridImages();
-});
-
+    // Update class based on image index
+    if (currentImageIndex === 0) {
+      card.classList.remove("lifestyle");
+      card.classList.add("artwork");
+    } else if (currentImageIndex === 1) {
+      card.classList.remove("artwork");
+      card.classList.add("lifestyle");
+    }
+  });
+}
 
 // ============================
 // SHUFFLE AND SORT
