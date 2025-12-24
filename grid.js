@@ -127,32 +127,30 @@ function initProductsPage() {
   // =========================
   // IMAGE UPDATE
   // =========================
-function updateGridImages() {
-  const cards = document.querySelectorAll(".product-card");
+  function updateGridImages() {
+    const cards = document.querySelectorAll(".product-card");
 
-  cards.forEach(card => {
-    const imgList = JSON.parse(card.dataset.images || "[]");
-    if (!imgList.length) return;
+    cards.forEach(card => {
+      const imgList = JSON.parse(card.dataset.images || "[]");
+      if (!imgList.length) return;
 
-    const artworkImg = card.querySelector(".artwork img");
-    const lifestyleImg = card.querySelector(".lifestyle-bg");
+      const artworkImg = card.querySelector(".artwork img");
+      const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-    const img = imgList[currentImageIndex] || imgList[0];
-    const url = img.startsWith("http")
-      ? img
-      : "https://static.wixstatic.com/media/" + img;
+      const img = imgList[currentImageIndex] || imgList[0];
+      const url = img.startsWith("http")
+        ? img
+        : "https://static.wixstatic.com/media/" + img;
 
-    const targetImg = currentImageIndex === 1 ? lifestyleImg : artworkImg;
-
-    // hide while loading
-    targetImg.classList.remove("loaded");
-    targetImg.src = url;
-
-    targetImg.onload = () => targetImg.classList.add("loaded");
-
-    // hide the other image
-    const otherImg = currentImageIndex === 1 ? artworkImg : lifestyleImg;
-    otherImg.classList.remove("loaded");
+      if (currentImageIndex === 1) {
+        lifestyleImg.src = url;
+        lifestyleImg.style.display = "block";
+        artworkImg.style.display = "none";
+      } else {
+        artworkImg.src = url;
+        artworkImg.style.display = "block";
+        lifestyleImg.style.display = "none";
+      }
     });
   }
 } // ✅ THIS WAS MISSING
