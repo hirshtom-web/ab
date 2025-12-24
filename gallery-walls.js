@@ -22,6 +22,11 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
+      if (!res.data || !res.data.length) {
+        grid.innerHTML = "<p>No products found.</p>";
+        return;
+      }
+
       allProducts = res.data.map(p => {
         const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
         let lifestyle = (p.lifestyleUrl || "").trim();
@@ -42,7 +47,10 @@ function initProductsPage() {
 
       renderProducts();
     },
-    error: err => console.error("CSV load failed:", err)
+    error: err => {
+      console.error("CSV load failed:", err);
+      grid.innerHTML = "<p>Failed to load products.</p>";
+    }
   });
 
   function renderProducts() {
@@ -55,6 +63,7 @@ function initProductsPage() {
       if ((currentIndex + index + 1) % 7 === 0) {
         card = document.createElement("div");
         card.className = "product-card banner-only";
+
         const bannerIndex = Math.floor((currentIndex + index) / 7) % banners.length;
         const banner = banners[bannerIndex];
 
@@ -92,8 +101,11 @@ function initProductsPage() {
 
     currentIndex += slice.length;
 
+    // Hide Show More button if all products are displayed
     if (currentIndex >= allProducts.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
+    } else if (showMoreBtn) {
+      showMoreBtn.style.display = "block";
     }
   }
 
