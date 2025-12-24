@@ -99,21 +99,16 @@
    RESPONSIVE GRID
 ========================= */
 
-/* ===========================
-   RESPONSIVE GRID FOR MOBILE
-=========================== */
 @media (max-width: 600px) {
-
-  /* Grid: 2 columns, uniform row height */
+  /* Grid: 1 column centered */
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: 1fr; /* only one product per row */
+    gap: 20px;
     padding-left: 16px;
     padding-right: 16px;
-    grid-auto-rows: 1fr; /* ensures even row height */
   }
 
-  /* Product card: flex column, full width */
+  /* Product card: full width, centered content */
   .product-card {
     display: flex !important;
     flex-direction: column;
@@ -124,6 +119,7 @@
   /* Mockup stage: fixed aspect ratio, background visible */
   .product-card .mockup-stage {
     width: 100%;
+    max-width: 400px;  /* optional max width */
     height: 0;
     padding-top: 133.33%; /* 3/4 aspect ratio */
     background: #f9f5f2;
@@ -135,7 +131,7 @@
     align-items: center;
   }
 
-  /* Artwork: absolutely centered inside stage */
+  /* Artwork: absolutely centered */
   .product-card .artwork img {
     position: absolute;
     top: 50%;
@@ -157,14 +153,14 @@
     display: block;
   }
 
-  /* Product info: sits below mockup stage */
+  /* Product info: centered below stage */
   .product-card .product-info {
     width: 100%;
     text-align: center;
     margin-top: auto;
   }
 
-  /* Show more button: smaller width on mobile */
+  /* Show more button: full width */
   #showMoreBtn {
     width: calc(100% - 32px);
     margin: 48px auto 32px;
