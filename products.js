@@ -79,7 +79,7 @@ if ((index + 1) % 7 === 0) {
 
     // Regular product card
     card = document.createElement("div");
-card.className = "product-card is-product";
+card.className = "product-card is-product artwork";
 
     const imagesArray = p.images.length ? p.images : [p.image];
     card.dataset.images = JSON.stringify(imagesArray);
