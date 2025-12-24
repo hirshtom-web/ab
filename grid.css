@@ -131,3 +131,11 @@
     margin: 48px auto 32px;
   }
 }
+.product-card {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.product-card[style*="display: flex"] {
+  opacity: 1;
+}
