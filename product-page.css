@@ -29,18 +29,13 @@
 .gallery-main {
   flex: 1;
   height: 700px;
-
-  /* mockup stage */
-  background: #ffffff;          /* soft wall / mat background */
-  padding: 60px 40px;           /* passepartout gap */
-  border-radius: 20px;
-
   display: flex;
-  align-items: center;
-  justify-content: center;
-
+  width: 100%;
+  position: relative;
   overflow: hidden;
+  border-radius: 20px;
 }
+
 
 
 .gallery-main img {
