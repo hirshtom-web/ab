@@ -81,18 +81,31 @@
   width: 100%;
   margin: 0 auto;
   padding: 40px 24px;
-  text-align: center;
+  text-align: center; /* for inline images */
   background: #f9f9f9;
   border-radius: 16px;
   overflow: hidden;
+
+  display: flex;           /* flex container */
+  justify-content: center; /* center horizontally */
+  align-items: center;     /* center vertically if needed */
+  flex-direction: column;  /* stack image + text vertically */
 }
+
 
 .unique-section img {
   width: 400px;
+  max-width: 100%; /* ensures it shrinks on mobile */
   height: auto;
   display: block;
-  justify-content: center;
 }
+
+@media (max-width: 768px) {
+  .unique-section img {
+    width: 200px;
+  }
+}
+
 
 /* ===============================
    BUTTONS
@@ -427,6 +440,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
