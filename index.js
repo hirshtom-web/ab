@@ -91,9 +91,11 @@ function renderSliderProducts(products, targetId, productIds) {
   productIds.forEach(id => {
     const product = products.find(p => p.id === String(id));
 
+    // placeholder if missing
     if (!product) {
       const ph = document.createElement("div");
-      ph.className = "unique-slider-item placeholder";
+      ph.className = "slider-item-wrap";
+      ph.innerHTML = `<div class="unique-slider-item placeholder"></div>`;
       container.appendChild(ph);
       return;
     }
@@ -105,12 +107,15 @@ function renderSliderProducts(products, targetId, productIds) {
           : "https://static.wixstatic.com/media/" + product.images[0]
         : "";
 
-    const card = document.createElement("a");
-    card.className = "unique-slider-item";
-    card.href = `product-page.html?id=${product.id}`;
+    const wrap = document.createElement("div");
+    wrap.className = "slider-item-wrap";
 
-    card.innerHTML = `
-      <img src="${img}" alt="${product.name}" loading="lazy">
+    wrap.innerHTML = `
+      <a class="unique-slider-item unique-slider-media"
+         href="product-page.html?id=${product.id}">
+        <img src="${img}" alt="${product.name}" loading="lazy">
+      </a>
+
       <div class="product-info">
         <h3>${product.name}</h3>
         <div class="price-wrapper">
@@ -120,8 +125,6 @@ function renderSliderProducts(products, targetId, productIds) {
       </div>
     `;
 
-    container.appendChild(card);
+    container.appendChild(wrap);
   });
-
-  console.log("🎉 Slider rendered:", productIds.length, "items");
 }
