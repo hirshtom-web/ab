@@ -22,30 +22,28 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
     const products = data.filter(p => productIds.includes(p.productId));
 
     products.forEach(p => {
-      const mainImages = (p.mainImageUrl || "")
-        .split(";")
-        .map(i => i.trim())
-        .filter(Boolean);
+  const id = p.productId.trim(); // ensure no spaces
+  const mainImages = (p.mainImageUrl || "")
+    .split(";")
+    .map(i => i.trim())
+    .filter(Boolean);
 
-      // Pick second image if exists, otherwise first
-      const imgSrc = mainImages[1] 
-        ? (mainImages[1].includes("http") ? mainImages[1] : 'https://static.wixstatic.com/media/' + mainImages[1]) 
-        : (mainImages[0] ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) : "");
+  const imgSrc = mainImages[1] || mainImages[0] || ""; // use 2nd image if exists, fallback to 1st
 
-      // Construct product page URL
-      const productLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${p.productId}`;
+  const productLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${id}`;
 
-      const item = document.createElement("div");
-      item.className = "new-in-slider-item";
-      item.innerHTML = `
-        <a href="${productLink}">
-          <img src="${imgSrc}" alt="${p.name}">
-          <div class="new-in-slider-info">
-            <h3>${p.name}</h3>
-            <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
-          </div>
-        </a>
-      `;
-      sliderContainer.appendChild(item);
-    });
-  });
+  const item = document.createElement("div");
+  item.className = "new-in-slider-item";
+  item.innerHTML = `
+    <a href="${productLink}">
+      <img src="${imgSrc}" alt="${p.name}">
+      <div class="new-in-slider-info">
+        <h3>${p.name}</h3>
+        <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
+      </div>
+    </a>
+  `;
+  sliderContainer.appendChild(item);
+
+  console.log("Added:", p.name, id, productLink); // debug
+});
