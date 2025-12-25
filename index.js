@@ -22,29 +22,23 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
     const products = data.filter(p => productIds.includes(p.productId));
 
     products.forEach(p => {
-      // Use first image (or second if you want lifestyle image)
-      const images = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-      const imgSrc = images[1] ? (images[1].includes("http") ? images[1] : 'https://static.wixstatic.com/media/' + images[1]) 
-                               : images[0] ? (images[0].includes("http") ? images[0] : 'https://static.wixstatic.com/media/' + images[0]) 
-                               : "";
+      const mainImages = (p.mainImageUrl || "")
+        .split(";")
+        .map(i => i.trim())
+        .filter(Boolean);
+      const imgSrc = mainImages[0] 
+        ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) 
+        : "";
 
-      if (!imgSrc) return; // skip if no image
-
-      // Wrap item in link to correct product page
-      const productLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${p.productId}`;
-
-      const item = document.createElement("a");
-      item.className = "slider-item";
-      item.href = productLink;
-      item.target = "_blank"; // open in new tab
+      const item = document.createElement("div");
+      item.className = "new-in-slider-item"; // updated class
       item.innerHTML = `
         <img src="${imgSrc}" alt="${p.name}">
-        <div class="product-info">
+        <div class="new-in-slider-info">
           <h3>${p.name}</h3>
           <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
         </div>
       `;
-
       sliderContainer.appendChild(item);
     });
   });
