@@ -320,13 +320,27 @@
 /* ===============================
    NEW IN SLIDER
 ================================ */
+.unique-slider-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 0;
+}
+
+.unique-slider-container::-webkit-scrollbar {
+  display: none;
+}
+
 .unique-slider-item {
   flex: 0 0 200px;
   text-decoration: none;
   color: #111;
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
+  background: transparent; /* no shadow, no background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .unique-slider-item img {
@@ -334,60 +348,37 @@
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
+  border-radius: 16px;
 }
 
-/* Product info styles merged */
-.product-info {
+/* Product info under image */
+.slider-info {
+  margin-top: 6px;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-top: 5px;   /* push name down from the image wrapper */
-  gap: 2px;           /* space between name and price */
+  gap: 2px;
 }
 
-.product-info h3 {
-  font-size: 12px;    /* name font size */
-  font-weight: 600;   /* name weight */
-  color: #000;        /* black */
+.slider-info h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
   margin: 0;
   line-height: 1.2;
 }
 
-.price-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;           /* spacing between prices */
-}
-
-.price-from {
-  color: #ec7302;     /* orange */
-  font-weight: 500;
+.slider-info span {
   font-size: 12px;
-  line-height: 1.2;
-}
-
-.price-old {
-  color: #999;        /* gray */
-  text-decoration: line-through;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1.2;
-}
-
-.price-new {
   color: #ec7302;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 1.2;
 }
 
-/* Slider placeholders */
+/* Placeholder cards */
 .unique-slider-item.placeholder {
   background: #f9f5f2;
   flex: 0 0 200px;
-  height: 250px;
+  aspect-ratio: 1 / 1;
   border-radius: 16px;
 }
 
@@ -402,3 +393,4 @@
     font-size: 10px;
   }
 }
+
