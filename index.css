@@ -324,5 +324,37 @@
 }
 
 
+/* ===============================
+   NEW IN SLIDER
+================================ */
+.unique-slider-item {
+  flex: 0 0 200px;
+  text-decoration: none;
+  color: #111;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.unique-slider-item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.slider-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.slider-info h4 {
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.slider-info span {
+  font-weight: 600;
+}
 
 
