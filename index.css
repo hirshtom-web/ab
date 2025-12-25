@@ -342,7 +342,7 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px;
+  padding: 20px; /* space around first/last items */
   scroll-padding-left: 20px;
   -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
 }
@@ -355,7 +355,7 @@
    SLIDER ITEM WRAPPER
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 auto; /* do not shrink */
+  flex: 0 0 auto; /* prevent shrinking */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -370,19 +370,21 @@
 }
 
 /* ===============================
-   IMAGE CARD (3/4 RATIO)
+   IMAGE CARD (3/4 RATIO via padding-top)
 ================================ */
 .unique-slider-media {
   width: 100%;
-  aspect-ratio: 3 / 4; /* modern way: keeps image 3:4 on all devices */
+  padding-top: 133.33%; /* 4 / 3 → 3/4 ratio */
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-  flex-shrink: 0; /* prevent shrinking in flex */
-  display: block;
 }
 
 .unique-slider-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -438,3 +440,4 @@
     font-size: 10px;
   }
 }
+
