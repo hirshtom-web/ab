@@ -89,23 +89,21 @@ function renderSliderProducts(products, targetId, productIds) {
   const container = document.getElementById(targetId);
   if (!container) return;
 
-  // Clear container first
-  container.innerHTML = "";
+  container.innerHTML = ""; // clear placeholders
 
   productIds.forEach(id => {
-    const product = products.find(p => String(p.id) === String(id));
+    const product = products.find(p => p.id === String(id));
 
-    // Fallback placeholder if product missing
     if (!product) {
-      console.warn("⚠️ Product ID not found:", id);
-      const placeholder = document.createElement("div");
-      placeholder.className = "unique-slider-item placeholder";
-      container.appendChild(placeholder);
+      // fallback placeholder
+      const ph = document.createElement("div");
+      ph.className = "unique-slider-item placeholder";
+      container.appendChild(ph);
       return;
     }
 
     const img =
-      product.images && product.images.length
+      product.images.length
         ? product.images[0].startsWith("http")
           ? product.images[0]
           : "https://static.wixstatic.com/media/" + product.images[0]
@@ -115,20 +113,25 @@ function renderSliderProducts(products, targetId, productIds) {
     card.className = "unique-slider-item";
     card.href = `product-page.html?id=${product.id}`;
 
-    // Use product-info structure
     card.innerHTML = `
       <img src="${img}" alt="${product.name}" loading="lazy">
-      <div class="product-info">
-        <h3>${product.name}</h3>
-        <div class="price-wrapper">
-          ${product.originalPrice ? `<span class="price-old">$${product.originalPrice.toFixed(2)}</span>` : ""}
-          <span class="price-new">$${product.price.toFixed(2)}</span>
-        </div>
+      <div class="slider-info">
+        <h4>${product.name}</h4>
+        <span>$${product.price.toFixed(2)}</span>
       </div>
     `;
 
     container.appendChild(card);
   });
 
-  console.log(`🎉 Slider rendered: ${productIds.length} items`);
+  console.log("🎉 Slider rendered:", productIds.length, "items");
 }
+
+// Example usage:
+const NEW_IN_IDS = [
+  "8349201","9182888","9182889","9182890","9182891",
+  "9182892","9182893","9182894","9182895","9182896"
+];
+
+// After allProducts array is loaded
+renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
