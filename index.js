@@ -21,7 +21,7 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
     // Filter only selected products
     const products = data.filter(p => productIds.includes(p.productId));
 
-    products.forEach(p => {
+   products.forEach(p => {
   const id = p.productId.trim(); // ensure no spaces
   const mainImages = (p.mainImageUrl || "")
     .split(";")
