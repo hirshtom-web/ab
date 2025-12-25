@@ -340,10 +340,14 @@
 ================================ */
 .product-slider-section {
   width: 100%;
-  padding: 0 40px; /* outer padding */
+  padding: 0 40px;
   box-sizing: border-box;
   overflow: hidden;
-  background: transparent;
+  background: #f9f5f2;
+}
+  .product-slider-section .unique-title-h2 {
+   justify-content: center;
+   text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -357,7 +361,7 @@
 ================================ */
 .product-slider-container {
   display: flex;
-  gap: 20px; /* gap between items */
+  gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
@@ -373,7 +377,7 @@
 ================================ */
 .slider-item {
   flex: 0 0 auto;
-  width: 200px; /* desktop width */
+  width: 300px;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -382,21 +386,25 @@
 
 @media (max-width: 768px) {
   .slider-item {
-    width: 140px;
+    width: 120px;
   }
 }
 
 /* ===============================
-   IMAGE CARD WITH SHADOW
+   IMAGE CARD
 ================================ */
 .slider-item img {
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* 1 width : 1.25 height */
+  aspect-ratio: 1 / 1.25;
   object-fit: cover;
   border-radius: 16px;
   display: block;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08); /* shadow only on image */
 }
+.slider-item,
+.product-info {
+  background: transparent;
+}
+
 
 /* ===============================
    TEXT UNDER IMAGE
@@ -408,7 +416,7 @@
   flex-direction: column;
   gap: 2px;
   width: 100%;
-  background: transparent; /* no white background */
+  background: transparent;
 }
 
 .product-info h3 {
@@ -416,7 +424,6 @@
   font-weight: 600;
   margin: 0;
   line-height: 1.2;
-  color: #000;
 }
 
 .product-info .price {
@@ -431,8 +438,3 @@
     font-size: 10px;
   }
 }
-
-
-
-
-
