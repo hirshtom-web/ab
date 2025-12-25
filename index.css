@@ -82,7 +82,7 @@
   margin: 0 auto;
   padding: 40px 24px;
   text-align: center; /* for inline images */
-  background: #f9f9f9;
+  background: #f9f5f2;
   border-radius: 16px;
   overflow: hidden;
 
@@ -428,5 +428,6 @@
     font-size: 10px;
   }
 }
+
 
 
