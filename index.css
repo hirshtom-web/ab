@@ -396,6 +396,11 @@
   border-radius: 16px;
   display: block;
 }
+.slider-item,
+.product-info {
+  background: transparent; /* remove any white background */
+}
+
 
 /* ===============================
    TEXT UNDER IMAGE
@@ -407,6 +412,7 @@
   flex-direction: column;
   gap: 2px;
   width: 100%;
+  background: transparent; /* ensure text container is transparent */
 }
 
 .product-info h3 {
@@ -428,6 +434,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
