@@ -336,14 +336,13 @@
 
 
 /* ===============================
-   SLIDER CONTAINER
+   NEW IN SLIDER
 ================================ */
 .unique-slider-container {
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px; /* add padding to avoid first/last cut off */
-  scroll-padding-left: 20px; /* smooth scrolling offset for first item */
+  padding: 20px 0;
 }
 
 .unique-slider-container::-webkit-scrollbar {
@@ -352,36 +351,97 @@
 
 /* ===============================
    SLIDER ITEM WRAPPER
+   (controls width + stacking)
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 auto; /* fix width not to shrink/stretch */
-  width: 200px;   /* desktop width */
+  flex: 0 0 240px; /* desktop width */
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
-    width: 140px; /* mobile width */
+    flex: 0 0 180px; /* smaller width, same ratio */
   }
 }
 
 /* ===============================
-   IMAGE CARD
+   IMAGE = THE ONLY CARD
 ================================ */
 .unique-slider-media {
   width: 100%;
-  aspect-ratio: 3 / 4; /* consistent tall ratio */
+  display: block;
   border-radius: 16px;
   overflow: hidden;
-  display: block;
+  text-decoration: none;
+  line-height: 0; /* removes image baseline gap */
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
 .unique-slider-media img {
   width: 100%;
-  height: 100%;
+  height: auto;        /* scale height automatically */
+  aspect-ratio: 3 / 4; /* keeps same width:height ratio */
   object-fit: cover;
   display: block;
+}
+
+/* ===============================
+   TEXT UNDER IMAGE (OUTSIDE CARD)
+================================ */
+.product-info {
+  margin-top: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.product-info h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.price-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.price-old {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.price-new {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ec7302;
+}
+
+/* ===============================
+   PLACEHOLDER
+================================ */
+.unique-slider-item.placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 4; /* same as cards */
+  background: #f9f5f2;
+  border-radius: 16px;
+}
+
+/* ===============================
+   MOBILE
+================================ */
+@media (max-width: 768px) {
+  .product-info h3,
+  .price-old,
+  .price-new {
+    font-size: 10px;
+  }
 }
