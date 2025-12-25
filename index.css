@@ -78,7 +78,7 @@
    GENERIC SECTIONS
 ================================ */
 .unique-section {
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 40px 24px;
   text-align: center;
@@ -121,7 +121,6 @@
 .unique-overlap-hero {
   position: relative;
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
   min-height: 80vh;
   display: flex;
@@ -323,6 +322,7 @@
 .unique-section-bestsellers {
   background: #fff;
 }
+
 
 
 
