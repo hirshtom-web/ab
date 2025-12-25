@@ -354,7 +354,7 @@
    (controls width + stacking)
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 300px;
+  flex: 0 0 240px; /* desktop width */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -363,7 +363,7 @@
 /* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
-    flex: 0 0 120px;
+    flex: 0 0 180px; /* smaller width, same ratio */
   }
 }
 
@@ -382,8 +382,8 @@
 
 .unique-slider-media img {
   width: 100%;
-  height: 100%;
-  aspect-ratio: 3 / 4;
+  height: auto;        /* scale height automatically */
+  aspect-ratio: 3 / 4; /* keeps same width:height ratio */
   object-fit: cover;
   display: block;
 }
@@ -430,7 +430,7 @@
 ================================ */
 .unique-slider-item.placeholder {
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 4; /* same as cards */
   background: #f9f5f2;
   border-radius: 16px;
 }
@@ -445,11 +445,3 @@
     font-size: 10px;
   }
 }
-
-
-
-
-
-
-
-
