@@ -368,35 +368,34 @@
 }
 
 /* ===============================
-   IMAGE = THE ONLY CARD
+   IMAGE CARD ONLY
 ================================ */
 .unique-slider-media {
   width: 100%;
-  display: block;
+  aspect-ratio: 3 / 4;  /* keeps same ratio on all devices */
   border-radius: 16px;
   overflow: hidden;
-  text-decoration: none;
-  line-height: 0; /* removes image baseline gap */
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  display: block;
 }
 
 .unique-slider-media img {
   width: 100%;
-  height: auto;        /* scale height automatically */
-  aspect-ratio: 3 / 4; /* keeps same width:height ratio */
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 
 /* ===============================
-   TEXT UNDER IMAGE (OUTSIDE CARD)
+   TEXT UNDER IMAGE
 ================================ */
 .product-info {
-  margin-top: 12px;
+  margin-top: 8px; /* space between card and text */
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 100%;
 }
 
 .product-info h3 {
@@ -426,11 +425,11 @@
 }
 
 /* ===============================
-   PLACEHOLDER
+   PLACEHOLDER CARD
 ================================ */
 .unique-slider-item.placeholder {
   width: 100%;
-  aspect-ratio: 3 / 4; /* same as cards */
+  aspect-ratio: 3 / 4; /* same as image card */
   background: #f9f5f2;
   border-radius: 16px;
 }
@@ -445,5 +444,3 @@
     font-size: 10px;
   }
 }
-
-
