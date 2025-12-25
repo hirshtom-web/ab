@@ -1,24 +1,4 @@
 /* ===============================
-   GLOBAL RESET / SAFETY
-================================ */
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: "Poppins", sans-serif;
-  background: #fff;
-  color: #111;
-}
-
-input, textarea, select {
-  font-size: 16px;
-}
-
-/* ===============================
    SECTION WRAPPER + DIVIDERS
 ================================ */
 .section-wrap {
@@ -344,3 +324,4 @@ input, textarea, select {
 .unique-section-bestsellers {
   background: #fff;
 }
+
