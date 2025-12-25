@@ -9,7 +9,7 @@ const productIds = [
   "9182894",
   "9182895",
   "9182896"
-]; // select your product ids
+];
 
 const sliderContainer = document.getElementById("newInSlider");
 
@@ -26,18 +26,24 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
         .split(";")
         .map(i => i.trim())
         .filter(Boolean);
-      const imgSrc = mainImages[0] 
-        ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) 
-        : "";
+
+      // Pick second image if exists, otherwise first
+      const imgSrc = mainImages[1] 
+        ? (mainImages[1].includes("http") ? mainImages[1] : 'https://static.wixstatic.com/media/' + mainImages[1]) 
+        : (mainImages[0] ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) : "");
+
+      const productLink = p.productUrl || `/product/${p.productId}`; // fallback URL if no productUrl field
 
       const item = document.createElement("div");
-      item.className = "new-in-slider-item"; // updated class
+      item.className = "new-in-slider-item";
       item.innerHTML = `
-        <img src="${imgSrc}" alt="${p.name}">
-        <div class="new-in-slider-info">
-          <h3>${p.name}</h3>
-          <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
-        </div>
+        <a href="${productLink}">
+          <img src="${imgSrc}" alt="${p.name}">
+          <div class="new-in-slider-info">
+            <h3>${p.name}</h3>
+            <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
+          </div>
+        </a>
       `;
       sliderContainer.appendChild(item);
     });
