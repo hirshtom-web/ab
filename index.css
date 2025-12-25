@@ -342,8 +342,8 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px 20px; /* add some padding to avoid cutoff */
-  scroll-padding-left: 20px; /* ensures first item isn’t cut off */
+  padding: 20px; /* padding around the first/last items */
+  scroll-padding-left: 20px;
 }
 
 .unique-slider-container::-webkit-scrollbar {
@@ -352,35 +352,37 @@
 
 /* ===============================
    SLIDER ITEM WRAPPER
-   (controls width + stacking)
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 240px; /* desktop width */
+  flex: 0 0 auto; /* prevent shrinking */
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 240px; /* desktop width */
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
-    flex: 0 0 180px; /* smaller width, same 3:4 ratio */
+    width: 180px; /* mobile width */
   }
 }
 
 /* ===============================
-   IMAGE CARD ONLY
+   IMAGE CARD
 ================================ */
 .unique-slider-media {
   width: 100%;
-  aspect-ratio: 3 / 4; /* always 3:4 ratio */
+  padding-top: 133.33%; /* 3/4 ratio trick: 4 / 3 = 1.3333 → padding-top 133.33% */
+  position: relative; /* for absolute img inside */
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08); /* shadow */
-  display: block;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
 .unique-slider-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -392,7 +394,7 @@
    TEXT UNDER IMAGE
 ================================ */
 .product-info {
-  margin-top: 8px; /* spacing below image */
+  margin-top: 8px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -424,16 +426,6 @@
   font-size: 12px;
   font-weight: 500;
   color: #ec7302;
-}
-
-/* ===============================
-   PLACEHOLDER CARD
-================================ */
-.unique-slider-item.placeholder {
-  width: 100%;
-  aspect-ratio: 3 / 4; /* match the cards */
-  background: #f9f5f2;
-  border-radius: 16px;
 }
 
 /* ===============================
