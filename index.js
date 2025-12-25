@@ -26,12 +26,16 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
         .split(";")
         .map(i => i.trim())
         .filter(Boolean);
-      const imgSrc = mainImages[0] 
-        ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) 
+
+      const imgSrc = mainImages[0]
+        ? (mainImages[0].includes("http")
+            ? mainImages[0]
+            : "https://static.wixstatic.com/media/" + mainImages[0])
         : "";
 
       const item = document.createElement("div");
-      item.className = "new-in-slider-item"; // updated class
+      item.className = "new-in-slider-item";
+
       item.innerHTML = `
         <img src="${imgSrc}" alt="${p.name}">
         <div class="new-in-slider-info">
@@ -39,6 +43,13 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
           <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
         </div>
       `;
+
+      // ✅ ONLY FIX: connect to correct product page
+      item.addEventListener("click", () => {
+        window.location.href =
+          `https://hirshtom-web.github.io/ab/product-page.html?id=${p.productId}`;
+      });
+
       sliderContainer.appendChild(item);
     });
   });
