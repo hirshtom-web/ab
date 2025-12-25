@@ -88,10 +88,10 @@
 }
 
 .unique-section img {
-  width: 200px;
+  width: 400px;
   height: auto;
-  border-radius: 16px;
   display: block;
+  justify-content: center;
 }
 
 /* ===============================
@@ -427,6 +427,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
