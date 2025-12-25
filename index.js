@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 const productIds = [
   "8349201",
   "9182888",
@@ -9,7 +11,7 @@ const productIds = [
   "9182894",
   "9182895",
   "9182896"
-];
+]; // select your product ids
 
 const sliderContainer = document.getElementById("newInSlider");
 
@@ -17,33 +19,33 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
   .then(res => res.text())
   .then(csvText => {
     const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-    
-    // Filter only selected products
-    const products = data.filter(p => productIds.includes(p.productId));
 
-   products.forEach(p => {
-  const id = p.productId.trim(); // ensure no spaces
-  const mainImages = (p.mainImageUrl || "")
-    .split(";")
-    .map(i => i.trim())
-    .filter(Boolean);
+    // Filter only selected products (trim spaces in productId just in case)
+    const products = data.filter(p => productIds.includes(p.productId.trim()));
 
-  const imgSrc = mainImages[1] || mainImages[0] || ""; // use 2nd image if exists, fallback to 1st
+    console.log("Filtered products:", products); // debug check
 
-  const productLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${id}`;
+    products.forEach(p => {
+      // Split images; use 2nd image if available, else fallback to first
+      const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+      const imgSrc = mainImages[1] 
+        ? (mainImages[1].includes("http") ? mainImages[1] : 'https://static.wixstatic.com/media/' + mainImages[1]) 
+        : (mainImages[0] ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) : "");
 
-  const item = document.createElement("div");
-  item.className = "new-in-slider-item";
-  item.innerHTML = `
-    <a href="${productLink}">
-      <img src="${imgSrc}" alt="${p.name}">
-      <div class="new-in-slider-info">
-        <h3>${p.name}</h3>
-        <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
-      </div>
-    </a>
-  `;
-  sliderContainer.appendChild(item);
+      const itemLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${p.productId.trim()}`;
 
-  console.log("Added:", p.name, id, productLink); // debug
-});
+      const item = document.createElement("a"); // use <a> to link
+      item.className = "slider-item";
+      item.href = itemLink;
+      item.target = "_blank"; // optional, opens in new tab
+      item.innerHTML = `
+        <img src="${imgSrc}" alt="${p.name}">
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
+        </div>
+      `;
+      sliderContainer.appendChild(item);
+    });
+  })
+  .catch(err => console.error("Error loading CSV:", err));
