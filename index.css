@@ -336,7 +336,7 @@
    (controls width + stacking)
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 250px;
+  flex: 0 0 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -345,7 +345,7 @@
 /* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
-    flex: 0 0 100px;
+    flex: 0 0 120px;
   }
 }
 
@@ -427,4 +427,5 @@
     font-size: 10px;
   }
 }
+
 
