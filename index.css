@@ -342,9 +342,10 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px; /* space around first/last items */
+  padding: 20px 0 20px 20px; /* left padding ensures first item fully visible */
   scroll-padding-left: 20px;
-  -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
+  scroll-behavior: smooth; /* smooth scroll for JS/anchor buttons */
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
 }
 
 .unique-slider-container::-webkit-scrollbar {
@@ -370,11 +371,11 @@
 }
 
 /* ===============================
-   IMAGE CARD (3/4 RATIO via padding-top)
+   IMAGE CARD (3/4 RATIO)
 ================================ */
 .unique-slider-media {
   width: 100%;
-  padding-top: 133.33%; /* 4 / 3 → 3/4 ratio */
+  padding-top: 133.33%; /* 3/4 ratio */
   position: relative;
   border-radius: 16px;
   overflow: hidden;
@@ -440,4 +441,3 @@
     font-size: 10px;
   }
 }
-
