@@ -51,96 +51,92 @@ function initProductsPage() {
     error: err => console.error("CSV load failed:", err)
   });
 
-  function renderPage(page) {
-    grid.innerHTML = "";
-    const start = (page - 1) * productsPerPage;
-    const slice = allProducts.slice(start, start + productsPerPage);
+ function renderPage(page) {
+  grid.innerHTML = "";
+  const start = (page - 1) * productsPerPage;
+  const slice = allProducts.slice(start, start + productsPerPage);
 
-    if (!slice.length) {
-      grid.innerHTML = "<p>No products found.</p>";
-      return;
-    }
+  if (!slice.length) {
+    grid.innerHTML = "<p>No products found.</p>";
+    return;
+  }
 
-    slice.forEach((p, index) => {
-      let card;
+  slice.forEach((p, index) => {
+    let card;
 
-      // Banner every 7th card
-      if ((index + 1) % 7 === 0) {
-        card = document.createElement("div");
-        card.className = "product-card banner-only";
+    // Banner every 10th card
+    if ((index + 1) % 10 === 0) {
+      card = document.createElement("div");
+      card.className = "product-card banner-only";
 
-        const bannerIndex = Math.floor(index / 7) % banners.length;
-        const banner = banners[bannerIndex];
+      const bannerIndex = Math.floor(index / 10) % banners.length;
+      const banner = banners[bannerIndex];
 
-        if (banner.type === "video") {
-          card.innerHTML = `<div class="img-wrapper banner-wrapper">
+      if (banner.type === "video") {
+        card.innerHTML = `
+          <div class="img-wrapper banner-wrapper">
             <video autoplay muted loop playsinline>
               <source src="${banner.src}" type="video/mp4">
             </video>
           </div>`;
-        } else {
-          card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
-        }
-
       } else {
-        // Regular product card
-card = document.createElement("div");
-
-// Determine class based on toggle
-const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
-card.className = `product-card is-product ${productClass}`;
-
-card.dataset.images = JSON.stringify(p.images);
-
-const imgSrc = p.images[currentImageIndex] 
-  ? (p.images[currentImageIndex].includes("http") 
-      ? p.images[currentImageIndex] 
-      : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
-  : "";
-
-// Build discount bubble
-let discountBubble = '';
-if(p.discount){
-  discountBubble = `<div class="discount-bubble">${p.discount}</div>`;
-}
-
-// Build price display
-let priceHTML = '';
-if(p.oldPrice && p.oldPrice > p.price){
-  priceHTML = `
-    <span class="price-from">From $${p.price.toFixed(2)}</span>
-    <span class="price-old">$${p.oldPrice.toFixed(2)}</span>
-  `;
-} else {
-  priceHTML = `<span class="price-new">$${p.price.toFixed(2)}</span>`;
-}
-
-
-// Insert into card
-card.innerHTML = `<div class="img-wrapper">
-      ${discountBubble}
-      <img src="${imgSrc}" alt="${p.name}">
-    </div>
-    <div class="product-info">
-      <h3>${p.name}</h3>
-      <div class="price-wrapper">
-        ${priceHTML}
-      </div>
-    </div>`;
-
-
-
-        card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+        card.innerHTML = `
+          <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
       }
 
-      grid.appendChild(card);
-    });
+    } else {
+      // Regular product card
+      card = document.createElement("div");
+      const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
+      card.className = `product-card is-product ${productClass}`;
+      card.dataset.images = JSON.stringify(p.images);
 
-    const totalPages = Math.ceil(allProducts.length / productsPerPage);
-    pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-  }
+      const imgSrc = p.images[currentImageIndex] 
+        ? (p.images[currentImageIndex].includes("http") 
+            ? p.images[currentImageIndex] 
+            : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
+        : "";
+
+      // Build discount bubble
+      let discountBubble = p.discount 
+        ? `<div class="discount-bubble">${p.discount}</div>` 
+        : "";
+
+      // Build price display
+      let priceHTML = "";
+      if(p.oldPrice && p.oldPrice > p.price){
+        priceHTML = `
+          <span class="price-from">$${p.price.toFixed(2)}</span>
+          <span class="price-old">$${p.oldPrice.toFixed(2)}</span>`;
+      } else {
+        priceHTML = `<span class="price-new">$${p.price.toFixed(2)}</span>`;
+      }
+
+      // Insert into card
+      card.innerHTML = `
+        <div class="img-wrapper">
+          ${discountBubble}
+          <img src="${imgSrc}" alt="${p.name}">
+        </div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">
+            ${priceHTML}
+          </div>
+        </div>`;
+
+      card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
+    }
+
+    grid.appendChild(card);
+  });
+
+  const totalPages = Math.ceil(allProducts.length / productsPerPage);
+  pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+}
+
 
   // Pagination
   prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
