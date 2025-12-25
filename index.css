@@ -371,7 +371,7 @@
    TEXT UNDER IMAGE (OUTSIDE CARD)
 ================================ */
 .product-info {
-  margin-top: 6px;
+  margin-top: 12px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -424,5 +424,6 @@
     font-size: 10px;
   }
 }
+
 
 
