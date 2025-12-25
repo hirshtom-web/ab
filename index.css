@@ -342,8 +342,9 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px; /* padding around the first/last items */
+  padding: 20px;
   scroll-padding-left: 20px;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
 }
 
 .unique-slider-container::-webkit-scrollbar {
@@ -354,13 +355,14 @@
    SLIDER ITEM WRAPPER
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 auto; /* prevent shrinking */
+  flex: 0 0 auto; /* do not shrink */
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 240px; /* desktop width */
 }
 
+/* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
     width: 180px; /* mobile width */
@@ -368,21 +370,19 @@
 }
 
 /* ===============================
-   IMAGE CARD
+   IMAGE CARD (3/4 RATIO)
 ================================ */
 .unique-slider-media {
   width: 100%;
-  padding-top: 133.33%; /* 3/4 ratio trick: 4 / 3 = 1.3333 → padding-top 133.33% */
-  position: relative; /* for absolute img inside */
+  aspect-ratio: 3 / 4; /* modern way: keeps image 3:4 on all devices */
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  flex-shrink: 0; /* prevent shrinking in flex */
+  display: block;
 }
 
 .unique-slider-media img {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
