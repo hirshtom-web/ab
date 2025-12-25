@@ -32,7 +32,8 @@ fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
         ? (mainImages[1].includes("http") ? mainImages[1] : 'https://static.wixstatic.com/media/' + mainImages[1]) 
         : (mainImages[0] ? (mainImages[0].includes("http") ? mainImages[0] : 'https://static.wixstatic.com/media/' + mainImages[0]) : "");
 
-      const productLink = p.productUrl || `/product/${p.productId}`; // fallback URL if no productUrl field
+      // Construct product page URL
+      const productLink = `https://hirshtom-web.github.io/ab/product-page.html?id=${p.productId}`;
 
       const item = document.createElement("div");
       item.className = "new-in-slider-item";
