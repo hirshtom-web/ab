@@ -22,10 +22,7 @@ const NEW_IN_IDS = [
    INIT
 ================================ */
 function initPage() {
-  // show placeholders immediately
   renderSliderPlaceholders("newInSlider", NEW_IN_IDS.length);
-
-  // load products
   loadProducts();
 }
 
@@ -38,7 +35,7 @@ function loadProducts() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      console.log("✅ CSV loaded:", res.data.length, "rows");
+      console.log("✅ CSV loaded:", res.data.length);
 
       const allProducts = res.data.map(p => ({
         id: String(p.productId || "").trim(),
@@ -54,7 +51,8 @@ function loadProducts() {
         images: (p.mainImageUrl || "")
           .split(";")
           .map(i => i.trim())
-          .filter(Boolean)
+          .filter(Boolean),
+        lifestyleUrl: (p.lifestyleUrl || "").trim()
       }));
 
       renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
@@ -73,9 +71,10 @@ function renderSliderPlaceholders(targetId, count) {
   container.innerHTML = "";
 
   for (let i = 0; i < count; i++) {
-    const ph = document.createElement("div");
-    ph.className = "unique-slider-item placeholder";
-    container.appendChild(ph);
+    const wrap = document.createElement("div");
+    wrap.className = "slider-item-wrap";
+    wrap.innerHTML = `<div class="unique-slider-item placeholder"></div>`;
+    container.appendChild(wrap);
   }
 }
 
@@ -91,21 +90,31 @@ function renderSliderProducts(products, targetId, productIds) {
   productIds.forEach(id => {
     const product = products.find(p => p.id === String(id));
 
-    // placeholder if missing
+    // fallback placeholder
     if (!product) {
-      const ph = document.createElement("div");
-      ph.className = "slider-item-wrap";
-      ph.innerHTML = `<div class="unique-slider-item placeholder"></div>`;
-      container.appendChild(ph);
+      const wrap = document.createElement("div");
+      wrap.className = "slider-item-wrap";
+      wrap.innerHTML = `<div class="unique-slider-item placeholder"></div>`;
+      container.appendChild(wrap);
       return;
     }
 
-    const img =
-      product.images.length
-        ? product.images[0].startsWith("http")
-          ? product.images[0]
-          : "https://static.wixstatic.com/media/" + product.images[0]
-        : "";
+    /* ===============================
+       IMAGE PICK LOGIC
+    ================================ */
+    let img = "";
+
+    if (product.lifestyleUrl) {
+      img = product.lifestyleUrl;
+    } else if (product.images[1]) {
+      img = product.images[1];
+    } else if (product.images[0]) {
+      img = product.images[0];
+    }
+
+    if (img && !img.startsWith("http")) {
+      img = "https://static.wixstatic.com/media/" + img;
+    }
 
     const wrap = document.createElement("div");
     wrap.className = "slider-item-wrap";
@@ -119,7 +128,11 @@ function renderSliderProducts(products, targetId, productIds) {
       <div class="product-info">
         <h3>${product.name}</h3>
         <div class="price-wrapper">
-          ${product.originalPrice ? `<span class="price-old">$${product.originalPrice.toFixed(2)}</span>` : ""}
+          ${
+            product.originalPrice
+              ? `<span class="price-old">$${product.originalPrice.toFixed(2)}</span>`
+              : ""
+          }
           <span class="price-new">$${product.price.toFixed(2)}</span>
         </div>
       </div>
@@ -127,4 +140,6 @@ function renderSliderProducts(products, targetId, productIds) {
 
     container.appendChild(wrap);
   });
+
+  console.log("🎉 Slider rendered:", productIds.length, "items");
 }
