@@ -343,6 +343,7 @@
   padding: 0 40px; /* outer padding */
   box-sizing: border-box;
   overflow: hidden;
+  background: #fdf7f2;
 }
 
 @media (max-width: 768px) {
@@ -428,3 +429,4 @@
     font-size: 10px;
   }
 }
+
