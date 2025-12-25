@@ -342,10 +342,12 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px 0 20px 20px; /* left padding ensures first item fully visible */
-  scroll-padding-left: 20px;
-  scroll-behavior: smooth; /* smooth scroll for JS/anchor buttons */
-  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+  padding: 20px;               /* padding around first/last items */
+  scroll-padding-left: 20px;   /* ensures first item fully visible */
+  scroll-behavior: smooth;     /* smooth scrolling */
+  -webkit-overflow-scrolling: touch; /* smooth scroll for iOS */
+  
+  justify-content: flex-start; /* align items from left */
 }
 
 .unique-slider-container::-webkit-scrollbar {
@@ -356,17 +358,17 @@
    SLIDER ITEM WRAPPER
 ================================ */
 .slider-item-wrap {
-  flex: 0 0 auto; /* prevent shrinking */
+  flex: 0 0 auto;      /* prevent shrinking */
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 240px; /* desktop width */
+  width: 240px;        /* desktop width */
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .slider-item-wrap {
-    width: 180px; /* mobile width */
+    width: 180px;      /* mobile width */
   }
 }
 
