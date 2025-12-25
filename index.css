@@ -365,7 +365,7 @@
 .unique-slider-media img {
   width: 100%;
   height: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   display: block;
 }
@@ -412,7 +412,7 @@
 ================================ */
 .unique-slider-item.placeholder {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   background: #f9f5f2;
   border-radius: 16px;
 }
@@ -427,5 +427,6 @@
     font-size: 10px;
   }
 }
+
 
 
