@@ -336,30 +336,30 @@
 
 
 /* ===============================
-   SLIDER WRAPPER
+   NEW IN SLIDER SECTION
 ================================ */
-.product-slider-section {
+.new-in-slider-section {
   width: 100%;
   padding: 0 40px;
   box-sizing: border-box;
   overflow: hidden;
   background: #f9f5f2;
 }
-  .product-slider-section .unique-title-h2 {
-   justify-content: center;
-   text-align: center;
+.new-in-slider-section .unique-title-h2 {
+  justify-content: center;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
-  .product-slider-section {
+  .new-in-slider-section {
     padding: 0 20px;
   }
 }
 
 /* ===============================
-   SLIDER CONTAINER
+   NEW IN SLIDER CONTAINER
 ================================ */
-.product-slider-container {
+.new-in-slider-container {
   display: flex;
   gap: 20px;
   overflow-x: auto;
@@ -368,14 +368,14 @@
   padding: 20px 0;
 }
 
-.product-slider-container::-webkit-scrollbar {
+.new-in-slider-container::-webkit-scrollbar {
   display: none;
 }
 
 /* ===============================
-   SLIDER ITEM
+   NEW IN SLIDER ITEM
 ================================ */
-.slider-item {
+.new-in-slider-item {
   flex: 0 0 auto;
   width: 300px;
   scroll-snap-align: start;
@@ -385,7 +385,7 @@
 }
 
 @media (max-width: 768px) {
-  .slider-item {
+  .new-in-slider-item {
     width: 120px;
   }
 }
@@ -393,23 +393,24 @@
 /* ===============================
    IMAGE CARD
 ================================ */
-.slider-item img {
+.new-in-slider-item img {
   width: 100%;
   aspect-ratio: 1 / 1.25;
   object-fit: cover;
   border-radius: 16px;
   display: block;
-}
-.slider-item,
-.product-info {
-  background: transparent;
+  box-shadow: none; /* remove shadow */
 }
 
+.new-in-slider-item,
+.new-in-slider-info {
+  background: transparent;
+}
 
 /* ===============================
    TEXT UNDER IMAGE
 ================================ */
-.product-info {
+.new-in-slider-info {
   margin-top: 8px;
   text-align: center;
   display: flex;
@@ -419,22 +420,22 @@
   background: transparent;
 }
 
-.product-info h3 {
+.new-in-slider-info h3 {
   font-size: 12px;
   font-weight: 600;
   margin: 0;
   line-height: 1.2;
 }
 
-.product-info .price {
+.new-in-slider-info .price {
   font-size: 12px;
   font-weight: 500;
   color: #ec7302;
 }
 
 @media (max-width: 768px) {
-  .product-info h3,
-  .product-info .price {
+  .new-in-slider-info h3,
+  .new-in-slider-info .price {
     font-size: 10px;
   }
 }
