@@ -346,7 +346,8 @@
   background: #f9f5f2;
 }
 .new-in-slider-section .unique-title-h2 {
-  margin-top: 100px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   justify-content: center;
   text-align: center;
 }
@@ -440,5 +441,6 @@
     font-size: 10px;
   }
 }
+
 
 
