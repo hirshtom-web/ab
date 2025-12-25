@@ -48,13 +48,14 @@ function loadProducts() {
           : p.originalPrice
           ? parseFloat(p.originalPrice)
           : 0,
+        originalPrice: p.originalPrice
+          ? parseFloat(p.originalPrice)
+          : null,
         images: (p.mainImageUrl || "")
           .split(";")
           .map(i => i.trim())
           .filter(Boolean)
       }));
-
-      console.log("🧩 Products mapped:", allProducts);
 
       renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
     },
@@ -67,10 +68,7 @@ function loadProducts() {
 ================================ */
 function renderSliderPlaceholders(targetId, count) {
   const container = document.getElementById(targetId);
-  if (!container) {
-    console.warn("⚠️ Slider container not found:", targetId);
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
 
@@ -88,23 +86,20 @@ function renderSliderProducts(products, targetId, productIds) {
   const container = document.getElementById(targetId);
   if (!container) return;
 
-  // Clear container first
   container.innerHTML = "";
 
   productIds.forEach(id => {
-    const product = products.find(p => String(p.id) === String(id));
+    const product = products.find(p => p.id === String(id));
 
-    // Fallback placeholder if product missing
     if (!product) {
-      console.warn("⚠️ Product ID not found:", id);
-      const placeholder = document.createElement("div");
-      placeholder.className = "unique-slider-item placeholder";
-      container.appendChild(placeholder);
+      const ph = document.createElement("div");
+      ph.className = "unique-slider-item placeholder";
+      container.appendChild(ph);
       return;
     }
 
     const img =
-      product.images && product.images.length
+      product.images.length
         ? product.images[0].startsWith("http")
           ? product.images[0]
           : "https://static.wixstatic.com/media/" + product.images[0]
@@ -114,7 +109,6 @@ function renderSliderProducts(products, targetId, productIds) {
     card.className = "unique-slider-item";
     card.href = `product-page.html?id=${product.id}`;
 
-    // Use product-info structure
     card.innerHTML = `
       <img src="${img}" alt="${product.name}" loading="lazy">
       <div class="product-info">
@@ -129,5 +123,5 @@ function renderSliderProducts(products, targetId, productIds) {
     container.appendChild(card);
   });
 
-  console.log(`🎉 Slider rendered: ${productIds.length} items`);
+  console.log("🎉 Slider rendered:", productIds.length, "items");
 }
