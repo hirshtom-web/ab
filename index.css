@@ -373,7 +373,7 @@
 ================================ */
 .slider-item {
   flex: 0 0 auto; /* prevent shrinking */
-  width: 200px; /* default desktop width, will adjust on mobile */
+  width: 300px; /* default desktop width, will adjust on mobile */
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -382,7 +382,7 @@
 
 @media (max-width: 768px) {
   .slider-item {
-    width: 140px;
+    width: 120px;
   }
 }
 
@@ -434,6 +434,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
