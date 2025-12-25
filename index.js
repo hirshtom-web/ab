@@ -1,101 +1,39 @@
-document.addEventListener("DOMContentLoaded", initPage);
-
-/* ===============================
-   CONFIG
-================================ */
-const CSV_URL = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-
-const NEW_IN_IDS = [
-  "8349201",
-  "9182888",
-  "9182889",
-  "9182890",
-  "9182891",
-  "9182892",
-  "9182893",
-  "9182894",
-  "9182895",
-  "9182896"
+// ===============================
+//   PRODUCTS DATA
+// ===============================
+const allProducts = [
+  {id: "8349201", name: "Product 1", price: 39.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182888", name: "Product 2", price: 29.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182889", name: "Product 3", price: 19.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182890", name: "Product 4", price: 49.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182891", name: "Product 5", price: 24.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182892", name: "Product 6", price: 34.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182893", name: "Product 7", price: 44.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182894", name: "Product 8", price: 59.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182895", name: "Product 9", price: 22.99, images: ["https://via.placeholder.com/400"]},
+  {id: "9182896", name: "Product 10", price: 27.99, images: ["https://via.placeholder.com/400"]}
 ];
 
-/* ===============================
-   INIT
-================================ */
-function initPage() {
-  // show placeholders immediately
-  renderSliderPlaceholders("newInSlider", NEW_IN_IDS.length);
+const NEW_IN_IDS = [
+  "8349201","9182888","9182889","9182890","9182891",
+  "9182892","9182893","9182894","9182895","9182896"
+];
 
-  // load products
-  loadProducts();
-}
-
-/* ===============================
-   LOAD CSV
-================================ */
-function loadProducts() {
-  Papa.parse(CSV_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: res => {
-      console.log("✅ CSV loaded:", res.data.length, "rows");
-
-      const allProducts = res.data.map(p => ({
-        id: String(p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.newPrice
-          ? parseFloat(p.newPrice)
-          : p.originalPrice
-          ? parseFloat(p.originalPrice)
-          : 0,
-        images: (p.mainImageUrl || "")
-          .split(";")
-          .map(i => i.trim())
-          .filter(Boolean)
-      }));
-
-      console.log("🧩 Products mapped:", allProducts);
-
-      renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
-    },
-    error: err => console.error("❌ CSV load failed:", err)
-  });
-}
-
-/* ===============================
-   PLACEHOLDERS
-================================ */
-function renderSliderPlaceholders(targetId, count) {
-  const container = document.getElementById(targetId);
-  if (!container) {
-    console.warn("⚠️ Slider container not found:", targetId);
-    return;
-  }
-
-  container.innerHTML = "";
-
-  for (let i = 0; i < count; i++) {
-    const ph = document.createElement("div");
-    ph.className = "unique-slider-item placeholder";
-    container.appendChild(ph);
-  }
-}
-
-
-/* ===============================
-   RENDER SLIDER PRODUCTS
-================================ */
+// ===============================
+//   RENDER SLIDER PRODUCTS
+// ===============================
 function renderSliderProducts(products, targetId, productIds) {
   const container = document.getElementById(targetId);
   if (!container) return;
 
-  container.innerHTML = ""; // clear placeholders
+  container.innerHTML = ""; // clear placeholder cards
 
   productIds.forEach(id => {
     const product = products.find(p => p.id === String(id));
 
+    // fallback placeholder if product missing
     if (!product) {
-      // fallback placeholder
+      console.warn("⚠️ Product ID not found:", id);
       const ph = document.createElement("div");
       ph.className = "unique-slider-item placeholder";
       container.appendChild(ph);
@@ -103,7 +41,7 @@ function renderSliderProducts(products, targetId, productIds) {
     }
 
     const img =
-      product.images.length
+      product.images && product.images.length
         ? product.images[0].startsWith("http")
           ? product.images[0]
           : "https://static.wixstatic.com/media/" + product.images[0]
@@ -127,11 +65,7 @@ function renderSliderProducts(products, targetId, productIds) {
   console.log("🎉 Slider rendered:", productIds.length, "items");
 }
 
-// Example usage:
-const NEW_IN_IDS = [
-  "8349201","9182888","9182889","9182890","9182891",
-  "9182892","9182893","9182894","9182895","9182896"
-];
-
-// After allProducts array is loaded
-renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
+// wait until DOM loaded
+document.addEventListener("DOMContentLoaded", () => {
+  renderSliderProducts(allProducts, "newInSlider", NEW_IN_IDS);
+});
