@@ -331,28 +331,39 @@
   display: none;
 }
 
-/* Link wrapper (no background, no shadow) */
-.unique-slider-item {
+/* ===============================
+   SLIDER ITEM WRAPPER
+   (controls width + stacking)
+================================ */
+.slider-item-wrap {
   flex: 0 0 200px;
-  text-decoration: none;
-  color: #111;
-  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* IMAGE = the only "card" */
-.unique-slider-item img {
+/* ===============================
+   IMAGE = THE ONLY CARD
+================================ */
+.unique-slider-media {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.unique-slider-media img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  border-radius: 16px;
 }
 
-/* TEXT UNDER IMAGE (outside card) */
-.slider-info {
+/* ===============================
+   TEXT UNDER IMAGE (OUTSIDE CARD)
+================================ */
+.product-info {
   margin-top: 6px;
   text-align: center;
   display: flex;
@@ -360,7 +371,7 @@
   gap: 2px;
 }
 
-.slider-info h4 {
+.product-info h3 {
   font-size: 12px;
   font-weight: 600;
   color: #000;
@@ -368,37 +379,41 @@
   line-height: 1.2;
 }
 
-.slider-info span {
+.price-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.price-old {
+  font-size: 12px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.price-new {
   font-size: 12px;
   font-weight: 500;
   color: #ec7302;
-  line-height: 1.2;
 }
 
 /* ===============================
    PLACEHOLDER
 ================================ */
 .unique-slider-item.placeholder {
-  flex: 0 0 200px;
-}
-
-.unique-slider-item.placeholder::before {
-  content: "";
   width: 100%;
   aspect-ratio: 1 / 1;
   background: #f9f5f2;
   border-radius: 16px;
-  display: block;
 }
 
 /* ===============================
    MOBILE
 ================================ */
 @media (max-width: 768px) {
-  .slider-info h4,
-  .slider-info span {
+  .product-info h3,
+  .price-old,
+  .price-new {
     font-size: 10px;
   }
 }
-
-
