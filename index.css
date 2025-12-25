@@ -316,13 +316,6 @@
   cursor: pointer;
 }
 
-/* ===============================
-   BESTSELLERS
-================================ */
-.unique-section-bestsellers {
-  background: #fff;
-}
-
 
 /* ===============================
    NEW IN SLIDER
@@ -343,18 +336,51 @@
   display: block;
 }
 
-.slider-info {
-  padding: 10px;
+/* Product info styles merged */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  margin-top: 5px;   /* push name down from the image wrapper */
+  gap: 2px;           /* space between name and price */
 }
 
-.slider-info h4 {
-  font-size: 14px;
-  margin: 0 0 4px;
+.product-info h3 {
+  font-size: 12px;    /* name font size */
+  font-weight: 600;   /* name weight */
+  color: #000;        /* black */
+  margin: 0;
+  line-height: 1.2;
 }
 
-.slider-info span {
-  font-weight: 600;
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;           /* spacing between prices */
+}
+
+.price-from {
+  color: #ec7302;     /* orange */
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.price-old {
+  color: #999;        /* gray */
+  text-decoration: line-through;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.price-new {
+  color: #ec7302;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 /* Slider placeholders */
@@ -365,5 +391,14 @@
   border-radius: 16px;
 }
 
-
-
+/* ===============================
+   MOBILE ADJUSTMENTS
+================================ */
+@media (max-width: 768px) {
+  .product-info h3,
+  .price-from,
+  .price-old,
+  .price-new {
+    font-size: 10px;
+  }
+}
