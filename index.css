@@ -357,4 +357,13 @@
   font-weight: 600;
 }
 
+/* Slider placeholders */
+.unique-slider-item.placeholder {
+  background: #f9f5f2;
+  flex: 0 0 200px;
+  height: 250px;
+  border-radius: 16px;
+}
+
+
 
