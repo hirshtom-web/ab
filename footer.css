@@ -53,18 +53,6 @@
   margin-top: 40px;
 }
 
-.footer-column h4::after {
-  content: "expand_more";
-  font-family: "Material Symbols Outlined";
-  font-size: 20px;
-  transition: transform 0.3s ease;
-}
-
-/* Rotate arrow when open */
-.footer-column.active h4::after {
-  transform: rotate(180deg);
-}
-
 /* MOBILE ACCORDION */
 @media (max-width: 768px) {
   .footer-grid {
@@ -95,4 +83,16 @@
     align-items: center;
     justify-content: space-between;
   }
+  
+  .footer-column h4::after {
+  content: "expand_more";
+  font-family: "Material Symbols Outlined";
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+/* Rotate arrow when open */
+.footer-column.active h4::after {
+  transform: rotate(180deg);
+}
 }
