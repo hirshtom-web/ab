@@ -282,3 +282,23 @@
   font-weight: 500;
   padding: 4px 6px;
 }
+
+.products-page-header {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+  padding: 0 24px;
+}
+
+.products-page-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 16px; /* space above filters */
+  text-align: center;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
