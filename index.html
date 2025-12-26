@@ -182,7 +182,7 @@
     <div class="artist-signature">— Angelica Blomberg</div>
   </div>
 
-    <div id="footer" class="footer"></div>
+<div id="footer-placeholder"></div>
 
 </div>
 
@@ -191,17 +191,28 @@
   <script src="products.js"></script>
   <script src="artist-card.js"></script>
   <script src="index.js"></script>
-  <script>
+
     // Load header, then initialize
-    fetch("header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-        initHeader();          // initialize header
-        initProductsPage();    // initialize products after header exists
-      })
-      .catch(err => console.error("Header load failed:", err));
-  </script>
+   <script>
+  // Load header
+  fetch("header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+      initHeader();
+      initProductsPage();
+    })
+    .catch(err => console.error("Header load failed:", err));
+
+  // Load footer
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+  
   <script src="cart.js"></script>
 
 </body>
