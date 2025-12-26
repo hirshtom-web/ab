@@ -142,13 +142,14 @@
   text-align: center;
   border-radius: 16px;
   overflow: hidden;
-  padding: 0 20px;
+  
 }
 
 .unique-hero {
   background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
   background-size: cover;
   background-position: center;
+   padding: 0 20px;
 }
 
 .unique-hero img.unique-overlap {
@@ -197,7 +198,7 @@
 .unique-half-section {
   width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px 20px;
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
@@ -451,6 +452,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
