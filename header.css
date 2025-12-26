@@ -297,6 +297,13 @@ nav a:hover {
 /* ===============================
    RESPONSIVE
 ================================ */
+@media (max-width: 900px) {
+  nav.header-center a[href*="how-it-works"],
+  nav.header-center a[href*="inspiration"] {
+    display: none;
+  }
+}
+
 @media(max-width: 900px){
   nav { flex-wrap: wrap; gap: 15px; } 
 }
