@@ -90,3 +90,84 @@
     margin-top: 8px;
   }
 }
+
+/* ===============================
+   REGION
+================================ */
+
+.region-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  color: #222;
+}
+
+.region-btn .arrow {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.region-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.region-popup.active {
+  display: flex;
+}
+
+.region-popup-inner {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.region-popup-inner h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.region-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.region-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.region-list li:hover {
+  background: #f5f5f5;
+}
+
+.close-popup {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+}
