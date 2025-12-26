@@ -125,13 +125,16 @@
 </footer>
 
 <script>
-document.querySelectorAll('.footer-column h4').forEach(title => {
-  title.addEventListener('click', () => {
-    if (window.innerWidth <= 768) {
-      title.parentElement.classList.toggle('active');
-    }
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.footer-column h4').forEach(title => {
+    title.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        title.parentElement.classList.toggle('active');
+      }
+    });
   });
 });
+
 
 const regions = [
   { country: "Andorra", code: "AD", currency: "EUR", flag: "🇦🇩" },
@@ -165,8 +168,12 @@ function setRegion(r) {
 }
 
 /* popup controls */
-document.getElementById("openRegion").onclick = () => popup.classList.add("active");
-document.getElementById("closeRegion").onclick = () => popup.classList.remove("active");
+document.addEventListener('DOMContentLoaded', () => {
+  const popup = document.getElementById("regionPopup");
+  document.getElementById("openRegion").onclick = () => popup.classList.add("active");
+  document.getElementById("closeRegion").onclick = () => popup.classList.remove("active");
+});
+
 
 /* IP-based default */
 const saved = localStorage.getItem("region");
