@@ -283,17 +283,23 @@
   padding: 4px 6px;
 }
 
+
+/* ===============================
+   PRODUCTS PAGE HEADER
+================================ */
 .products-page-header {
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto 24px;
-  padding: 0 24px;
+  margin: 0 auto 24px; /* space below title */
+  padding: 0 40px;     /* match controls bar */
+  box-sizing: border-box;
 }
 
 .products-page-title {
   font-size: 28px;
   font-weight: 600;
-  margin-bottom: 16px; /* space above filters */
   text-align: center;
+  margin: 0;
 }
 
 .filters-bar {
@@ -301,4 +307,14 @@
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .products-page-header {
+    padding: 0 20px;
+  }
+
+  .products-page-title {
+    font-size: 22px;
+  }
 }
