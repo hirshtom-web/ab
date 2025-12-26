@@ -287,34 +287,17 @@
 /* ===============================
    PRODUCTS PAGE HEADER
 ================================ */
-.products-page-header {
+.unique-title-h1 {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto 24px; /* space below title */
-  padding: 0 40px;     /* match controls bar */
+  text-align: center;
+  margin: 16px 0 12px;
+  padding: 0 40px;
   box-sizing: border-box;
 }
 
-.products-page-title {
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-  margin: 0;
-}
-
-.filters-bar {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
 @media (max-width: 768px) {
-  .products-page-header {
+  .unique-title-h1 {
     padding: 0 20px;
-  }
-
-  .products-page-title {
-    font-size: 22px;
+    margin: 12px 0 10px;
   }
 }
