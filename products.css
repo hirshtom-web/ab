@@ -23,15 +23,15 @@
 /* ===============================
    CONTROLS BUTTONS
 ================================ */
-/* Icon buttons (grid / shuffle / sort) */
+/* All icon buttons (grid / shuffle / sort) */
 .control-btn,
 .grid-btn {
   height: 36px;
   width: 36px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background: transparent; /* fully see-through */
-  font-size: 20px; /* for icons */
+  background: transparent; /* no background */
+  font-size: 20px; /* icon size */
   cursor: pointer;
   transition: 0.2s ease;
   display: inline-flex;
@@ -40,28 +40,29 @@
   line-height: 1;
   gap: 0;
   padding: 0;
+  color: #555; /* default icon color */
 }
 
-/* Active / hover states for all icon buttons */
+/* Hover effect for all icon buttons */
 .control-btn:hover,
 .grid-btn:hover {
   border-color: #999;
+  color: #222; /* slightly darker on hover */
 }
 
-/* Left grid buttons: active/hover darker border & icon */
+/* Active state for all icon buttons */
+.control-btn.active,
 .grid-btn.active {
-  border-color: #222;   /* darker frame */
+  border-color: #222;   /* darker frame when active */
   color: #222;          /* darker icon */
   font-weight: 600;     /* make icon visually bolder */
 }
 
-.grid-btn:hover {
-  color: #222; /* slightly darker icon on hover */
-}
-
 /* Ensure icon inside button inherits color */
-.grid-btn.active span,
-.grid-btn.active svg {
+.grid-btn span,
+.grid-btn svg,
+.control-btn span,
+.control-btn svg {
   color: inherit;
 }
 
