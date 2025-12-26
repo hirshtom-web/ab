@@ -80,14 +80,14 @@
 ================================ */
 .controls-bar {
   width: 100%;
-  margin: 10px 0 20px;
-  padding: 0 20px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between; /* distributes left / center / right */
   align-items: center;
+  padding: 0 20px;
   gap: 8px;
 }
 
+/* Groups inside the bar */
 .controls-left,
 .controls-center,
 .controls-right {
@@ -96,18 +96,23 @@
   gap: 8px;
 }
 
-/* Desktop / mobile visibility */
+/* Center group stays centered */
+.controls-center {
+  justify-content: center;
+  flex: 1; /* takes space to keep center in the middle */
+  text-align: center;
+}
+
+/* Hide/show based on screen */
 .desktop-only { display: none; }
 .mobile-only { display: none; }
 
-@media(min-width: 769px){
-  .desktop-only { display: flex; gap: 8px; }
-  .mobile-only { display: none; }
+@media(min-width: 769px) {
+  .desktop-only { display: inline-flex; }
 }
 
-@media(max-width: 768px){
-  .mobile-only { display: flex; gap: 8px; }
-  .desktop-only { display: none; }
+@media(max-width: 768px) {
+  .mobile-only { display: inline-flex; }
 }
 
 /* ===============================
