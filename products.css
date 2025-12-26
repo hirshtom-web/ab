@@ -197,7 +197,7 @@
   display: grid;
   gap: 16px;
   width: 100%;
-  padding: 0 40px; /* add spacing */
+  padding: 0 20px; /* add spacing */
   box-sizing: border-box; /* ensure padding doesn’t break width */
 }
 
