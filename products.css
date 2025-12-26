@@ -111,6 +111,42 @@
 }
 
 /* ===============================
+   IMAGE SELECTOR BUTTONS (text only)
+================================ */
+.controls-center.image-selector .img-btn {
+  all: unset; /* remove default button styles */
+  cursor: pointer;
+  font-size: 14px;
+  color: #888; /* inactive text color */
+  margin: 0 8px;
+  padding: 4px 0; /* small padding for underline */
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.controls-center.image-selector .img-btn.active {
+  color: #222; /* active text color */
+  font-weight: 500;
+}
+
+.controls-center.image-selector .img-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: #222; /* underline color */
+  border-radius: 1px;
+}
+
+.controls-center.image-selector .img-btn:not(.active):hover {
+  color: #555; /* hover effect for inactive */
+}
+
+/* ===============================
    PRODUCT GRID
 ================================ */
 #productGrid {
