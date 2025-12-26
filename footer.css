@@ -4,6 +4,7 @@
   color: #222;
 }
 
+/* DESKTOP GRID */
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -16,13 +17,6 @@
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 12px;
-  cursor: pointer; /* for mobile accordion */
-}
-
-.footer-column h5 {
-  font-size: 12px;
-  font-weight: 600;
-  margin: 18px 0 8px;
 }
 
 .footer-column ul {
@@ -39,11 +33,6 @@
 .footer-column a {
   color: #333;
   text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-column a:hover {
-  color: #ff5e5e;
 }
 
 .footer-bottom {
@@ -53,17 +42,43 @@
   margin-top: 40px;
 }
 
-/* MOBILE ACCORDION */
+/* ===============================
+   MOBILE ACCORDION
+================================ */
 @media (max-width: 768px) {
+
   .footer-grid {
     display: block;
   }
 
   .footer-column {
     border-bottom: 1px solid #e6e2de;
-    padding-bottom: 10px;
+    padding: 10px 0;
   }
 
+  .footer-column h4 {
+    font-size: 14px;
+    margin-bottom: 0;
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  /* arrow */
+  .footer-column h4::after {
+    content: "expand_more";
+    font-family: "Material Symbols Outlined";
+    font-size: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .footer-column.active h4::after {
+    transform: rotate(180deg);
+  }
+
+  /* accordion body */
   .footer-column ul {
     max-height: 0;
     overflow: hidden;
@@ -71,28 +86,7 @@
   }
 
   .footer-column.active ul {
-    max-height: 600px; /* enough to show all links */
+    max-height: 1000px;
     margin-top: 8px;
   }
-
-  .footer-column h4 {
-    font-size: 14px;
-    padding: 12px 0;
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .footer-column h4::after {
-  content: "expand_more";
-  font-family: "Material Symbols Outlined";
-  font-size: 20px;
-  transition: transform 0.3s ease;
-}
-
-/* Rotate arrow when open */
-.footer-column.active h4::after {
-  transform: rotate(180deg);
-}
 }
