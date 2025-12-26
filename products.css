@@ -130,6 +130,31 @@
   color: #555; /* hover effect for inactive */
 }
 
+/* Left icon buttons (grid 3/4 columns) */
+.grid-btn {
+  background: transparent; /* keep see-through */
+  border: 1px solid #ccc;
+  color: #555; /* default icon color */
+  transition: 0.2s;
+}
+
+.grid-btn:hover {
+  border-color: #999;
+  color: #222; /* slightly darker on hover */
+}
+
+.grid-btn.active {
+  /* background stays transparent */
+  border-color: #222;   /* darker frame when active */
+  color: #222;          /* darker icon */
+  font-weight: 600;     /* make icon visually bolder */
+}
+
+/* ensure icon inside stays same color */
+.grid-btn.active span,
+.grid-btn.active svg {
+  color: inherit;
+}
 
 /* ===============================
    PRODUCT GRID
