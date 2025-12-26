@@ -301,7 +301,7 @@
 }
 
 .unique-logo-slider img {
-  height: 150px;
+  height: 20px;
   object-fit: contain;
 }
 
@@ -445,6 +445,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
