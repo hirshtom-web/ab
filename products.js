@@ -159,26 +159,30 @@ if (titleEl) {
   nextBtn.disabled = currentPage === totalPages;
 }
 
-// Set default columns based on screen size
+// Determine default columns based on screen size
+let grid = document.getElementById("productGrid");
 let defaultCols = window.innerWidth <= 768 ? 2 : 3;
 grid.classList.add(`cols-${defaultCols}`);
 
-// Grid buttons
+// Activate the correct button by default
+document.querySelectorAll(`.grid-btn[data-cols="${defaultCols}"]`).forEach(btn => btn.classList.add("active"));
+
+// Grid button click logic
 const gridButtons = document.querySelectorAll(".grid-btn");
 gridButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    // Remove active class from siblings
+    // Remove active class from all siblings
     btn.parentElement.querySelectorAll(".grid-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // Remove existing cols classes
-    grid.classList.remove("cols-1", "cols-2", "cols-3", "cols-4");
+    // Remove all cols classes
+    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
 
     // Add new column class
-    const cols = btn.dataset.cols;
-    grid.classList.add(`cols-${cols}`);
+    grid.classList.add(`cols-${btn.dataset.cols}`);
   });
 });
+
 
   // Pagination
   prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
