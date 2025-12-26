@@ -87,7 +87,7 @@
   <script src="artist-card.js"></script>
   <script src="index.js"></script>
 
-  <script>
+<script>
   // Load header
   fetch("header.html")
     .then(res => res.text())
@@ -103,11 +103,17 @@
     .then(res => res.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
+
+      // ✅ IMPORTANT: init footer AFTER injection
+      initFooter();
     })
     .catch(err => console.error("Footer load failed:", err));
 </script>
-  
+
+
+  <script src="footer.js"></script>
   <script src="cart.js"></script>
+  
 
 </body>
 </html>
