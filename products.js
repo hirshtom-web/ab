@@ -68,7 +68,8 @@ if (titleEl) {
           price: p.newPrice ? parseFloat(p.newPrice) : 1
         };
       });
-      renderPage(currentPage);
+renderPage(currentPage);
+renderPagination();
     },
     error: err => console.error("CSV load failed:", err)
   });
@@ -157,6 +158,60 @@ if (titleEl) {
   pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
   prevBtn.disabled = currentPage === 1;
   nextBtn.disabled = currentPage === totalPages;
+}
+function renderPagination() {
+  const pagination = document.getElementById("pagination");
+  if (!pagination) return;
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(allProducts.length / productsPerPage);
+
+  // Prev
+  const prev = document.createElement("div");
+  prev.className = "page prev";
+  prev.innerHTML = "←";
+  prev.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPage(currentPage);
+      renderPagination();
+    }
+  };
+  pagination.appendChild(prev);
+
+  // Page numbers with dots
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+      const page = document.createElement("div");
+      page.className = "page";
+      if (i === currentPage) page.classList.add("active");
+      page.textContent = i;
+      page.onclick = () => {
+        currentPage = i;
+        renderPage(currentPage);
+        renderPagination();
+      };
+      pagination.appendChild(page);
+    } else if (i === currentPage - 2 || i === currentPage + 2) {
+      const dots = document.createElement("div");
+      dots.className = "dots";
+      dots.textContent = "…";
+      pagination.appendChild(dots);
+    }
+  }
+
+  // Next
+  const next = document.createElement("div");
+  next.className = "page next";
+  next.innerHTML = "→";
+  next.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderPage(currentPage);
+      renderPagination();
+    }
+  };
+  pagination.appendChild(next);
 }
 
 // --- Determine default columns based on screen size ---
