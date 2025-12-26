@@ -20,6 +20,28 @@ function initProductsPage() {
     { type: "color", color: "#c5f79f" }
   ];
 
+ const params = new URLSearchParams(window.location.search);
+
+const activeCollection = params.get("collection");
+const activeCategory   = params.get("category");
+const activeColor      = params.get("color");
+
+  
+const titleEl = document.getElementById("dynamicPageTitle");
+
+if (titleEl) {
+  if (activeCollection) {
+    titleEl.textContent = `New in ${activeCollection}`;
+  } else if (activeCategory) {
+    titleEl.textContent = activeCategory;
+  } else if (activeColor) {
+    titleEl.textContent = `${activeColor} collection`;
+  } else {
+    titleEl.textContent = "All products";
+  }
+}
+
+  
   // Load CSV
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
