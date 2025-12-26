@@ -1,0 +1,76 @@
+
+.unique-keywords-section {
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.unique-keywords-section h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 22px;
+  color: #111;
+}
+
+/* container */
+.unique-keyword-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* bubble */
+.unique-keyword-bubbles span {
+  background-color: #cce7ff;
+  color: #003366;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* hover */
+.unique-keyword-bubbles span:hover {
+  background-color: #99d1ff;
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(0, 80, 140, 0.15);
+}
+
+/* ===============================
+   VARIATION (SUBTLE, OPTIONAL)
+   keeps same style, less repetitive
+================================ */
+
+/* softer pills */
+.unique-keyword-bubbles span:nth-child(3n) {
+  background-color: #e6f2ff;
+}
+
+/* slightly stronger pills */
+.unique-keyword-bubbles span:nth-child(5n) {
+  background-color: #b3dcff;
+}
+
+/* ===============================
+   MOBILE
+================================ */
+@media (max-width: 768px) {
+  .unique-keywords-section {
+    margin: 24px auto;
+    padding: 0 16px;
+  }
+
+  .unique-keyword-bubbles span {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+}
+
