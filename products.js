@@ -68,9 +68,9 @@ if (titleEl) {
           price: p.newPrice ? parseFloat(p.newPrice) : 1
         };
       });
-renderPage(currentPage);
-renderPagination();
-    },
+  renderPage(currentPage);
+  renderPagination(); // ← add this
+});
     error: err => console.error("CSV load failed:", err)
   });
 
