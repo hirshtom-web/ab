@@ -304,3 +304,36 @@
     margin: 12px 0 10px;
   }
 }
+
+/* ===============================
+   Grid container
+================================ */
+
+#productGrid {
+  display: grid;
+  gap: 16px; /* spacing */
+  width: 100%;
+}
+
+/* Desktop columns */
+#productGrid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+#productGrid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Mobile columns */
+#productGrid.cols-1 { grid-template-columns: repeat(1, 1fr); }
+#productGrid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+/* Hide buttons based on screen size */
+.desktop-only { display: none; }
+.mobile-only { display: none; }
+
+@media(min-width: 769px){
+  .desktop-only { display: inline-block; }
+}
+
+@media(max-width: 768px){
+  .mobile-only { display: inline-block; }
+}
+
+/* Active button styling */
+.grid-btn.active { background-color: #333; color: #fff; }
