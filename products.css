@@ -294,8 +294,6 @@
   margin: 16px 0 12px;
   padding: 0 40px;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
 }
 
 @media (max-width: 768px) {
