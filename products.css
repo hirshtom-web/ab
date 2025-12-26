@@ -397,7 +397,7 @@
 }
 
 /* ===============================
-   PAGINATION
+   PAGINATION — OUTLINED ACTIVE
 ================================ */
 .pagination {
   display: flex;
@@ -413,9 +413,9 @@
   min-width: 36px;
   height: 36px;
   padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #222;
@@ -426,29 +426,41 @@
   transition: all 0.2s ease;
 }
 
+/* Hover */
 .pagination .page:hover {
-  background: #f3f3f3;
+  border-color: #ddd;
 }
 
+/* ACTIVE — OUTLINED */
 .pagination .page.active {
-  background: #111;
-  color: #fff;
   border-color: #111;
+  background: transparent;
+  color: #111;
   cursor: default;
 }
 
+/* Arrows */
 .pagination .page.prev,
 .pagination .page.next {
   font-size: 14px;
   padding: 0 14px;
+  border-color: #ddd;
 }
 
+.pagination .page.prev:hover,
+.pagination .page.next:hover {
+  border-color: #111;
+}
+
+/* Dots */
 .pagination .dots {
   border: none;
   background: transparent;
   cursor: default;
+  padding: 0 6px;
 }
 
+/* MOBILE */
 @media (max-width: 600px) {
   .pagination {
     gap: 6px;
