@@ -159,6 +159,26 @@ if (titleEl) {
   nextBtn.disabled = currentPage === totalPages;
 }
 
+// Set default columns based on screen size
+let defaultCols = window.innerWidth <= 768 ? 2 : 3;
+grid.classList.add(`cols-${defaultCols}`);
+
+// Grid buttons
+const gridButtons = document.querySelectorAll(".grid-btn");
+gridButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    // Remove active class from siblings
+    btn.parentElement.querySelectorAll(".grid-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Remove existing cols classes
+    grid.classList.remove("cols-1", "cols-2", "cols-3", "cols-4");
+
+    // Add new column class
+    const cols = btn.dataset.cols;
+    grid.classList.add(`cols-${cols}`);
+  });
+});
 
   // Pagination
   prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
