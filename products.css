@@ -23,14 +23,14 @@
 /* ===============================
    CONTROLS BUTTONS
 ================================ */
-/* Only icon buttons (grid / shuffle / sort) */
+/* Icon buttons (grid / shuffle / sort) */
 .control-btn,
 .grid-btn {
   height: 36px;
   width: 36px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background: #fff;
+  background: transparent; /* fully see-through */
   font-size: 20px; /* for icons */
   cursor: pointer;
   transition: 0.2s ease;
@@ -42,16 +42,27 @@
   padding: 0;
 }
 
-.control-btn.active,
-.grid-btn.active {
-  background: #333;
-  color: #fff;
-  border-color: #333;
-}
-
+/* Active / hover states for all icon buttons */
 .control-btn:hover,
 .grid-btn:hover {
   border-color: #999;
+}
+
+/* Left grid buttons: active/hover darker border & icon */
+.grid-btn.active {
+  border-color: #222;   /* darker frame */
+  color: #222;          /* darker icon */
+  font-weight: 600;     /* make icon visually bolder */
+}
+
+.grid-btn:hover {
+  color: #222; /* slightly darker icon on hover */
+}
+
+/* Ensure icon inside button inherits color */
+.grid-btn.active span,
+.grid-btn.active svg {
+  color: inherit;
 }
 
 /* ===============================
@@ -128,32 +139,6 @@
 
 .controls-center.image-selector .img-btn:not(.active):hover {
   color: #555; /* hover effect for inactive */
-}
-
-/* Left icon buttons (grid 3/4 columns) */
-.grid-btn {
-  background: transparent; /* keep see-through */
-  border: 1px solid #ccc;
-  color: #555; /* default icon color */
-  transition: 0.2s;
-}
-
-.grid-btn:hover {
-  border-color: #999;
-  color: #222; /* slightly darker on hover */
-}
-
-.grid-btn.active {
-  /* background stays transparent */
-  border-color: #222;   /* darker frame when active */
-  color: #222;          /* darker icon */
-  font-weight: 600;     /* make icon visually bolder */
-}
-
-/* ensure icon inside stays same color */
-.grid-btn.active span,
-.grid-btn.active svg {
-  color: inherit;
 }
 
 /* ===============================
