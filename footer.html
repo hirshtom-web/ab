@@ -104,13 +104,11 @@
 </footer>
 
 <script>
-// MOBILE ACCORDION
 document.querySelectorAll('.footer-column h4').forEach(title => {
   title.addEventListener('click', () => {
-    if(window.innerWidth <= 768){
+    if (window.innerWidth <= 768) {
       title.parentElement.classList.toggle('active');
     }
   });
 });
 </script>
-
