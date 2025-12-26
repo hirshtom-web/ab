@@ -1,5 +1,4 @@
 type,productId,name,mainImageUrl,lifestyleUrl,moreImages,video/s,category,collection,artist,artistName,color,colorStory,single/bundle,quantity,keywords,room,ribbon,bio,emotionalEnergy,scale,meaning,downloadLinkUrl,originalPrice,discount,newPrice
-Single,9182738,Bauhaus bicycle II,1799ca_28645f73a55f4442b5842edfaa920edd~mv2.jpg,,,,Bauhaus,,,,blue;,,Single,1,Cozy,Bedroom,,,,,,,19.95,60%,7.98
 Single,9182732,Bauhaus bicycle,1799ca_5171bf4edcc14ae6812bfa1c22a0d69c~mv2.jpg;1799ca_14c60dddc0ac4505b5e5c5a2b73339ae~mv2.jpg,,,,Bauhaus,,,,,,,,,,,,,,,,19.95,50%,9.97
 Product,9182744,Bauhaus 23,1799ca_2ec543075cfd4b68bd205b5b88a1b227~mv2.jpg;1799ca_487d582e08ad4953badfe0d57d758b35~mv2.jpg,1799ca_487d582e08ad4953badfe0d57d758b35~mv2.jpg,,,Bauhaus,Bestseller,,,blue;,,Single,1,Retro,Any,All time favorite,Retro bio comes here,Modern & retro at the same time,,,,19.95,60%,7.98
 Product,9182745,Bauhaus 22,1799ca_d5ff3893540f4ff684ba214737c91dba~mv2.jpg;1799ca_371e19fcb2ba4460a15a2eae0be216f1~mv2.jpg,,,,Bauhaus,,,,,,,,,,,,,,,,19.95,70%,5.98
@@ -815,3 +814,4 @@ Product,9182785,Hues of Harmony #01,1799ca_cb16010c6a3b469786e24e769d9bc9f5~mv2.
 Product,9182770,Express Fee,1799ca_f30ddc76dc814351932559ab8aadc7de~mv2.png,,,,,,,,,,,,,,,,,,,,9.95,,
 
 Product,9182785,Yves Klein,1799ca_b5f9bfda305546e0ba49504120b632f3~mv2.jpg,,,,,,,,,,,,,,,,,,,,9.95,,
+
