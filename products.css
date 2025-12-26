@@ -23,6 +23,7 @@
 /* ===============================
    CONTROLS BUTTONS
 ================================ */
+/* Only icon buttons (grid / shuffle / sort) */
 .control-btn,
 .grid-btn,
 .img-btn {
@@ -42,9 +43,26 @@
   padding: 0;
 }
 
+/* Text buttons (artwork / lifestyle) */
+.text-btn {
+  height: 36px;
+  padding: 0 12px; /* flexible width for text */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  gap: 4px;
+}
+
 .control-btn.active,
 .grid-btn.active,
-.img-btn.active {
+.img-btn.active,
+.text-btn.active {
   background: #333;
   color: #fff;
   border-color: #333;
@@ -52,7 +70,8 @@
 
 .control-btn:hover,
 .grid-btn:hover,
-.img-btn:hover {
+.img-btn:hover,
+.text-btn:hover {
   border-color: #999;
 }
 
@@ -64,7 +83,7 @@
   margin: 10px 0 20px;
   padding: 0 20px;
   display: flex;
-  justify-content: flex-start; /* align left by default */
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
 }
@@ -77,7 +96,7 @@
   gap: 8px;
 }
 
-/* Desktop and mobile visibility */
+/* Desktop / mobile visibility */
 .desktop-only { display: none; }
 .mobile-only { display: none; }
 
@@ -108,23 +127,6 @@
 #productGrid.cols-1 { grid-template-columns: repeat(1, 1fr); }
 #productGrid.cols-2 { grid-template-columns: repeat(2, 1fr); }
 
-/* ===============================
-   PRODUCTS GRID (if using extra wrapper)
-================================ */
-.products-grid {
-  display: grid;
-  gap: 20px;
-  width: 100%;
-  margin: 0;
-  padding: 0 40px;
-}
-
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 0 20px;
-  }
-}
 
 /* ===============================
    PRODUCT CARD
