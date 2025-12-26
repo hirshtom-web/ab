@@ -80,21 +80,43 @@
 
 </main>
 
+ <!-- FOOTER -->
+  <div id="footer-placeholder"></div>
+  
+
   <!-- Scripts -->
   <script src="header.js"></script>
   <script src="products.js"></script>
-  <script>
-    // Load header, then initialize
-    fetch("header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-        initHeader();          // initialize header
-        initProductsPage();    // initialize products after header exists
-      })
-      .catch(err => console.error("Header load failed:", err));
-  </script>
+  <script src="artist-card.js"></script>
+  <script src="index.js"></script>
+
+<script>
+  // Load header
+  fetch("header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+      initHeader();
+      initProductsPage();
+    })
+    .catch(err => console.error("Header load failed:", err));
+
+  // Load footer
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+
+      // ✅ IMPORTANT: init footer AFTER injection
+      initFooter();
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+
+  <script src="footer.js"></script>
   <script src="cart.js"></script>
+  
 
 </body>
 </html>
