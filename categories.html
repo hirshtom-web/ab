@@ -1,12 +1,14 @@
 
 <style>
+
 /* ===============================
-   KEYWORD SYSTEM (SCOPED)
+   KEYWORD SECTIONS – BLUE PILL STYLE
+   (SAFE / SCOPED)
 ================================ */
 
 .unique-keywords-section {
   max-width: 1200px;
-  margin: 48px auto;
+  margin: 32px auto;
   padding: 0 24px;
   text-align: center;
 }
@@ -14,63 +16,54 @@
 .unique-keywords-section h2 {
   font-size: 20px;
   font-weight: 500;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+  color: #111;
 }
 
-/* layout */
+/* container */
 .unique-keyword-bubbles {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
   justify-content: center;
+  gap: 10px;
 }
 
-/* base bubble */
+/* bubble */
 .unique-keyword-bubbles span {
-  padding: 9px 18px;
-  font-size: 13px;
-  font-weight: 500;
+  background-color: #cce7ff;
+  color: #003366;
+  padding: 8px 16px;
   border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.25s ease;
-  background: #f3f3f3;
-  color: #111;
-  border: 1px solid transparent;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* hover */
 .unique-keyword-bubbles span:hover {
-  transform: translateY(-1px);
-  background: #111;
-  color: #fff;
+  background-color: #99d1ff;
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(0, 80, 140, 0.15);
 }
 
 /* ===============================
-   VARIATIONS (AUTOMATIC)
+   VARIATION (SUBTLE, OPTIONAL)
+   keeps same style, less repetitive
 ================================ */
 
-/* every 2nd bubble */
-.unique-keyword-bubbles span:nth-child(2n) {
-  background: #fff;
-  border-color: #ddd;
-}
-
-/* every 3rd bubble */
+/* softer pills */
 .unique-keyword-bubbles span:nth-child(3n) {
-  background: #f9f6f0;
-  border-radius: 8px;
+  background-color: #e6f2ff;
 }
 
-/* every 4th bubble */
-.unique-keyword-bubbles span:nth-child(4n) {
-  background: #111;
-  color: #fff;
-}
-
-/* every 5th bubble */
+/* slightly stronger pills */
 .unique-keyword-bubbles span:nth-child(5n) {
-  background: transparent;
-  border: 1px solid #111;
+  background-color: #b3dcff;
 }
 
 /* ===============================
@@ -78,13 +71,13 @@
 ================================ */
 @media (max-width: 768px) {
   .unique-keywords-section {
-    margin: 36px auto;
+    margin: 24px auto;
     padding: 0 16px;
   }
 
   .unique-keyword-bubbles span {
-    font-size: 12px;
-    padding: 8px 14px;
+    font-size: 13px;
+    padding: 7px 14px;
   }
 }
 
