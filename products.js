@@ -1,14 +1,11 @@
 function initProductsPage() {
   const grid = document.getElementById("productGrid");
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-  const pageNumber = document.getElementById("pageNumber");
-
+  const loadMoreBtn = document.getElementById("loadMoreBtn");
   if (!grid) return console.error("❌ productGrid not found");
 
   let allProducts = [];
-  let currentPage = 1;
-  const productsPerPage = 60;
+  let currentIndex = 0;                       // How many products are currently shown
+  const productsPerPage = 12;                 // Number of products per click
   let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
   const banners = [
@@ -20,29 +17,20 @@ function initProductsPage() {
     { type: "color", color: "#c5f79f" }
   ];
 
- const params = new URLSearchParams(window.location.search);
-
-const activeCollection = params.get("collection");
-const activeCategory   = params.get("category");
-const activeColor      = params.get("color");
-
-  
-const titleEl = document.getElementById("dynamicPageTitle");
-
-if (titleEl) {
-  if (activeCollection) {
-    titleEl.textContent = `New in ${activeCollection}`;
-  } else if (activeCategory) {
-    titleEl.textContent = activeCategory;
-  } else if (activeColor) {
-    titleEl.textContent = `${activeColor} collection`;
-  } else {
-    titleEl.textContent = "All products";
+  // --- Set dynamic page title ---
+  const params = new URLSearchParams(window.location.search);
+  const activeCollection = params.get("collection");
+  const activeCategory   = params.get("category");
+  const activeColor      = params.get("color");
+  const titleEl = document.getElementById("dynamicPageTitle");
+  if (titleEl) {
+    if (activeCollection) titleEl.textContent = `New in ${activeCollection}`;
+    else if (activeCategory) titleEl.textContent = activeCategory;
+    else if (activeColor) titleEl.textContent = `${activeColor} collection`;
+    else titleEl.textContent = "All products";
   }
-}
 
-  
-  // Load CSV
+  // --- Load CSV and initialize products ---
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
     download: true,
     header: true,
@@ -68,33 +56,22 @@ if (titleEl) {
           price: p.newPrice ? parseFloat(p.newPrice) : 1
         };
       });
-renderPage(currentPage);
-renderPagination(); // <-- add this
+
+      // --- Initial load ---
+      currentIndex = 0;
+      loadMoreProducts();
     },
     error: err => console.error("CSV load failed:", err)
   });
 
- function renderPage(page) {
-  grid.innerHTML = "";
-  const start = (page - 1) * productsPerPage;
-  const slice = allProducts.slice(start, start + productsPerPage);
+  // --- Create product card ---
+  function createProductCard(p, index) {
+    const card = document.createElement("div");
 
-  if (!slice.length) {
-    grid.innerHTML = "<p>No products found.</p>";
-    return;
-  }
-
-  slice.forEach((p, index) => {
-    let card;
-
-    // Banner every 10th card
+    // Banner every 10th product
     if ((index + 1) % 10 === 0) {
-      card = document.createElement("div");
       card.className = "product-card banner-only";
-
-      const bannerIndex = Math.floor(index / 10) % banners.length;
-      const banner = banners[bannerIndex];
-
+      const banner = banners[Math.floor(index / 10) % banners.length];
       if (banner.type === "video") {
         card.innerHTML = `
           <div class="img-wrapper banner-wrapper">
@@ -103,180 +80,54 @@ renderPagination(); // <-- add this
             </video>
           </div>`;
       } else {
-        card.innerHTML = `
-          <div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
+        card.innerHTML = `<div class="img-wrapper banner-wrapper" style="background:${banner.color}"></div>`;
       }
-
     } else {
       // Regular product card
-      card = document.createElement("div");
       const productClass = currentImageIndex === 0 ? "artwork" : "lifestyle";
       card.className = `product-card is-product ${productClass}`;
       card.dataset.images = JSON.stringify(p.images);
 
       const imgSrc = p.images[currentImageIndex] 
-        ? (p.images[currentImageIndex].includes("http") 
-            ? p.images[currentImageIndex] 
-            : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
+        ? (p.images[currentImageIndex].includes("http") ? p.images[currentImageIndex] : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
         : "";
 
-      // Build discount bubble
-      let discountBubble = p.discount 
-        ? `<div class="discount-bubble">${p.discount}</div>` 
-        : "";
+      const discountBubble = p.discount ? `<div class="discount-bubble">${p.discount}</div>` : "";
+      const priceHTML = p.oldPrice && p.oldPrice > p.price
+        ? `<span class="price-from">$${p.price.toFixed(2)}</span><span class="price-old">$${p.oldPrice.toFixed(2)}</span>`
+        : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 
-      // Build price display
-      let priceHTML = "";
-      if(p.oldPrice && p.oldPrice > p.price){
-        priceHTML = `
-          <span class="price-from">$${p.price.toFixed(2)}</span>
-          <span class="price-old">$${p.oldPrice.toFixed(2)}</span>`;
-      } else {
-        priceHTML = `<span class="price-new">$${p.price.toFixed(2)}</span>`;
-      }
-
-      // Insert into card
       card.innerHTML = `
-        <div class="img-wrapper">
-          ${discountBubble}
-          <img src="${imgSrc}" alt="${p.name}">
-        </div>
+        <div class="img-wrapper">${discountBubble}<img src="${imgSrc}" alt="${p.name}"></div>
         <div class="product-info">
           <h3>${p.name}</h3>
-          <div class="price-wrapper">
-            ${priceHTML}
-          </div>
+          <div class="price-wrapper">${priceHTML}</div>
         </div>`;
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
     }
 
-    grid.appendChild(card);
-  });
-
-  const totalPages = Math.ceil(allProducts.length / productsPerPage);
-  pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === totalPages;
-}
-
-// --- Determine default columns based on screen size ---
-let defaultCols = window.innerWidth <= 768 ? 2 : 3;
-
-// Add default column class to grid
-grid.classList.add(`cols-${defaultCols}`);
-
-// Activate the correct button by default
-document.querySelectorAll(`.grid-btn[data-cols="${defaultCols}"]`).forEach(btn => {
-  btn.classList.add("active");
-});
-
-// Grid button click logic
-const gridButtons = document.querySelectorAll(".grid-btn");
-gridButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    // Remove active from siblings
-    btn.parentElement.querySelectorAll(".grid-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    // Remove all cols classes
-    grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
-
-    // Add new column class
-    grid.classList.add(`cols-${btn.dataset.cols}`);
-  });
-});
-
-  // --- Pagination logic ---
-function renderPagination() {
-  const paginationContainer = document.querySelector(".pagination");
-  if (!paginationContainer) return;
-
-  paginationContainer.innerHTML = "";
-
-  const totalPages = Math.ceil(allProducts.length / productsPerPage);
-
-  const createBtn = (page) => {
-    const btn = document.createElement("button");
-    btn.textContent = page;
-    btn.className = "page-btn";
-    if (page === currentPage) btn.classList.add("active");
-
-    btn.onclick = () => {
-      currentPage = page;
-      renderPage(currentPage);
-      renderPagination();
-      // scroll to top of the grid smoothly
-      const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-    return btn;
-  };
-
-  const createDots = () => {
-    const span = document.createElement("span");
-    span.textContent = "...";
-    span.className = "dots";
-    return span;
-  };
-
-  // --- Prev button ---
-  const prevBtn = document.createElement("button");
-  prevBtn.textContent = "<";
-  prevBtn.disabled = currentPage === 1;
-  prevBtn.onclick = () => {
-    if (currentPage > 1) {
-      currentPage--;
-      renderPage(currentPage);
-      renderPagination();
-      const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-  paginationContainer.appendChild(prevBtn);
-
-  // --- First page ---
-  paginationContainer.appendChild(createBtn(1));
-
-  // --- Dots before current pages ---
-  if (currentPage > 3) paginationContainer.appendChild(createDots());
-
-  // --- Pages around current ---
-  for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-    paginationContainer.appendChild(createBtn(i));
+    return card;
   }
 
-  // --- Dots after current pages ---
-  if (currentPage < totalPages - 2) paginationContainer.appendChild(createDots());
+  // --- Load More function ---
+  function loadMoreProducts() {
+    const nextProducts = allProducts.slice(currentIndex, currentIndex + productsPerPage);
+    nextProducts.forEach((p, idx) => grid.appendChild(createProductCard(p, currentIndex + idx)));
+    currentIndex += productsPerPage;
 
-  // --- Last page ---
-  if (totalPages > 1) paginationContainer.appendChild(createBtn(totalPages));
+    if (currentIndex >= allProducts.length && loadMoreBtn) loadMoreBtn.style.display = "none";
+  }
 
-  // --- Next button ---
-  const nextBtn = document.createElement("button");
-  nextBtn.textContent = ">";
-  nextBtn.disabled = currentPage === totalPages;
-  nextBtn.onclick = () => {
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderPage(currentPage);
-      renderPagination();
-      const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-  paginationContainer.appendChild(nextBtn);
-}
+  if (loadMoreBtn) loadMoreBtn.addEventListener("click", loadMoreProducts);
 
-
-  // Image toggle buttons
+  // --- Image toggle buttons ---
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
   imgButtons.forEach(btn => {
     btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
     btn.addEventListener("click", () => {
       imgButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-
       currentImageIndex = parseInt(btn.dataset.index);
       localStorage.setItem("gridImageIndex", currentImageIndex);
       updateGridImages();
@@ -296,19 +147,33 @@ function renderPagination() {
     });
   }
 
-  updateGridImages();
+  // --- Grid column buttons ---
+  let defaultCols = window.innerWidth <= 768 ? 2 : 3;
+  grid.classList.add(`cols-${defaultCols}`);
+  document.querySelectorAll(`.grid-btn[data-cols="${defaultCols}"]`).forEach(btn => btn.classList.add("active"));
+  const gridButtons = document.querySelectorAll(".grid-btn");
+  gridButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.parentElement.querySelectorAll(".grid-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      grid.classList.remove("cols-1","cols-2","cols-3","cols-4");
+      grid.classList.add(`cols-${btn.dataset.cols}`);
+    });
+  });
 
-  // Shuffle
+  // --- Shuffle ---
   const shuffleBtn = document.querySelector('.control-btn[title="Shuffle"]');
   if (shuffleBtn) shuffleBtn.addEventListener("click", () => {
     for (let i = allProducts.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [allProducts[i], allProducts[j]] = [allProducts[j], allProducts[i]];
     }
-    renderPage(currentPage);
+    grid.innerHTML = "";
+    currentIndex = 0;
+    loadMoreProducts();
   });
 
-  // Sort
+  // --- Sort ---
   const sortBtn = document.querySelector('.control-btn[title="Sort"]');
   if (sortBtn) {
     const sortOptions = [
@@ -320,25 +185,19 @@ function renderPagination() {
 
     const sortBubble = document.createElement("div");
     sortBubble.className = "sort-bubble";
-    sortBubble.style.position = "absolute";
-    sortBubble.style.background = "#fff";
-    sortBubble.style.border = "1px solid #ccc";
-    sortBubble.style.borderRadius = "8px";
-    sortBubble.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-    sortBubble.style.padding = "8px 0";
-    sortBubble.style.display = "none";
-    sortBubble.style.zIndex = 9999;
+    sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
 
     sortOptions.forEach(opt => {
       const el = document.createElement("div");
       el.textContent = opt.label;
-      el.style.padding = "8px 16px";
-      el.style.cursor = "pointer";
+      el.style.cssText = "padding:8px 16px;cursor:pointer";
       el.onmouseenter = () => el.style.background = "#f5f5f5";
       el.onmouseleave = () => el.style.background = "transparent";
       el.onclick = () => {
         allProducts.sort(opt.fn);
-        renderPage(currentPage);
+        grid.innerHTML = "";
+        currentIndex = 0;
+        loadMoreProducts();
         sortBubble.style.display = "none";
       };
       sortBubble.appendChild(el);
@@ -346,17 +205,15 @@ function renderPagination() {
 
     document.body.appendChild(sortBubble);
 
-    sortBtn.addEventListener("click", (e) => {
+    sortBtn.addEventListener("click", () => {
       const rect = sortBtn.getBoundingClientRect();
       sortBubble.style.top = rect.bottom + window.scrollY + "px";
       sortBubble.style.left = rect.left + window.scrollX + "px";
       sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
     });
 
-    document.addEventListener("click", (e) => {
-      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
-        sortBubble.style.display = "none";
-      }
+    document.addEventListener("click", e => {
+      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
     });
   }
 }
