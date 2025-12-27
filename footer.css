@@ -268,3 +268,26 @@
     color: #777;
   }
 }
+
+/* Hide mobile tabs on desktop */
+@media (min-width: 769px) {
+  .footer-column.shop,
+  .footer-column.about,
+  .footer-column.policy {
+    display: none;
+  }
+}
+
+/* Show mobile tabs only on mobile */
+@media (max-width: 768px) {
+  .footer-column.shop,
+  .footer-column.about,
+  .footer-column.policy {
+    display: block;
+  }
+
+  /* hide all other columns */
+  .footer-column:not(.shop):not(.about):not(.policy) {
+    display: none;
+  }
+}
