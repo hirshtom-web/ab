@@ -627,3 +627,8 @@
   padding: 48px; 
   }
 }
+
+#footer-placeholder {
+  width: 100%;
+  display: block;
+}
