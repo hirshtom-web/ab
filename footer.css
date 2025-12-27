@@ -43,58 +43,94 @@
 }
 
 /* ===============================
-   MOBILE ACCORDION
+   MOBILE ACCORDION (3-GROUPS)
 ================================ */
 @media (max-width: 768px) {
 
+  /* Reset desktop grid */
   .footer-grid {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
-  .footer-column {
+  /* Group wrapper */
+  .footer-group {
     border-bottom: 1px solid #e6e2de;
-    padding: 10px 0;
   }
 
-  .footer-column h4 {
-    font-size: 14px;
-    margin-bottom: 0;
-    padding: 12px 0;
+  /* Group title */
+  .footer-group-title {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
   }
 
-  /* arrow */
-  .footer-column h4::after {
+  /* Arrow */
+  .footer-group-title::after {
     content: "expand_more";
     font-family: "Material Symbols Outlined";
-    font-size: 20px;
+    font-size: 22px;
     transition: transform 0.3s ease;
   }
 
-  .footer-column.active h4::after {
+  .footer-group.active .footer-group-title::after {
     transform: rotate(180deg);
   }
 
-  /* accordion body */
-  .footer-column ul {
+  /* Group content */
+  .footer-group .footer-column {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease;
+    transition: max-height 0.4s ease;
+    padding-bottom: 12px;
   }
 
-  .footer-column.active ul {
-    max-height: 1000px;
-    margin-top: 8px;
+  .footer-group.active .footer-column {
+    max-height: 2000px;
+  }
+
+  /* Column titles inside accordion */
+  .footer-column h4 {
+    font-size: 13px;
+    margin: 14px 0 8px;
+    cursor: default;
+  }
+
+  /* Lists spacing */
+  .footer-column ul {
+    margin-bottom: 12px;
+  }
+
+  /* Social icons */
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0 10px;
+    font-size: 12px;
+  }
+
+  .footer-social a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  /* Region selector centered */
+  .region-selector {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 10px;
   }
 }
 
 /* ===============================
-   REGION
+   REGION POPUP
 ================================ */
-
 .region-btn {
   display: inline-flex;
   align-items: center;
@@ -170,107 +206,4 @@
   border: none;
   background: #eee;
   cursor: pointer;
-}
-
-/* ===============================
-   MOBILE FOOTER (3 GROUPS)
-================================ */
-@media (max-width: 768px) {
-
-  /* RESET DESKTOP GRID */
-  .footer-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  /* GROUP WRAPPER (Shop / About / Policy) */
-  .footer-group {
-    border-bottom: 1px solid #e6e2de;
-  }
-
-  /* GROUP TITLE */
-  .footer-group-title {
-    font-size: 15px;
-    font-weight: 600;
-    padding: 16px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  /* Arrow */
-  .footer-group-title::after {
-    content: "expand_more";
-    font-family: "Material Symbols Outlined";
-    font-size: 22px;
-    transition: transform 0.3s ease;
-  }
-
-  .footer-group.active .footer-group-title::after {
-    transform: rotate(180deg);
-  }
-
-  /* GROUP CONTENT (columns inside) */
-  .footer-group .footer-column {
-    padding-bottom: 12px;
-  }
-
-  /* Collapse behavior */
-  .footer-group .footer-column {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
-
-  .footer-group.active .footer-column {
-    max-height: 2000px;
-  }
-
-  /* Column titles inside accordion */
-  .footer-column h4 {
-    font-size: 13px;
-    margin: 14px 0 8px;
-    cursor: default;
-  }
-
-  /* Lists spacing */
-  .footer-column ul {
-    margin-bottom: 12px;
-  }
-}
-
-
-/* ===============================
-   SOCIAL ICONS (MOBILE ONLY)
-================================ */
-.footer-social {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 30px 0 10px;
-    font-size: 12px;
-  }
-
-  .footer-social a {
-    color: #333;
-    text-decoration: none;
-  }
-}
-
-/* ===============================
-   REGION SELECTOR CENTERED
-================================ */
-@media (max-width: 768px) {
-  .region-selector {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0 10px;
-  }
 }
