@@ -45,7 +45,7 @@
 }
 
 /* ===============================
-   REGION SELECTOR
+   REGION SELECTOR (all)
 ================================ */
 .region-btn {
   display: inline-flex;
@@ -89,11 +89,6 @@
   overflow-y: auto;
 }
 
-.region-popup-inner h3 {
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
 .region-list {
   list-style: none;
   padding: 0;
@@ -124,72 +119,47 @@
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .region-selector {
-    order: 1;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0 20px;
-    margin: 20px 0 10px;
-  }
-
-  .footer-bottom {
-    order: 2;
-  }
-}
-
-
 /* ===============================
    MOBILE FOOTER
 ================================ */
 @media (max-width: 768px) {
-  /* Footer layout column */
+
+  /* Footer becomes column */
   .site-footer {
     display: flex;
     flex-direction: column;
-    align-items: center;
   }
 
-  /* Region selector above mobile tabs */
-  .region-selector {
-    order: 0;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-  }
-
-  /* Footer grid with only mobile tabs */
+  /* --- MOBILE TABS --- */
   .footer-grid {
-    order: 1;
+    order: 0;
     display: block;
     width: 100%;
   }
 
-  /* Hide all columns by default */
+  /* Hide all desktop columns */
   .footer-column {
     display: none;
     border-bottom: 1px solid #e6e2de;
     padding: 10px 0;
   }
 
-  /* Show only mobile tabs */
+  /* Show only 3 mobile tabs */
   .footer-column.shop,
   .footer-column.about,
   .footer-column.policy {
     display: block;
-    width: 100%;
   }
 
   /* Accordion header */
   .footer-column h4 {
     font-size: 14px;
+    padding: 12px 0;
+    margin: 0;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    margin-bottom: 0;
   }
 
   .footer-column h4::after {
@@ -203,28 +173,7 @@
     transform: rotate(180deg);
   }
 
-  /* Accordion body */
-  .footer-column ul {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-
-  .footer-column.active ul {
-    max-height: 1000px;
-    margin-top: 8px;
-  }
-
-  /* Footer bottom text last */
-  .footer-bottom {
-    order: 2;
-    text-align: center;
-    margin-top: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-
+  /* Accordion body (smooth) */
   .footer-column ul {
     max-height: 0;
     overflow: hidden;
@@ -242,8 +191,24 @@
     transform: translateY(0);
     margin-top: 8px;
   }
-}
 
+  /* --- REGION SELECTOR (BOTTOM RIGHT) --- */
+  .region-selector {
+    order: 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px;
+    margin: 20px 0 8px;
+  }
+
+  /* --- COPYRIGHT LAST --- */
+  .footer-bottom {
+    order: 2;
+    text-align: center;
+    margin-top: 10px;
+  }
+}
 
 /* ===============================
    HIDE MOBILE TABS ON DESKTOP
