@@ -375,6 +375,32 @@
   }
 }
 
+.discount-bubble {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e94812; /* red bubble */
+  color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 6px;
+  border-radius: 6px;
+  z-index: 10;
+  pointer-events: none;
+}
+.product-card .img-wrapper {
+  position: relative; /* needed for absolute discount bubble */
+}
+
+@media (max-width: 768px) {
+.discount-bubble {
+  top: 8px;
+  left: 8px;
+  font-size: 8px;
+  font-weight: 500;
+  padding: 4px 6px;
+}
+}
 
 /* ===============================
    SORT POPUP FIX
