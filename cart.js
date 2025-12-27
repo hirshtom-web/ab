@@ -64,7 +64,7 @@ function addToCart(product) {
       price: product.price,
       oldPrice: product.oldPrice || null,
       discount: product.discount || null,
-      image: product.image,
+      image: Array.isArray(product.image) ? product.image[0] : product.image, // <-- fix here
       quantity: 1
     });
   }
@@ -74,6 +74,7 @@ function addToCart(product) {
   updateCartBadge();
   showAddSuccess(product.title);
 }
+
 
 /* ================================
    CART PAGE RENDER
