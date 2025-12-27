@@ -4,8 +4,9 @@ function initProductsPage() {
   if (!grid) return console.error("❌ productGrid not found");
 
   let allProducts = [];
-  let currentIndex = 0;                       // How many products are currently shown
-  const productsPerPage = 12;                 // Number of products per click
+  let currentIndex = 0;                  
+  const initialLoad = 40;
+  const loadMoreCount = 18; 
   let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0; ?
 
   const banners = [
@@ -111,13 +112,21 @@ function initProductsPage() {
   }
 
   // --- Load More function ---
-  function loadMoreProducts() {
-    const nextProducts = allProducts.slice(currentIndex, currentIndex + productsPerPage);
-    nextProducts.forEach((p, idx) => grid.appendChild(createProductCard(p, currentIndex + idx)));
-    currentIndex += productsPerPage;
+function loadMoreProducts() {
+  const amount = currentIndex === 0 ? initialLoad : loadMoreCount;
 
-    if (currentIndex >= allProducts.length && loadMoreBtn) loadMoreBtn.style.display = "none";
+  const nextProducts = allProducts.slice(currentIndex, currentIndex + amount);
+  nextProducts.forEach((p, idx) =>
+    grid.appendChild(createProductCard(p, currentIndex + idx))
+  );
+
+  currentIndex += amount;
+
+  if (currentIndex >= allProducts.length && loadMoreBtn) {
+    loadMoreBtn.style.display = "none";
   }
+}
+
 
   if (loadMoreBtn) loadMoreBtn.addEventListener("click", loadMoreProducts);
 
