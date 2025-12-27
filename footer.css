@@ -45,74 +45,7 @@
 }
 
 /* ===============================
-   MOBILE FOOTER: only 3 tabs
-================================ */
-@media (max-width: 768px) {
-
-  /* Grid becomes block */
-  .footer-grid {
-    display: block;
-  }
-
-  /* Hide all columns by default */
-  .footer-column {
-    display: none;
-    border-bottom: 1px solid #e6e2de;
-    padding: 10px 0;
-  }
-
-  /* Show only mobile tabs */
-  .footer-column.shop,
-  .footer-column.about,
-  .footer-column.policy {
-    display: block;
-  }
-
-  /* Accordion header */
-  .footer-column h4 {
-    font-size: 14px;
-    margin-bottom: 0;
-    padding: 12px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  /* Arrow icon */
-  .footer-column h4::after {
-    content: "expand_more";
-    font-family: "Material Symbols Outlined";
-    font-size: 20px;
-    transition: transform 0.3s ease;
-  }
-
-  .footer-column.active h4::after {
-    transform: rotate(180deg);
-  }
-
-  /* Accordion body */
-  .footer-column ul {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-
-  .footer-column.active ul {
-    max-height: 1000px;
-    margin-top: 8px;
-  }
-
-  /* Region selector centered */
-  .region-selector {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0 10px;
-  }
-}
-
-/* ===============================
-   REGION SELECTOR (desktop & mobile)
+   REGION SELECTOR
 ================================ */
 .region-btn {
   display: inline-flex;
@@ -191,35 +124,40 @@
   cursor: pointer;
 }
 
+/* ===============================
+   MOBILE FOOTER
+================================ */
 @media (max-width: 768px) {
-  /* Make footer content column */
+  /* Footer layout column */
   .site-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  /* Move region selector above mobile tabs */
+  /* Region selector above mobile tabs */
   .region-selector {
-    order: 0; /* first */
+    order: 0;
     margin-bottom: 20px;
     display: flex;
     justify-content: center;
   }
 
-  /* Footer grid with only 3 tabs */
+  /* Footer grid with only mobile tabs */
   .footer-grid {
-    order: 1; /* second */
+    order: 1;
     display: block;
     width: 100%;
   }
 
+  /* Hide all columns by default */
   .footer-column {
-    display: none; /* hide all by default */
+    display: none;
     border-bottom: 1px solid #e6e2de;
     padding: 10px 0;
   }
 
+  /* Show only mobile tabs */
   .footer-column.shop,
   .footer-column.about,
   .footer-column.policy {
@@ -227,8 +165,9 @@
     width: 100%;
   }
 
-  /* Accordion styling */
+  /* Accordion header */
   .footer-column h4 {
+    font-size: 14px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -248,6 +187,7 @@
     transform: rotate(180deg);
   }
 
+  /* Accordion body */
   .footer-column ul {
     max-height: 0;
     overflow: hidden;
@@ -264,30 +204,16 @@
     order: 2;
     text-align: center;
     margin-top: 20px;
-    font-size: 11px;
-    color: #777;
   }
 }
 
-/* Hide mobile tabs on desktop */
+/* ===============================
+   HIDE MOBILE TABS ON DESKTOP
+================================ */
 @media (min-width: 769px) {
   .footer-column.shop,
   .footer-column.about,
   .footer-column.policy {
-    display: none;
-  }
-}
-
-/* Show mobile tabs only on mobile */
-@media (max-width: 768px) {
-  .footer-column.shop,
-  .footer-column.about,
-  .footer-column.policy {
-    display: block;
-  }
-
-  /* hide all other columns */
-  .footer-column:not(.shop):not(.about):not(.policy) {
     display: none;
   }
 }
