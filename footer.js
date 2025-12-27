@@ -78,3 +78,15 @@ function initFooter() {
     }
   });
 }
+
+document.querySelectorAll('.footer-column h4').forEach(header => {
+  header.addEventListener('click', () => {
+    const column = header.parentElement;
+
+    document.querySelectorAll('.footer-column.active').forEach(openCol => {
+      if (openCol !== column) openCol.classList.remove('active');
+    });
+
+    column.classList.toggle('active');
+  });
+});
