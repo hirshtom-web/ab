@@ -190,3 +190,81 @@
   background: #eee;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  /* Make footer content column */
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Move region selector above mobile tabs */
+  .region-selector {
+    order: 0; /* first */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Footer grid with only 3 tabs */
+  .footer-grid {
+    order: 1; /* second */
+    display: block;
+    width: 100%;
+  }
+
+  .footer-column {
+    display: none; /* hide all by default */
+    border-bottom: 1px solid #e6e2de;
+    padding: 10px 0;
+  }
+
+  .footer-column.shop,
+  .footer-column.about,
+  .footer-column.policy {
+    display: block;
+    width: 100%;
+  }
+
+  /* Accordion styling */
+  .footer-column h4 {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    margin-bottom: 0;
+  }
+
+  .footer-column h4::after {
+    content: "expand_more";
+    font-family: "Material Symbols Outlined";
+    font-size: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .footer-column.active h4::after {
+    transform: rotate(180deg);
+  }
+
+  .footer-column ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .footer-column.active ul {
+    max-height: 1000px;
+    margin-top: 8px;
+  }
+
+  /* Footer bottom text last */
+  .footer-bottom {
+    order: 2;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 11px;
+    color: #777;
+  }
+}
