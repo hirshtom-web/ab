@@ -402,29 +402,33 @@
 ================================ */
 .pagination {
   display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-top: 20px;
+  align-items: center;
+  gap: 5px;
+  margin: 20px 0;
 }
 
 .pagination button {
-  padding: 6px 10px;
-  border-radius: 50%;
+  padding: 6px 12px;
   border: 1px solid #ccc;
+  background: #fff;
   cursor: pointer;
-  background: white;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
-.pagination button.active {
-  background-color: #4CAF50;
-  color: white;
-  border: 2px solid #4CAF50;
+.pagination button:hover:not(:disabled) {
+  background: #f0f0f0;
 }
 
-.pagination .dots {
-  padding: 6px 10px;
-  border: none;
+.pagination button:disabled {
+  opacity: 0.4;
   cursor: default;
+}
+
+.pagination .page-btn.active {
+  background: #333;
+  color: #fff;
+  border-color: #333;
 }
 
 
