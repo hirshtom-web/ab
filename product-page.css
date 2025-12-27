@@ -670,7 +670,12 @@
 }
 
 @media (max-width: 768px) {
-  .breadcrumbs {
+  .breadcrumbs .breadcrumbs a .separator .current {
     font-size: 8px;
   }
+   
+ .breadcrumbs {
+   margin-left: 20px;
+     margin-bottom: 5px;
+}
 }
