@@ -7,7 +7,7 @@ function initProductsPage() {
   let currentIndex = 0;                  
   const initialLoad = 40;
   const loadMoreCount = 18;
-  let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0; ?
+  let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
   const banners = [
     { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
