@@ -450,6 +450,12 @@
   background-color: #eee;
 }
 
+.pagination button {
+  -webkit-appearance: none; /* removes default mobile style */
+  -moz-appearance: none;
+  appearance: none;
+}
+
 /* ===============================
    SORT POPUP FIX
 ================================ */
