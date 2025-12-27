@@ -404,39 +404,37 @@
 }
 
 /* ===============================
-   IMAGE CARD
+   IMAGE CARD (Artwork Wrapper)
 ================================ */
-/* Artwork-style wrapper for slider items */
 .new-in-slider-item .img-wrapper {
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
-  background: #f9f5f2; /* same beige as product grid */
+  background: #f9f5f2;      /* beige wrapper like product grid */
   display: flex;
   align-items: center;
-  justify-content: center; /* center artwork */
-  aspect-ratio: 3/4;       /* match product cards */
-  padding: 20px;            /* optional inner spacing */
+  justify-content: center;   /* center the artwork */
+  aspect-ratio: 3/4;         /* keep same ratio as product cards */
   box-sizing: border-box;
+  padding: 20px;             /* inner spacing for artwork */
 }
 
 .new-in-slider-item .img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: contain;      /* ensure artwork fits nicely */
+  object-fit: contain;       /* ensures artwork fits and is centered */
   display: block;
-  border-radius: 12px;      /* optional smaller radius inside wrapper */
+  border-radius: 12px;       /* optional inner rounding */
 }
 
-
+/* ===============================
+   SLIDER ITEM INFO
+================================ */
 .new-in-slider-item,
 .new-in-slider-info {
   background: transparent;
 }
 
-/* ===============================
-   TEXT UNDER IMAGE
-================================ */
 .new-in-slider-info {
   margin-top: 8px;
   text-align: center;
@@ -444,7 +442,6 @@
   flex-direction: column;
   gap: 2px;
   width: 100%;
-  background: transparent;
 }
 
 .new-in-slider-info h3 {
@@ -466,14 +463,3 @@
     font-size: 10px;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
