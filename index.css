@@ -409,7 +409,7 @@
 
 .new-in-slider-item .img-wrapper {
   width: 100%;
-  background: #f9f5f2;        /* beige background behind image */
+  background: #fff;        /* beige background behind image */
   border-radius: 16px;
   overflow: hidden;
   display: flex;
@@ -461,4 +461,5 @@
     font-size: 10px;
   }
 }
+
 
