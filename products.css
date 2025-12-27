@@ -411,7 +411,7 @@
   height: 36px;        /* same as control-btn / grid-btn */
   width: 36px;
   border-radius: 6px;  /* same radius */
-  border: 1px solid #ccc; /* light border */
+  border: 1px solid #fff; /* light border */
   background: transparent; /* see-through */
   font-size: 14px;
   cursor: pointer;
