@@ -187,60 +187,57 @@ gridButtons.forEach(btn => {
   });
 });
 
-  
-// --- PAGINATION LOGIC ---
+  // Pagination logic
 function renderPagination() {
   const paginationContainer = document.querySelector(".pagination");
   if (!paginationContainer) return;
 
-  paginationContainer.innerHTML = "";
+  // Remove existing page number buttons
+  const pageBtns = paginationContainer.querySelectorAll(".page-btn");
+  pageBtns.forEach(btn => btn.remove());
 
   const totalPages = Math.ceil(allProducts.length / productsPerPage);
 
-  // Previous button
-  const prev = document.createElement("button");
-  prev.textContent = "‹";
-  prev.disabled = currentPage === 1;
-  prev.onclick = () => {
+  // Generate page number buttons
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = "page-btn";
+    if (i === currentPage) btn.classList.add("active");
+
+    btn.onclick = () => {
+      currentPage = i;
+      renderPage(currentPage);
+      renderPagination();
+    };
+
+    // Insert buttons before the "next" arrow
+    paginationContainer.insertBefore(btn, document.getElementById("nextPage"));
+  }
+
+  // Enable/disable arrows
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+
+  prevBtn.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
       renderPage(currentPage);
       renderPagination();
     }
   };
-  paginationContainer.appendChild(prev);
 
-  // Page number buttons
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.className = "page-btn";
-    if (i === currentPage) btn.classList.add("active");
-    btn.onclick = () => {
-      currentPage = i;
-      renderPage(currentPage);
-      renderPagination();
-    };
-    paginationContainer.appendChild(btn);
-  }
-
-  // Next button
-  const next = document.createElement("button");
-  next.textContent = "›";
-  next.disabled = currentPage === totalPages;
-  next.onclick = () => {
+  nextBtn.onclick = () => {
     if (currentPage < totalPages) {
       currentPage++;
       renderPage(currentPage);
       renderPagination();
     }
   };
-  paginationContainer.appendChild(next);
 }
 
-// Call renderPagination() instead of updatePagination() after rendering the page
-renderPage(currentPage);
-renderPagination();
 
 
   // Image toggle buttons
