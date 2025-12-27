@@ -208,7 +208,7 @@ function renderPagination() {
       renderPagination();
       // scroll to top of the grid smoothly
       const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: grid.offsetTop 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     return btn;
   };
@@ -230,7 +230,7 @@ function renderPagination() {
       renderPage(currentPage);
       renderPagination();
       const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: grid.offsetTop - 20, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   paginationContainer.appendChild(prevBtn);
@@ -262,7 +262,7 @@ function renderPagination() {
       renderPage(currentPage);
       renderPagination();
       const grid = document.getElementById("productGrid");
-      window.scrollTo({ top: grid.offsetTop - 20, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
   paginationContainer.appendChild(nextBtn);
