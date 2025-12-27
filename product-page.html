@@ -214,33 +214,55 @@
 
 
         
-<!-- Scripts -->
+<!-- FOOTER PLACEHOLDER -->
+<div id="footer-placeholder"></div>
+
+
+
+<!-- ===============================
+     Scripts
+================================ -->
+<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<!-- Core Scripts -->
 <script src="header.js"></script>
+<script src="products.js"></script>
 <script src="product-page.js"></script>
-<script>
-  // ✅ Full init after header + DOM
-  async function fullInit() {
-    // 1️⃣ Load header
-    try {
-      const res = await fetch("header.html");
-      const html = await res.text();
-      document.getElementById("header-placeholder").innerHTML = html;
-      if (typeof initHeader === "function") initHeader();
-    } catch (err) {
-      console.error("Header load failed:", err);
-    }
-
-    // 2️⃣ Initialize product page AFTER header + DOM exists
-    if (typeof initProductsPage === "function") initProductsPage();
-  }
-
-  window.addEventListener("load", fullInit);
-</script>
+<script src="artist-card.js"></script>
+<script src="index.js"></script>
+<script src="footer.js"></script>
 <script src="cart.js"></script>
 
+<script>
+  // ✅ Full page initialization
+  async function fullInit() {
+    try {
+      // 1️⃣ Load header
+      const headerRes = await fetch("header.html");
+      const headerHTML = await headerRes.text();
+      document.getElementById("header-placeholder").innerHTML = headerHTML;
+      if (typeof initHeader === "function") initHeader();
 
+      // 2️⃣ Initialize products page AFTER header exists
+      if (typeof initProductsPage === "function") initProductsPage();
 
+      // 3️⃣ Load footer
+      const footerRes = await fetch("footer.html");
+      const footerHTML = await footerRes.text();
+      document.getElementById("footer-placeholder").innerHTML = footerHTML;
+      if (typeof initFooter === "function") initFooter();
+
+    } catch (err) {
+      console.error("Page init failed:", err);
+    }
+  }
+
+  // Run after all scripts and DOM are loaded
+  window.addEventListener("load", fullInit);
+</script>
+
+  
 
 </body>
 </html>
