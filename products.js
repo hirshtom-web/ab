@@ -3,40 +3,10 @@ function initProductsPage() {
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   if (!grid) return console.error("❌ productGrid not found");
 
-  let allProducts = []; // Fill this with your product data
-  let currentIndex = 0; // How many products are currently shown
-  const initialLoad = 40;   // First batch to show
-  const loadMoreCount = 18; // How many more on each click
-
-  function renderProducts() {
-    const nextIndex = currentIndex + (currentIndex === 0 ? initialLoad : loadMoreCount);
-    const productsToShow = allProducts.slice(currentIndex, nextIndex);
-
-    productsToShow.forEach(product => {
-      const div = document.createElement("div");
-      div.className = "product-card";
-      div.innerHTML = `
-        <img src="${Array.isArray(product.image) ? product.image[0] : product.image}" alt="${product.title}">
-        <h3>${product.title}</h3>
-        <p>$${product.price.toFixed(2)}</p>
-      `;
-      grid.appendChild(div);
-    });
-
-    currentIndex = nextIndex;
-
-    if (currentIndex >= allProducts.length) {
-      loadMoreBtn.style.display = "none";
-    }
-  }
-
-  // Initial render
-  renderProducts();
-
-  // Load more click
-  loadMoreBtn.addEventListener("click", renderProducts);
-}
-
+  let allProducts = [];
+  let currentIndex = 0;                       // How many products are currently shown
+  const productsPerPage = 12;                 // Number of products per click
+  let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0; ?
 
   const banners = [
     { type: "video", src: "https://video.wixstatic.com/video/1799ca_8428cdd03a514d8fa35248436418e881/1080p/mp4/file.mp4" },
