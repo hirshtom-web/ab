@@ -69,3 +69,8 @@
     font-size: 11px;     /* optional: smaller text */
   }
 }
+
+#footer-placeholder {
+  width: 100%;
+  display: block;
+}
