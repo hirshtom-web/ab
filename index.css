@@ -343,20 +343,54 @@
 
 
 /* ===============================
+   NEW IN SLIDER SECTION
+================================ */
+.new-in-slider-section {
+  width: 100%;
+  padding: 50px 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #f9f5f2;
+}
+
+@media (max-width: 768px) {
+  .new-in-slider-section {
+    padding: 40px 20px;
+  }
+}
+
+/* ===============================
+   NEW IN SLIDER CONTAINER
+================================ */
+.new-in-slider-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+}
+
+.new-in-slider-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===============================
    NEW IN SLIDER ITEM
 ================================ */
 .new-in-slider-item {
   flex: 0 0 auto;
-  width: 300px;
+  width: 250px;                  /* reduced from 300px */
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .new-in-slider-item {
-    width: 200px;
+    width: 180px;                /* smaller on mobile */
   }
 }
 
@@ -365,23 +399,22 @@
 ================================ */
 .new-in-slider-item .img-wrapper {
   width: 100%;
+  max-height: 320px;             /* constrain max height */
   border-radius: 16px;
   overflow: hidden;
-  background: #f9f5f2;     /* beige wrapper like product grid */
+  background: #f9f5f2;           /* beige wrapper */
   display: flex;
   align-items: center;
-  justify-content: center;  /* center artwork */
-  aspect-ratio: 3/4;        /* keep same ratio as product cards */
+  justify-content: center;
   box-sizing: border-box;
 }
 
-/* inner image centered with some spacing */
 .new-in-slider-item .img-wrapper img {
-  width: 90%;               /* slightly smaller to show beige border */
-  height: 90%;
-  object-fit: contain;      /* keeps artwork centered */
+  width: 90%;                     /* slightly smaller to show wrapper */
+  height: auto;                   /* maintain aspect ratio */
+  object-fit: contain;
   display: block;
-  border-radius: 12px;      /* inner rounding */
+  border-radius: 12px;
 }
 
 /* ===============================
