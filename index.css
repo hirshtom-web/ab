@@ -343,49 +343,6 @@
 
 
 /* ===============================
-   NEW IN SLIDER SECTION
-================================ */
-.new-in-slider-section {
-  width: 100%;
-  padding: 0 40px;
-  box-sizing: border-box;
-  overflow: hidden;
-  background: #f9f5f2;
-}
-.new-in-slider-section .unique-title-h2 {
-  margin-top: 50px;
-  margin-bottom: 50px;
-  justify-content: center;
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .new-in-slider-section {
-    padding: 0 20px;
-  }
-.new-in-slider-section .unique-title-h2 {
-     margin-top: 40px;
-  margin-bottom: 20px;
-  }
-}
-
-/* ===============================
-   NEW IN SLIDER CONTAINER
-================================ */
-.new-in-slider-container {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  padding: 20px 0;
-}
-
-.new-in-slider-container::-webkit-scrollbar {
-  display: none;
-}
-
-/* ===============================
    NEW IN SLIDER ITEM
 ================================ */
 .new-in-slider-item {
@@ -410,31 +367,26 @@
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
-  background: #f9f5f2;      /* beige wrapper like product grid */
+  background: #f9f5f2;     /* beige wrapper like product grid */
   display: flex;
   align-items: center;
-  justify-content: center;   /* center the artwork */
-  aspect-ratio: 3/4;         /* keep same ratio as product cards */
+  justify-content: center;  /* center artwork */
+  aspect-ratio: 3/4;        /* keep same ratio as product cards */
   box-sizing: border-box;
-  padding: 20px;             /* inner spacing for artwork */
 }
 
+/* inner image centered with some spacing */
 .new-in-slider-item .img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;       /* ensures artwork fits and is centered */
+  width: 90%;               /* slightly smaller to show beige border */
+  height: 90%;
+  object-fit: contain;      /* keeps artwork centered */
   display: block;
-  border-radius: 12px;       /* optional inner rounding */
+  border-radius: 12px;      /* inner rounding */
 }
 
 /* ===============================
    SLIDER ITEM INFO
 ================================ */
-.new-in-slider-item,
-.new-in-slider-info {
-  background: transparent;
-}
-
 .new-in-slider-info {
   margin-top: 8px;
   text-align: center;
