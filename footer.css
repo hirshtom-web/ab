@@ -4,7 +4,7 @@
   color: #222;
 }
 
-/* DESKTOP GRID */
+/* DESKTOP GRID (unchanged) */
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -43,70 +43,87 @@
 }
 
 /* ===============================
-   MOBILE ACCORDION (3-GROUPS)
+   MOBILE FOOTER (3 GROUPS ONLY)
 ================================ */
 @media (max-width: 768px) {
 
-  /* Reset desktop grid */
+  /* Reset grid for mobile */
   .footer-grid {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  /* Group wrapper */
-  .footer-group {
+  /* Hide all columns by default */
+  .footer-column {
+    display: none;
     border-bottom: 1px solid #e6e2de;
+    padding: 10px 0;
   }
 
-  /* Group title */
-  .footer-group-title {
-    font-size: 15px;
-    font-weight: 600;
-    padding: 16px 0;
+  /* === SHOW MOBILE GROUPS === */
+
+  /* SHOP: Art Prints + Frames + Sizes + Gifting */
+  .footer-column:nth-child(1),
+  .footer-column:nth-child(2) {
+    display: block;
+    order: 1;
+  }
+
+  /* ABOUT: Customer Service + About + Work With Us */
+  .footer-column:nth-child(3),
+  .footer-column:nth-child(4) {
+    display: block;
+    order: 2;
+  }
+
+  /* POLICY: Legal only */
+  .footer-column:nth-child(5) {
+    display: block;
+    order: 3;
+  }
+
+  /* Clean up h4 titles inside mobile groups */
+  /* SHOP: keep first h4 only */
+  .footer-column:nth-child(1) h4:not(:first-of-type),
+  .footer-column:nth-child(2) h4 {
+    display: none;
+  }
+
+  /* ABOUT: keep first h4 only */
+  .footer-column:nth-child(3) h4:not(:first-of-type),
+  .footer-column:nth-child(4) h4 {
+    display: none;
+  }
+
+  /* POLICY: hide Community block */
+  .footer-column:nth-child(5) h4:nth-of-type(2),
+  .footer-column:nth-child(5) h4:nth-of-type(2) + ul {
+    display: none;
+  }
+
+  /* === ACCORDION BEHAVIOR === */
+  .footer-column h4 {
+    font-size: 14px;
+    padding: 14px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
   }
 
-  /* Arrow */
-  .footer-group-title::after {
-    content: "expand_more";
-    font-family: "Material Symbols Outlined";
-    font-size: 22px;
-    transition: transform 0.3s ease;
-  }
-
-  .footer-group.active .footer-group-title::after {
-    transform: rotate(180deg);
-  }
-
-  /* Group content */
-  .footer-group .footer-column {
+  .footer-column ul {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s ease;
-    padding-bottom: 12px;
+    transition: max-height 0.35s ease;
   }
 
-  .footer-group.active .footer-column {
-    max-height: 2000px;
+  .footer-column.active ul {
+    max-height: 1000px;
+    margin-top: 8px;
   }
 
-  /* Column titles inside accordion */
-  .footer-column h4 {
-    font-size: 13px;
-    margin: 14px 0 8px;
-    cursor: default;
-  }
-
-  /* Lists spacing */
-  .footer-column ul {
-    margin-bottom: 12px;
-  }
-
-  /* Social icons */
+  /* SOCIAL ICONS */
   .footer-social {
     display: flex;
     justify-content: center;
@@ -120,7 +137,7 @@
     text-decoration: none;
   }
 
-  /* Region selector centered */
+  /* REGION SELECTOR CENTERED */
   .region-selector {
     display: flex;
     justify-content: center;
