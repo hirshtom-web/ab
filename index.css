@@ -82,7 +82,7 @@
   margin: 0 auto;
   padding: 40px 24px;
   text-align: center; /* for inline images */
-  background: #f9f5f2;
+  background: #fff;
   border-radius: 16px;
   overflow: hidden;
 
@@ -350,7 +350,7 @@
   padding: 0 40px;
   box-sizing: border-box;
   overflow: hidden;
-  background: #f9f5f2;
+  background: #fff;
 }
 .new-in-slider-section .unique-title-h2 {
   margin-top: 50px;
@@ -409,7 +409,7 @@
 
 .new-in-slider-item .img-wrapper {
   width: 100%;
-  background: #fff;        /* beige background behind image */
+  background: #f9f5f2;        /* beige background behind image */
   border-radius: 16px;
   overflow: hidden;
   display: flex;
@@ -461,5 +461,6 @@
     font-size: 10px;
   }
 }
+
 
 
