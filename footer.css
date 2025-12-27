@@ -1,12 +1,12 @@
+/* ===============================
+   DESKTOP FOOTER (default)
+================================ */
 .site-footer {
   background: #f9f5f2;
   padding: 60px 40px 30px;
   color: #222;
 }
 
-/* ===============================
-   DESKTOP GRID
-================================ */
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -45,18 +45,30 @@
 }
 
 /* ===============================
-   MOBILE ACCORDION
+   MOBILE FOOTER: only 3 tabs
 ================================ */
 @media (max-width: 768px) {
+
+  /* Grid becomes block */
   .footer-grid {
     display: block;
   }
 
+  /* Hide all columns by default */
   .footer-column {
+    display: none;
     border-bottom: 1px solid #e6e2de;
     padding: 10px 0;
   }
 
+  /* Show only mobile tabs */
+  .footer-column.shop,
+  .footer-column.about,
+  .footer-column.policy {
+    display: block;
+  }
+
+  /* Accordion header */
   .footer-column h4 {
     font-size: 14px;
     margin-bottom: 0;
@@ -90,10 +102,17 @@
     max-height: 1000px;
     margin-top: 8px;
   }
+
+  /* Region selector centered */
+  .region-selector {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 10px;
+  }
 }
 
 /* ===============================
-   REGION SELECTOR
+   REGION SELECTOR (desktop & mobile)
 ================================ */
 .region-btn {
   display: inline-flex;
@@ -170,43 +189,4 @@
   border: none;
   background: #eee;
   cursor: pointer;
-}
-
-/* ===============================
-   REGION SELECTOR CENTERED (MOBILE)
-================================ */
-@media (max-width: 768px) {
-  .region-selector {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0 10px;
-  }
-
-  /* Mobile-only footer tabs */
-  .footer-column { display: none; }        /* hide all columns by default */
-  .footer-column.shop,
-  .footer-column.about,
-  .footer-column.policy { display: block; } /* show only mobile tabs */
-
-  .footer-column h4 {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .footer-column ul {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-
-  .footer-column.active ul {
-    max-height: 1000px;
-    margin-top: 8px;
-  }
-}
-
-/* Desktop: default display */
-@media (min-width: 769px) {
-  .footer-column { display: block; }       /* show all columns for desktop */
 }
