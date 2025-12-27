@@ -192,35 +192,34 @@ function renderPagination() {
   const paginationContainer = document.querySelector(".pagination");
   if (!paginationContainer) return;
 
-  // Remove existing page number buttons
-  const pageBtns = paginationContainer.querySelectorAll(".page-btn");
-  pageBtns.forEach(btn => btn.remove());
+  paginationContainer.innerHTML = "";
 
   const totalPages = Math.ceil(allProducts.length / productsPerPage);
 
-  // Generate page number buttons
-  for (let i = 1; i <= totalPages; i++) {
+  const createBtn = (page) => {
     const btn = document.createElement("button");
-    btn.textContent = i;
+    btn.textContent = page;
     btn.className = "page-btn";
-    if (i === currentPage) btn.classList.add("active");
-
+    if (page === currentPage) btn.classList.add("active");
     btn.onclick = () => {
-      currentPage = i;
+      currentPage = page;
       renderPage(currentPage);
       renderPagination();
     };
+    return btn;
+  };
 
-    // Insert buttons before the "next" arrow
-    paginationContainer.insertBefore(btn, document.getElementById("nextPage"));
-  }
+  const createDots = () => {
+    const span = document.createElement("span");
+    span.textContent = "...";
+    span.className = "dots";
+    return span;
+  };
 
-  // Enable/disable arrows
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
+  // Prev button
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "<";
   prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === totalPages;
-
   prevBtn.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
@@ -228,7 +227,29 @@ function renderPagination() {
       renderPagination();
     }
   };
+  paginationContainer.appendChild(prevBtn);
 
+  // First page
+  paginationContainer.appendChild(createBtn(1));
+
+  // Dots before current pages
+  if (currentPage > 3) paginationContainer.appendChild(createDots());
+
+  // Pages around current
+  for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+    paginationContainer.appendChild(createBtn(i));
+  }
+
+  // Dots after current pages
+  if (currentPage < totalPages - 2) paginationContainer.appendChild(createDots());
+
+  // Last page
+  if (totalPages > 1) paginationContainer.appendChild(createBtn(totalPages));
+
+  // Next button
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = ">";
+  nextBtn.disabled = currentPage === totalPages;
   nextBtn.onclick = () => {
     if (currentPage < totalPages) {
       currentPage++;
@@ -236,8 +257,8 @@ function renderPagination() {
       renderPagination();
     }
   };
+  paginationContainer.appendChild(nextBtn);
 }
-
 
 
   // Image toggle buttons
