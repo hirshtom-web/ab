@@ -643,14 +643,14 @@
   margin-bottom: 20px;
   margin-left: 30px;
   font-weight: 500;
-  color: #000;
+  color: #666;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
 
 .breadcrumbs a {
-  color: #000;
+  color: #666;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -661,12 +661,12 @@
 
 .breadcrumbs .separator {
   margin: 0 4px;
-  color: #000;
+  color: #666;
 }
 
 .breadcrumbs .current {
   font-weight: 500;
-  color: #000;
+  color: #666;
 }
 
 @media (max-width: 768px) {
