@@ -195,10 +195,16 @@
 ================================ */
 #productGrid {
   display: grid;
-  gap: 16px;
+  gap: 32px 16px;
   width: 100%;
   padding: 0 20px; /* add spacing */
   box-sizing: border-box; /* ensure padding doesn’t break width */
+}
+
+@media (max-width: 768px) {
+  #productGrid {
+    gap: 24px 12px; /* smaller row & column gaps */
+  }
 }
 
 
