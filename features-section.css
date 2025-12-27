@@ -45,3 +45,27 @@
   font-weight: 500;
   line-height: 1.6;
 }
+
+
+@media (max-width: 768px) {
+  .features-section {
+    padding: 40px 20px; /* reduce top/bottom space */
+  }
+
+  .features-container {
+    gap: 16px;           /* reduce spacing between cards */
+    padding: 40px 20px;  /* reduce container padding */
+  }
+
+  .feature-card {
+    padding: 20px 10px;  /* smaller inside padding */
+  }
+
+  .feature-card h3 {
+    font-size: 11px;     /* optional: smaller text for mobile */
+  }
+
+  .feature-card p {
+    font-size: 11px;     /* optional: smaller text */
+  }
+}
