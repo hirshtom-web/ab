@@ -187,7 +187,7 @@ gridButtons.forEach(btn => {
   });
 });
 
-  // Pagination logic
+  // --- Pagination logic ---
 function renderPagination() {
   const paginationContainer = document.querySelector(".pagination");
   if (!paginationContainer) return;
@@ -201,10 +201,14 @@ function renderPagination() {
     btn.textContent = page;
     btn.className = "page-btn";
     if (page === currentPage) btn.classList.add("active");
+
     btn.onclick = () => {
       currentPage = page;
       renderPage(currentPage);
       renderPagination();
+      // scroll to top of the grid smoothly
+      const grid = document.getElementById("productGrid");
+      window.scrollTo({ top: grid.offsetTop - 20, behavior: 'smooth' });
     };
     return btn;
   };
@@ -216,7 +220,7 @@ function renderPagination() {
     return span;
   };
 
-  // Prev button
+  // --- Prev button ---
   const prevBtn = document.createElement("button");
   prevBtn.textContent = "<";
   prevBtn.disabled = currentPage === 1;
@@ -225,28 +229,30 @@ function renderPagination() {
       currentPage--;
       renderPage(currentPage);
       renderPagination();
+      const grid = document.getElementById("productGrid");
+      window.scrollTo({ top: grid.offsetTop - 20, behavior: 'smooth' });
     }
   };
   paginationContainer.appendChild(prevBtn);
 
-  // First page
+  // --- First page ---
   paginationContainer.appendChild(createBtn(1));
 
-  // Dots before current pages
+  // --- Dots before current pages ---
   if (currentPage > 3) paginationContainer.appendChild(createDots());
 
-  // Pages around current
+  // --- Pages around current ---
   for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
     paginationContainer.appendChild(createBtn(i));
   }
 
-  // Dots after current pages
+  // --- Dots after current pages ---
   if (currentPage < totalPages - 2) paginationContainer.appendChild(createDots());
 
-  // Last page
+  // --- Last page ---
   if (totalPages > 1) paginationContainer.appendChild(createBtn(totalPages));
 
-  // Next button
+  // --- Next button ---
   const nextBtn = document.createElement("button");
   nextBtn.textContent = ">";
   nextBtn.disabled = currentPage === totalPages;
@@ -255,6 +261,8 @@ function renderPagination() {
       currentPage++;
       renderPage(currentPage);
       renderPagination();
+      const grid = document.getElementById("productGrid");
+      window.scrollTo({ top: grid.offsetTop - 20, behavior: 'smooth' });
     }
   };
   paginationContainer.appendChild(nextBtn);
