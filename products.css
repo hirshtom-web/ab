@@ -435,3 +435,38 @@
   min-width: 40px;
   text-align: center;
 }
+
+/* ===============================
+   SORT POPUP FIX
+================================ */
+
+/* Container */
+.sort-popup {
+  max-width: 180px;
+  min-width: 140px;
+  white-space: normal;      /* allow text to wrap */
+  word-break: break-word;
+  right: 0;                 /* prevent overflow to the right */
+  left: auto;
+}
+
+/* Items inside */
+.sort-popup button,
+.sort-popup li {
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 6px 10px;
+}
+
+/* Mobile tweak */
+@media (max-width: 768px) {
+  .sort-popup {
+    max-width: 160px;
+  }
+
+  .sort-popup button,
+  .sort-popup li {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
