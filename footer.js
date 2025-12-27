@@ -1,5 +1,4 @@
 // footer.js
-
 function initFooter() {
   // Accordion for mobile
   document.querySelectorAll('.footer-column h4').forEach(title => {
@@ -12,12 +11,18 @@ function initFooter() {
 
   // Region popup
   const popup = document.getElementById("regionPopup");
-  document.getElementById("openRegion").onclick = () => popup.classList.add("active");
-  document.getElementById("closeRegion").onclick = () => popup.classList.remove("active");
+  const openBtn = document.getElementById("openRegion");
+  const closeBtn = document.getElementById("closeRegion");
+
+  if (openBtn && popup) {
+    openBtn.onclick = () => popup.classList.add("active");
+  }
+  if (closeBtn && popup) {
+    closeBtn.onclick = () => popup.classList.remove("active");
+  }
 
   // Region list
   const regions = [
-    { country: "Andorra", code: "AD", currency: "EUR", flag: "🇦🇩" },
     { country: "Austria", code: "AT", currency: "EUR", flag: "🇦🇹" },
     { country: "Belgium", code: "BE", currency: "EUR", flag: "🇧🇪" },
     { country: "Canada", code: "CA", currency: "CAD", flag: "🇨🇦" },
@@ -25,37 +30,52 @@ function initFooter() {
     { country: "Germany", code: "DE", currency: "EUR", flag: "🇩🇪" },
     { country: "Italy", code: "IT", currency: "EUR", flag: "🇮🇹" },
     { country: "Spain", code: "ES", currency: "EUR", flag: "🇪🇸" },
-    { country: "Switzerland", code: "CH", currency: "CHF", flag: "🇨🇭" },
     { country: "United Kingdom", code: "GB", currency: "GBP", flag: "🇬🇧" },
     { country: "United States", code: "US", currency: "USD", flag: "🇺🇸" }
   ];
 
   const list = document.getElementById("regionList");
-  regions.forEach(r => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${r.flag}</span> ${r.country} · ${r.currency}`;
-    li.onclick = () => setRegion(r);
-    list.appendChild(li);
-  });
+  if (list) {
+    regions.forEach(r => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${r.flag}</span> ${r.country} · ${r.currency}`;
+      li.onclick = () => setRegion(r);
+      list.appendChild(li);
+    });
+  }
 
   function setRegion(r) {
-    document.getElementById("currentFlag").textContent = r.flag;
-    document.getElementById("currentRegion").textContent = `${r.country} · ${r.currency}`;
-    popup.classList.remove("active");
+    const flag = document.getElementById("currentFlag");
+    const region = document.getElementById("currentRegion");
+
+    if (flag) flag.textContent = r.flag;
+    if (region) region.textContent = `${r.country} · ${r.currency}`;
+
+    popup?.classList.remove("active");
     localStorage.setItem("region", JSON.stringify(r));
   }
 
   // IP-based default
-  const saved = localStorage.getItem("region");
-  if (saved) {
-    setRegion(JSON.parse(saved));
-  } else {
-    fetch("https://ipapi.co/json/")
-      .then(res => res.json())
-      .then(data => {
-        const match = regions.find(r => r.code === data.country_code);
-        if (match) setRegion(match);
-      })
-      .catch(() => setRegion(regions[0]));
-  }
+ const saved = localStorage.getItem("region");
+
+if (saved) {
+  setRegion(JSON.parse(saved));
+} else {
+  fetch("https://ipwho.is/")
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) throw new Error("IP lookup failed");
+      const match = regions.find(r => r.code === data.country_code);
+      if (match) setRegion(match);
+      else setRegion(regions[0]);
+    })
+    .catch(() => setRegion(regions[0]));
+}
+  // Prevent jump-to-top for placeholder links (AFTER footer exists)
+  document.querySelectorAll('a').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href === '#') {
+      link.addEventListener('click', e => e.preventDefault());
+    }
+  });
 }
