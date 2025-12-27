@@ -343,23 +343,6 @@
 
 
 /* ===============================
-   NEW IN SLIDER SECTION
-================================ */
-.new-in-slider-section {
-  width: 100%;
-  padding: 50px 40px;
-  box-sizing: border-box;
-  overflow: hidden;
-  background: #f9f5f2;
-}
-
-@media (max-width: 768px) {
-  .new-in-slider-section {
-    padding: 40px 20px;
-  }
-}
-
-/* ===============================
    NEW IN SLIDER CONTAINER
 ================================ */
 .new-in-slider-container {
@@ -380,7 +363,7 @@
 ================================ */
 .new-in-slider-item {
   flex: 0 0 auto;
-  width: 250px;                  /* reduced from 300px */
+  width: 220px;                 /* match product card width */
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -390,7 +373,7 @@
 
 @media (max-width: 768px) {
   .new-in-slider-item {
-    width: 180px;                /* smaller on mobile */
+    width: 150px;               /* smaller on mobile */
   }
 }
 
@@ -399,22 +382,28 @@
 ================================ */
 .new-in-slider-item .img-wrapper {
   width: 100%;
-  max-height: 320px;             /* constrain max height */
+  height: 0;
+  padding-bottom: 125%;          /* height based on width, 4:5 ratio like product cards */
   border-radius: 16px;
   overflow: hidden;
   background: #f9f5f2;           /* beige wrapper */
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
+  position: relative;
 }
 
 .new-in-slider-item .img-wrapper img {
-  width: 90%;                     /* slightly smaller to show wrapper */
-  height: auto;                   /* maintain aspect ratio */
+  width: 90%;                     /* inner artwork smaller to show beige border */
+  height: auto;                   /* keep aspect ratio */
+  max-height: 100%;
   object-fit: contain;
   display: block;
   border-radius: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* ===============================
