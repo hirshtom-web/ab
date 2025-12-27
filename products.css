@@ -361,7 +361,7 @@
 }
 
 /* ===============================
-   LOAD MORE
+   LOAD MORE BUTTON
 ================================ */
 .load-more {
   display: flex;
@@ -369,11 +369,47 @@
   margin: 30px 0;
 }
 
+.load-more button {
+  background-color: #007aff; /* Primary color */
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.load-more button:hover {
+  background-color: #005fcc;
+  transform: scale(1.05);
+}
+
+.load-more button:active {
+  transform: scale(0.98);
+}
+
+.load-more button:disabled {
+  background-color: #a0c4ff;
+  cursor: not-allowed;
+}
+
+/* Mobile adjustments */
 @media (max-width: 768px) {
+  .load-more button {
+    width: 80%;
+    padding: 10px 0;
+  }
+
   .product-card.artwork .img-wrapper {
-    padding: 24px;  /* reduce spacing on mobile */
+    padding: 24px;
   }
 }
+
+/* ===============================
+   DISCOUNT BUBBLE
+================================ */
 
 .discount-bubble {
   position: absolute;
