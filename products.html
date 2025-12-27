@@ -71,11 +71,13 @@
   <div class="products-grid week-view" id="productGrid"></div>
 
   <!-- PAGINATION -->
-  <div class="pagination">
-    <button id="prevPage">Prev</button>
-    <span id="pageNumber">1</span>
-    <button id="nextPage">Next</button>
-  </div>
+  <div class="pagination" id="pagination">
+  <button id="prevPage">Prev</button>
+  <button class="page-btn active" data-page="1">1</button>
+  <button class="page-btn" data-page="2">2</button>
+  <!-- more buttons will be added dynamically -->
+  <button id="nextPage">Next</button>
+</div>
 
   <!-- FOOTER -->
   <div id="footer-placeholder"></div>
