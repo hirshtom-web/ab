@@ -189,34 +189,58 @@ gridButtons.forEach(btn => {
 
   
 // --- PAGINATION LOGIC ---
-function updatePagination() {
+function renderPagination() {
+  const paginationContainer = document.querySelector(".pagination");
+  if (!paginationContainer) return;
+
+  paginationContainer.innerHTML = "";
+
   const totalPages = Math.ceil(allProducts.length / productsPerPage);
 
-  // Update page number
-  pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
+  // Previous button
+  const prev = document.createElement("button");
+  prev.textContent = "‹";
+  prev.disabled = currentPage === 1;
+  prev.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPage(currentPage);
+      renderPagination();
+    }
+  };
+  paginationContainer.appendChild(prev);
 
-  // Enable/disable buttons
-  prevBtn.disabled = currentPage === 1;
-  nextBtn.disabled = currentPage === totalPages;
+  // Page number buttons
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = "page-btn";
+    if (i === currentPage) btn.classList.add("active");
+    btn.onclick = () => {
+      currentPage = i;
+      renderPage(currentPage);
+      renderPagination();
+    };
+    paginationContainer.appendChild(btn);
+  }
+
+  // Next button
+  const next = document.createElement("button");
+  next.textContent = "›";
+  next.disabled = currentPage === totalPages;
+  next.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderPage(currentPage);
+      renderPagination();
+    }
+  };
+  paginationContainer.appendChild(next);
 }
 
-// Prev / Next buttons
-prevBtn.onclick = () => {
-  if (currentPage > 1) {
-    currentPage--;
-    renderPage(currentPage);
-    updatePagination();
-  }
-};
-
-nextBtn.onclick = () => {
-  const totalPages = Math.ceil(allProducts.length / productsPerPage);
-  if (currentPage < totalPages) {
-    currentPage++;
-    renderPage(currentPage);
-    updatePagination();
-  }
-};
+// Call renderPagination() instead of updatePagination() after rendering the page
+renderPage(currentPage);
+renderPagination();
 
 
   // Image toggle buttons
