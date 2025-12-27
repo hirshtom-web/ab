@@ -363,47 +363,42 @@
 /* ===============================
    LOAD MORE BUTTON
 ================================ */
+/* ===============================
+   LOAD MORE BUTTON
+================================ */
+#loadMoreBtn {
+  display: inline-block;
+  background: #000;            /* dark modern color */
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#loadMoreBtn:hover {
+  background: #333;            /* lighter on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
 .load-more {
   display: flex;
   justify-content: center;
-  margin: 30px 0;
+  margin: 40px 0;
 }
 
-.load-more button {
-  background-color: #007aff; /* Primary color */
-  color: #fff;
-  border: none;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 24px;
-  cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.2s ease;
-}
-
-.load-more button:hover {
-  background-color: #005fcc;
-  transform: scale(1.05);
-}
-
-.load-more button:active {
-  transform: scale(0.98);
-}
-
-.load-more button:disabled {
-  background-color: #a0c4ff;
-  cursor: not-allowed;
-}
-
-/* Mobile adjustments */
 @media (max-width: 768px) {
-  .load-more button {
+  #loadMoreBtn {
     width: 80%;
-    padding: 10px 0;
-  }
-
-  .product-card.artwork .img-wrapper {
-    padding: 24px;
+    padding: 12px 20px;
+    font-size: 14px;
   }
 }
 
