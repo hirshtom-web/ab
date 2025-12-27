@@ -639,7 +639,9 @@
 
 .breadcrumbs {
   font-size: 12px;
-  margin: 20px 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
   font-weight: 500;
   color: #7d8796;
   display: flex;
