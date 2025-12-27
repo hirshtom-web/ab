@@ -632,3 +632,43 @@
   width: 100%;
   display: block;
 }
+
+/* ===============================
+  BREADCRUMBS
+================================ */
+
+.breadcrumbs {
+  font-size: 12px;
+  margin: 20px 0;
+  font-weight: 500;
+  color: #7d8796;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.breadcrumbs a {
+  color: #116dff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs .separator {
+  margin: 0 4px;
+  color: #7d8796;
+}
+
+.breadcrumbs .current {
+  font-weight: 600;
+  color: #111;
+}
+
+@media (max-width: 768px) {
+  .breadcrumbs {
+    font-size: 8px;
+  }
+}
