@@ -124,6 +124,22 @@
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .region-selector {
+    order: 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px;
+    margin: 20px 0 10px;
+  }
+
+  .footer-bottom {
+    order: 2;
+  }
+}
+
+
 /* ===============================
    MOBILE FOOTER
 ================================ */
@@ -206,6 +222,28 @@
     margin-top: 20px;
   }
 }
+
+@media (max-width: 768px) {
+
+  .footer-column ul {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      max-height 0.35s ease,
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .footer-column.active ul {
+    max-height: 800px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 8px;
+  }
+}
+
 
 /* ===============================
    HIDE MOBILE TABS ON DESKTOP
