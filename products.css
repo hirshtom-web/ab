@@ -398,25 +398,35 @@
 
 
 /* ===============================
-   PAGINATION — OUTLINED ACTIVE
+   PAGINATION — ICON STYLE MATCH
 ================================ */
 .pagination {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;           /* spacing between buttons */
+  justify-content: center;
   margin: 20px 0;
 }
 
 .pagination button {
-  padding: 6px 12px;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 4px;
+  height: 36px;        /* same as control-btn / grid-btn */
+  width: 36px;
+  border-radius: 6px;  /* same radius */
+  border: 1px solid #ccc; /* light border */
+  background: transparent; /* see-through */
   font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+  color: #555;         /* default inactive color */
+  padding: 0;
 }
 
 .pagination button:hover:not(:disabled) {
-  background: #f0f0f0;
+  border-color: #999;
+  color: #222;         /* slightly darker on hover */
 }
 
 .pagination button:disabled {
@@ -425,13 +435,23 @@
 }
 
 .pagination .page-btn.active {
-  background: #333;
-  color: #fff;
-  border-color: #333;
-  border: 1px solid #ccc;
-
+  border-color: #222;  /* darker border when active */
+  color: #222;         /* dark icon/text */
+  font-weight: 600;
+  background: transparent; /* keep same as buttons */
 }
 
+/* Dots style */
+.pagination .dots {
+  padding: 0 6px;
+  cursor: default;
+  color: #888;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;       /* match button height for alignment */
+}
 
 .pagination button {
   -webkit-appearance: none; /* removes default mobile style */
