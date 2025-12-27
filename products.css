@@ -363,32 +363,28 @@
 /* ===============================
    LOAD MORE BUTTON
 ================================ */
-/* ===============================
-   LOAD MORE BUTTON
-================================ */
 .load-more {
   display: flex;
-  justify-content: center; /* center horizontally */
+  justify-content: center;  /* centers horizontally */
+  width: 100%;              /* make sure container is full width */
   margin: 30px 0;
 }
 
 #loadMoreBtn {
-  background: #fff;              /* subtle light background */
-  color: #333;                   /* dark text */
+  background: #fff;
+  color: #333;
   font-weight: 500;
   font-size: 14px;
-  padding: 10px 25px;            /* horizontal padding makes pill shape */
+  padding: 10px 25px;
   border: 1px solid #ccc;
-  border-radius: 50px;           /* fully rounded corners */
+  border-radius: 50px;
   cursor: pointer;
   transition: all 0.25s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 #loadMoreBtn:hover {
-  background: #f5f5f5;           /* subtle hover effect */
+  background: #f5f5f5;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
