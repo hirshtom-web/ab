@@ -402,53 +402,35 @@
 ================================ */
 .pagination {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin: 20px 0;
-  font-family: Arial, sans-serif;
 }
 
 .pagination button {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
   cursor: pointer;
+  border-radius: 4px;
   font-size: 14px;
-  transition: all 0.2s ease;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #f0f0f0;
-  border-color: #999;
+  background: #f0f0f0;
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Page number buttons */
-.pagination .page-btn {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.pagination .page-btn:hover {
-  background-color: #f0f0f0;
-  border-color: #999;
+  opacity: 0.4;
+  cursor: default;
 }
 
 .pagination .page-btn.active {
-  border-color: #000;       /* frame for active page */
-  font-weight: bold;
-  background-color: #eee;
+  background: #333;
+  color: #fff;
+  border-color: #333;
 }
+
 
 .pagination button {
   -webkit-appearance: none; /* removes default mobile style */
