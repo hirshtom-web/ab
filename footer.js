@@ -50,28 +50,27 @@ function initFooter() {
 
     if (flag) flag.textContent = r.flag;
     if (region) region.textContent = `${r.country} · ${r.currency}`;
-
     popup?.classList.remove("active");
     localStorage.setItem("region", JSON.stringify(r));
   }
 
   // IP-based default
- const saved = localStorage.getItem("region");
+  const saved = localStorage.getItem("region");
+  if (saved) {
+    setRegion(JSON.parse(saved));
+  } else {
+    fetch("https://ipwho.is/")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) throw new Error("IP lookup failed");
+        const match = regions.find(r => r.code === data.country_code);
+        if (match) setRegion(match);
+        else setRegion(regions[0]);
+      })
+      .catch(() => setRegion(regions[0]));
+  }
 
-if (saved) {
-  setRegion(JSON.parse(saved));
-} else {
-  fetch("https://ipwho.is/")
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) throw new Error("IP lookup failed");
-      const match = regions.find(r => r.code === data.country_code);
-      if (match) setRegion(match);
-      else setRegion(regions[0]);
-    })
-    .catch(() => setRegion(regions[0]));
-}
-  // Prevent jump-to-top for placeholder links (AFTER footer exists)
+  // Prevent jump-to-top for placeholder links
   document.querySelectorAll('a').forEach(link => {
     const href = link.getAttribute('href');
     if (!href || href === '#') {
