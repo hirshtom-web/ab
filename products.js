@@ -5,7 +5,7 @@ function initProductsPage() {
 
   let allProducts = [];
   let currentIndex = 0;                  
-  const initialLoad = 40;
+  const initialLoad = 30;
   const loadMoreCount = 18;
   let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
