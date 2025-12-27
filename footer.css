@@ -173,44 +173,97 @@
 }
 
 /* ===============================
-   MOBILE FOOTER RESTRUCTURE
+   MOBILE FOOTER RESTRUCTURE (FIXED)
 ================================ */
 @media (max-width: 768px) {
 
-  /* Reset grid */
+  /* RESET GRID */
   .footer-grid {
     display: flex;
     flex-direction: column;
   }
 
-  /* VISUAL GROUPING */
+  /* HIDE ALL COLUMNS FIRST */
   .footer-column {
+    display: none;
     border-bottom: 1px solid #e6e2de;
+    padding: 10px 0;
   }
 
-  /* SHOP = first 2 columns */
+  /* ===============================
+     SHOW ONLY 3 GROUPS
+  ================================ */
+
+  /* SHOP → Art Prints + Frames + Sizes + Gifting */
   .footer-column:nth-child(1),
   .footer-column:nth-child(2) {
+    display: block;
     order: 1;
   }
 
-  /* ABOUT = columns 3 + 4 (About + Work With Us) */
+  /* ABOUT → Customer Service + About + Work With Us */
   .footer-column:nth-child(3),
   .footer-column:nth-child(4) {
+    display: block;
     order: 2;
   }
 
-  /* POLICY = Legal column */
+  /* POLICY → Legal only */
   .footer-column:nth-child(5) {
+    display: block;
     order: 3;
   }
 
-  /* Hide "Community" links from accordion */
+  /* ===============================
+     CLEAN TITLES (ONE PER GROUP)
+  ================================ */
+
+  /* SHOP → keep first h4 only */
+  .footer-column:nth-child(1) h4:not(:first-of-type),
+  .footer-column:nth-child(2) h4 {
+    display: none;
+  }
+
+  /* ABOUT → keep "Customer Service" only */
+  .footer-column:nth-child(3) h4:not(:first-of-type),
+  .footer-column:nth-child(4) h4 {
+    display: none;
+  }
+
+  /* POLICY → hide Community block */
   .footer-column:nth-child(5) h4:nth-of-type(2),
   .footer-column:nth-child(5) h4:nth-of-type(2) + ul {
     display: none;
   }
+
+  /* ===============================
+     ACCORDION BEHAVIOR (KEEP YOUR JS)
+  ================================ */
+
+  .footer-column h4 {
+    font-size: 14px;
+    padding: 14px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .footer-column ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .footer-column.active ul {
+    max-height: 1000px;
+    margin-top: 8px;
+  }
 }
+
+/* ===============================
+   SOCIAL ICONS (MOBILE ONLY)
+================================ */
 .footer-social {
   display: none;
 }
@@ -230,6 +283,9 @@
   }
 }
 
+/* ===============================
+   REGION SELECTOR CENTERED
+================================ */
 @media (max-width: 768px) {
   .region-selector {
     display: flex;
