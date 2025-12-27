@@ -406,14 +406,28 @@
 /* ===============================
    IMAGE CARD
 ================================ */
-.new-in-slider-item img {
+/* Artwork-style wrapper for slider items */
+.new-in-slider-item .img-wrapper {
   width: 100%;
-  aspect-ratio: 1 / 1.25;
-  object-fit: cover;
   border-radius: 16px;
-  display: block;
-  box-shadow: none; /* remove shadow */
+  overflow: hidden;
+  background: #f9f5f2; /* same beige as product grid */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center artwork */
+  aspect-ratio: 3/4;       /* match product cards */
+  padding: 20px;            /* optional inner spacing */
+  box-sizing: border-box;
 }
+
+.new-in-slider-item .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;      /* ensure artwork fits nicely */
+  display: block;
+  border-radius: 12px;      /* optional smaller radius inside wrapper */
+}
+
 
 .new-in-slider-item,
 .new-in-slider-info {
@@ -452,6 +466,7 @@
     font-size: 10px;
   }
 }
+
 
 
 
