@@ -409,24 +409,25 @@
 
 .new-in-slider-item .img-wrapper {
   width: 100%;
-  background: #f9f5f2;     /* beige background behind image only */
+  background: #f9f5f2;        /* beige background behind image */
   border-radius: 16px;
   overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;           /* inner spacing */
+  align-items: center;         /* vertically center */
+  justify-content: center;     /* horizontally center */
+  padding: 20px;               /* more inner spacing */
   box-sizing: border-box;
-  aspect-ratio: 3/4;       /* keeps product card ratio */
+  aspect-ratio: 3/4;           /* keeps product card ratio */
 }
 
 .new-in-slider-item .img-wrapper img {
-  width: 90%;             /* slightly smaller so background shows */
-  height: auto;
+  max-width: 80%;              /* smaller so background shows more */
+  max-height: 100%;            /* ensure it doesn’t overflow vertically */
   object-fit: contain;
   border-radius: 12px;
   display: block;
 }
+
 
 
 /* ===============================
@@ -460,3 +461,4 @@
     font-size: 10px;
   }
 }
+
