@@ -186,9 +186,37 @@ gridButtons.forEach(btn => {
   });
 });
 
-  // Pagination
-  prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage); } };
-  nextBtn.onclick = () => { if (currentPage * productsPerPage < allProducts.length) { currentPage++; renderPage(currentPage); } };
+  
+// --- PAGINATION LOGIC ---
+function updatePagination() {
+  const totalPages = Math.ceil(allProducts.length / productsPerPage);
+
+  // Update page number
+  pageNumber.textContent = `Page ${currentPage} of ${totalPages}`;
+
+  // Enable/disable buttons
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+}
+
+// Prev / Next buttons
+prevBtn.onclick = () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPage(currentPage);
+    updatePagination();
+  }
+};
+
+nextBtn.onclick = () => {
+  const totalPages = Math.ceil(allProducts.length / productsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderPage(currentPage);
+    updatePagination();
+  }
+};
+
 
   // Image toggle buttons
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
