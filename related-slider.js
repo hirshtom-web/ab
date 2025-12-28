@@ -1,3 +1,6 @@
+// related-slider.js
+
+// --- RELATED SLIDER FUNCTION ---
 function initRelatedSlider() {
   const relatedProductIds = [
     "9182888",
