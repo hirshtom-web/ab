@@ -472,19 +472,24 @@
   overflow: hidden;
 }
 
-/* Force BOTH images to fully cover wrapper */
 .img-wrapper img {
-  position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-
   display: block;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Secondary image hidden by default */
 .img-secondary {
+  position: absolute;
+  inset: 0;
   opacity: 0;
+}
+
+/* ARTWORK → show lifestyle on hover */
+.product-card.artwork:hover .img-secondary {
+  opacity: 1;
+}
+
+/* LIFESTYLE → zoom only */
+.product-card.lifestyle:hover .img-primary {
+  transform: scale(1.05);
 }
