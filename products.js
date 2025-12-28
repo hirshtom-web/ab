@@ -240,8 +240,8 @@ if (sortBtn) {
     el.onmouseenter = () => el.style.background = "#f5f5f5";
     el.onmouseleave = () => el.style.background = "transparent";
     el.onclick = () => {
-      allProducts.sort(opt.fn);       // Sort all products
-      applyFilters();                 // Reapply filters and update grid
+      allProducts.sort(opt.fn); // sort main list
+      applyFilters();            // reapply filters so filteredProducts updates
       sortBubble.style.display = "none";
     };
     sortBubble.appendChild(el);
@@ -271,15 +271,15 @@ document.addEventListener("click", e => {
   const filter = el.dataset.filter;
   const value = el.dataset.value;
 
-  // 1️⃣ Update UI
+  // Highlight UI
   document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove("active"));
   el.classList.add("active");
 
-  // 2️⃣ Update state
+  // Update state
   if (value === "all") delete activeFilters[filter];
   else activeFilters[filter] = value;
 
-  // 3️⃣ Reapply filters
+  // Reapply filters
   applyFilters();
 });
 
@@ -290,38 +290,4 @@ if (searchInput) {
     searchQuery = e.target.value.trim().toLowerCase();
     applyFilters();
   });
-}
-
-// --- Filter & search logic ---
-function applyFilters() {
-  filteredProducts = allProducts.filter(p => {
-    // Check all active filters
-    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
-      const list = p.filters?.[filter];
-      return list ? list.includes(value) : false;
-    });
-    if (!taxonomyMatch) return false;
-
-    // Check search query
-    if (searchQuery) return p.searchText.includes(searchQuery);
-
-    return true;
-  });
-
-  resetAndRender();
-}
-
-// --- Render after filter/search/sort ---
-function resetAndRender() {
-  grid.innerHTML = "";
-  currentIndex = 0;
-
-  if (!filteredProducts.length) {
-    grid.innerHTML = `<p class="no-results">No results found</p>`;
-    if (loadMoreBtn) loadMoreBtn.style.display = "none";
-    return;
-  }
-
-  if (loadMoreBtn) loadMoreBtn.style.display = "block";
-  loadMoreProducts();
 }
