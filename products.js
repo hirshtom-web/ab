@@ -302,70 +302,73 @@ function loadMoreProducts() {
   });
 
 // --- Sort ---
-  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
-  if (sortBtn) {
-    const sortOptions = [
-      { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
-      { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
-      { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
-      { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
-    ];
+const sortBtn = document.querySelector('.control-btn[title="Sort"]');
+if (sortBtn) {
+  const sortOptions = [
+    { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
+    { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
+    { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
+    { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
+  ];
 
-    const sortBubble = document.createElement("div");
-    sortBubble.className = "sort-bubble";
-    sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
+  const sortBubble = document.createElement("div");
+  sortBubble.className = "sort-bubble";
+  sortBubble.style.cssText = `
+    position:absolute;
+    background:#fff;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    padding:8px 0;
+    display:none;
+    z-index:9999;
+  `;
 
-    sortOptions.forEach(opt => {
-      const el = document.createElement("div");
-      el.textContent = opt.label;
-      el.style.cssText = "padding:8px 16px;cursor:pointer";
-      el.onmouseenter = () => el.style.background = "#f5f5f5";
-      el.onmouseleave = () => el.style.background = "transparent";
-      el.onclick = () => {
+  // Add options to bubble
+  sortOptions.forEach(opt => {
+    const el = document.createElement("div");
+    el.textContent = opt.label;
+    el.style.cssText = "padding:8px 16px; cursor:pointer;";
+    el.onmouseenter = () => el.style.background = "#f5f5f5";
+    el.onmouseleave = () => el.style.background = "transparent";
+    el.onclick = () => {
+      // Only sort if products exist
+      if (allProducts.length > 0) {
         allProducts.sort(opt.fn);
-        grid.innerHTML = "";
+        filteredProducts = [...allProducts]; // keep filteredProducts in sync
         currentIndex = 0;
+        grid.innerHTML = "";
         loadMoreProducts();
-        sortBubble.style.display = "none";
-      };
-      sortBubble.appendChild(el);
-    });
+      }
+      sortBubble.style.display = "none";
+    };
+    sortBubble.appendChild(el);
+  });
 
-    document.body.appendChild(sortBubble);
+  document.body.appendChild(sortBubble);
 
-sortBtn.addEventListener("click", () => {
-  // Make bubble visible offscreen to measure width
-  sortBubble.style.visibility = "hidden";
-  sortBubble.style.display = "block";
+  sortBtn.addEventListener("click", () => {
+    const rect = sortBtn.getBoundingClientRect();
+    const bubbleWidth = sortBubble.offsetWidth;
+    const viewportWidth = window.innerWidth;
+    const padding = 10; 
 
-  const rect = sortBtn.getBoundingClientRect();
-  const bubbleWidth = sortBubble.offsetWidth;
-  const viewportWidth = window.innerWidth;
-  const padding = 10; // margin from screen edges
+    let top = rect.bottom + window.scrollY;
+    let left = rect.left + window.scrollX;
 
-  // Default position: below button
-  let top = rect.bottom + window.scrollY;
-  let left = rect.left + window.scrollX;
+    if (left + bubbleWidth + padding > viewportWidth) left = viewportWidth - bubbleWidth - padding;
+    if (left < padding) left = padding;
 
-  // Adjust if bubble overflows right
-  if (left + bubbleWidth + padding > viewportWidth) {
-    left = viewportWidth - bubbleWidth - padding;
-  }
+    sortBubble.style.top = `${top}px`;
+    sortBubble.style.left = `${left}px`;
 
-  // Ensure bubble doesn't overflow left
-  if (left < padding) left = padding;
+    sortBubble.style.display = (sortBubble.style.display === "block") ? "none" : "block";
+  });
 
-  sortBubble.style.top = `${top}px`;
-  sortBubble.style.left = `${left}px`;
-
-  // Show bubble properly
-  sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
-  sortBubble.style.visibility = "visible";
-});
-
-// Hide bubble when clicking outside
-document.addEventListener("click", e => {
-  if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
-    sortBubble.style.display = "none";
-  }
-});
+  // Hide bubble when clicking outside
+  document.addEventListener("click", e => {
+    if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
+      sortBubble.style.display = "none";
+    }
+  });
+}
