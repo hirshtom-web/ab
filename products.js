@@ -285,31 +285,36 @@ if (sortBtn) {
   });
 }
 
-// --- Filter buttons ---
-document.addEventListener("click", e => {
-  const el = e.target.closest("[data-filter]");
-  if (!el) return;
+// --- Filters & Search ---
+function applyFilters() {
+  filteredProducts = allProducts.filter(p => {
+    // 1️⃣ Taxonomy filters
+    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
+      const list = p.filters?.[filter] || [];
+      return list.some(v => v === value.toLowerCase());
+    });
 
-  const filter = el.dataset.filter;
-  const value = el.dataset.value;
+    if (!taxonomyMatch) return false;
 
-  // Highlight UI
-  document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove("active"));
-  el.classList.add("active");
+    // 2️⃣ Search
+    if (searchQuery) {
+      return p.searchText.includes(searchQuery);
+    }
 
-  // Update state
-  if (value === "all") delete activeFilters[filter];
-  else activeFilters[filter] = value.toLowerCase(); // lowercase fix
-
-  // Reapply filters
-  applyFilters();
-});
-
-// --- Search input ---
-const searchInput = document.getElementById("searchInput");
-if (searchInput) {
-  searchInput.addEventListener("input", e => {
-    searchQuery = e.target.value.trim().toLowerCase(); // lowercase
-    applyFilters();
+    return true;
   });
+
+  resetAndRender(); // <- calls the function to update the grid
 }
+
+// --- Reset grid and render products ---
+function resetAndRender() {
+  grid.innerHTML = "";       // clear current products
+  currentIndex = 0;          // reset load index
+  loadMoreProducts();        // load first batch of filtered products
+
+  if (loadMoreBtn) {         // show or hide Load More button
+    loadMoreBtn.style.display = (filteredProducts.length > currentIndex) ? "block" : "none";
+  }
+}
+
