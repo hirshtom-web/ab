@@ -46,7 +46,6 @@
     .then(html => {
       document.getElementById("header-placeholder").innerHTML = html;
       initHeader();
-      initProductsPage();
     })
     .catch(err => console.error("Header load failed:", err));
 
