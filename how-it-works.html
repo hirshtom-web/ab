@@ -1,7 +1,25 @@
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArteBarte Blog</title>
 
-<style>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="inspiration.css">
+  <link rel="stylesheet" href="footer.css">
+  <link rel="stylesheet" href="blog.css">
+
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <style>
     .icon-slider {
         display: flex;
         gap: 20px;
@@ -60,6 +78,14 @@
     .c11 { background: #FFDDE5; }
     .c12 { background: #FFE8E8; }
 </style>
+
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div id="header-placeholder"></div>
+
+  <!-- COLORFUL SLIDER -->
 
 <div class="icon-slider">
 
@@ -124,3 +150,48 @@
     </div>
 
 </div>
+
+
+ <!-- FOOTER -->
+  <div id="footer-placeholder"></div>
+  
+
+  <!-- Scripts -->
+  <script src="header.js"></script>
+  <script src="products.js"></script>
+  <script src="artist-card.js"></script>
+  <script src="index.js"></script>
+  <script src="blog.js"></script>
+
+<script>
+  // Load header
+  fetch("header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+      initHeader();
+      initProductsPage();
+    })
+    .catch(err => console.error("Header load failed:", err));
+
+  // Load footer
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+
+      // ✅ IMPORTANT: init footer AFTER injection
+      initFooter();
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+
+  <script src="footer.js"></script>
+  <script src="cart.js"></script>
+  
+
+</body>
+</html>
+
+
