@@ -334,28 +334,38 @@ function loadMoreProducts() {
     document.body.appendChild(sortBubble);
 
 sortBtn.addEventListener("click", () => {
+  // Make bubble visible offscreen to measure width
+  sortBubble.style.visibility = "hidden";
+  sortBubble.style.display = "block";
+
   const rect = sortBtn.getBoundingClientRect();
   const bubbleWidth = sortBubble.offsetWidth;
   const viewportWidth = window.innerWidth;
+  const padding = 10; // margin from screen edges
 
-  // Default position: below the button, aligned left
-  sortBubble.style.top = rect.bottom + window.scrollY + "px";
+  // Default position: below button
+  let top = rect.bottom + window.scrollY;
+  let left = rect.left + window.scrollX;
 
-  // Check if bubble overflows to the right
-  if (rect.left + bubbleWidth > viewportWidth - 10) { // 10px margin from screen edge
-    sortBubble.style.left = "auto";
-    sortBubble.style.right = (viewportWidth - rect.right) + "px"; // position from right
-  } else {
-    sortBubble.style.left = rect.left + window.scrollX + "px";
-    sortBubble.style.right = "auto";
+  // Adjust if bubble overflows right
+  if (left + bubbleWidth + padding > viewportWidth) {
+    left = viewportWidth - bubbleWidth - padding;
   }
 
+  // Ensure bubble doesn't overflow left
+  if (left < padding) left = padding;
+
+  sortBubble.style.top = `${top}px`;
+  sortBubble.style.left = `${left}px`;
+
+  // Show bubble properly
   sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
+  sortBubble.style.visibility = "visible";
 });
 
-
-    document.addEventListener("click", e => {
-      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
-    });
+// Hide bubble when clicking outside
+document.addEventListener("click", e => {
+  if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
+    sortBubble.style.display = "none";
   }
-}
+});
