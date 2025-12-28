@@ -466,4 +466,22 @@
   }
 }
 
+.product-grid-wrapper {
+  overflow-x: auto;                 /* allow horizontal scroll */
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+  scroll-snap-type: x mandatory;    /* snap each card */
+}
+
+#productGrid {
+  display: flex;    /* horizontal layout */
+  gap: 10px;
+  padding: 10px;
+}
+
+.product-card {
+  flex: 0 0 auto;       /* don’t shrink, keep width */
+  width: 80vw;          /* mobile card width */
+  aspect-ratio: 1 / 1;  /* keep square */
+  scroll-snap-align: start; /* snap to start of card */
+}
 
