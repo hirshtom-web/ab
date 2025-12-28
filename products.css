@@ -467,12 +467,3 @@
 }
 
 
-/* Only handle the hover swap for artwork cards */
-.product-card.artwork:hover img.secondary {
-  opacity: 1;          /* show the secondary image */
-  z-index: 2;          /* above the artwork image */
-}
-
-.product-card.artwork:hover img.primary {
-  opacity: 0;          /* hide the artwork image */
-}
