@@ -48,51 +48,49 @@ function initProductsPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      allProducts = res.data.map(p => {
-        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-        let lifestyle = (p.lifestyleUrl || "").trim();
-        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback to 2nd main image
-        const images = [
-          mainImages[0] || "",   // artwork
-          lifestyle               // lifestyle
-        ].concat(mainImages.slice(2)); // append remaining main images
+    allProducts = res.data.map(p => {
+  const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+  let lifestyle = (p.lifestyleUrl || "").trim();
+  if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
 
-        return {
-  type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
-  id: (p.productId || "").trim(),
-  name: (p.name || "Unnamed Product").trim(),
-  images: images,
-  video: (p["video/s"] || "").trim(),
-  oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-  discount: p.discount ? p.discount.trim() : null,
-  price: p.newPrice ? parseFloat(p.newPrice) : 1,
+  return {
+    type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+    id: (p.productId || "").trim(),
+    name: (p.name || "Unnamed Product").trim(),
+    images: [
+      mainImages[0] || "",
+      lifestyle
+    ].concat(mainImages.slice(2)),
+    video: (p["video/s"] || "").trim(),
+    oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+    discount: p.discount ? p.discount.trim() : null,
+    price: p.newPrice ? parseFloat(p.newPrice) : 1,
+    searchText: [
+      p.name,
+      p.collection,
+      p.category,
+      p.style,
+      p.color,
+      p.room,
+      p.keywords
+    ].join(" ").toLowerCase(),
+    filters: {
+      collection: normalizeList(p.collection),
+      category: normalizeList(p.category),
+      color: normalizeList(p.color),
+      style: normalizeList(p.style),
+      room: normalizeList(p.room),
+      artist: normalizeList(p.artist),
+      keywords: normalizeList(p.keywords)
+    }
+  };
+});
 
-  // 👇 STEP 3 — add search + filters
-  searchText: [
-    p.name,
-    p.collection,
-    p.category,
-    p.style,
-    p.color,
-    p.room,
-    p.keywords
-  ].join(" ").toLowerCase(),
+// --- Initial load after allProducts is ready ---
+filteredProducts = allProducts; // start with everything
+currentIndex = 0;
+loadMoreProducts();
 
-  filters: {
-    collection: normalizeList(p.collection),
-    category: normalizeList(p.category),
-    color: normalizeList(p.color),
-    style: normalizeList(p.style),
-    room: normalizeList(p.room),
-    artist: normalizeList(p.artist),
-    keywords: normalizeList(p.keywords)
-  }
-};
-
-
-      // --- Initial load ---
-      currentIndex = 0;
-      loadMoreProducts();
     },
     error: err => console.error("CSV load failed:", err)
   });
@@ -146,15 +144,13 @@ function initProductsPage() {
   // --- Load More function ---
 function loadMoreProducts() {
   const amount = currentIndex === 0 ? initialLoad : loadMoreCount;
-
-  const nextProducts = allProducts.slice(currentIndex, currentIndex + amount);
+  const nextProducts = filteredProducts.slice(currentIndex, currentIndex + amount);
   nextProducts.forEach((p, idx) =>
     grid.appendChild(createProductCard(p, currentIndex + idx))
   );
-
   currentIndex += amount;
 
-  if (currentIndex >= allProducts.length && loadMoreBtn) {
+  if (currentIndex >= filteredProducts.length && loadMoreBtn) {
     loadMoreBtn.style.display = "none";
   }
 }
