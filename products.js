@@ -324,45 +324,50 @@ if (sortBtn) {
     z-index:9999;
   `;
 
-  // Add options to bubble
+  // Create option elements
   sortOptions.forEach(opt => {
     const el = document.createElement("div");
     el.textContent = opt.label;
-    el.style.cssText = "padding:8px 16px; cursor:pointer;";
+    el.style.cssText = "padding:8px 16px;cursor:pointer";
     el.onmouseenter = () => el.style.background = "#f5f5f5";
     el.onmouseleave = () => el.style.background = "transparent";
+
     el.onclick = () => {
-      // Only sort if products exist
-      if (allProducts.length > 0) {
-        allProducts.sort(opt.fn);
-        filteredProducts = [...allProducts]; // keep filteredProducts in sync
-        currentIndex = 0;
-        grid.innerHTML = "";
-        loadMoreProducts();
-      }
+      // ✅ Sort the filteredProducts (preserve filters/search)
+      filteredProducts.sort(opt.fn);
+
+      // Reload grid
+      grid.innerHTML = "";
+      currentIndex = 0;
+      loadMoreProducts();
+
       sortBubble.style.display = "none";
     };
+
     sortBubble.appendChild(el);
   });
 
   document.body.appendChild(sortBubble);
 
+  // Toggle bubble position and visibility
   sortBtn.addEventListener("click", () => {
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
     const viewportWidth = window.innerWidth;
-    const padding = 10; 
+    const padding = 10;
 
     let top = rect.bottom + window.scrollY;
     let left = rect.left + window.scrollX;
 
-    if (left + bubbleWidth + padding > viewportWidth) left = viewportWidth - bubbleWidth - padding;
+    if (left + bubbleWidth + padding > viewportWidth) {
+      left = viewportWidth - bubbleWidth - padding;
+    }
     if (left < padding) left = padding;
 
     sortBubble.style.top = `${top}px`;
     sortBubble.style.left = `${left}px`;
 
-    sortBubble.style.display = (sortBubble.style.display === "block") ? "none" : "block";
+    sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
   // Hide bubble when clicking outside
