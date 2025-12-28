@@ -311,36 +311,35 @@ if (sortBtn) {
     { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
   ];
 
+  // Create the sort bubble
   const sortBubble = document.createElement("div");
   sortBubble.className = "sort-bubble";
   sortBubble.style.cssText = `
-    position:absolute;
-    background:#fff;
-    border:1px solid #ccc;
-    border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    padding:8px 0;
-    display:none;
-    z-index:9999;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    display: none;
+    z-index: 9999;
   `;
 
+  // Add sort options to the bubble
   sortOptions.forEach(opt => {
     const el = document.createElement("div");
     el.textContent = opt.label;
-    el.style.cssText = "padding:8px 16px;cursor:pointer";
+    el.style.cssText = "padding: 8px 16px; cursor: pointer";
     el.onmouseenter = () => el.style.background = "#f5f5f5";
     el.onmouseleave = () => el.style.background = "transparent";
 
+    // Sorting function
     el.onclick = () => {
-      // ✅ Sort only the filtered products
-      filteredProducts.sort(opt.fn);
-
-      // Reload the grid safely
+      allProducts.sort(opt.fn);
       grid.innerHTML = "";
       currentIndex = 0;
-      loadMoreProducts();
-
-      sortBubble.style.display = "none";
+      loadMoreProducts();  // reload the grid
+      sortBubble.style.display = "none"; // hide bubble
     };
 
     sortBubble.appendChild(el);
@@ -348,7 +347,10 @@ if (sortBtn) {
 
   document.body.appendChild(sortBubble);
 
-  sortBtn.addEventListener("click", () => {
+  // Toggle bubble and set its position
+  sortBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // prevent document click from hiding immediately
+
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
     const viewportWidth = window.innerWidth;
@@ -357,18 +359,23 @@ if (sortBtn) {
     let top = rect.bottom + window.scrollY;
     let left = rect.left + window.scrollX;
 
+    // Adjust if bubble overflows right
     if (left + bubbleWidth + padding > viewportWidth) {
       left = viewportWidth - bubbleWidth - padding;
     }
+
+    // Ensure bubble doesn't overflow left
     if (left < padding) left = padding;
 
     sortBubble.style.top = `${top}px`;
     sortBubble.style.left = `${left}px`;
 
+    // Toggle display
     sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
-  document.addEventListener("click", e => {
+  // Hide bubble when clicking outside
+  document.addEventListener("click", (e) => {
     if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
       sortBubble.style.display = "none";
     }
