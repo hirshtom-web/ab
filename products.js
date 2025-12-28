@@ -42,6 +42,27 @@ function applyFilters() {
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   if (!grid) return console.error("❌ productGrid not found");
 
+    // --- Filter buttons ---
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-filter]");
+  if (!el) return;
+
+  const filter = el.dataset.filter;
+  const value = el.dataset.value;
+
+  // Highlight UI
+  document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+
+  // Update state
+  if (value === "all") delete activeFilters[filter];
+  else activeFilters[filter] = value.toLowerCase(); // lowercase fix
+
+  // Reapply filters
+  applyFilters();
+});
+
+
   let allProducts = [];
   let currentIndex = 0;                  
   const initialLoad = 30;
