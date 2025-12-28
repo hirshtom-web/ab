@@ -247,6 +247,8 @@
 <script src="index.js"></script>
 <script src="footer.js"></script>
 <script src="cart.js"></script>
+<script src="related-slider.js"></script>
+
 
 <script>
   // ✅ Full page initialization
@@ -261,7 +263,10 @@
       // 2️⃣ Initialize products page AFTER header exists
       if (typeof initProductsPage === "function") initProductsPage();
 
-      // 3️⃣ Load footer
+      // 3️⃣ Initialize related products slider AFTER product page exists
+      if (typeof initRelatedSlider === "function") initRelatedSlider();
+
+      // 4️⃣ Load footer
       const footerRes = await fetch("footer.html");
       const footerHTML = await footerRes.text();
       document.getElementById("footer-placeholder").innerHTML = footerHTML;
@@ -275,6 +280,7 @@
   // Run after all scripts and DOM are loaded
   window.addEventListener("load", fullInit);
 </script>
+
 
   
 
