@@ -62,14 +62,29 @@ document.addEventListener("click", e => {
   applyFilters();
 });
 
-    // --- Search input ---
-const searchInput = document.getElementById("productSearch");
-if (searchInput) {
-  searchInput.addEventListener("input", () => {
-    searchQuery = searchInput.value.trim().toLowerCase();
-    applyFilters();
+// --- Search functionality ---
+document.addEventListener('DOMContentLoaded', () => {
+  const searchBar = document.getElementById('searchBar');
+  if (!searchBar) return; // just in case header hasn't loaded yet
+
+  const products = document.querySelectorAll('#productGrid .product');
+
+  searchBar.addEventListener('input', () => {
+    const query = searchBar.value.toLowerCase();
+
+    products.forEach(product => {
+      const title = product.dataset.title.toLowerCase();
+      const category = product.dataset.category.toLowerCase();
+
+      if (title.includes(query) || category.includes(query)) {
+        product.style.display = ''; // show
+      } else {
+        product.style.display = 'none'; // hide
+      }
+    });
   });
-}
+});
+
 
 
   let allProducts = [];
