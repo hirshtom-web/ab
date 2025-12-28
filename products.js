@@ -210,47 +210,108 @@ function loadMoreProducts() {
     loadMoreProducts();
   });
 
-  // --- Sort ---
-  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
-  if (sortBtn) {
-    const sortOptions = [
-      { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
-      { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
-      { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
-      { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
-    ];
+// --- Sort ---
+const sortBtn = document.querySelector('.control-btn[title="Sort"]');
+if (sortBtn) {
+  const sortOptions = [
+    { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
+    { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
+    { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
+    { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
+  ];
 
-    const sortBubble = document.createElement("div");
-    sortBubble.className = "sort-bubble";
-    sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
+  const sortBubble = document.createElement("div");
+  sortBubble.className = "sort-bubble";
+  sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
 
-    sortOptions.forEach(opt => {
-      const el = document.createElement("div");
-      el.textContent = opt.label;
-      el.style.cssText = "padding:8px 16px;cursor:pointer";
-      el.onmouseenter = () => el.style.background = "#f5f5f5";
-      el.onmouseleave = () => el.style.background = "transparent";
-      el.onclick = () => {
-        allProducts.sort(opt.fn);
-        grid.innerHTML = "";
-        currentIndex = 0;
-        loadMoreProducts();
-        sortBubble.style.display = "none";
-      };
-      sortBubble.appendChild(el);
+  sortOptions.forEach(opt => {
+    const el = document.createElement("div");
+    el.textContent = opt.label;
+    el.style.cssText = "padding:8px 16px;cursor:pointer";
+    el.onmouseenter = () => el.style.background = "#f5f5f5";
+    el.onmouseleave = () => el.style.background = "transparent";
+    el.onclick = () => {
+      allProducts.sort(opt.fn);
+      resetAndRender();
+      sortBubble.style.display = "none";
+    };
+    sortBubble.appendChild(el);
+  });
+
+  document.body.appendChild(sortBubble);
+
+  sortBtn.addEventListener("click", () => {
+    const rect = sortBtn.getBoundingClientRect();
+    sortBubble.style.top = rect.bottom + window.scrollY + "px";
+    sortBubble.style.left = rect.left + window.scrollX + "px";
+    sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
+  });
+
+  document.addEventListener("click", e => {
+    if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
+  });
+}
+
+// --- Filters ---
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-filter]");
+  if (!el) return; // clicked outside a filter button
+
+  const filter = el.dataset.filter; // e.g., 'color'
+  const value  = el.dataset.value;  // e.g., 'red'
+
+  // 1️⃣ Update UI: highlight active button
+  document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+
+  // 2️⃣ Update state
+  if (value === "all") delete activeFilters[filter];
+  else activeFilters[filter] = value;
+
+  // 3️⃣ Reapply filters
+  applyFilters();
+});
+
+// --- Search ---
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+  searchInput.addEventListener("input", e => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    applyFilters();
+  });
+}
+
+// --- Filter & search logic ---
+function applyFilters() {
+  filteredProducts = allProducts.filter(p => {
+    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
+      const list = p.filters?.[filter];
+      return list ? list.includes(value) : false;
     });
 
-    document.body.appendChild(sortBubble);
+    if (!taxonomyMatch) return false;
 
-    sortBtn.addEventListener("click", () => {
-      const rect = sortBtn.getBoundingClientRect();
-      sortBubble.style.top = rect.bottom + window.scrollY + "px";
-      sortBubble.style.left = rect.left + window.scrollX + "px";
-      sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
-    });
+    if (searchQuery) {
+      return p.searchText.includes(searchQuery);
+    }
 
-    document.addEventListener("click", e => {
-      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
-    });
+    return true;
+  });
+
+  resetAndRender();
+}
+
+// --- Render after filter/search/sort ---
+function resetAndRender() {
+  grid.innerHTML = "";
+  currentIndex = 0;
+
+  if (!filteredProducts.length) {
+    grid.innerHTML = `<p class="no-results">No results found</p>`;
+    if (loadMoreBtn) loadMoreBtn.style.display = "none";
+    return;
   }
+
+  if (loadMoreBtn) loadMoreBtn.style.display = "block";
+  loadMoreProducts();
 }
