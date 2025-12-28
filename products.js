@@ -87,18 +87,46 @@ if (searchInput) {
     { type: "color", color: "#c5f79f" }
   ];
 
-  // --- Set dynamic page title ---
-  const params = new URLSearchParams(window.location.search);
-  const activeCollection = params.get("collection");
-  const activeCategory   = params.get("category");
-  const activeColor      = params.get("color");
-  const titleEl = document.getElementById("dynamicPageTitle");
-  if (titleEl) {
-    if (activeCollection) titleEl.textContent = `New in ${activeCollection}`;
-    else if (activeCategory) titleEl.textContent = activeCategory;
-    else if (activeColor) titleEl.textContent = `${activeColor} collection`;
-    else titleEl.textContent = "All products";
+// --- Set dynamic page title from any filter param ---
+const params = new URLSearchParams(window.location.search);
+const titleEl = document.getElementById("dynamicPageTitle");
+
+if (titleEl) {
+  // List all the filter keys you use in your bubbles
+  const filterKeys = [
+    "collection",
+    "category",
+    "color",
+    "style",
+    "room",
+    "artist",
+    "keywords",
+    "meaning",
+    "use-case",
+    "emotional-energy",
+    "scale",
+    "drawings",
+    "color-story"
+  ];
+
+  let foundTitle = false;
+
+  filterKeys.forEach(key => {
+    const val = params.get(key);
+    if (val && !foundTitle) {
+      // Replace dashes with spaces and capitalize words
+      const formatted = val.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      titleEl.textContent = formatted;
+      foundTitle = true;
+    }
+  });
+
+  // Default if no filter matches
+  if (!foundTitle) {
+    titleEl.textContent = "All Products";
   }
+}
+
 
   // --- Load CSV and initialize products ---
   Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
