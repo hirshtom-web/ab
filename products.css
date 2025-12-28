@@ -474,14 +474,22 @@
 
 .img-wrapper img {
   width: 100%;
+  height: 100%;           /* make sure images fill wrapper */
+  object-fit: cover;      /* cover fully without stretching */
   display: block;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Secondary image setup */
 .img-secondary {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* ARTWORK → show lifestyle on hover */
@@ -497,26 +505,31 @@
 
 
 
-/* 🔑 force secondary image to fully fill wrapper */
+/* ---------- IMAGE HOVER LOGIC ---------- */
+
+/* Wrapper keeps corners + clipping */
+.img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Base image behavior (no zoom by default) */
 .img-wrapper img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: inherit;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  display: block;
 }
 
-/* keep wrapper clipping */
-.img-wrapper {
-  overflow: hidden;
-}
-/* artwork → show lifestyle image */
-.product-card.artwork:hover .img-secondary {
-  opacity: 1;
+/* ---------- ARTWORK CARDS ---------- */
+/* Hover swaps to lifestyle image, NO zoom */
+.product-card.artwork:hover img {
+  transform: scale(1) !important;
 }
 
-/* lifestyle → zoom */
-.product-card.lifestyle:hover .img-primary {
+/* ---------- LIFESTYLE CARDS ---------- */
+/* Hover zooms slightly, NO image swap */
+.product-card.lifestyle:hover img {
   transform: scale(1.05);
 }
