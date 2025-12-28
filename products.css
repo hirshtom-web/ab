@@ -470,46 +470,39 @@
 .img-wrapper {
   position: relative;
   overflow: hidden;
-  border-radius: inherit; /* keep your rounded corners */
+  border-radius: inherit; /* keep your card corners */
 }
 
-/* All images fill wrapper like lifestyle cards */
-.img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Artwork image stays exactly as it is */
+.img-primary {
   display: block;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  width: 100%;
+  height: auto; /* keep spacing and background as before */
+  transition: opacity 0.35s ease;
+  position: relative; /* stays in normal flow */
+  z-index: 1;
+  object-fit: contain; /* keeps spacing around artwork */
+}
+
+/* Lifestyle image (hidden initially) */
+.img-secondary {
   position: absolute;
   top: 0;
   left: 0;
-}
-
-/* Primary artwork image */
-.img-primary {
-  z-index: 1;
-  opacity: 1;
-  transform: scale(1); /* no zoom by default */
-}
-
-/* Secondary lifestyle image (hidden initially) */
-.img-secondary {
-  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fully fills wrapper */
   opacity: 0;
-  transform: scale(1);
+  transition: opacity 0.35s ease;
+  z-index: 2;
 }
 
-/* ARTWORK → show lifestyle on hover, no zoom, fully fill wrapper */
-.product-card.artwork:hover .img-primary {
-  opacity: 0; /* hide artwork */
-}
-
+/* ARTWORK → show lifestyle on hover, fully filling wrapper */
 .product-card.artwork:hover .img-secondary {
-  opacity: 1; /* show lifestyle exactly like lifestyle grid */
-  transform: scale(1); /* no zoom, fully fills wrapper */
+  opacity: 1;
 }
 
-/* LIFESTYLE → normal zoom on hover */
+/* LIFESTYLE → small zoom on hover, normal behavior */
 .product-card.lifestyle:hover .img-primary {
-  transform: scale(1.05); /* small zoom effect */
+  transform: scale(1.05);
 }
