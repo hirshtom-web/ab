@@ -333,12 +333,26 @@ function loadMoreProducts() {
 
     document.body.appendChild(sortBubble);
 
-    sortBtn.addEventListener("click", () => {
-      const rect = sortBtn.getBoundingClientRect();
-      sortBubble.style.top = rect.bottom + window.scrollY + "px";
-      sortBubble.style.left = rect.left + window.scrollX + "px";
-      sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
-    });
+sortBtn.addEventListener("click", () => {
+  const rect = sortBtn.getBoundingClientRect();
+  const bubbleWidth = sortBubble.offsetWidth;
+  const viewportWidth = window.innerWidth;
+
+  // Default position: below the button, aligned left
+  sortBubble.style.top = rect.bottom + window.scrollY + "px";
+
+  // Check if bubble overflows to the right
+  if (rect.left + bubbleWidth > viewportWidth - 10) { // 10px margin from screen edge
+    sortBubble.style.left = "auto";
+    sortBubble.style.right = (viewportWidth - rect.right) + "px"; // position from right
+  } else {
+    sortBubble.style.left = rect.left + window.scrollX + "px";
+    sortBubble.style.right = "auto";
+  }
+
+  sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
+});
+
 
     document.addEventListener("click", e => {
       if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
