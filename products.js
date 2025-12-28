@@ -325,7 +325,6 @@ if (sortBtn) {
     z-index: 9999;
   `;
 
-  // Add sort options to the bubble
   sortOptions.forEach(opt => {
     const el = document.createElement("div");
     el.textContent = opt.label;
@@ -333,13 +332,12 @@ if (sortBtn) {
     el.onmouseenter = () => el.style.background = "#f5f5f5";
     el.onmouseleave = () => el.style.background = "transparent";
 
-    // Sorting function
     el.onclick = () => {
       allProducts.sort(opt.fn);
       grid.innerHTML = "";
       currentIndex = 0;
-      loadMoreProducts();  // reload the grid
-      sortBubble.style.display = "none"; // hide bubble
+      loadMoreProducts();
+      sortBubble.style.display = "none";
     };
 
     sortBubble.appendChild(el);
@@ -347,10 +345,11 @@ if (sortBtn) {
 
   document.body.appendChild(sortBubble);
 
-  // Toggle bubble and set its position
+  // Toggle bubble and position it safely
   sortBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // prevent document click from hiding immediately
+    e.stopPropagation(); // prevent immediate hiding
 
+    sortBubble.style.display = "block"; // temporarily show to get width
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
     const viewportWidth = window.innerWidth;
@@ -359,23 +358,20 @@ if (sortBtn) {
     let top = rect.bottom + window.scrollY;
     let left = rect.left + window.scrollX;
 
-    // Adjust if bubble overflows right
     if (left + bubbleWidth + padding > viewportWidth) {
       left = viewportWidth - bubbleWidth - padding;
     }
-
-    // Ensure bubble doesn't overflow left
     if (left < padding) left = padding;
 
     sortBubble.style.top = `${top}px`;
     sortBubble.style.left = `${left}px`;
 
-    // Toggle display
+    // Toggle visibility
     sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
   // Hide bubble when clicking outside
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", e => {
     if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
       sortBubble.style.display = "none";
     }
