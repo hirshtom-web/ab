@@ -67,9 +67,12 @@ function initBundlesPage() {
         </div>
       `;
 
-      card.onclick = () => {
-        window.location.href = `bundle-page.html?id=${b.id}`;
-      };
+     card.addEventListener("click", () => {
+  console.log("Redirecting to product-page.html?id=", b.id);
+  if (!b.id) return console.error("❌ Bundle ID missing!");
+  window.location.href = `product-page.html?id=${b.id}`;
+});
+
 
       grid.appendChild(card);
     });
