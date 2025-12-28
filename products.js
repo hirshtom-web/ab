@@ -210,6 +210,28 @@ function loadMoreProducts() {
     loadMoreProducts();
   });
 
+// --- Filters & Search ---
+function applyFilters() {
+  filteredProducts = allProducts.filter(p => {
+    // 1️⃣ Taxonomy filters
+    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
+      const list = p.filters?.[filter] || [];
+      return list.some(v => v === value.toLowerCase()); // make filter value lowercase
+    });
+
+    if (!taxonomyMatch) return false;
+
+    // 2️⃣ Search
+    if (searchQuery) {
+      return p.searchText.includes(searchQuery);
+    }
+
+    return true;
+  });
+
+  resetAndRender();
+}
+
 // --- Sort ---
 const sortBtn = document.querySelector('.control-btn[title="Sort"]');
 if (sortBtn) {
@@ -263,7 +285,7 @@ if (sortBtn) {
   });
 }
 
-// --- Filters ---
+// --- Filter buttons ---
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-filter]");
   if (!el) return;
@@ -277,17 +299,17 @@ document.addEventListener("click", e => {
 
   // Update state
   if (value === "all") delete activeFilters[filter];
-  else activeFilters[filter] = value;
+  else activeFilters[filter] = value.toLowerCase(); // lowercase fix
 
   // Reapply filters
   applyFilters();
 });
 
-// --- Search ---
+// --- Search input ---
 const searchInput = document.getElementById("searchInput");
 if (searchInput) {
   searchInput.addEventListener("input", e => {
-    searchQuery = e.target.value.trim().toLowerCase();
+    searchQuery = e.target.value.trim().toLowerCase(); // lowercase
     applyFilters();
   });
 }
