@@ -465,3 +465,31 @@
     padding: 6px 8px;
   }
 }
+
+
+.img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.img-wrapper img {
+  width: 100%;
+  display: block;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.img-secondary {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* ARTWORK → show lifestyle on hover */
+.product-card.artwork:hover .img-secondary {
+  opacity: 1;
+}
+
+/* LIFESTYLE → zoom only */
+.product-card.lifestyle:hover .img-primary {
+  transform: scale(1.05);
+}
