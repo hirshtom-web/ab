@@ -333,26 +333,27 @@ if (sortBtn) {
 
   document.body.appendChild(sortBubble);
 
-  // --- Click on Sort button ---
   sortBtn.addEventListener("click", () => {
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
-    const padding = 10; // margin from edges
+    const viewportWidth = window.innerWidth;
+    const padding = 10;
 
-    // Below the button
-    sortBubble.style.top = rect.bottom + window.scrollY + "px";
+    // Default position: below button, aligned left of button
+    let top = rect.bottom + window.scrollY;
+    let left = rect.left + window.scrollX - bubbleWidth; // shift to left of button
 
-    // Always align bubble to button's left
-    let left = rect.left + window.scrollX - 20; // move slightly left
-    if (left < padding) left = padding;        // prevent overflow left
-    sortBubble.style.left = left + "px";
-    sortBubble.style.right = "auto";
+    // Ensure bubble doesn't go off left
+    if (left < padding) left = padding;
+    // Ensure bubble doesn't go off right
+    if (left + bubbleWidth > viewportWidth - padding) left = viewportWidth - bubbleWidth - padding;
 
-    // Toggle display
+    sortBubble.style.top = `${top}px`;
+    sortBubble.style.left = `${left}px`;
+
     sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
-  // --- Hide bubble when clicking outside ---
   document.addEventListener("click", e => {
     if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
       sortBubble.style.display = "none";
