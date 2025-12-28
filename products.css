@@ -466,43 +466,38 @@
   }
 }
 
-
 .img-wrapper {
   position: relative;
   overflow: hidden;
   border-radius: inherit;
+  width: 100%;
+  height: 100%; /* make wrapper always full-size */
 }
 
-/* Artwork: keep spacing/background */
+/* Artwork: keep spacing inside wrapper */
 .img-primary {
-  display: block;
   width: 100%;
-  height: 100%; 
-  object-fit: contain;  /* preserves spacing */
+  height: 100%;
+  object-fit: contain;
+  display: block;
   transition: opacity 0.35s ease;
   z-index: 1;
   position: relative;
 }
 
-/* Lifestyle: fully fill wrapper, initially hidden */
+/* Lifestyle: fully fill wrapper */
 .img-secondary {
   position: absolute;
-  inset: 0;               /* top:0; right:0; bottom:0; left:0; */
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;      /* fill wrapper completely */
+  object-fit: cover;
   opacity: 0;
   transition: opacity 0.35s ease;
   z-index: 2;
 }
 
-/* ARTWORK → fade in lifestyle on hover */
+/* ARTWORK hover → show lifestyle fully */
 .product-card.artwork:hover .img-secondary {
   opacity: 1;
-}
-
-/* LIFESTYLE → small zoom on hover */
-.product-card.lifestyle:hover .img-primary {
-  transform: scale(1.05);
-  transition: transform 0.35s ease;
 }
