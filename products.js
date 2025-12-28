@@ -62,6 +62,15 @@ document.addEventListener("click", e => {
   applyFilters();
 });
 
+    // --- Search input ---
+const searchInput = document.getElementById("productSearch");
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    searchQuery = searchInput.value.trim().toLowerCase();
+    applyFilters();
+  });
+}
+
 
   let allProducts = [];
   let currentIndex = 0;                  
