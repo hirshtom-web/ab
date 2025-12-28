@@ -4,6 +4,34 @@ function initProductsPage() {
   let activeFilters = {};
   let searchQuery = "";
 
+function applyFilters() {
+  filteredProducts = allProducts.filter(p => {
+    // 1️⃣ Taxonomy filters
+    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
+      const list = p.filters?.[filter] || [];
+      return list.some(v => v === value.toLowerCase());
+    });
+
+    if (!taxonomyMatch) return false;
+
+    // 2️⃣ Search
+    if (searchQuery) {
+      return p.searchText.includes(searchQuery);
+    }
+
+    return true;
+  });
+
+  // Clear and reload grid with filtered products
+  grid.innerHTML = "";
+  currentIndex = 0;
+  loadMoreProducts();
+
+  if (loadMoreBtn) {
+    loadMoreBtn.style.display = (filteredProducts.length > currentIndex) ? "block" : "none";
+  }
+}
+
   function normalizeList(val) {
     return (val || "")
       .split(";")
