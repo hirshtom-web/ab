@@ -210,111 +210,47 @@ function loadMoreProducts() {
     loadMoreProducts();
   });
 
-// --- Filters & Search ---
-function applyFilters() {
-  filteredProducts = allProducts.filter(p => {
-    // 1️⃣ Taxonomy filters
-    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
-      const list = p.filters?.[filter] || [];
-      return list.some(v => v === value.toLowerCase()); // make filter value lowercase
-    });
-
-    if (!taxonomyMatch) return false;
-
-    // 2️⃣ Search
-    if (searchQuery) {
-      return p.searchText.includes(searchQuery);
-    }
-
-    return true;
-  });
-
-  resetAndRender();
-}
-
 // --- Sort ---
-const sortBtn = document.querySelector('.control-btn[title="Sort"]');
-if (sortBtn) {
-  const sortOptions = [
-    { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
-    { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
-    { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
-    { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
-  ];
+  const sortBtn = document.querySelector('.control-btn[title="Sort"]');
+  if (sortBtn) {
+    const sortOptions = [
+      { label: "Price: Low → High", fn: (a,b)=>a.price-b.price },
+      { label: "Price: High → Low", fn: (a,b)=>b.price-a.price },
+      { label: "Name: A → Z", fn: (a,b)=>a.name.localeCompare(b.name) },
+      { label: "Name: Z → A", fn: (a,b)=>b.name.localeCompare(a.name) }
+    ];
 
-  const sortBubble = document.createElement("div");
-  sortBubble.className = "sort-bubble";
-  sortBubble.style.cssText = `
-    position:absolute;
-    background:#fff;
-    border:1px solid #ccc;
-    border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    padding:8px 0;
-    display:none;
-    z-index:9999;
-  `;
+    const sortBubble = document.createElement("div");
+    sortBubble.className = "sort-bubble";
+    sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
 
-  sortOptions.forEach(opt => {
-    const el = document.createElement("div");
-    el.textContent = opt.label;
-    el.style.cssText = "padding:8px 16px;cursor:pointer";
-    el.onmouseenter = () => el.style.background = "#f5f5f5";
-    el.onmouseleave = () => el.style.background = "transparent";
-    el.onclick = () => {
-      allProducts.sort(opt.fn); // sort main list
-      applyFilters();            // reapply filters so filteredProducts updates
-      sortBubble.style.display = "none";
-    };
-    sortBubble.appendChild(el);
-  });
-
-  document.body.appendChild(sortBubble);
-
-  sortBtn.addEventListener("click", () => {
-    const rect = sortBtn.getBoundingClientRect();
-    sortBubble.style.top = rect.bottom + window.scrollY + "px";
-    sortBubble.style.left = rect.left + window.scrollX + "px";
-    sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
-  });
-
-  document.addEventListener("click", e => {
-    if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
-      sortBubble.style.display = "none";
-    }
-  });
-}
-
-// --- Filters & Search ---
-function applyFilters() {
-  filteredProducts = allProducts.filter(p => {
-    // 1️⃣ Taxonomy filters
-    const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
-      const list = p.filters?.[filter] || [];
-      return list.some(v => v === value.toLowerCase());
+    sortOptions.forEach(opt => {
+      const el = document.createElement("div");
+      el.textContent = opt.label;
+      el.style.cssText = "padding:8px 16px;cursor:pointer";
+      el.onmouseenter = () => el.style.background = "#f5f5f5";
+      el.onmouseleave = () => el.style.background = "transparent";
+      el.onclick = () => {
+        allProducts.sort(opt.fn);
+        grid.innerHTML = "";
+        currentIndex = 0;
+        loadMoreProducts();
+        sortBubble.style.display = "none";
+      };
+      sortBubble.appendChild(el);
     });
 
-    if (!taxonomyMatch) return false;
+    document.body.appendChild(sortBubble);
 
-    // 2️⃣ Search
-    if (searchQuery) {
-      return p.searchText.includes(searchQuery);
-    }
+    sortBtn.addEventListener("click", () => {
+      const rect = sortBtn.getBoundingClientRect();
+      sortBubble.style.top = rect.bottom + window.scrollY + "px";
+      sortBubble.style.left = rect.left + window.scrollX + "px";
+      sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
+    });
 
-    return true;
-  });
-
-  resetAndRender(); // <- calls the function to update the grid
-}
-
-// --- Reset grid and render products ---
-function resetAndRender() {
-  grid.innerHTML = "";       // clear current products
-  currentIndex = 0;          // reset load index
-  loadMoreProducts();        // load first batch of filtered products
-
-  if (loadMoreBtn) {         // show or hide Load More button
-    loadMoreBtn.style.display = (filteredProducts.length > currentIndex) ? "block" : "none";
+    document.addEventListener("click", e => {
+      if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
+    });
   }
 }
-
