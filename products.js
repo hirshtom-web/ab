@@ -1,4 +1,15 @@
 function initProductsPage() {
+    // --- Filter & search state ---
+  let filteredProducts = [];
+  let activeFilters = {};
+  let searchQuery = "";
+
+  function normalizeList(val) {
+    return (val || "")
+      .split(";")
+      .map(v => v.trim().toLowerCase());
+  }
+
   const grid = document.getElementById("productGrid");
   const loadMoreBtn = document.getElementById("loadMoreBtn");
   if (!grid) return console.error("❌ productGrid not found");
@@ -47,16 +58,37 @@ function initProductsPage() {
         ].concat(mainImages.slice(2)); // append remaining main images
 
         return {
-          type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
-          id: (p.productId || "").trim(),
-          name: (p.name || "Unnamed Product").trim(),
-          images: images,
-          video: (p["video/s"] || "").trim(),
-          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-          discount: p.discount ? p.discount.trim() : null,
-          price: p.newPrice ? parseFloat(p.newPrice) : 1
-        };
-      });
+  type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+  id: (p.productId || "").trim(),
+  name: (p.name || "Unnamed Product").trim(),
+  images: images,
+  video: (p["video/s"] || "").trim(),
+  oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+  discount: p.discount ? p.discount.trim() : null,
+  price: p.newPrice ? parseFloat(p.newPrice) : 1,
+
+  // 👇 STEP 3 — add search + filters
+  searchText: [
+    p.name,
+    p.collection,
+    p.category,
+    p.style,
+    p.color,
+    p.room,
+    p.keywords
+  ].join(" ").toLowerCase(),
+
+  filters: {
+    collection: normalizeList(p.collection),
+    category: normalizeList(p.category),
+    color: normalizeList(p.color),
+    style: normalizeList(p.style),
+    room: normalizeList(p.room),
+    artist: normalizeList(p.artist),
+    keywords: normalizeList(p.keywords)
+  }
+};
+
 
       // --- Initial load ---
       currentIndex = 0;
