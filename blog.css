@@ -1,77 +1,135 @@
+/* =========================
+   BLOG POST LAYOUT
+========================= */
+
 .blog-post {
-  max-width: 780px;
-  margin: 60px auto;
-  padding: 0 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif;
-  color: #111;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 20px;
 }
 
-.blog-header h1 {
-  font-size: 2.4rem;
-  line-height: 1.2;
-  margin-bottom: 16px;
-  font-weight: 600;
+/* =========================
+   HERO IMAGE
+========================= */
+
+.blog-hero {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 16px;
+  margin-bottom: 48px;
 }
 
-.blog-meta {
-  font-size: 0.9rem;
-  color: #777;
-  display: flex;
-  gap: 6px;
+.blog-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
+
+/* =========================
+   CONTENT WRAPPER
+========================= */
 
 .blog-content {
-  margin-top: 40px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-.blog-content p {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  margin-bottom: 20px;
-  color: #333;
-}
+/* =========================
+   TITLES
+========================= */
 
-.blog-content .intro {
-  font-size: 1.15rem;
-  color: #222;
+.blog-content h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 16px;
 }
 
 .blog-content h2 {
-  font-size: 1.6rem;
-  margin: 48px 0 18px;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #555;
+  margin-bottom: 24px;
 }
 
-.blog-content ul {
+/* =========================
+   META INFO
+========================= */
+
+.blog-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 40px;
+}
+
+/* =========================
+   BODY TEXT
+========================= */
+
+.blog-body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #222;
+}
+
+/* paragraphs */
+.blog-body p {
+  margin-bottom: 24px;
+}
+
+/* headings inside content */
+.blog-body h3 {
+  font-size: 1.4rem;
+  margin: 48px 0 16px;
+}
+
+.blog-body h4 {
+  font-size: 1.2rem;
+  margin: 32px 0 12px;
+}
+
+/* lists */
+.blog-body ul,
+.blog-body ol {
+  margin: 24px 0 24px 24px;
+}
+
+.blog-body li {
+  margin-bottom: 12px;
+}
+
+/* blockquotes */
+.blog-body blockquote {
+  border-left: 4px solid #000;
   padding-left: 20px;
-  margin: 20px 0;
-}
-
-.blog-content li {
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-blockquote {
-  margin: 30px 0;
-  padding-left: 20px;
-  border-left: 3px solid #000;
   font-style: italic;
-  color: #444;
+  margin: 40px 0;
+  color: #555;
 }
 
-.closing {
-  font-weight: 600;
-  margin-top: 40px;
+/* links */
+.blog-body a {
+  color: #000;
+  text-decoration: underline;
 }
 
-/* Mobile */
-@media (max-width: 600px) {
-  .blog-header h1 {
-    font-size: 1.9rem;
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .blog-post {
+    padding: 40px 16px;
   }
 
-  .blog-content h2 {
-    font-size: 1.4rem;
+  .blog-content {
+    max-width: 100%;
+  }
+
+  .blog-hero {
+    aspect-ratio: 4 / 3;
   }
 }
