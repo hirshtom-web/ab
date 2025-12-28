@@ -1,37 +1,37 @@
-function initProductsPage() {
+function initBundlesPage() {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
 
   if (!grid) return console.error("❌ productGrid not found");
 
-  let allProducts = [];
+  let allBundles = [];
   const ITEMS_PER_LOAD = 36;
   let visibleCount = 0;
 
   // =========================
   // LOAD CSV
   // =========================
-  Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+  Papa.parse("https://hirshtom-web.github.io/ab/bundles.csv", {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: res => {
       console.log("✅ CSV loaded, total rows:", res.data.length);
 
-      allProducts = res.data.map(p => ({
-        id: (p.productId || "").trim(),
-        name: (p.name || "Unnamed Product").trim(),
-        price: p.newPrice ? parseFloat(p.newPrice) : 1,
-        oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+      allBundles = res.data.map(b => ({
+        id: (b.bundleId || "").trim(),
+        name: (b.name || "Unnamed Bundle").trim(),
+        price: b.newPrice ? parseFloat(b.newPrice) : 1,
+        oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
         images: [
-          ...(p.mainImageUrl ? p.mainImageUrl.split(";").map(i => i.trim()) : []),
-          ...(p.lifestyleUrl ? [p.lifestyleUrl.trim()] : [])
+          ...(b.mainImageUrl ? b.mainImageUrl.split(";").map(i => i.trim()) : []),
+          ...(b.lifestyleUrl ? [b.lifestyleUrl.trim()] : [])
         ].filter(Boolean)
       }));
 
-      console.log("🟢 Products parsed:", allProducts);
+      console.log("🟢 Bundles parsed:", allBundles);
 
-      renderAllProducts();
+      renderAllBundles();
       initImageSelector();
       showNextBatch(); // show first batch
     },
@@ -39,36 +39,36 @@ function initProductsPage() {
   });
 
   // =========================
-  // RENDER ALL PRODUCTS (hidden initially)
+  // RENDER ALL BUNDLES (hidden initially)
   // =========================
-  function renderAllProducts() {
+  function renderAllBundles() {
     grid.innerHTML = "";
 
-    allProducts.forEach(p => {
+    allBundles.forEach(b => {
       const card = document.createElement("div");
       card.className = "product-card is-product";
       card.style.display = "none"; // hidden initially
-      card.dataset.images = JSON.stringify(p.images);
+      card.dataset.images = JSON.stringify(b.images);
 
       card.innerHTML = `
         <div class="mockup-stage">
           <img class="lifestyle-bg" alt="" loading="lazy" style="display:none">
           <div class="artwork">
-            <img alt="${p.name}" loading="lazy" style="display:none">
+            <img alt="${b.name}" loading="lazy" style="display:none">
           </div>
         </div>
 
         <div class="product-info">
-          <h3>${p.name}</h3>
+          <h3>${b.name}</h3>
           <div class="price-wrapper">
-            ${p.oldPrice ? `<span class="price-old">$${p.oldPrice.toFixed(2)}</span>` : ""}
-            <span class="price-new">$${p.price.toFixed(2)}</span>
+            ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
+            <span class="price-new">$${b.price.toFixed(2)}</span>
           </div>
         </div>
       `;
 
       card.onclick = () => {
-        window.location.href = `product-page.html?id=${p.id}`;
+        window.location.href = `bundle-page.html?id=${b.id}`;
       };
 
       grid.appendChild(card);
@@ -79,20 +79,20 @@ function initProductsPage() {
   // SHOW MORE ITEMS
   // =========================
   function showNextBatch() {
-    const products = document.querySelectorAll(".product-card");
+    const cards = document.querySelectorAll(".product-card");
     const nextCount = visibleCount + ITEMS_PER_LOAD;
 
-    for (let i = visibleCount; i < nextCount && i < products.length; i++) {
-      const card = products[i];
+    for (let i = visibleCount; i < nextCount && i < cards.length; i++) {
+      const card = cards[i];
       card.style.display = "flex"; // reveal the card
     }
 
     visibleCount = nextCount;
 
-    // Update images for newly revealed products
+    // Update images for newly revealed cards
     updateGridImages();
 
-    if (visibleCount >= products.length && showMoreBtn) {
+    if (visibleCount >= cards.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
     }
   }
@@ -147,17 +147,13 @@ function initProductsPage() {
         ? img
         : "https://static.wixstatic.com/media/" + img;
 
-      console.log("📷 Loading image for", card.querySelector("h3").textContent, "->", url);
-
       if (currentImageIndex === 1 && lifestyleImg) {
-        // lifestyle mode
         lifestyleImg.src = url;
         lifestyleImg.style.display = "block";
         artworkImg.style.display = "none";
         lifestyleImg.classList.remove("loaded");
         lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
       } else if (artworkImg) {
-        // artwork mode
         artworkImg.src = url;
         artworkImg.style.display = "block";
         lifestyleImg.style.display = "none";
@@ -169,4 +165,4 @@ function initProductsPage() {
 }
 
 // INIT
-document.addEventListener("DOMContentLoaded", initProductsPage);
+document.addEventListener("DOMContentLoaded", initBundlesPage);
