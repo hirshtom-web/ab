@@ -207,7 +207,25 @@
     })
     .catch(err => console.error("Footer load failed:", err));
 </script>
+<script>
+  // Wait until the page is fully loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    // Select all filter bubbles
+    const bubbles = document.querySelectorAll('.unique-keyword-bubbles span');
 
+    bubbles.forEach(bubble => {
+      bubble.addEventListener('click', () => {
+        const filterType = bubble.dataset.filter;   // e.g., 'categories'
+        const filterValue = bubble.dataset.value;   // e.g., 'abstract'
+
+        console.log(`Filter clicked: ${filterType} = ${filterValue}`);
+
+        // Example: redirect to grid page with filter as query parameter
+        window.location.href = `products.html?${filterType}=${filterValue}`;
+      });
+    });
+  });
+</script>
 
   <script src="footer.js"></script>
   <script src="cart.js"></script>
