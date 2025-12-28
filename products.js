@@ -222,7 +222,16 @@ if (sortBtn) {
 
   const sortBubble = document.createElement("div");
   sortBubble.className = "sort-bubble";
-  sortBubble.style.cssText = "position:absolute;background:#fff;border:1px solid #ccc;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:8px 0;display:none;z-index:9999";
+  sortBubble.style.cssText = `
+    position:absolute;
+    background:#fff;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    padding:8px 0;
+    display:none;
+    z-index:9999;
+  `;
 
   sortOptions.forEach(opt => {
     const el = document.createElement("div");
@@ -231,8 +240,8 @@ if (sortBtn) {
     el.onmouseenter = () => el.style.background = "#f5f5f5";
     el.onmouseleave = () => el.style.background = "transparent";
     el.onclick = () => {
-      allProducts.sort(opt.fn);
-      resetAndRender();
+      allProducts.sort(opt.fn);       // Sort all products
+      applyFilters();                 // Reapply filters and update grid
       sortBubble.style.display = "none";
     };
     sortBubble.appendChild(el);
@@ -248,19 +257,21 @@ if (sortBtn) {
   });
 
   document.addEventListener("click", e => {
-    if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) sortBubble.style.display = "none";
+    if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
+      sortBubble.style.display = "none";
+    }
   });
 }
 
 // --- Filters ---
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-filter]");
-  if (!el) return; // clicked outside a filter button
+  if (!el) return;
 
-  const filter = el.dataset.filter; // e.g., 'color'
-  const value  = el.dataset.value;  // e.g., 'red'
+  const filter = el.dataset.filter;
+  const value = el.dataset.value;
 
-  // 1️⃣ Update UI: highlight active button
+  // 1️⃣ Update UI
   document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove("active"));
   el.classList.add("active");
 
@@ -284,16 +295,15 @@ if (searchInput) {
 // --- Filter & search logic ---
 function applyFilters() {
   filteredProducts = allProducts.filter(p => {
+    // Check all active filters
     const taxonomyMatch = Object.entries(activeFilters).every(([filter, value]) => {
       const list = p.filters?.[filter];
       return list ? list.includes(value) : false;
     });
-
     if (!taxonomyMatch) return false;
 
-    if (searchQuery) {
-      return p.searchText.includes(searchQuery);
-    }
+    // Check search query
+    if (searchQuery) return p.searchText.includes(searchQuery);
 
     return true;
   });
