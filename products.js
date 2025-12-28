@@ -62,16 +62,19 @@ document.addEventListener("click", e => {
   applyFilters();
 });
 
-// --- Search input listener ---
-const searchInput = document.getElementById("searchBar");
-if (searchInput) {
-  searchInput.addEventListener("input", () => {
-    // Update the shared searchQuery variable
-    searchQuery = searchInput.value.trim().toLowerCase();
-    // Reapply filters including taxonomy filters
+// --- Search input listeners (desktop + mobile) ---
+function attachSearchInput(inputEl) {
+  if (!inputEl) return;
+
+  inputEl.addEventListener("input", () => {
+    searchQuery = inputEl.value.trim().toLowerCase();
     applyFilters();
   });
 }
+
+attachSearchInput(document.getElementById("searchBar"));        // desktop
+attachSearchInput(document.getElementById("mobileSearchBar")); // mobile
+
 
 
   let allProducts = [];
