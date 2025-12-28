@@ -337,20 +337,21 @@ if (sortBtn) {
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
     const viewportWidth = window.innerWidth;
-    const padding = 10;
+    const padding = 10; // screen padding
 
-    // Default position: below button, aligned left of button
-    let top = rect.bottom + window.scrollY;
-    let left = rect.left + window.scrollX - bubbleWidth; // shift to left of button
+    // Default position: below the button
+    sortBubble.style.top = rect.bottom + window.scrollY + "px";
 
-    // Ensure bubble doesn't go off left
+    // Position bubble to the LEFT of button
+    let left = rect.left + window.scrollX - bubbleWidth;
+
+    // Keep bubble on screen (not off left)
     if (left < padding) left = padding;
-    // Ensure bubble doesn't go off right
-    if (left + bubbleWidth > viewportWidth - padding) left = viewportWidth - bubbleWidth - padding;
 
-    sortBubble.style.top = `${top}px`;
-    sortBubble.style.left = `${left}px`;
+    sortBubble.style.left = left + "px";
+    sortBubble.style.right = "auto";
 
+    // Toggle visibility
     sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
