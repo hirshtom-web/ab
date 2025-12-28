@@ -324,7 +324,6 @@ if (sortBtn) {
     z-index:9999;
   `;
 
-  // Create option elements
   sortOptions.forEach(opt => {
     const el = document.createElement("div");
     el.textContent = opt.label;
@@ -333,10 +332,10 @@ if (sortBtn) {
     el.onmouseleave = () => el.style.background = "transparent";
 
     el.onclick = () => {
-      // ✅ Sort the filteredProducts (preserve filters/search)
+      // ✅ Sort only the filtered products
       filteredProducts.sort(opt.fn);
 
-      // Reload grid
+      // Reload the grid safely
       grid.innerHTML = "";
       currentIndex = 0;
       loadMoreProducts();
@@ -349,7 +348,6 @@ if (sortBtn) {
 
   document.body.appendChild(sortBubble);
 
-  // Toggle bubble position and visibility
   sortBtn.addEventListener("click", () => {
     const rect = sortBtn.getBoundingClientRect();
     const bubbleWidth = sortBubble.offsetWidth;
@@ -370,7 +368,6 @@ if (sortBtn) {
     sortBubble.style.display = sortBubble.style.display === "block" ? "none" : "block";
   });
 
-  // Hide bubble when clicking outside
   document.addEventListener("click", e => {
     if (!sortBtn.contains(e.target) && !sortBubble.contains(e.target)) {
       sortBubble.style.display = "none";
