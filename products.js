@@ -220,7 +220,25 @@ loadMoreProducts();
         : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 
       card.innerHTML = `
-        <div class="img-wrapper">${discountBubble}<img src="${imgSrc}" alt="${p.name}"></div>
+<div class="img-wrapper">
+  ${discountBubble}
+
+  <img
+    class="img-primary"
+    src="${imgSrc}"
+    alt="${p.name}"
+  >
+
+  ${p.images[1] ? `
+    <img
+      class="img-secondary"
+      src="${p.images[1].includes("http")
+        ? p.images[1]
+        : 'https://static.wixstatic.com/media/' + p.images[1]}"
+      alt="${p.name}"
+    >
+  ` : ""}
+</div>
         <div class="product-info">
           <h3>${p.name}</h3>
           <div class="price-wrapper">${priceHTML}</div>
