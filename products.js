@@ -189,30 +189,6 @@ loadMoreProducts();
   // --- Create product card ---
   function createProductCard(p, index) {
     const card = document.createElement("div");
-      const discountBubble = p.discount ? `<div class="discount-bubble">${p.discount}</div>` : "";
-const priceHTML = p.oldPrice && p.oldPrice > p.price
-  ? `<span class="price-from">$${p.price.toFixed(2)}</span><span class="price-old">$${p.oldPrice.toFixed(2)}</span>`
-  : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
-
-card.innerHTML = `
-  <div class="img-wrapper">
-    ${discountBubble}
-    <div class="artwork-wrapper">
-      <img src="${p.images[0]}" alt="${p.name}">
-    </div>
-    <div class="lifestyle-wrapper">
-      <img src="${p.images[1]}" alt="${p.name}">
-    </div>
-  </div>
-  <div class="product-info">
-    <h3>${p.name}</h3>
-    <div class="price-wrapper">${priceHTML}</div>
-  </div>`;
-
-card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
-
-return card;
-
 
     // Banner every 10th product
     if ((index + 1) % 10 === 0) {
@@ -243,20 +219,12 @@ return card;
         ? `<span class="price-from">$${p.price.toFixed(2)}</span><span class="price-old">$${p.oldPrice.toFixed(2)}</span>`
         : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 
-     card.innerHTML = `
-  <div class="img-wrapper">
-    ${discountBubble}
-    <div class="artwork-wrapper">
-      <img src="${p.images[0]}" alt="${p.name}">
-    </div>
-    <div class="lifestyle-wrapper">
-      <img src="${p.images[1]}" alt="${p.name}">
-    </div>
-  </div>
-  <div class="product-info">
-    <h3>${p.name}</h3>
-    <div class="price-wrapper">${priceHTML}</div>
-  </div>`;
+      card.innerHTML = `
+        <div class="img-wrapper">${discountBubble}<img src="${imgSrc}" alt="${p.name}"></div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div class="price-wrapper">${priceHTML}</div>
+        </div>`;
 
       card.onclick = () => window.location.href = `product-page.html?id=${p.id}`;
     }
@@ -278,9 +246,10 @@ function loadMoreProducts() {
   }
 }
 
+
   if (loadMoreBtn) loadMoreBtn.addEventListener("click", loadMoreProducts);
 
- // --- Image toggle buttons ---
+  // --- Image toggle buttons ---
   const imgButtons = document.querySelectorAll(".image-selector .img-btn");
   imgButtons.forEach(btn => {
     btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
@@ -320,7 +289,6 @@ function loadMoreProducts() {
     });
   });
 
-    
   // --- Shuffle ---
   const shuffleBtn = document.querySelector('.control-btn[title="Shuffle"]');
   if (shuffleBtn) shuffleBtn.addEventListener("click", () => {
