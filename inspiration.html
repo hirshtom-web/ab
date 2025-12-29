@@ -76,21 +76,28 @@ Papa.parse('blog-posts.csv', {
   header: true,
   complete: function(results) {
     const articles = results.data;
+
+    // Sort by date descending for "Latest"
+    const latestArticles = articles
+      .filter(a => a.title) // skip empty rows
+      .sort((a,b) => new Date(b.date) - new Date(a.date));
+
     const latestContainer = document.getElementById('latest-articles');
     const popularContainer = document.getElementById('popular-articles');
 
-    articles.forEach(article => {
-      if (!article.title) return; // skip empty rows
+    latestArticles.forEach((article, index) => {
       const card = document.createElement('article');
       card.className = 'article-card';
       card.innerHTML = `
-        <img src="${article.image}" alt="${article.title}">
+        <img src="${article.heroImage}" alt="${article.title}">
         <h3>${article.title}</h3>
-        <p>${article.excerpt}</p>
-        <a href="${article.url}" target="_blank">Read More →</a>
+        <p>${article.subtitle}</p>
+        <a href="blog-post.html?id=${article.id}" target="_blank">Read More →</a>
       `;
-      if (article.category.toLowerCase() === 'latest') latestContainer.appendChild(card);
-      if (article.category.toLowerCase() === 'popular') popularContainer.appendChild(card);
+      // First 4 articles = Latest
+      if (index < 4) latestContainer.appendChild(card);
+      // Example: next 4 articles = Popular
+      if (index >= 4 && index < 8) popularContainer.appendChild(card);
     });
   }
 });
