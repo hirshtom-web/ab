@@ -10,33 +10,45 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  Papa.parse("https://hirshtom-web.github.io/ab/blog-posts.csv", {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: res => {
-      const post = res.data.find(p => p.id === postId);
-
+  fetch("https://hirshtom-web.github.io/ab/blog-posts.json")
+    .then(res => res.json())
+    .then(posts => {
+      const post = posts.find(p => p.id === postId);
       if (!post) {
         container.innerHTML = "<h2>Post not found</h2>";
         return;
       }
-
       renderPost(post);
-    },
-    error: err => {
-      console.error("❌ Blog CSV load failed", err);
+    })
+    .catch(err => {
+      console.error("❌ Blog JSON load failed", err);
       container.innerHTML = "<h2>Error loading post</h2>";
-    }
-  });
+    });
 
   function renderPost(post) {
     document.title = post.title + " | ArteBarte";
 
+    const contentHTML = post.content.map(block => {
+      switch (block.type) {
+        case "title":
+          return `<h3>${block.text}</h3>`;
+        case "paragraph":
+          return `<p>${block.text}</p>`;
+        case "bullet":
+          return `<ul>${block.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+        case "numbered":
+          return `<ol>${block.items.map(i => `<li>${i}</li>`).join('')}</ol>`;
+        case "link":
+          return `<p><a href="${block.url}" target="_blank">${block.text}</a></p>`;
+        default:
+          return "";
+      }
+    }).join('');
+
     container.innerHTML = `
       <article class="blog-post">
         <div class="blog-hero">
-          ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ""}
+          ${post.heroImage ? `<img src="${post.heroImage}" alt="${post.title}">` : ""}
         </div>
 
         <div class="blog-content">
@@ -47,35 +59,19 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>${post.author || "ArteBarte"}</span>
             <span>•</span>
             <span>${post.date}</span>
+            <span>•</span>
+            <span>${post.views || 0} Views</span>
+            <span>•</span>
+            <span>${post.likes || 0} Likes</span>
+            <span>•</span>
+            <span>${post.readTime || 1} min read</span>
           </div>
 
           <div class="blog-body">
-            ${post.content}
+            ${contentHTML}
           </div>
         </div>
       </article>
     `;
   }
 });
-
-Papa.parse("blog-posts.csv", {
-  download: true,
-  header: true,
-  complete: res => {
-    const post = res.data.find(p => p.id === getPostId());
-    renderPost(post);
-  }
-});
-
-function getPostId() {
-  return new URLSearchParams(window.location.search).get("id");
-}
-
-function renderPost(post) {
-  document.querySelector("h1").textContent = post.title;
-  document.querySelector(".subtitle").textContent = post.subtitle;
-  document.querySelector(".author").textContent = post.author;
-  document.querySelector(".date").textContent = post.date;
-  document.querySelector(".hero img").src = post.heroImage;
-  document.querySelector(".blog-content").innerHTML = post.content;
-}
