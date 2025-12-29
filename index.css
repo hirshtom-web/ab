@@ -133,63 +133,40 @@
 .unique-overlap-hero {
   position: relative;
   width: 100%;
-  min-height: 80vh;
+  min-height: 50vh;  /* smaller height */
+  max-height: 600px; /* optional */
   border-radius: 16px;
   overflow: hidden;
+}
+
+.unique-overlap-content-wrapper {
+  position: relative; /* relative so padding works */
+  padding: 0 20px;    /* 20px on left & right */
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
-}
-
-.unique-overlap-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-}
-
-.unique-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.25);
-  z-index: 2;
+  height: 100%;       /* fill section height */
+  box-sizing: border-box;
 }
 
 .unique-overlap-content {
-  position: relative;
-  z-index: 3; /* above overlay and bg */
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.hero-inner-wrap {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 20px; /* ← horizontal padding works now */
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* space between image and button */
+  gap: 16px;
   align-items: center;
 }
 
-/* Mobile adjustments */
-@media (max-width: 900px) {
-  .unique-overlap-hero {
-    min-height: 60vh;
-  }
-
-  .unique-section-top-img {
-    width: 80%; /* scales down on mobile */
-    max-width: 300px;
-  }
+.unique-section-top-img {
+  width: 60%;
+  max-width: 250px;
+  height: auto;
 }
 
+.unique-cta-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+}
 
 /* ===============================
    HALF 50 / 50 SECTIONS
@@ -315,6 +292,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
