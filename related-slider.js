@@ -1,4 +1,19 @@
 // related-slider.js
+function setRandomRelatedTitle() {
+  const titles = [
+    "Related Products",
+    "You May Also Like",
+    "Complete the Look",
+    "Similar Items",
+    "Recommended"
+  ];
+
+  const titleEl = document.getElementById("relatedTitle");
+  if (!titleEl) return;
+
+  const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+  titleEl.textContent = randomTitle;
+}
 
 // --- RELATED SLIDER FUNCTION ---
 function initRelatedSlider() {
