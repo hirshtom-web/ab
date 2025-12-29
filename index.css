@@ -130,71 +130,66 @@
 /* ===============================
    HERO / OVERLAP HERO
 ================================ */
-.unique-hero,
 .unique-overlap-hero {
   position: relative;
   width: 100%;
-  margin: 0 auto;
   min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
   border-radius: 16px;
   overflow: hidden;
-  
-}
-
-.unique-hero {
-  background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
-  background-size: cover;
-  background-position: center;
-  padding: 20px 20px;
-  width: 100%;
-  margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.unique-hero img.unique-overlap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 500px;
-  z-index: 2;
-}
-
-.unique-overlap-hero img.unique-overlap-bg {
+.unique-overlap-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 1;
 }
 
-.unique-overlap-hero .unique-overlay {
+.unique-overlay {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.25);
-}
-
-.unique-overlap-hero .unique-overlap-content {
-  position: relative;
   z-index: 2;
-  color: #fff;
 }
 
+.unique-overlap-content {
+  position: relative;
+  z-index: 3; /* above overlay and bg */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-inner-wrap {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px; /* ← horizontal padding works now */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* space between image and button */
+  align-items: center;
+}
+
+/* Mobile adjustments */
 @media (max-width: 900px) {
-  .unique-hero,
   .unique-overlap-hero {
     min-height: 60vh;
   }
 
-  .unique-hero img.unique-overlap {
-    width: 300px;
+  .unique-section-top-img {
+    width: 80%; /* scales down on mobile */
+    max-width: 300px;
   }
 }
+
 
 /* ===============================
    HALF 50 / 50 SECTIONS
@@ -320,5 +315,6 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
