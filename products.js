@@ -274,6 +274,27 @@ function loadMoreProducts() {
       card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
     });
   }
+// --- Desktop hover preview ---
+function enableHoverPreview() {
+  if (window.innerWidth <= 768) return; // only desktop
+
+  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+  productCards.forEach(card => {
+    const img = card.querySelector("img");
+    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
+    if (imgList.length < 2) return;
+
+    card.addEventListener("mouseenter", () => {
+      img.src = imgList[1].includes("http") ? imgList[1] : 'https://static.wixstatic.com/media/' + imgList[1];
+    });
+    card.addEventListener("mouseleave", () => {
+      img.src = imgList[0].includes("http") ? imgList[0] : 'https://static.wixstatic.com/media/' + imgList[0];
+    });
+  });
+}
+
+// Call after initial grid load or after load more
+enableHoverPreview();
 
   // --- Grid column buttons ---
   let defaultCols = window.innerWidth <= 768 ? 2 : 3;
