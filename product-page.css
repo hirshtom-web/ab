@@ -334,12 +334,40 @@
 }
 
 .section-svg img {
-  max-width: 220px;
+  max-width: 250px;
   width: 100%;
   height: auto;
   opacity: 0.3;
   color: #f9f5f2;
 }
+
+@media (max-width: 768px) {
+  .section-svg {
+    position: relative;
+    height: 30px; /* 50% bigger than 20px */
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .section-svg img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 30px; /* 50% bigger */
+    width: auto; /* keep aspect ratio */
+  }
+
+  .section-svg {
+    margin: -30px 0; /* keep your original negative margin */
+  }
+
+  .section-svg img {
+    max-width: 250px; /* keep original limit */
+    width: 100%;
+  }
+}
+
 
 /* =====================
    MEDIA QUERIES: MOBILE
@@ -411,20 +439,6 @@
     padding: 10px 0 0 0;
   }
 
-  .section-svg {
-    position: relative;
-    height: 20px;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  .section-svg img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 20px;
-  }
 
   .gallery, .product-right {
     width: 100%;
@@ -570,10 +584,11 @@
   gap: 12px;
   align-items: center;
   padding: 14px;
-  background: #daf2e8;
+  background: #transparent;
+  border: 1px solid #000;
   border-radius: 12px;
   font-size: 12px;
-  color: #22afa1;
+  color: #000;
 }
 
 .tab-card span {
@@ -583,7 +598,7 @@
 .tab-card p {
   font-size: 11px;
   margin-top: 2px;
-  color: #22afa1;
+  color: #000;
 }
 
 /* ===============================
