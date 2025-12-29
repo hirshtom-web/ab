@@ -249,52 +249,70 @@ function loadMoreProducts() {
 
   if (loadMoreBtn) loadMoreBtn.addEventListener("click", loadMoreProducts);
 
-  // --- Image toggle buttons ---
-  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
-  imgButtons.forEach(btn => {
-    btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
-    btn.addEventListener("click", () => {
-      imgButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentImageIndex = parseInt(btn.dataset.index);
-      localStorage.setItem("gridImageIndex", currentImageIndex);
-      updateGridImages();
-    });
+ // --- Image toggle buttons ---
+const imgButtons = document.querySelectorAll(".image-selector .img-btn");
+imgButtons.forEach(btn => {
+  btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
+  btn.addEventListener("click", () => {
+    imgButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentImageIndex = parseInt(btn.dataset.index);
+    localStorage.setItem("gridImageIndex", currentImageIndex);
+    updateGridImages();
+    enableMobileSwipe(); // ensure swipe works after toggling
   });
+});
 
-  function updateGridImages() {
-    const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-    productCards.forEach(card => {
-      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-      let newImg = imgList[currentImageIndex] || imgList[0] || "";
-      if (!newImg && imgList.length > 1) newImg = imgList[1]; // fallback
-      card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
-
-      card.classList.remove("artwork", "lifestyle");
-      card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
-    });
-  }
-// --- Desktop hover preview ---
-function enableHoverPreview() {
-  if (window.innerWidth <= 768) return; // only desktop
-
+// --- Update grid images & desktop hover ---
+function updateGridImages() {
   const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
   productCards.forEach(card => {
-    const img = card.querySelector("img");
     const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    if (imgList.length < 2) return;
+    const mainImg = imgList[0] || "";
+    const lifestyleImg = imgList[1] || mainImg;
 
-    card.addEventListener("mouseenter", () => {
-      img.src = imgList[1].includes("http") ? imgList[1] : 'https://static.wixstatic.com/media/' + imgList[1];
-    });
-    card.addEventListener("mouseleave", () => {
-      img.src = imgList[0].includes("http") ? imgList[0] : 'https://static.wixstatic.com/media/' + imgList[0];
-    });
+    const imgEl = card.querySelector("img");
+    imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
+
+    // Keep artwork/lifestyle class
+    card.classList.remove("artwork", "lifestyle");
+    card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
+
+    // Desktop hover: artwork → lifestyle
+    card.onmouseenter = () => { 
+      if(window.innerWidth > 768) imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg; 
+    };
+    card.onmouseleave = () => { 
+      if(window.innerWidth > 768) imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg; 
+    };
+  });
+}
+
+// --- Mobile swipe ---
+function enableMobileSwipe() {
+  if(window.innerWidth > 768) return; // Only mobile
+  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+
+  productCards.forEach(card => {
+    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
+    if(imgList.length < 2) return;
+
+    const imgEl = card.querySelector("img");
+    let touchStartX = 0;
+
+    card.ontouchstart = e => touchStartX = e.touches[0].clientX;
+    card.ontouchend = e => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(deltaX) > 30) { // swipe threshold
+        imgEl.src = imgEl.src === imgList[0] ? imgList[1] : imgList[0];
+      }
+    };
   });
 }
 
 // Call after initial grid load or after load more
-enableHoverPreview();
+updateGridImages();
+enableMobileSwipe();
 
   // --- Grid column buttons ---
   let defaultCols = window.innerWidth <= 768 ? 2 : 3;
