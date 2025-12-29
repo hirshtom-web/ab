@@ -142,7 +142,7 @@
   position: relative;
   width: calc(100% - 40px); /* 20px on each side */
   padding: 20px;
-  min-height: 80vh;
+  max-height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,6 +297,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
