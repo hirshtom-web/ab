@@ -269,54 +269,83 @@ function updateGridImages() {
 
   productCards.forEach(card => {
     const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    const mainImg = imgList[0] || "";
-    const lifestyleImg = imgList[1] || mainImg;
+    const artworkImg = imgList[0] || "";
+    const lifestyleImg = imgList[1] || artworkImg;
 
-    const imgEl = card.querySelector("img");
-    imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
+    // Remove old wrappers if reloading
+    card.querySelectorAll(".img-wrapper-inner").forEach(e => e.remove());
 
-    // Artwork/lifestyle classes
-    card.classList.remove("artwork", "lifestyle");
-    card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
+    // Create artwork wrapper
+    const artworkWrapper = document.createElement("div");
+    artworkWrapper.className = "img-wrapper-inner artwork-wrapper";
+    artworkWrapper.style.position = "absolute";
+    artworkWrapper.style.top = 0;
+    artworkWrapper.style.left = 0;
+    artworkWrapper.style.width = "100%";
+    artworkWrapper.style.height = "100%";
+    artworkWrapper.style.display = "flex";
+    artworkWrapper.style.alignItems = "center";
+    artworkWrapper.style.justifyContent = "center";
+    artworkWrapper.style.background = "#f7f1e6"; // beige
+    artworkWrapper.style.zIndex = 1;
 
-    // Set image styling
-    imgEl.style.width = "100%";
-    imgEl.style.height = "100%";
-    imgEl.style.objectFit = "contain";   // Artwork stays centered in beige
-    imgEl.style.transition = "transform 0.3s ease"; // For hover grow
+    const artworkEl = document.createElement("img");
+    artworkEl.src = artworkImg.includes("http") ? artworkImg : 'https://static.wixstatic.com/media/' + artworkImg;
+    artworkEl.style.maxWidth = "80%";
+    artworkEl.style.maxHeight = "80%";
+    artworkEl.style.objectFit = "contain";
+    artworkWrapper.appendChild(artworkEl);
+    card.appendChild(artworkWrapper);
 
-    // --- Desktop hover: artwork → lifestyle fill ---
-    card.onmouseenter = () => {
-      if(window.innerWidth > 768) {
-        imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
-        imgEl.style.objectFit = "cover";  // Lifestyle fills entire card
-        imgEl.style.transform = "scale(1.05)"; // subtle grow
-      }
-    };
-    card.onmouseleave = () => {
-      if(window.innerWidth > 768) {
-        imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
-        imgEl.style.objectFit = "contain"; // Artwork centered
-        imgEl.style.transform = "scale(1)";
-      }
-    };
+    // Create lifestyle wrapper
+    const lifestyleWrapper = document.createElement("div");
+    lifestyleWrapper.className = "img-wrapper-inner lifestyle-wrapper";
+    lifestyleWrapper.style.position = "absolute";
+    lifestyleWrapper.style.top = 0;
+    lifestyleWrapper.style.left = 0;
+    lifestyleWrapper.style.width = "100%";
+    lifestyleWrapper.style.height = "100%";
+    lifestyleWrapper.style.zIndex = 2;
+    lifestyleWrapper.style.opacity = 0;
+    lifestyleWrapper.style.transition = "opacity 0.3s ease, transform 0.3s ease";
 
-    // --- Mobile swipe ---
-    if(window.innerWidth <= 768 && imgList.length > 1) {
+    const lifestyleEl = document.createElement("img");
+    lifestyleEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
+    lifestyleEl.style.width = "100%";
+    lifestyleEl.style.height = "100%";
+    lifestyleEl.style.objectFit = "cover";
+    lifestyleWrapper.appendChild(lifestyleEl);
+    card.appendChild(lifestyleWrapper);
+
+    // Desktop hover
+    if(window.innerWidth > 768) {
+      card.onmouseenter = () => {
+        lifestyleWrapper.style.opacity = 1;
+        lifestyleWrapper.style.transform = "scale(1.05)";
+      };
+      card.onmouseleave = () => {
+        lifestyleWrapper.style.opacity = 0;
+        lifestyleWrapper.style.transform = "scale(1)";
+      };
+    }
+
+    // Mobile swipe
+    if(window.innerWidth <= 768) {
       let touchStartX = 0;
       card.ontouchstart = e => touchStartX = e.touches[0].clientX;
       card.ontouchend = e => {
         const deltaX = e.changedTouches[0].clientX - touchStartX;
-        if(Math.abs(deltaX) > 30) { // swipe threshold
-          imgEl.src = imgEl.src === imgList[0] ? imgList[1] : imgList[0];
-          imgEl.style.objectFit = imgEl.src === imgList[0] ? "contain" : "cover";
+        if(Math.abs(deltaX) > 30) {
+          const isArtworkVisible = artworkWrapper.style.opacity !== "0";
+          artworkWrapper.style.opacity = isArtworkVisible ? "0" : "1";
+          lifestyleWrapper.style.opacity = isArtworkVisible ? "1" : "0";
         }
       };
     }
   });
 }
 
-// --- Call after initial grid load or after "Load More" ---
+// Call after initial grid load or "Load More"
 updateGridImages();
 
 
