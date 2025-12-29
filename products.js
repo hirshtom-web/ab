@@ -263,56 +263,73 @@ imgButtons.forEach(btn => {
   });
 });
 
-// --- Update grid images & desktop hover ---
 function updateGridImages() {
   const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
   productCards.forEach(card => {
     const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    const mainImg = imgList[0] || "";
-    const lifestyleImg = imgList[1] || mainImg;
+    const artworkImg = imgList[0] || "";
+    const lifestyleImg = imgList[1] || artworkImg;
 
     const imgEl = card.querySelector("img");
-    imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
 
-    // Keep artwork/lifestyle class
+    // Decide which image to show by currentImageIndex toggle
+    let showLifestyleFull = currentImageIndex === 1; // lifestyle toggle active
+    imgEl.src = (showLifestyleFull ? lifestyleImg : artworkImg).includes("http")
+      ? (showLifestyleFull ? lifestyleImg : artworkImg)
+      : 'https://static.wixstatic.com/media/' + (showLifestyleFull ? lifestyleImg : artworkImg);
+
+    // Apply classes
     card.classList.remove("artwork", "lifestyle");
     card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
 
-    // Desktop hover: artwork → lifestyle
-    card.onmouseenter = () => { 
-      if(window.innerWidth > 768) imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg; 
-    };
-    card.onmouseleave = () => { 
-      if(window.innerWidth > 768) imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg; 
-    };
+    // Artwork -> centered, lifestyle -> fill background
+    imgEl.style.objectFit = showLifestyleFull ? "cover" : "contain";
+    imgEl.style.width = "100%";
+    imgEl.style.height = "100%";
+
+    // --- Desktop hover behavior ---
+    if(window.innerWidth > 768) {
+      card.onmouseenter = () => {
+        if(currentImageIndex === 0) {
+          // Hover artwork -> show lifestyle filling background
+          imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
+          imgEl.style.objectFit = "cover";
+        } else {
+          // Hover when all lifestyle toggle active -> grow 5%
+          imgEl.style.transform = "scale(1.05)";
+        }
+      };
+      card.onmouseleave = () => {
+        if(currentImageIndex === 0) {
+          imgEl.src = artworkImg.includes("http") ? artworkImg : 'https://static.wixstatic.com/media/' + artworkImg;
+          imgEl.style.objectFit = "contain";
+        } else {
+          imgEl.style.transform = "scale(1)";
+        }
+      };
+    }
+
+    // --- Mobile swipe behavior ---
+    if(window.innerWidth <= 768) {
+      let touchStartX = 0;
+      card.ontouchstart = e => touchStartX = e.touches[0].clientX;
+      card.ontouchend = e => {
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        if(Math.abs(deltaX) > 30 && imgList.length > 1) {
+          // Toggle artwork <-> lifestyle
+          if(imgEl.src.includes(artworkImg)) {
+            imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
+            imgEl.style.objectFit = "cover";
+          } else {
+            imgEl.src = artworkImg.includes("http") ? artworkImg : 'https://static.wixstatic.com/media/' + artworkImg;
+            imgEl.style.objectFit = "contain";
+          }
+        }
+      };
+    }
   });
 }
 
-// --- Mobile swipe ---
-function enableMobileSwipe() {
-  if(window.innerWidth > 768) return; // Only mobile
-  const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
-
-  productCards.forEach(card => {
-    const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    if(imgList.length < 2) return;
-
-    const imgEl = card.querySelector("img");
-    let touchStartX = 0;
-
-    card.ontouchstart = e => touchStartX = e.touches[0].clientX;
-    card.ontouchend = e => {
-      const deltaX = e.changedTouches[0].clientX - touchStartX;
-      if(Math.abs(deltaX) > 30) { // swipe threshold
-        imgEl.src = imgEl.src === imgList[0] ? imgList[1] : imgList[0];
-      }
-    };
-  });
-}
-
-// Call after initial grid load or after load more
-updateGridImages();
-enableMobileSwipe();
 
   // --- Grid column buttons ---
   let defaultCols = window.innerWidth <= 768 ? 2 : 3;
