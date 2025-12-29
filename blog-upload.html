@@ -2,92 +2,117 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Blog Editor - Enhanced</title>
+<title>Upload Blog Post</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
-input, button { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
-.toolbar button { width: auto; display: inline-block; margin-right: 4px; }
-.editor { border: 1px solid #ccc; min-height: 150px; padding: 8px; margin-bottom: 12px; border-radius: 4px; }
-pre { background: #f5f5f5; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    max-width: 900px;
+    margin: 40px auto;
+  }
+  input, button, select, textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    font-size: 14px;
+  }
+  .editor-toolbar button {
+    width: auto;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+  #editor {
+    border: 1px solid #ccc;
+    min-height: 200px;
+    padding: 10px;
+    line-height: 1.6;
+    overflow-y: auto;
+  }
+  pre {
+    background: #f5f5f5;
+    padding: 16px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 </style>
 </head>
 <body>
 
-<h1>Create Blog Post</h1>
+<h1>Upload Blog Post</h1>
 
 <form id="blogForm">
-  <input id="postId" placeholder="Post ID" required />
-  <input id="title" placeholder="Title" required />
-  <input id="subtitle" placeholder="Subtitle" />
-  <input id="author" placeholder="Author" />
+  <input id="title" placeholder="Article Title" required />
+  <input id="subtitle" placeholder="Article Subtitle" />
+  <input id="author" placeholder="Author Name" />
+  <input id="date" type="date" />
+  <input id="views" placeholder="Views" type="number" />
+  <input id="likes" placeholder="Likes" type="number" />
+  <input id="readTime" placeholder="Read time (minutes)" type="number" />
   <input id="image" placeholder="Hero Image URL" />
-  <input id="minRead" placeholder="Min Read" type="number" />
-  <input id="liked" placeholder="Liked" type="number" value="0" />
-  <input id="viewed" placeholder="Viewed" type="number" value="0" />
 
   <h3>Content</h3>
-  <div class="toolbar">
+  <div class="editor-toolbar">
     <button type="button" onclick="format('bold')"><b>B</b></button>
     <button type="button" onclick="format('italic')"><i>I</i></button>
     <button type="button" onclick="format('underline')"><u>U</u></button>
-    <button type="button" onclick="format('strikeThrough')"><s>S</s></button>
-    <button type="button" onclick="format('insertUnorderedList')">&bull; List</button>
+    <button type="button" onclick="format('insertUnorderedList')">• List</button>
     <button type="button" onclick="format('insertOrderedList')">1. List</button>
-    <button type="button" onclick="insertLink()">Link</button>
+    <button type="button" onclick="createLink()">Link</button>
+    <button type="button" onclick="format('formatBlock', '<h3>')">Title</button>
+    <button type="button" onclick="format('formatBlock', '<p>')">Text</button>
   </div>
-
-  <div id="editor" class="editor" contenteditable="true" placeholder="Write your content here..."></div>
+  <div id="editor" contenteditable="true"></div>
 
   <button type="submit">Generate CSV Row</button>
 </form>
 
 <h3>CSV Row</h3>
 <pre id="output"></pre>
-<button id="copyBtn">Copy to Clipboard</button>
 
 <script>
-function format(cmd) {
-  document.execCommand(cmd, false, null);
-}
-function insertLink() {
-  const url = prompt("Enter the URL:");
-  if(url) document.execCommand('createLink', false, url);
-}
+  function format(command, value = null) {
+    document.execCommand(command, false, value);
+  }
 
-document.getElementById("blogForm").addEventListener("submit", e => {
-  e.preventDefault();
+  function createLink() {
+    const url = prompt("Enter the URL");
+    if(url) format('createLink', url);
+  }
 
-  const postId = document.getElementById("postId").value.trim();
-  const title = document.getElementById("title").value.trim();
-  const subtitle = document.getElementById("subtitle").value.trim();
-  const author = document.getElementById("author").value.trim();
-  const image = document.getElementById("image").value.trim();
-  const minRead = document.getElementById("minRead").value || 0;
-  const liked = document.getElementById("liked").value || 0;
-  const viewed = document.getElementById("viewed").value || 0;
-  const date = new Date().toISOString().split("T")[0];
-  const contentHTML = document.getElementById("editor").innerHTML.replace(/"/g, '""');
+  function generateSlug(text) {
+    return text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+  }
 
-  const row = [
-    postId,
-    `"${title.replace(/"/g,'""')}"`,
-    `"${subtitle.replace(/"/g,'""')}"`,
-    author,
-    date,
-    image,
-    minRead,
-    liked,
-    viewed,
-    `"${contentHTML}"`
-  ].join(",");
+  document.getElementById("blogForm").addEventListener("submit", e => {
+    e.preventDefault();
 
-  document.getElementById("output").textContent = row;
-});
+    const title = document.getElementById("title").value.trim();
+    const subtitle = document.getElementById("subtitle").value.trim();
+    const author = document.getElementById("author").value.trim();
+    const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
+    const views = document.getElementById("views").value || 0;
+    const likes = document.getElementById("likes").value || 0;
+    const readTime = document.getElementById("readTime").value || 0;
+    const image = document.getElementById("image").value.trim();
+    const content = document.getElementById("editor").innerHTML.replace(/"/g, '""');
 
-document.getElementById('copyBtn').addEventListener('click', () => {
-  const output = document.getElementById("output").textContent;
-  navigator.clipboard.writeText(output).then(() => alert('Copied to clipboard!'));
-});
+    const postId = generateSlug(title);
+
+    const row = [
+      postId,
+      `"${title.replace(/"/g,'""')}"`,
+      `"${subtitle.replace(/"/g,'""')}"`,
+      author,
+      date,
+      image,
+      views,
+      likes,
+      readTime,
+      `"${content}"`
+    ].join(",");
+
+    document.getElementById("output").textContent = row;
+  });
 </script>
 
 </body>
