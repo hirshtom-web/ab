@@ -2,29 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Blog Editor with Styles</title>
+<title>Blog Editor - Rich Text</title>
 <style>
   body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
-  input, textarea, select, button { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
-  textarea { min-height: 80px; }
-  .section { border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 8px; }
-  .section button.remove-section { width: auto; margin-top: 6px; background: #f66; color: #fff; border: none; padding: 6px 12px; cursor: pointer; }
+  input, button { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
+  .toolbar button { width: auto; display: inline-block; margin-right: 4px; }
+  .editor { border: 1px solid #ccc; min-height: 150px; padding: 8px; margin-bottom: 12px; border-radius: 4px; }
   pre { background: #f5f5f5; padding: 16px; white-space: pre-wrap; word-break: break-word; }
 </style>
 </head>
 <body>
 
-<h1>Create Blog Post</h1>
+<h1>Create Blog Post (Rich Text)</h1>
 
 <form id="blogForm">
-  <input id="postId" placeholder="Post ID (gift-guide-2026)" required />
+  <input id="postId" placeholder="Post ID" required />
   <input id="author" placeholder="Author" />
-  <input id="minRead" placeholder="Min Read (e.g. 5 min)" />
   <input id="image" placeholder="Hero Image URL" />
+  <input id="minRead" placeholder="Min Read" />
 
-  <h3>Content Sections</h3>
-  <div id="sections"></div>
-  <button type="button" id="addSection">+ Add Section</button>
+  <h3>Content</h3>
+  <div class="toolbar">
+    <button type="button" onclick="format('bold')"><b>B</b></button>
+    <button type="button" onclick="format('italic')"><i>I</i></button>
+    <button type="button" onclick="format('underline')"><u>U</u></button>
+    <button type="button" onclick="format('strikeThrough')"><s>S</s></button>
+    <button type="button" onclick="format('insertUnorderedList')">&bull; List</button>
+    <button type="button" onclick="format('insertOrderedList')">1. List</button>
+    <button type="button" onclick="insertLink()">Link</button>
+  </div>
+
+  <div id="editor" class="editor" contenteditable="true" placeholder="Write your content here..."></div>
 
   <button type="submit">Generate CSV Row</button>
 </form>
@@ -34,55 +42,27 @@
 <button id="copyBtn">Copy to Clipboard</button>
 
 <script>
-const sectionsDiv = document.getElementById('sections');
-const addSectionBtn = document.getElementById('addSection');
-
-function createSection(title='', style='normal', content='') {
-  const div = document.createElement('div');
-  div.className = 'section';
-  div.innerHTML = `
-    <input class="section-title" placeholder="Title" value="${title}" />
-    <select class="section-style">
-      <option value="normal" ${style==='normal'?'selected':''}>Normal</option>
-      <option value="link" ${style==='link'?'selected':''}>Link</option>
-      <option value="bullets" ${style==='bullets'?'selected':''}>Bullets</option>
-      <option value="numbers" ${style==='numbers'?'selected':''}>Numbers</option>
-    </select>
-    <textarea class="section-content" placeholder="Content">${content}</textarea>
-    <button type="button" class="remove-section">Remove Section</button>
-  `;
-  div.querySelector('.remove-section').addEventListener('click', () => div.remove());
-  sectionsDiv.appendChild(div);
+function format(cmd) {
+  document.execCommand(cmd, false, null);
 }
 
-addSectionBtn.addEventListener('click', () => createSection());
+function insertLink() {
+  const url = prompt("Enter the URL:");
+  if(url) document.execCommand('createLink', false, url);
+}
 
 document.getElementById("blogForm").addEventListener("submit", e => {
   e.preventDefault();
-
   const postId = document.getElementById("postId").value.trim();
   const author = document.getElementById("author").value.trim();
-  const minRead = document.getElementById("minRead").value.trim();
   const heroImage = document.getElementById("image").value.trim();
+  const minRead = document.getElementById("minRead").value.trim();
   const date = new Date().toISOString().split("T")[0];
-
-  const sections = [];
-  document.querySelectorAll('.section').forEach(sec => {
-    const title = sec.querySelector('.section-title').value.trim();
-    const style = sec.querySelector('.section-style').value;
-    const content = sec.querySelector('.section-content').value.trim();
-    if(title || content) sections.push({ title, style, content });
-  });
-
-  const contentJSON = JSON.stringify(sections).replace(/"/g, '""');
+  const contentHTML = document.getElementById("editor").innerHTML.replace(/"/g, '""');
 
   const row = [
-    postId,
-    author,
-    minRead,
-    heroImage,
-    date,
-    `"${contentJSON}"`
+    postId, author, minRead, heroImage, date,
+    `"${contentHTML}"`
   ].join(",");
 
   document.getElementById("output").textContent = row;
@@ -92,9 +72,6 @@ document.getElementById('copyBtn').addEventListener('click', () => {
   const output = document.getElementById("output").textContent;
   navigator.clipboard.writeText(output).then(() => alert('Copied to clipboard!'));
 });
-
-// Start with one section
-createSection();
 </script>
 
 </body>
