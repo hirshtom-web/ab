@@ -267,7 +267,8 @@
       // 2️⃣ Initialize products page AFTER header exists
       if (typeof initProductsPage === "function") initProductsPage();
 
-      // 3️⃣ Initialize related products slider AFTER product page exists
+      // 3️⃣ Related products title + slider ✅ HERE
+      if (typeof setRandomRelatedTitle === "function") setRandomRelatedTitle();
       if (typeof initRelatedSlider === "function") initRelatedSlider();
 
       // 4️⃣ Load footer
@@ -284,6 +285,7 @@
   // Run after all scripts and DOM are loaded
   window.addEventListener("load", fullInit);
 </script>
+
 
 
   
