@@ -39,7 +39,8 @@
 
 @media (max-width: 768px) {
   .related-slider-section {
-    padding: 0 50px;
+    padding: 0 20px;
+    margin-bottom: 30px;
   }
 
   .related-slider-section .related-title-h2 {
