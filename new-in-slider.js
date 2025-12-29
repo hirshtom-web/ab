@@ -11,10 +11,9 @@ function initNewInSlider() {
         skipEmptyLines: true
       }).data;
 
-      // 1️⃣ Take last 10 products (newest at top)
+      // 1️⃣ Take last 10 products (newest first)
       const newProducts = data.slice(-10).reverse();
 
-      // 2️⃣ Render slider items
       newProducts.forEach(p => {
         const mainImages = (p.mainImageUrl || "")
           .split(";")
@@ -27,23 +26,43 @@ function initNewInSlider() {
               : "https://static.wixstatic.com/media/" + mainImages[0])
           : "";
 
+        // --- Price logic ---
+        const newPrice = parseFloat(p.newPrice || 0);
+        const oldPrice = parseFloat(p.originalPrice || 0);
+        const hasDiscount = oldPrice > newPrice;
+
+        const discountBubble = hasDiscount && p.discount
+          ? `<div class="discount-bubble">${p.discount}</div>`
+          : "";
+
+        const priceHTML = hasDiscount
+          ? `
+            <span class="price-new">$${newPrice.toFixed(2)}</span>
+            <span class="price-old">$${oldPrice.toFixed(2)}</span>
+          `
+          : `
+            <span class="price-new">$${newPrice.toFixed(2)}</span>
+          `;
+
         const item = document.createElement("div");
         item.className = "new-in-slider-item";
 
         item.innerHTML = `
           <div class="img-wrapper">
+            ${discountBubble}
             <img src="${imgSrc}" alt="${p.name}">
           </div>
           <div class="new-in-slider-info">
             <h3>${p.name}</h3>
-            <span class="price">$${parseFloat(p.newPrice || 0).toFixed(2)}</span>
+            <div class="price-wrapper">
+              ${priceHTML}
+            </div>
           </div>
         `;
 
-        // 3️⃣ Link to product page by ID
+        // Link to product page
         item.addEventListener("click", () => {
-          window.location.href =
-            `product-page.html?id=${p.productId}`;
+          window.location.href = `product-page.html?id=${p.productId}`;
         });
 
         sliderContainer.appendChild(item);
@@ -52,5 +71,5 @@ function initNewInSlider() {
     .catch(err => console.error("New In slider failed:", err));
 }
 
-// Call it
+// Init
 initNewInSlider();
