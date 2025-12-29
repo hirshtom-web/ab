@@ -246,3 +246,20 @@ function updateArtworkOptions() {
 
 updateArtworkOptions();
 artworkTypeSelect.addEventListener("change", updateArtworkOptions);
+
+// Get the current product ID from URL
+const currentProductId = new URLSearchParams(window.location.search).get("id");
+
+fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
+  .then(res => res.text())
+  .then(csvText => {
+    const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+    const currentProduct = data.find(p => p.productId === currentProductId);
+
+    if (currentProduct) {
+      // Set the breadcrumb current name
+      const currentEl = document.querySelector(".breadcrumbs .current");
+      if (currentEl) currentEl.textContent = currentProduct.name;
+    }
+  })
+  .catch(err => console.error("Failed to load product for breadcrumbs:", err));
