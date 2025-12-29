@@ -287,14 +287,15 @@
 }
 
 /* Social */
-.footer-social {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+.footer-social img {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 .footer-social a {
-  font-size: 14px;
-  text-decoration: none;
-  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
