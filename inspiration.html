@@ -71,15 +71,12 @@
     .catch(err => console.error("Footer load failed:", err));
 </script>
 <script>
-Papa.parse('blog-posts.csv', {
-  download: true,
-  header: true,
-  complete: function(results) {
-    const articles = results.data;
-
+fetch('blog-posts.json')
+  .then(res => res.json())
+  .then(articles => {
     // Sort by date descending for "Latest"
     const latestArticles = articles
-      .filter(a => a.title) // skip empty rows
+      .filter(a => a.title) // skip empty items
       .sort((a,b) => new Date(b.date) - new Date(a.date));
 
     const latestContainer = document.getElementById('latest-articles');
@@ -92,16 +89,25 @@ Papa.parse('blog-posts.csv', {
         <img src="${article.heroImage}" alt="${article.title}">
         <h3>${article.title}</h3>
         <p>${article.subtitle}</p>
+        <div class="meta">
+          <span>${article.author}</span> • 
+          <span>${article.date}</span> • 
+          <span>${article.views || 0} Views</span> • 
+          <span>${article.likes || 0} Likes</span> • 
+          <span>${article.readTime || 1} min read</span>
+        </div>
         <a href="blog-post.html?id=${article.id}" target="_blank">Read More →</a>
       `;
-      // First 4 articles = Latest
+
+      // First 4 = Latest
       if (index < 4) latestContainer.appendChild(card);
-      // Example: next 4 articles = Popular
+      // Next 4 = Popular
       if (index >= 4 && index < 8) popularContainer.appendChild(card);
     });
-  }
-});
+  })
+  .catch(err => console.error('❌ Failed to load JSON', err));
 </script>
+
 
 
 
