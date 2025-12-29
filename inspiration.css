@@ -1,3 +1,11 @@
+.articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 20px; padding: 20px; }
+.article-card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #fff; display: flex; flex-direction: column; }
+.article-card img { width: 100%; height: 150px; object-fit: cover; }
+.article-card h3 { margin: 15px; font-size: 18px; }
+.article-card p { margin: 0 15px 15px 15px; font-size: 14px; color: #555; }
+.article-card a { margin: 0 15px 15px 15px; color: #007bff; text-decoration: none; font-weight: 500; }
+.article-card a:hover { text-decoration: underline; }
+
 .inspiration-page {
   max-width: 1200px;
   margin: 0 auto;
