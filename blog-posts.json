@@ -1,0 +1,36 @@
+[
+  {
+    "id": "Wall-Art-Trends-for-2026",
+    "title": "Top Digital Wall Art Trends for 2026",
+    "subtitle": "As we move deeper into 2026, our homes continue to reflect style and values.",
+    "author": "J",
+    "date": "2025-12-29",
+    "heroImage": "https://static.wixstatic.com/media/1799ca_8c57f7c13e96462f9f3f66ace649a179~mv2.jpg",
+    "views": 5,
+    "likes": 555,
+    "readTime": 5555,
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Whether you're redesigning a space or just refreshing a single wall..."
+      }
+    ]
+  },
+  {
+    "id": "Another-Post",
+    "title": "Example Blog Post",
+    "subtitle": "A short subtitle here.",
+    "author": "Author Name",
+    "date": "2025-12-28",
+    "heroImage": "https://example.com/image.jpg",
+    "views": 0,
+    "likes": 0,
+    "readTime": 3,
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "This is the blog text."
+      }
+    ]
+  }
+]
