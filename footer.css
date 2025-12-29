@@ -222,7 +222,8 @@
 @media (min-width: 769px) {
   .footer-column.shop,
   .footer-column.about,
-  .footer-column.policy
+  .footer-column.policy,
+  .footer-dropdown-toggle,
   .footer-dropdown {
     display: none;
   }
