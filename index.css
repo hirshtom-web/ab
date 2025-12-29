@@ -136,25 +136,15 @@
   margin-right: 20px;
 }
 
-.unique-hero,
-.unique-overlap-hero {
-  position: relative;
-  width: calc(100% - 40px);   /* 20px margins on each side */
-  max-height: 500px;          /* adjust as needed */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border-radius: 16px;
-  overflow: hidden;
-  margin: 0 20px;
-  background-color: #f0f0f0; /* page background color */
+.unique-hero {
   background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
-  background-size: contain;      /* show full image without zooming */
-  background-position: center;   /* center the image */
+  background-size: cover;      /* fills container */
+  background-position: center; /* crop evenly */
   background-repeat: no-repeat;
+  width: calc(100% - 40px);
+  margin: 0 20px;
+  min-height: 300px;
 }
-
 
 .unique-hero img.unique-overlap {
   position: absolute;
@@ -304,6 +294,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
