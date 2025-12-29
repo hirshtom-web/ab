@@ -515,6 +515,10 @@
    ARTWORK TABS
 ===================== */
 
+/* =====================
+   ARTWORK TABS
+===================== */
+
 .artwork-tabs {
   display: flex;
   background: #f4f7ff;
@@ -529,7 +533,7 @@
   padding: 10px;
   font-size: 12px;
   font-weight: 600;
-  border: none;
+  border: 1px solid #000; /* black frame */
   border-radius: 10px;
   cursor: pointer;
   background: transparent;
@@ -540,6 +544,7 @@
 .artwork-tabs .tab.active {
   background: #116dff;
   color: #fff;
+  border-color: #116dff; /* optional: active tab border matches background */
 }
 
 /* =====================
@@ -557,6 +562,7 @@
 .tab-panel.active {
   display: block;
 }
+
 
 /* =====================
    DIGITAL CARD
