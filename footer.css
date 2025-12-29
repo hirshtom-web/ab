@@ -226,3 +226,73 @@
     display: none;
   }
 }
+
+/* ===============================
+   MOBILE NEW
+================================ */
+.footer-mobile {
+  padding: 32px 20px;
+  text-align: center;
+}
+
+/* Dropdown */
+.footer-dropdown {
+  margin-bottom: 24px;
+}
+
+.footer-dropdown-toggle {
+  width: 100%;
+  background: none;
+  border: 1px solid #000;
+  padding: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-dropdown-menu {
+  display: none;
+  list-style: none;
+  padding: 16px 0 0;
+  margin: 0;
+}
+
+.footer-dropdown-menu li {
+  padding: 8px 0;
+}
+
+.footer-dropdown-menu a {
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+}
+
+/* Center links */
+.footer-links-center {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 16px;
+  margin-bottom: 24px;
+}
+
+.footer-links-center a {
+  font-size: 12px;
+  text-decoration: none;
+  color: #000;
+}
+
+/* Social */
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-social a {
+  font-size: 14px;
+  text-decoration: none;
+  color: #000;
+}
