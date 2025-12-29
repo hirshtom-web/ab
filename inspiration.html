@@ -71,7 +71,7 @@
     .catch(err => console.error("Footer load failed:", err));
 </script>
 <script>
-Papa.parse('blog.csv', {
+Papa.parse('blog-posts.csv', {
   download: true,
   header: true,
   complete: function(results) {
@@ -95,6 +95,7 @@ Papa.parse('blog.csv', {
   }
 });
 </script>
+
 
 
   <script src="footer.js"></script>
