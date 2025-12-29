@@ -46,15 +46,14 @@ function initFooter() {
      REGION LIST
   ================================ */
   const regions = [
-    { country: "Austria", code: "AT", currency: "EUR", flag: "🇦🇹" },
-    { country: "Belgium", code: "BE", currency: "EUR", flag: "🇧🇪" },
+    { country: "United States", code: "US", currency: "USD", flag: "🇺🇸" },
     { country: "Canada", code: "CA", currency: "CAD", flag: "🇨🇦" },
-    { country: "France", code: "FR", currency: "EUR", flag: "🇫🇷" },
-    { country: "Germany", code: "DE", currency: "EUR", flag: "🇩🇪" },
-    { country: "Italy", code: "IT", currency: "EUR", flag: "🇮🇹" },
-    { country: "Spain", code: "ES", currency: "EUR", flag: "🇪🇸" },
     { country: "United Kingdom", code: "GB", currency: "GBP", flag: "🇬🇧" },
-    { country: "United States", code: "US", currency: "USD", flag: "🇺🇸" }
+    { country: "France", code: "FR", currency: "EUR", flag: "🇫🇷" },
+    { country: "Spain", code: "ES", currency: "EUR", flag: "🇪🇸" },
+    { country: "Italy", code: "IT", currency: "EUR", flag: "🇮🇹" },
+    { country: "Germany", code: "DE", currency: "EUR", flag: "🇩🇪" },
+    { country: "Belgium", code: "BE", currency: "EUR", flag: "🇧🇪" }
   ];
 
   const list = document.getElementById("regionList");
