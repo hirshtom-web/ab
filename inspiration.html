@@ -70,7 +70,7 @@
     })
     .catch(err => console.error("Footer load failed:", err));
 </script>
-<script
+<script>
 fetch('blog-posts.json')
   .then(res => res.json())
   .then(articles => {
@@ -107,8 +107,6 @@ fetch('blog-posts.json')
     });
   })
   .catch(err => console.error("Error loading blog JSON:", err));
-
-
 </script>
 
 
