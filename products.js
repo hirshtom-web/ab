@@ -263,72 +263,61 @@ imgButtons.forEach(btn => {
   });
 });
 
+// --- Update grid images & desktop hover + mobile swipe ---
 function updateGridImages() {
   const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+
   productCards.forEach(card => {
     const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
-    const artworkImg = imgList[0] || "";
-    const lifestyleImg = imgList[1] || artworkImg;
+    const mainImg = imgList[0] || "";
+    const lifestyleImg = imgList[1] || mainImg;
 
     const imgEl = card.querySelector("img");
+    imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
 
-    // Decide which image to show by currentImageIndex toggle
-    let showLifestyleFull = currentImageIndex === 1; // lifestyle toggle active
-    imgEl.src = (showLifestyleFull ? lifestyleImg : artworkImg).includes("http")
-      ? (showLifestyleFull ? lifestyleImg : artworkImg)
-      : 'https://static.wixstatic.com/media/' + (showLifestyleFull ? lifestyleImg : artworkImg);
-
-    // Apply classes
+    // Artwork/lifestyle classes
     card.classList.remove("artwork", "lifestyle");
     card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
 
-    // Artwork -> centered, lifestyle -> fill background
-    imgEl.style.objectFit = showLifestyleFull ? "cover" : "contain";
+    // Set image styling
     imgEl.style.width = "100%";
     imgEl.style.height = "100%";
+    imgEl.style.objectFit = "contain";   // Artwork stays centered in beige
+    imgEl.style.transition = "transform 0.3s ease"; // For hover grow
 
-    // --- Desktop hover behavior ---
-    if(window.innerWidth > 768) {
-      card.onmouseenter = () => {
-        if(currentImageIndex === 0) {
-          // Hover artwork -> show lifestyle filling background
-          imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
-          imgEl.style.objectFit = "cover";
-        } else {
-          // Hover when all lifestyle toggle active -> grow 5%
-          imgEl.style.transform = "scale(1.05)";
-        }
-      };
-      card.onmouseleave = () => {
-        if(currentImageIndex === 0) {
-          imgEl.src = artworkImg.includes("http") ? artworkImg : 'https://static.wixstatic.com/media/' + artworkImg;
-          imgEl.style.objectFit = "contain";
-        } else {
-          imgEl.style.transform = "scale(1)";
-        }
-      };
-    }
+    // --- Desktop hover: artwork → lifestyle fill ---
+    card.onmouseenter = () => {
+      if(window.innerWidth > 768) {
+        imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
+        imgEl.style.objectFit = "cover";  // Lifestyle fills entire card
+        imgEl.style.transform = "scale(1.05)"; // subtle grow
+      }
+    };
+    card.onmouseleave = () => {
+      if(window.innerWidth > 768) {
+        imgEl.src = mainImg.includes("http") ? mainImg : 'https://static.wixstatic.com/media/' + mainImg;
+        imgEl.style.objectFit = "contain"; // Artwork centered
+        imgEl.style.transform = "scale(1)";
+      }
+    };
 
-    // --- Mobile swipe behavior ---
-    if(window.innerWidth <= 768) {
+    // --- Mobile swipe ---
+    if(window.innerWidth <= 768 && imgList.length > 1) {
       let touchStartX = 0;
       card.ontouchstart = e => touchStartX = e.touches[0].clientX;
       card.ontouchend = e => {
         const deltaX = e.changedTouches[0].clientX - touchStartX;
-        if(Math.abs(deltaX) > 30 && imgList.length > 1) {
-          // Toggle artwork <-> lifestyle
-          if(imgEl.src.includes(artworkImg)) {
-            imgEl.src = lifestyleImg.includes("http") ? lifestyleImg : 'https://static.wixstatic.com/media/' + lifestyleImg;
-            imgEl.style.objectFit = "cover";
-          } else {
-            imgEl.src = artworkImg.includes("http") ? artworkImg : 'https://static.wixstatic.com/media/' + artworkImg;
-            imgEl.style.objectFit = "contain";
-          }
+        if(Math.abs(deltaX) > 30) { // swipe threshold
+          imgEl.src = imgEl.src === imgList[0] ? imgList[1] : imgList[0];
+          imgEl.style.objectFit = imgEl.src === imgList[0] ? "contain" : "cover";
         }
       };
     }
   });
 }
+
+// --- Call after initial grid load or after "Load More" ---
+updateGridImages();
 
 
   // --- Grid column buttons ---
