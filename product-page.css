@@ -486,29 +486,34 @@
   border-radius: 10px;          /* match buttons */
   font-size: 12px;
   font-weight: 600;
-  border: none;                 /* match Buy Now/Add to Cart */
+  border: 1px solid #000; /* black frame */
   cursor: pointer;
-  background: #f5fffa;          /* default color like Buy Now */
-  color: #22afa1;
+  background: #transparent;          /* default color like Buy Now */
+  color: #000;
   appearance: none;             /* remove default arrow */
   position: relative;
   transition: background 0.3s, color 0.3s;
-  background: #daf2e8 url('data:image/svg+xml;utf8,<svg fill="%2322afa1" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+  background: #transparent url('data:image/svg+xml;utf8,<svg fill="%2322afa1" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
   background-size: 16px 16px;
 }
 
 .option-button select:focus {
   outline: none;
-  background: #cdece2; /* slightly darker on focus */
+  background: #transparent; /* slightly darker on focus */
+  border: 1px solid #000; /* black frame */
+  color: #fff;
 }
 
 .option-button.select-size select {
-  background: #22afa1;
+  background: #transparent; /* slightly darker on focus */
+  border: 1px solid #000; /* black frame */
   color: #fff;
 }
 
 .option-button.select-size select:focus {
-  background: #1b8d88;
+  background: #transparent; /* slightly darker on focus */
+  border: 1px solid #000; /* black frame */
+  color: #fff;
 }
 
 /* =====================
