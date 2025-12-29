@@ -130,6 +130,17 @@
 /* ===============================
    HERO / OVERLAP HERO
 ================================ */
+.unique-overlap-content-wrapper {
+  padding: 0 20px;      /* 20px on left and right */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+
 .unique-overlap-hero {
   position: relative;
   width: 100%;
@@ -137,17 +148,6 @@
   max-height: 600px; /* optional */
   border-radius: 16px;
   overflow: hidden;
-}
-
-.unique-overlap-content-wrapper {
-  position: relative; /* relative so padding works */
-  padding: 0 20px;    /* 20px on left & right */
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;       /* fill section height */
-  box-sizing: border-box;
 }
 
 .unique-overlap-content {
@@ -292,6 +292,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
