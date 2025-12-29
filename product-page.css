@@ -346,6 +346,7 @@
 ===================== */
 @media (max-width: 768px) {
   .product-container {
+    margin: 20px auto;
     padding: 0 16px;
     width: 100%;
   }
@@ -515,10 +516,6 @@
    ARTWORK TABS
 ===================== */
 
-/* =====================
-   ARTWORK TABS
-===================== */
-
 .artwork-tabs {
   display: flex;
   background: #f4f7ff;
@@ -682,7 +679,7 @@
    
  .breadcrumbs {
    margin-left: 20px;
-     margin-bottom: 5px;
+     margin-bottom: 0px;
 }
 }
 
