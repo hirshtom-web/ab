@@ -2,24 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Blog Editor - Rich Text</title>
+<title>Blog Editor - Enhanced</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
-  input, button { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
-  .toolbar button { width: auto; display: inline-block; margin-right: 4px; }
-  .editor { border: 1px solid #ccc; min-height: 150px; padding: 8px; margin-bottom: 12px; border-radius: 4px; }
-  pre { background: #f5f5f5; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
+input, button { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
+.toolbar button { width: auto; display: inline-block; margin-right: 4px; }
+.editor { border: 1px solid #ccc; min-height: 150px; padding: 8px; margin-bottom: 12px; border-radius: 4px; }
+pre { background: #f5f5f5; padding: 16px; white-space: pre-wrap; word-break: break-word; }
 </style>
 </head>
 <body>
 
-<h1>Create Blog Post (Rich Text)</h1>
+<h1>Create Blog Post</h1>
 
 <form id="blogForm">
   <input id="postId" placeholder="Post ID" required />
+  <input id="title" placeholder="Title" required />
+  <input id="subtitle" placeholder="Subtitle" />
   <input id="author" placeholder="Author" />
   <input id="image" placeholder="Hero Image URL" />
-  <input id="minRead" placeholder="Min Read" />
+  <input id="minRead" placeholder="Min Read" type="number" />
+  <input id="liked" placeholder="Liked" type="number" value="0" />
+  <input id="viewed" placeholder="Viewed" type="number" value="0" />
 
   <h3>Content</h3>
   <div class="toolbar">
@@ -45,7 +49,6 @@
 function format(cmd) {
   document.execCommand(cmd, false, null);
 }
-
 function insertLink() {
   const url = prompt("Enter the URL:");
   if(url) document.execCommand('createLink', false, url);
@@ -53,15 +56,28 @@ function insertLink() {
 
 document.getElementById("blogForm").addEventListener("submit", e => {
   e.preventDefault();
+
   const postId = document.getElementById("postId").value.trim();
+  const title = document.getElementById("title").value.trim();
+  const subtitle = document.getElementById("subtitle").value.trim();
   const author = document.getElementById("author").value.trim();
-  const heroImage = document.getElementById("image").value.trim();
-  const minRead = document.getElementById("minRead").value.trim();
+  const image = document.getElementById("image").value.trim();
+  const minRead = document.getElementById("minRead").value || 0;
+  const liked = document.getElementById("liked").value || 0;
+  const viewed = document.getElementById("viewed").value || 0;
   const date = new Date().toISOString().split("T")[0];
   const contentHTML = document.getElementById("editor").innerHTML.replace(/"/g, '""');
 
   const row = [
-    postId, author, minRead, heroImage, date,
+    postId,
+    `"${title.replace(/"/g,'""')}"`,
+    `"${subtitle.replace(/"/g,'""')}"`,
+    author,
+    date,
+    image,
+    minRead,
+    liked,
+    viewed,
     `"${contentHTML}"`
   ].join(",");
 
