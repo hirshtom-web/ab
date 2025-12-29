@@ -23,20 +23,20 @@
   <!-- HEADER -->
   <div id="header-placeholder"></div>
 
- <main class="inspiration-page">
 
-<section class="articles-section">
-  <h2>Latest Articles</h2>
-  <div class="articles-grid" id="latest-articles"></div>
-</section>
+<main>
+  <section class="articles-section">
+    <h2 style="padding: 20px 20px 0 20px;">Latest Articles</h2>
+    <div class="articles-grid" id="latest-articles"></div>
+  </section>
 
-<section class="articles-section">
-  <h2>Popular Picks</h2>
-  <div class="articles-grid" id="popular-articles"></div>
-</section>
-
-
+  <section class="articles-section">
+    <h2 style="padding: 20px 20px 0 20px;">Popular Picks</h2>
+    <div class="articles-grid" id="popular-articles"></div>
+  </section>
 </main>
+
+
 
  <!-- FOOTER -->
   <div id="footer-placeholder"></div>
@@ -71,33 +71,29 @@
     .catch(err => console.error("Footer load failed:", err));
 </script>
 <script>
-fetch('blog.json')
-  .then(res => res.json())
-  .then(articles => {
+Papa.parse('blog.csv', {
+  download: true,
+  header: true,
+  complete: function(results) {
+    const articles = results.data;
     const latestContainer = document.getElementById('latest-articles');
     const popularContainer = document.getElementById('popular-articles');
 
     articles.forEach(article => {
+      if (!article.title) return; // skip empty rows
       const card = document.createElement('article');
       card.className = 'article-card';
-
       card.innerHTML = `
         <img src="${article.image}" alt="${article.title}">
         <h3>${article.title}</h3>
         <p>${article.excerpt}</p>
-        <a href="${article.url}">Read More →</a>
+        <a href="${article.url}" target="_blank">Read More →</a>
       `;
-
-      if (article.category === 'latest') {
-        latestContainer.appendChild(card);
-      }
-
-      if (article.category === 'popular') {
-        popularContainer.appendChild(card);
-      }
+      if (article.category.toLowerCase() === 'latest') latestContainer.appendChild(card);
+      if (article.category.toLowerCase() === 'popular') popularContainer.appendChild(card);
     });
-  })
-  .catch(err => console.error('Blog load error:', err));
+  }
+});
 </script>
 
 
