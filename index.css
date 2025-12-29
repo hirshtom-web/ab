@@ -131,6 +131,12 @@
    HERO / OVERLAP HERO
 ================================ */
 
+.unique-overlap-content-wrapper {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+
 .unique-hero,
 .unique-overlap-hero {
   position: relative;
@@ -321,6 +327,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
