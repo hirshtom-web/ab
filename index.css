@@ -135,7 +135,6 @@
 .unique-overlap-hero {
   position: relative;
   width: 100%;
-  margin: 0 auto;
   padding: 20px 20px;
   min-height: 80vh;
   display: flex;
@@ -145,6 +144,9 @@
   border-radius: 16px;
   overflow: hidden;
   
+ .unique-overlap-hero {
+  margin-left: 40px;
+  margin-right: 40px;
 }
 
 .unique-hero {
@@ -195,6 +197,11 @@
 
   .unique-hero img.unique-overlap {
     width: 300px;
+  }
+   
+  .unique-overlap-hero {
+  margin-left: 20px;
+  margin-right: 20px;
   }
 }
 /* ===============================
@@ -321,6 +328,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
