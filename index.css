@@ -138,7 +138,7 @@
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background-image: url('https://static.wixstatic.com/media/1799ca_7f8077e50be447088c5907bbe27a2358~mv2.jpg');
+  background-image: url('https://static.wixstatic.com/media/1799ca_d7ae8b34a9484b45b9ee4cbf45f057fc~mv2.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -284,6 +284,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
