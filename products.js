@@ -246,22 +246,33 @@ function loadMoreProducts() {
   }
 }
 
-
   if (loadMoreBtn) loadMoreBtn.addEventListener("click", loadMoreProducts);
 
  // --- Image toggle buttons ---
-const imgButtons = document.querySelectorAll(".image-selector .img-btn");
-imgButtons.forEach(btn => {
-  btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
-  btn.addEventListener("click", () => {
-    imgButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentImageIndex = parseInt(btn.dataset.index);
-    localStorage.setItem("gridImageIndex", currentImageIndex);
-    updateGridImages();
-    enableMobileSwipe(); // ensure swipe works after toggling
+  const imgButtons = document.querySelectorAll(".image-selector .img-btn");
+  imgButtons.forEach(btn => {
+    btn.classList.toggle("active", parseInt(btn.dataset.index) === currentImageIndex);
+    btn.addEventListener("click", () => {
+      imgButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentImageIndex = parseInt(btn.dataset.index);
+      localStorage.setItem("gridImageIndex", currentImageIndex);
+      updateGridImages();
+    });
   });
-});
+
+  function updateGridImages() {
+    const productCards = document.querySelectorAll("#productGrid .product-card.is-product");
+    productCards.forEach(card => {
+      const imgList = card.dataset.images ? JSON.parse(card.dataset.images) : [];
+      let newImg = imgList[currentImageIndex] || imgList[0] || "";
+      if (!newImg && imgList.length > 1) newImg = imgList[1]; // fallback
+      card.querySelector("img").src = newImg.includes("http") ? newImg : 'https://static.wixstatic.com/media/' + newImg;
+
+      card.classList.remove("artwork", "lifestyle");
+      card.classList.add(currentImageIndex === 0 ? "artwork" : "lifestyle");
+    });
+  }
 
   // --- Grid column buttons ---
   let defaultCols = window.innerWidth <= 768 ? 2 : 3;
@@ -277,6 +288,7 @@ imgButtons.forEach(btn => {
     });
   });
 
+    
   // --- Shuffle ---
   const shuffleBtn = document.querySelector('.control-btn[title="Shuffle"]');
   if (shuffleBtn) shuffleBtn.addEventListener("click", () => {
