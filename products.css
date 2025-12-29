@@ -482,34 +482,3 @@
   white-space: normal;
   word-break: break-word;
 }
-
-/* ===============================
-   NEW HOVER STYLE
-================================ */
-.product-card .artwork-wrapper {
-  position: relative;
-  width: 80%;       /* small centered image */
-  margin: 0 auto;
-  transition: opacity 0.3s ease;
-  z-index: 2;
-}
-
-.product-card .lifestyle-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;      /* full wrapper coverage */
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 1;
-}
-
-.product-card.hovered .artwork-wrapper {
-  opacity: 0;
-}
-
-.product-card.hovered .lifestyle-wrapper {
-  opacity: 1;
-  transform: scale(1.05);
-}
