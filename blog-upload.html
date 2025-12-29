@@ -2,117 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Upload Blog Post</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Blog JSON Editor</title>
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    max-width: 900px;
-    margin: 40px auto;
-  }
-  input, button, select, textarea {
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 10px;
-    font-size: 14px;
-  }
-  .editor-toolbar button {
-    width: auto;
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-  #editor {
-    border: 1px solid #ccc;
-    min-height: 200px;
-    padding: 10px;
-    line-height: 1.6;
-    overflow-y: auto;
-  }
-  pre {
-    background: #f5f5f5;
-    padding: 16px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
+  input, textarea, button, select { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
+  textarea { min-height: 100px; }
+  .content-block { border: 1px solid #ccc; padding: 10px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
-<h1>Upload Blog Post</h1>
+<h1>Create Blog Post (JSON)</h1>
 
 <form id="blogForm">
-  <input id="title" placeholder="Article Title" required />
-  <input id="subtitle" placeholder="Article Subtitle" />
-  <input id="author" placeholder="Author Name" />
-  <input id="date" type="date" />
-  <input id="views" placeholder="Views" type="number" />
-  <input id="likes" placeholder="Likes" type="number" />
-  <input id="readTime" placeholder="Read time (minutes)" type="number" />
-  <input id="image" placeholder="Hero Image URL" />
+  <input id="postId" placeholder="Post ID (gift-guide-2026)" required />
+  <input id="title" placeholder="Title" required />
+  <input id="subtitle" placeholder="Subtitle" />
+  <input id="author" placeholder="Author" />
+  <input id="heroImage" placeholder="Hero Image URL" />
+  <input id="views" type="number" placeholder="Views" value="0" />
+  <input id="likes" type="number" placeholder="Likes" value="0" />
+  <input id="readTime" type="number" placeholder="Read Time (minutes)" value="5" />
 
-  <h3>Content</h3>
-  <div class="editor-toolbar">
-    <button type="button" onclick="format('bold')"><b>B</b></button>
-    <button type="button" onclick="format('italic')"><i>I</i></button>
-    <button type="button" onclick="format('underline')"><u>U</u></button>
-    <button type="button" onclick="format('insertUnorderedList')">• List</button>
-    <button type="button" onclick="format('insertOrderedList')">1. List</button>
-    <button type="button" onclick="createLink()">Link</button>
-    <button type="button" onclick="format('formatBlock', '<h3>')">Title</button>
-    <button type="button" onclick="format('formatBlock', '<p>')">Text</button>
-  </div>
-  <div id="editor" contenteditable="true"></div>
+  <h3>Content Blocks</h3>
+  <div id="contentBlocks"></div>
+  <button type="button" id="addBlock">Add Block</button>
 
-  <button type="submit">Generate CSV Row</button>
+  <button type="submit">Generate JSON</button>
 </form>
 
-<h3>CSV Row</h3>
+<h3>JSON Output</h3>
 <pre id="output"></pre>
 
 <script>
-  function format(command, value = null) {
-    document.execCommand(command, false, value);
-  }
+const contentBlocks = document.getElementById('contentBlocks');
+document.getElementById('addBlock').addEventListener('click', () => {
+  const blockDiv = document.createElement('div');
+  blockDiv.className = 'content-block';
+  blockDiv.innerHTML = `
+    <select class="blockType">
+      <option value="paragraph">Paragraph</option>
+      <option value="heading">Heading</option>
+      <option value="list">List</option>
+    </select>
+    <textarea class="blockContent" placeholder="Text / list items (comma separated for list)"></textarea>
+    <input class="blockLevel" type="number" placeholder="Heading level (1-6)" style="display:none" />
+    <button type="button" class="removeBlock">Remove</button>
+  `;
+  contentBlocks.appendChild(blockDiv);
 
-  function createLink() {
-    const url = prompt("Enter the URL");
-    if(url) format('createLink', url);
-  }
+  const typeSelect = blockDiv.querySelector('.blockType');
+  const levelInput = blockDiv.querySelector('.blockLevel');
 
-  function generateSlug(text) {
-    return text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
-  }
-
-  document.getElementById("blogForm").addEventListener("submit", e => {
-    e.preventDefault();
-
-    const title = document.getElementById("title").value.trim();
-    const subtitle = document.getElementById("subtitle").value.trim();
-    const author = document.getElementById("author").value.trim();
-    const date = document.getElementById("date").value || new Date().toISOString().split("T")[0];
-    const views = document.getElementById("views").value || 0;
-    const likes = document.getElementById("likes").value || 0;
-    const readTime = document.getElementById("readTime").value || 0;
-    const image = document.getElementById("image").value.trim();
-    const content = document.getElementById("editor").innerHTML.replace(/"/g, '""');
-
-    const postId = generateSlug(title);
-
-    const row = [
-      postId,
-      `"${title.replace(/"/g,'""')}"`,
-      `"${subtitle.replace(/"/g,'""')}"`,
-      author,
-      date,
-      image,
-      views,
-      likes,
-      readTime,
-      `"${content}"`
-    ].join(",");
-
-    document.getElementById("output").textContent = row;
+  typeSelect.addEventListener('change', () => {
+    levelInput.style.display = typeSelect.value === 'heading' ? 'block' : 'none';
   });
+
+  blockDiv.querySelector('.removeBlock').addEventListener('click', () => blockDiv.remove());
+});
+
+document.getElementById('blogForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const post = {
+    id: document.getElementById('postId').value.trim(),
+    title: document.getElementById('title').value.trim(),
+    subtitle: document.getElementById('subtitle').value.trim(),
+    author: document.getElementById('author').value.trim(),
+    date: new Date().toISOString().split('T')[0],
+    heroImage: document.getElementById('heroImage').value.trim(),
+    views: parseInt(document.getElementById('views').value),
+    likes: parseInt(document.getElementById('likes').value),
+    readTime: parseInt(document.getElementById('readTime').value),
+    content: []
+  };
+
+  document.querySelectorAll('.content-block').forEach(block => {
+    const type = block.querySelector('.blockType').value;
+    const text = block.querySelector('.blockContent').value.trim();
+    if (!text) return;
+
+    if (type === 'heading') {
+      const level = parseInt(block.querySelector('.blockLevel').value) || 2;
+      post.content.push({ type, level, text });
+    } else if (type === 'list') {
+      const items = text.split(',').map(i => i.trim()).filter(Boolean);
+      post.content.push({ type, style: 'bullet', items });
+    } else {
+      post.content.push({ type, text });
+    }
+  });
+
+  document.getElementById('output').textContent = JSON.stringify(post, null, 2);
+});
 </script>
 
 </body>
