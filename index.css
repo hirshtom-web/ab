@@ -149,7 +149,11 @@
   background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
   background-size: cover;
   background-position: center;
-   padding: 0 20px;
+  padding: 20px 20px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .unique-hero img.unique-overlap {
@@ -316,4 +320,5 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
