@@ -298,3 +298,41 @@
   text-decoration: none;
   color: #000;
 }
+
+
+/* Footer Social Icons */
+.footer-social {
+  display: flex;
+  justify-content: center; /* center icons */
+  align-items: center;
+  gap: 12px; /* space between icons */
+  margin-top: 16px; /* optional spacing from above content */
+}
+
+.footer-social a {
+  display: inline-block;
+  transition: transform 0.2s ease, opacity 0.2s ease; /* hover effects */
+}
+
+.footer-social a:hover {
+  transform: scale(1.1); /* slightly enlarge on hover */
+  opacity: 0.8;
+}
+
+.footer-social img {
+  width: 24px;  /* adjust size here */
+  height: 24px; /* maintain square */
+  display: block;
+  object-fit: contain; /* keeps icon proportions */
+}
+
+/* Optional: smaller icons on mobile */
+@media (max-width: 768px) {
+  .footer-social img {
+    width: 20px;
+    height: 20px;
+  }
+  .footer-social {
+    gap: 10px;
+  }
+}
