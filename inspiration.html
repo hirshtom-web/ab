@@ -25,59 +25,16 @@
 
  <main class="inspiration-page">
 
-  <!-- Latest Articles -->
-  <section class="articles-section">
-    <h2>Latest Articles</h2>
-    <div class="articles-grid">
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=1" alt="Article 1">
-        <h3>Exploring Modern Art Trends</h3>
-        <p>Discover the latest trends in contemporary art and how artists are innovating today.</p>
-        <a href="#">Read More →</a>
-      </article>
+<section class="articles-section">
+  <h2>Latest Articles</h2>
+  <div class="articles-grid" id="latest-articles"></div>
+</section>
 
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=2" alt="Article 2">
-        <h3>The Power of Color in Design</h3>
-        <p>Learn how color choices can change the mood and perception of any artwork or space.</p>
-        <a href="#">Read More →</a>
-      </article>
+<section class="articles-section">
+  <h2>Popular Picks</h2>
+  <div class="articles-grid" id="popular-articles"></div>
+</section>
 
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=3" alt="Article 3">
-        <h3>Art for Mindfulness</h3>
-        <p>Explore the connection between art and mental well-being, and how to use creativity to relax.</p>
-        <a href="#">Read More →</a>
-      </article>
-
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=4" alt="Article 4">
-        <h3>Gallery Walls 101</h3>
-        <p>Step-by-step guide to creating stunning gallery walls that tell your story visually.</p>
-        <a href="#">Read More →</a>
-      </article>
-    </div>
-  </section>
-
-  <!-- Popular Picks -->
-  <section class="articles-section">
-    <h2>Popular Picks</h2>
-    <div class="articles-grid">
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=5" alt="Article 5">
-        <h3>Top 10 Must-See Artworks</h3>
-        <p>From classics to modern masterpieces, explore the artworks everyone is talking about.</p>
-        <a href="#">Read More →</a>
-      </article>
-
-      <article class="article-card">
-        <img src="https://picsum.photos/400/250?random=6" alt="Article 6">
-        <h3>How to Curate Your Own Collection</h3>
-        <p>Tips for art collectors: building a personal collection that’s both meaningful and valuable.</p>
-        <a href="#">Read More →</a>
-      </article>
-    </div>
-  </section>
 
 </main>
 
@@ -112,6 +69,35 @@
       initFooter();
     })
     .catch(err => console.error("Footer load failed:", err));
+</script>
+<script>
+fetch('blog.json')
+  .then(res => res.json())
+  .then(articles => {
+    const latestContainer = document.getElementById('latest-articles');
+    const popularContainer = document.getElementById('popular-articles');
+
+    articles.forEach(article => {
+      const card = document.createElement('article');
+      card.className = 'article-card';
+
+      card.innerHTML = `
+        <img src="${article.image}" alt="${article.title}">
+        <h3>${article.title}</h3>
+        <p>${article.excerpt}</p>
+        <a href="${article.url}">Read More →</a>
+      `;
+
+      if (article.category === 'latest') {
+        latestContainer.appendChild(card);
+      }
+
+      if (article.category === 'popular') {
+        popularContainer.appendChild(card);
+      }
+    });
+  })
+  .catch(err => console.error('Blog load error:', err));
 </script>
 
 
