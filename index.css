@@ -130,44 +130,73 @@
 /* ===============================
    HERO / OVERLAP HERO
 ================================ */
-.unique-overlap-content-wrapper {
-  padding: 0 20px;      /* 20px on left and right */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  box-sizing: border-box;
-}
 
-
+.unique-hero,
 .unique-overlap-hero {
   position: relative;
   width: 100%;
-  min-height: 50vh;  /* smaller height */
-  max-height: 600px; /* optional */
+  margin: 0 auto;
+  padding: 20px 20px;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   border-radius: 16px;
   overflow: hidden;
+  
 }
 
-.unique-overlap-content {
+.unique-hero {
+  background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
+  background-size: cover;
+  background-position: center;
+  padding: 20px 20px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
+  flex-wrap: wrap;
 }
 
-.unique-section-top-img {
-  width: 60%;
-  max-width: 250px;
-  height: auto;
+.unique-hero img.unique-overlap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  z-index: 2;
 }
 
-.unique-cta-btn {
-  padding: 10px 24px;
-  font-size: 14px;
+.unique-overlap-hero img.unique-overlap-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+.unique-overlap-hero .unique-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+}
+
+.unique-overlap-hero .unique-overlap-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .unique-hero,
+  .unique-overlap-hero {
+    min-height: 60vh;
+  }
+
+  .unique-hero img.unique-overlap {
+    width: 300px;
+  }
+}
 /* ===============================
    HALF 50 / 50 SECTIONS
 ================================ */
@@ -292,6 +321,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
