@@ -293,9 +293,18 @@
   display: block;
 }
 
-.footer-social a {
+.footer-social {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  gap: 16px; /* space between icons */
+}
+
+.footer-social a {
+  transition: opacity 0.2s ease;
+}
+
+.footer-social a:hover {
+  opacity: 0.6;
 }
 
