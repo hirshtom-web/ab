@@ -171,6 +171,39 @@
 }
 
 /* ===============================
+   FULL WIDTH SECTION WITH 20PX MARGINS
+================================ */
+.unique-full-section {
+  width: calc(100% - 40px); /* 20px margin on each side */
+  margin: 0 20px;           /* 20px margins left/right */
+  padding: 20px;
+  min-height: 400px;        /* adjust as needed */
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background-image: url('https://static.wixstatic.com/media/1799ca_7f8077e50be447088c5907bbe27a2358~mv2.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.unique-full-section .unique-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.unique-full-section .unique-full-content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* ===============================
    HALF 50 / 50 SECTIONS
 ================================ */
 .unique-half-section {
@@ -294,6 +327,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
