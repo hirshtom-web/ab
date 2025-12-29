@@ -127,7 +127,6 @@
   opacity: 0.85;
 }
 
-
 /* ===============================
    HERO / OVERLAP HERO
 ================================ */
@@ -140,17 +139,20 @@
 .unique-hero,
 .unique-overlap-hero {
   position: relative;
-  width: calc(100% - 40px); /* 20px on each side */
-  padding: 20px;
-  max-height: 500px;
+  width: calc(100% - 40px);   /* 20px margin each side */
+  max-height: 500px;          /* adjust as needed */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   border-radius: 16px;
   overflow: hidden;
-  background-color: #f0f0f0; /* Example page color */
-  margin: 0 20px; /* 20px margins on sides */
+  margin: 0 20px;
+  background-color: #f0f0f0; /* page color behind hero */
+  background-image: url('https://static.wixstatic.com/media/1799ca_9bb1bd33620a418c843583bdd993d063~mv2.png');
+  background-size: cover;      /* fills container */
+  background-position: center; /* center the image */
+  background-repeat: no-repeat;
 }
 
 .unique-hero img.unique-overlap {
@@ -158,18 +160,22 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;        /* show full image inside container */
+  object-position: center;
   z-index: 2;
 }
 
 @media (max-width: 900px) {
   .unique-hero,
   .unique-overlap-hero {
-    min-height: 60vh;
+    max-height: 300px;
   }
 
   .unique-hero img.unique-overlap {
-    width: 300px;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -297,6 +303,7 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
 
 
 
