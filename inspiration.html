@@ -70,43 +70,43 @@
     })
     .catch(err => console.error("Footer load failed:", err));
 </script>
-<script>
 fetch('blog-posts.json')
   .then(res => res.json())
   .then(articles => {
-    // Sort by date descending for "Latest"
-    const latestArticles = articles
-      .filter(a => a.title) // skip empty items
-      .sort((a,b) => new Date(b.date) - new Date(a.date));
+    const container = document.getElementById('latest-articles');
 
-    const latestContainer = document.getElementById('latest-articles');
-    const popularContainer = document.getElementById('popular-articles');
+    // Sort latest by date descending
+    const latestArticles = articles.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-    latestArticles.forEach((article, index) => {
+    latestArticles.forEach(article => {
+      if (!article.title) return;
+
+      // Limit title & subtitle to ~10 words
+      const titleWords = article.title.split(' ').slice(0, 10).join(' ') + (article.title.split(' ').length > 10 ? ' …' : '');
+      const subtitleWords = article.subtitle.split(' ').slice(0, 10).join(' ') + (article.subtitle.split(' ').length > 10 ? ' …' : '');
+
       const card = document.createElement('article');
       card.className = 'article-card';
       card.innerHTML = `
         <img src="${article.heroImage}" alt="${article.title}">
-        <h3>${article.title}</h3>
-        <p>${article.subtitle}</p>
-        <div class="meta">
-          <span>${article.author}</span> • 
-          <span>${article.date}</span> • 
-          <span>${article.views || 0} Views</span> • 
-          <span>${article.likes || 0} Likes</span> • 
-          <span>${article.readTime || 1} min read</span>
-        </div>
-        <a href="blog-post.html?id=${article.id}" target="_blank">Read More →</a>
-      `;
+        <div class="article-text">
+          <span class="category">${article.category || 'General'}</span>
+          <h3 class="title">${titleWords}</h3>
+          <p class="subtitle">${subtitleWords}</p>
+          
+          <div class="meta-row">
+            <span class="meta-left">${article.date} • ${article.readTime || 5} min read</span>
+            <span class="meta-right">❤️ ${article.likes || 0} • 👁️ ${article.views || 0}</span>
+          </div>
 
-      // First 4 = Latest
-      if (index < 4) latestContainer.appendChild(card);
-      // Next 4 = Popular
-      if (index >= 4 && index < 8) popularContainer.appendChild(card);
+          <a href="blog-post.html?id=${encodeURIComponent(article.id)}" class="view-more">View More →</a>
+        </div>
+      `;
+      container.appendChild(card);
     });
   })
-  .catch(err => console.error('❌ Failed to load JSON', err));
-</script>
+  .catch(err => console.error("Error loading blog JSON:", err));
+
 
 
 
