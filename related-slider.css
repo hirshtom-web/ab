@@ -1,0 +1,118 @@
+/* ===============================
+   RELATED PRODUCTS SLIDER SECTION
+================================ */
+.related-slider-section {
+  width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #fff;
+}
+
+.related-slider-section .related-title-h2 {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .related-slider-section {
+    padding: 0 20px;
+  }
+
+  .related-slider-section .related-title-h2 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+}
+
+/* ===============================
+   RELATED SLIDER CONTAINER
+================================ */
+.slider-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+}
+
+.slider-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===============================
+   RELATED SLIDER ITEM
+================================ */
+.related-slider-item {
+  flex: 0 0 auto;
+  width: 300px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .related-slider-item {
+    width: 200px;
+  }
+}
+
+/* ===============================
+   IMAGE WRAPPER
+================================ */
+.related-slider-item .img-wrapper {
+  width: 100%;
+  background: #f9f5f2;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  aspect-ratio: 3 / 4;
+}
+
+.related-slider-item .img-wrapper img {
+  max-width: 80%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+}
+
+/* ===============================
+   SLIDER ITEM INFO
+================================ */
+.related-slider-info {
+  margin-top: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.related-slider-info h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.related-slider-info .price {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ec7302;
+}
+
+@media (max-width: 768px) {
+  .related-slider-info h4,
+  .related-slider-info .price {
+    font-size: 10px;
+  }
+}
