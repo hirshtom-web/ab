@@ -1,27 +1,5 @@
 /* ===============================
-   RELATED TITLE SLIDER 
-================================ */
-
-.related-title-h2 {
-  font-size: 20px;
-  font-weight: 500;
-  text-align: center;
-  margin: 50px 0;
-  letter-spacing: 0.02em;
-}
-
-@media (max-width: 768px) {
-.related-title-h2 {
-  font-size: 15px;
-  font-weight: 500;
-  text-align: center;
-  margin: 30px 0;
-  letter-spacing: 0.02em;
-}
-  }
-
-/* ===============================
-   RELATED PRODUCTS SLIDER SECTION
+   RELATED SLIDER SECTION
 ================================ */
 .related-slider-section {
   width: 100%;
@@ -31,28 +9,16 @@
   background: #fff;
 }
 
-.related-slider-section .related-title-h2 {
+.related-slider-section .unique-title-h2 {
   margin-top: 50px;
   margin-bottom: 50px;
   text-align: center;
 }
 
-@media (max-width: 768px) {
-  .related-slider-section {
-    padding: 0 20px;
-    margin-bottom: 30px;
-  }
-
-  .related-slider-section .related-title-h2 {
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
-}
-
 /* ===============================
    RELATED SLIDER CONTAINER
 ================================ */
-.slider-container {
+.related-slider-container {
   display: flex;
   gap: 20px;
   overflow-x: auto;
@@ -61,7 +27,7 @@
   padding: 20px 0;
 }
 
-.slider-container::-webkit-scrollbar {
+.related-slider-container::-webkit-scrollbar {
   display: none;
 }
 
@@ -78,14 +44,8 @@
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .related-slider-item {
-    width: 200px;
-  }
-}
-
 /* ===============================
-   IMAGE WRAPPER
+   IMAGE WRAPPER (BEIGE BG)
 ================================ */
 .related-slider-item .img-wrapper {
   width: 100%;
@@ -104,12 +64,11 @@
   max-width: 80%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 12px;
   display: block;
 }
 
 /* ===============================
-   SLIDER ITEM INFO
+   RELATED SLIDER INFO
 ================================ */
 .related-slider-info {
   margin-top: 8px;
@@ -133,10 +92,25 @@
   color: #ec7302;
 }
 
+/* ===============================
+   MOBILE
+================================ */
 @media (max-width: 768px) {
+  .related-slider-item {
+    width: 200px;
+  }
+
+  .related-slider-section {
+    padding: 0 20px;
+  }
+
+  .related-slider-section .unique-title-h2 {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
   .related-slider-info h4,
   .related-slider-info .price {
     font-size: 10px;
   }
 }
-
