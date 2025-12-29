@@ -2,99 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Blog JSON Editor</title>
+<title>Blog Editor</title>
 <style>
   body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; }
   input, textarea, button, select { width: 100%; margin-bottom: 12px; padding: 10px; font-size: 14px; }
-  textarea { min-height: 100px; }
-  .content-block { border: 1px solid #ccc; padding: 10px; margin-bottom: 8px; }
+  textarea { min-height: 120px; }
+  pre { background: #f5f5f5; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+  .content-block { border: 1px solid #ccc; padding: 8px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
-<h1>Create Blog Post (JSON)</h1>
+<h1>Create Blog Post</h1>
 
 <form id="blogForm">
-  <input id="postId" placeholder="Post ID (gift-guide-2026)" required />
-  <input id="title" placeholder="Title" required />
-  <input id="subtitle" placeholder="Subtitle" />
-  <input id="author" placeholder="Author" />
+  <input id="title" placeholder="Article Title" required />
+  <input id="subtitle" placeholder="Article Subtitle" />
+  <input id="author" placeholder="Author Name" />
   <input id="heroImage" placeholder="Hero Image URL" />
   <input id="views" type="number" placeholder="Views" value="0" />
   <input id="likes" type="number" placeholder="Likes" value="0" />
-  <input id="readTime" type="number" placeholder="Read Time (minutes)" value="5" />
+  <input id="readTime" type="number" placeholder="Read Time (minutes)" value="1" />
 
   <h3>Content Blocks</h3>
   <div id="contentBlocks"></div>
-  <button type="button" id="addBlock">Add Block</button>
+  <button type="button" onclick="addContentBlock()">Add Block</button>
 
-  <button type="submit">Generate JSON</button>
+  <button type="submit">Generate JSON Post</button>
 </form>
 
 <h3>JSON Output</h3>
 <pre id="output"></pre>
+<button onclick="copyJSON()">Copy JSON to Clipboard</button>
 
 <script>
-const contentBlocks = document.getElementById('contentBlocks');
-document.getElementById('addBlock').addEventListener('click', () => {
-  const blockDiv = document.createElement('div');
-  blockDiv.className = 'content-block';
-  blockDiv.innerHTML = `
-    <select class="blockType">
+let allPosts = [];
+
+// Generate URL-friendly ID
+function generateId(title) {
+  return title.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Add a new content block
+function addContentBlock() {
+  const container = document.getElementById('contentBlocks');
+  const div = document.createElement('div');
+  div.className = 'content-block';
+  div.innerHTML = `
+    <select class="block-type">
       <option value="paragraph">Paragraph</option>
-      <option value="heading">Heading</option>
-      <option value="list">List</option>
+      <option value="bullet">Bullet List</option>
+      <option value="numbered">Numbered List</option>
+      <option value="link">Link</option>
+      <option value="title">Title</option>
     </select>
-    <textarea class="blockContent" placeholder="Text / list items (comma separated for list)"></textarea>
-    <input class="blockLevel" type="number" placeholder="Heading level (1-6)" style="display:none" />
-    <button type="button" class="removeBlock">Remove</button>
+    <textarea class="block-text" placeholder="Enter content or list items (line by line)"></textarea>
+    <button type="button" onclick="this.parentNode.remove()">Remove Block</button>
   `;
-  contentBlocks.appendChild(blockDiv);
+  container.appendChild(div);
+}
 
-  const typeSelect = blockDiv.querySelector('.blockType');
-  const levelInput = blockDiv.querySelector('.blockLevel');
-
-  typeSelect.addEventListener('change', () => {
-    levelInput.style.display = typeSelect.value === 'heading' ? 'block' : 'none';
-  });
-
-  blockDiv.querySelector('.removeBlock').addEventListener('click', () => blockDiv.remove());
-});
-
-document.getElementById('blogForm').addEventListener('submit', e => {
+document.getElementById("blogForm").addEventListener("submit", e => {
   e.preventDefault();
 
+  const title = document.getElementById("title").value.trim();
+  const postId = generateId(title);
+
   const post = {
-    id: document.getElementById('postId').value.trim(),
-    title: document.getElementById('title').value.trim(),
-    subtitle: document.getElementById('subtitle').value.trim(),
-    author: document.getElementById('author').value.trim(),
-    date: new Date().toISOString().split('T')[0],
-    heroImage: document.getElementById('heroImage').value.trim(),
-    views: parseInt(document.getElementById('views').value),
-    likes: parseInt(document.getElementById('likes').value),
-    readTime: parseInt(document.getElementById('readTime').value),
+    id: postId,
+    title: title,
+    subtitle: document.getElementById("subtitle").value.trim(),
+    author: document.getElementById("author").value.trim(),
+    date: new Date().toISOString().split("T")[0],
+    heroImage: document.getElementById("heroImage").value.trim(),
+    views: parseInt(document.getElementById("views").value) || 0,
+    likes: parseInt(document.getElementById("likes").value) || 0,
+    readTime: parseInt(document.getElementById("readTime").value) || 1,
     content: []
   };
 
+  // Get content blocks
   document.querySelectorAll('.content-block').forEach(block => {
-    const type = block.querySelector('.blockType').value;
-    const text = block.querySelector('.blockContent').value.trim();
+    const type = block.querySelector('.block-type').value;
+    const text = block.querySelector('.block-text').value.trim();
     if (!text) return;
 
-    if (type === 'heading') {
-      const level = parseInt(block.querySelector('.blockLevel').value) || 2;
-      post.content.push({ type, level, text });
-    } else if (type === 'list') {
-      const items = text.split(',').map(i => i.trim()).filter(Boolean);
-      post.content.push({ type, style: 'bullet', items });
+    if (type === 'bullet' || type === 'numbered') {
+      post.content.push({
+        type: type,
+        items: text.split('\n').filter(line => line.trim())
+      });
     } else {
       post.content.push({ type, text });
     }
   });
 
-  document.getElementById('output').textContent = JSON.stringify(post, null, 2);
+  allPosts.push(post);
+  document.getElementById("output").textContent = JSON.stringify(allPosts, null, 2);
 });
+
+// Copy JSON to clipboard
+function copyJSON() {
+  const output = document.getElementById("output");
+  navigator.clipboard.writeText(output.textContent).then(() => {
+    alert('JSON copied to clipboard!');
+  });
+}
 </script>
 
 </body>
