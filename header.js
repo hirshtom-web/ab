@@ -1,4 +1,4 @@
-like this: function initHeader() {
+function initHeader() {
 
   
   document.getElementById("cartIcon")?.addEventListener("click", () => {
@@ -91,3 +91,4 @@ document.addEventListener("keydown", (e) => {
   if (mobileCart) mobileCart.onclick = () => location.href = "cart.html";
   if (mobileHelp) mobileHelp.onclick = () => location.href = "help.html";
 }
+
