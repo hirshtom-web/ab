@@ -1,10 +1,9 @@
 function initHeader() {
 
-  
+  // ---------- CART ----------
   document.getElementById("cartIcon")?.addEventListener("click", () => {
-  window.location.href = "cart.html";
-});
-
+    window.location.href = "cart.html";
+  });
 
   // ---------- MOBILE HAMBURGER ----------
   const hamburger = document.getElementById("hamburger");
@@ -47,42 +46,39 @@ function initHeader() {
       if (!open) desktopSearchBar.focus();
     });
   }
-  
-// ---------- GIFT POPUP ----------
-const giftIcon = document.getElementById("giftIcon");
-const mobileGift = document.getElementById("mobileGift");
-const popup = document.getElementById("itemPopup");
-const closePopup = document.getElementById("closePopup");
 
-function openPopup() {
-  if (!popup) return;
-  popup.style.display = "flex";
-}
+  // ---------- GIFT POPUP ----------
+  const giftIcon = document.getElementById("giftIcon");
+  const mobileGift = document.getElementById("mobileGift");
+  const popup = document.getElementById("itemPopup");
+  const closePopup = document.getElementById("closePopup");
 
-if (giftIcon) giftIcon.addEventListener("click", openPopup);
-if (mobileGift) mobileGift.addEventListener("click", openPopup);
-
-// Close with X
-if (closePopup && popup) {
-  closePopup.addEventListener("click", (e) => {
-    e.stopPropagation(); // 👈 CRITICAL
-    popup.style.display = "none";
-  });
-}
-
-// Close when clicking background
-if (popup) {
-  popup.addEventListener("click", (e) => {
-    if (e.target === popup) popup.style.display = "none";
-  });
-}
-
-// Close with ESC
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && popup?.style.display === "flex") {
-    popup.style.display = "none";
+  function openPopup() {
+    if (!popup) return;
+    popup.style.display = "flex";
   }
-});
+
+  if (giftIcon) giftIcon.addEventListener("click", openPopup);
+  if (mobileGift) mobileGift.addEventListener("click", openPopup);
+
+  if (closePopup && popup) {
+    closePopup.addEventListener("click", (e) => {
+      e.stopPropagation();
+      popup.style.display = "none";
+    });
+  }
+
+  if (popup) {
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) popup.style.display = "none";
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && popup?.style.display === "flex") {
+      popup.style.display = "none";
+    }
+  });
 
   // ---------- MOBILE NAV LINKS ----------
   const mobileCart = document.getElementById("mobileCart");
@@ -90,4 +86,26 @@ document.addEventListener("keydown", (e) => {
 
   if (mobileCart) mobileCart.onclick = () => location.href = "cart.html";
   if (mobileHelp) mobileHelp.onclick = () => location.href = "help.html";
+
+  // ---------- MOBILE MEGA MENU (TAP TO OPEN) ----------
+  document.addEventListener("click", function (e) {
+    const link = e.target.closest(".menu > a");
+    if (!link) return;
+
+    // only intercept on mobile
+    if (window.innerWidth > 768) return;
+
+    e.preventDefault();
+
+    const menu = link.parentElement;
+    const isOpen = menu.classList.contains("active");
+
+    // close all
+    document.querySelectorAll(".menu.active")
+      .forEach(m => m.classList.remove("active"));
+
+    // toggle current
+    if (!isOpen) menu.classList.add("active");
+  });
+
 }
