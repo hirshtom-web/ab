@@ -96,9 +96,17 @@ fetch('blog-posts.json')
           <p class="subtitle">${subtitleWords}</p>
           
           <div class="meta-row">
-            <span class="meta-left">${article.date} • ${article.readTime || 5} min read</span>
-            <span class="meta-right">❤️ ${article.likes || 0} • 👁️ ${article.views || 0}</span>
-          </div>
+  <span class="meta-item">
+    <span class="material-symbols-outlined">schedule</span>
+    ${article.readTime || 5} min read
+  </span>
+
+  <span class="meta-item">
+    <span class="material-symbols-outlined">visibility</span>
+    ${article.views || 0}
+  </span>
+</div>
+
 
           <a href="blog-post.html?id=${encodeURIComponent(article.id)}" class="view-more">View More →</a>
         </div>
