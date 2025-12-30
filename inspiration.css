@@ -1,35 +1,71 @@
+/* =========================
+   SECTION TITLES
+========================= */
+
+.section-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 60px 0 32px;
+  color: #000;
+}
+
+/* =========================
+   ARTICLES GRID
+========================= */
+
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
-  padding: 0 30px; /* 30px on left and right */
-  max-width: 1200px; /* optional, center the grid */
+  padding: 0 40px; /* 40px left & right */
+  max-width: 1400px;
   margin: 0 auto;
 }
 
+/* =========================
+   ARTICLE CARD
+========================= */
+
 .article-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .article-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
 }
+
+/* =========================
+   CARD IMAGE
+========================= */
 
 .article-card img {
   width: 100%;
-  height: 160px;
+  height: 180px;
   object-fit: cover;
 }
 
+/* =========================
+   CARD CONTENT
+========================= */
+
 .article-text {
-  padding: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
+
+/* =========================
+   CATEGORY TAG
+========================= */
 
 .category {
   display: inline-block;
@@ -37,46 +73,91 @@
   color: #fff;
   font-size: 12px;
   font-weight: 500;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  width: fit-content;
 }
+
+/* =========================
+   TITLE & SUBTITLE
+========================= */
 
 .title {
   font-size: 18px;
+  font-weight: 600;
   margin-bottom: 8px;
   color: #000;
+  line-height: 1.3;
 }
 
 .subtitle {
   font-size: 14px;
   color: #555;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   line-height: 1.5;
 }
+
+/* =========================
+   META ROW (ICONS READY)
+========================= */
 
 .meta-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 12px;
   color: #777;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* SVG ICONS */
+.meta-item svg {
+  width: 14px;
+  height: 14px;
+  stroke: #777;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* =========================
+   VIEW MORE LINK
+========================= */
+
 .view-more {
+  margin-top: auto;
   text-decoration: none;
   font-weight: 500;
   color: #3b6edc;
+  font-size: 14px;
 }
 
 .view-more:hover {
   text-decoration: underline;
 }
 
-/* Responsive: 1 card per row on small screens */
+/* =========================
+   RESPONSIVE
+========================= */
+
 @media (max-width: 768px) {
   .articles-grid {
     grid-template-columns: 1fr;
-    padding: 0 20px; /* less side padding for mobile */
+    padding: 0 20px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    margin: 40px 0 24px;
+  }
+
+  .article-card img {
+    height: 160px;
   }
 }
