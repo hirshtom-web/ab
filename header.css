@@ -512,16 +512,17 @@ header {
 ------------------------------ */
 .mega-inner {
   display: flex;
-  gap: 60px;          /* space between columns */
-  padding-left: 40px;  /* first column 40px from screen left */
-  padding-right: 40px; /* optional: keep right spacing */
+  gap: 60px;              /* space between columns */
+  padding-left: 40px;      /* first column spacing from left screen edge */
+  padding-right: 40px;     /* optional right spacing */
   padding-top: 40px;
   padding-bottom: 40px;
-  width: 100%;         /* content stays inside mega menu */
-  box-sizing: border-box;
-  max-width: 1200px;   /* keeps columns neat on large screens */
-  margin: 0 auto;      /* centers content */
+  width: 100%;             /* takes full width of mega-menu */
+  box-sizing: border-box;  /* ensure padding stays inside */
+  margin: 0;               /* remove auto centering */
+  max-width: none;         /* remove max-width */
 }
+
 
 /* Columns styling */
 .mega-col h4 {
