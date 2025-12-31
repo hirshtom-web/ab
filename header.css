@@ -668,3 +668,31 @@ header {
   line-height: 1.2;   /* tighter spacing */
 }
 
+
+
+/* Badge */
+.nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  font-size: 6px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 2px 4px;
+  border-radius: 10px;
+  background: #3b6edc; /* or brand color */
+  color: #fff;
+  line-height: 1;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Optional: subtle animation */
+.nav-badge {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
