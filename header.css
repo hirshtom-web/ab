@@ -483,7 +483,7 @@ header {
 /* Mega menu: full viewport width, aligned to left edge */
 .mega-menu {
   position: fixed;       /* fixed to viewport */
-  top: 75px;             /* adjust to header height */
+  top: 70px;             /* adjust to header height */
   left: 0;
   width: 100%;           /* full width */
   background: #f7f7f7;
