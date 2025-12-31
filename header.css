@@ -471,26 +471,26 @@ nav a:hover {
    Header wrapper
 ------------------------------ */
 header {
-  position: relative;  /* so mega menu absolute inside header works */
+  position: relative;  /* parent for absolute positioning */
 }
 
 /* -----------------------------
    Nav items
 ------------------------------ */
 .nav-item {
-  position: relative;   /* mega menu absolute inside it */
+  position: relative;   /* for hover reference */
   display: flex;
-  align-items: center;  /* fixes Categories vertical alignment */
+  align-items: center;  /* aligns Categories with other links */
 }
 
 /* -----------------------------
    Mega menu (full-width background)
 ------------------------------ */
 .mega-menu {
-  position: absolute;   /* relative to nav-item */
-  top: 100%;            /* directly below nav-item */
+  position: absolute;   /* relative to header */
+  top: 100%;            /* right below header */
   left: 0;
-  width: 100vw;         /* full screen width */
+  width: 100vw;         /* full viewport width */
   background: #f7f7f7;
   display: none;
   z-index: 9999;
@@ -508,21 +508,18 @@ header {
 }
 
 /* -----------------------------
-   Inner content (spacing and columns)
+   Inner content (columns, spacing)
 ------------------------------ */
 .mega-inner {
   display: flex;
-  gap: 60px;              /* space between columns */
-  padding-left: 40px;      /* first column spacing from left screen edge */
-  padding-right: 40px;     /* optional right spacing */
+  gap: 60px;           /* space between columns */
+  padding-left: 40px;   /* first column starts 40px from screen left */
+  padding-right: 40px;  /* optional right padding */
   padding-top: 40px;
   padding-bottom: 40px;
-  width: 100%;             /* takes full width of mega-menu */
-  box-sizing: border-box;  /* ensure padding stays inside */
-  margin: 0;               /* remove auto centering */
-  max-width: none;         /* remove max-width */
+  width: 100%;          /* full width of mega-menu */
+  box-sizing: border-box;
 }
-
 
 /* Columns styling */
 .mega-col h4 {
@@ -544,9 +541,7 @@ header {
   text-decoration: underline;
 }
 
-/* -----------------------------
-   Desktop-only hide for mobile
------------------------------- */
+/* Desktop-only hide */
 @media (max-width: 1024px) {
   .mega-menu {
     display: none !important;
