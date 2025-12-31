@@ -545,3 +545,11 @@ header {
   top: 100%;       /* right below the nav link */
   height: 10px;    /* invisible buffer area */
 }
+
+
+.mega-menu.hide {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none; /* prevents interaction while hidden */
+}
