@@ -467,23 +467,36 @@ nav a:hover {
 
 
 
-/* Wrapper must be relative */
+/* -----------------------------
+   Header wrapper
+------------------------------ */
 header {
-  position: relative;
+  position: relative;  /* so mega menu absolute inside header works */
 }
 
-/* Mega menu full-width background */
+/* -----------------------------
+   Nav items
+------------------------------ */
+.nav-item {
+  position: relative;   /* mega menu absolute inside it */
+  display: flex;
+  align-items: center;  /* fixes Categories vertical alignment */
+}
+
+/* -----------------------------
+   Mega menu (full-width background)
+------------------------------ */
 .mega-menu {
-  position: absolute;
-  top: 100%;       /* directly under header */
+  position: absolute;   /* relative to nav-item */
+  top: 100%;            /* directly below nav-item */
   left: 0;
-  width: 100vw;    /* full screen width */
+  width: 100vw;         /* full screen width */
   background: #f7f7f7;
   display: none;
   z-index: 9999;
 
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(5px);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -494,15 +507,20 @@ header {
   transform: translateY(0);
 }
 
-/* Inner content starting 40px from left */
+/* -----------------------------
+   Inner content (spacing and columns)
+------------------------------ */
 .mega-inner {
   display: flex;
-  gap: 60px;
-  padding-left: 40px;   /* left spacing from screen edge */
+  gap: 60px;          /* space between columns */
+  padding-left: 40px;  /* first column 40px from screen left */
+  padding-right: 40px; /* optional: keep right spacing */
   padding-top: 40px;
   padding-bottom: 40px;
+  width: 100%;         /* content stays inside mega menu */
   box-sizing: border-box;
-  width: 100%;           /* ensures content stays inside mega-menu */
+  max-width: 1200px;   /* keeps columns neat on large screens */
+  margin: 0 auto;      /* centers content */
 }
 
 /* Columns styling */
@@ -525,21 +543,11 @@ header {
   text-decoration: underline;
 }
 
-/* Desktop-only hide */
+/* -----------------------------
+   Desktop-only hide for mobile
+------------------------------ */
 @media (max-width: 1024px) {
   .mega-menu {
     display: none !important;
   }
-}
-
-/* Make the nav-item flex and vertically center the link */
-.nav-item {
-  display: flex;
-  align-items: center;
-  position: relative; /* for absolute mega-menu */
-}
-.mega-menu {
-  top: 100%;   /* relative to header/nav-item */
-  left: 0;
-  width: 100vw;
 }
