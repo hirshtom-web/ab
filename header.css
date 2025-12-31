@@ -479,21 +479,35 @@ nav a:hover {
   position: relative;
 }
 
-/* Mega menu */
+/* =========================
+   MEGA MENU (DESKTOP)
+========================= */
+header {
+  position: relative;
+}
+
+/* Full-width dropdown */
 .mega-menu {
-  position: fixed;     /* NOT absolute */
-  left: 0;
-  top: 100%;           /* aligns to bottom of header */
+  position: absolute;               /* ← IMPORTANT */
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
   width: 100vw;
   background: #f7f7f7;
   display: none;
-  z-index: 999;
+  z-index: 9999;
+
+  /* animation */
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-
-/* Show on hover (desktop) */
+/* Show on hover */
 .has-mega:hover .mega-menu {
   display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Inner container */
@@ -524,29 +538,12 @@ nav a:hover {
 .mega-col a:hover {
   text-decoration: underline;
 }
-.mega-menu {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
 
-.has-mega:hover .mega-menu {
-  opacity: 1;
-  transform: translateY(0);
+/* =========================
+   DESKTOP ONLY
+========================= */
+@media (max-width: 1024px) {
+  .mega-menu {
+    display: none !important;
+  }
 }
-
-header {
-  position: relative;
-}
-
-.mega-menu {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.has-mega:hover .mega-menu {
-  opacity: 1;
-  transform: translateY(0);
-}
-
