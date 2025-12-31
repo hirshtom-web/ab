@@ -564,7 +564,6 @@ header {
   width: 100vw; /* full viewport width */
   background: #fff;
   padding: 42px 64px;
-  box-shadow: 0 30px 70px rgba(0,0,0,.18);
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
