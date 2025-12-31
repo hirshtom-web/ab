@@ -464,3 +464,76 @@ nav a:hover {
 }
 
 
+
+
+
+/* Header center */
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Nav item wrapper */
+.nav-item {
+  position: relative;
+}
+
+/* Mega menu */
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100vw;
+  background: #f7f7f7;
+  display: none;
+  z-index: 1000;
+}
+
+/* Show on hover (desktop) */
+.has-mega:hover .mega-menu {
+  display: block;
+}
+
+/* Inner container */
+.mega-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  gap: 60px;
+}
+
+/* Columns */
+.mega-col h4 {
+  margin-bottom: 12px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mega-col a {
+  display: block;
+  color: #222;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.mega-col a:hover {
+  text-decoration: underline;
+}
+.mega-menu {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.has-mega:hover .mega-menu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+header {
+  position: relative;
+}
