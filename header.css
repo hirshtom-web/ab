@@ -668,6 +668,13 @@ header {
   line-height: 1.2;   /* tighter spacing */
 }
 
+/* Base nav link (if not already defined) */
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 /* Badge */
 .nav-badge {
   position: absolute;
