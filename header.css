@@ -488,14 +488,20 @@ header {
 
 /* Full-width dropdown */
 .mega-menu {
-  position: absolute;               /* ← IMPORTANT */
-  left: 50%;
+  position: absolute;
+  left: 0;
+  right: 0;
   top: 100%;
-  transform: translateX(-50%);
   width: 100vw;
-  background: #f7f7f7;
+  background: #fff;
   display: none;
   z-index: 9999;
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
 
   /* animation */
   opacity: 0;
@@ -507,17 +513,18 @@ header {
 .has-mega:hover .mega-menu {
   display: block;
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 /* Inner container */
 .mega-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  width: 100%;
+  padding: 40px 40px;   /* ← 40px from left & right */
   display: flex;
   gap: 60px;
+  box-sizing: border-box;
 }
+
 
 /* Columns */
 .mega-col h4 {
