@@ -486,7 +486,7 @@ header {
   top: 70px;             /* adjust to header height */
   left: 0;
   width: 100%;           /* full width */
-  background: #f7f7f7;
+  background: #fff;
   display: none;
   z-index: 9999;
 
