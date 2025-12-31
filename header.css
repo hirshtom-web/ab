@@ -678,7 +678,7 @@ header {
 /* Badge */
 .nav-badge {
   position: absolute;
-  top: -6px;
+  top: -8px;
   right: -12px;
   font-size: 6px;
   font-weight: 600;
