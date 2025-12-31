@@ -467,30 +467,25 @@ nav a:hover {
 
 
 
-/* -----------------------------
-   Header wrapper
------------------------------- */
+/* Parent header wrapper */
 header {
-  position: relative;  /* parent for absolute positioning */
+  position: relative;
+  overflow: visible; /* ensure mega menu can extend outside */
 }
 
-/* -----------------------------
-   Nav items
------------------------------- */
+/* Nav item (menu link) */
 .nav-item {
-  position: relative;   /* for hover reference */
+  position: relative;
   display: flex;
-  align-items: center;  /* aligns Categories with other links */
+  align-items: center;
 }
 
-/* -----------------------------
-   Mega menu (full-width background)
------------------------------- */
+/* Mega menu: full viewport width, aligned to left edge */
 .mega-menu {
-  position: absolute;   /* relative to header */
-  top: 100%;            /* right below header */
+  position: fixed;       /* fixed to viewport */
+  top: 80px;             /* adjust to header height */
   left: 0;
-  width: 100vw;         /* full viewport width */
+  width: 100%;           /* full width */
   background: #f7f7f7;
   display: none;
   z-index: 9999;
@@ -498,6 +493,8 @@ header {
   opacity: 0;
   transform: translateY(5px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+
+  box-sizing: border-box; /* ensures padding doesn’t add to width */
 }
 
 /* Show on hover */
@@ -507,21 +504,20 @@ header {
   transform: translateY(0);
 }
 
-/* -----------------------------
-   Inner content (columns, spacing)
------------------------------- */
+/* Inner content: constrained layout inside full-width background */
 .mega-inner {
   display: flex;
-  gap: 60px;           /* space between columns */
-  padding-left: 40px;   /* first column starts 40px from screen left */
-  padding-right: 40px;  /* optional right padding */
+  gap: 60px;
+  padding-left: 40px;     /* first column spacing from left edge */
+  padding-right: 40px;    /* spacing from right */
   padding-top: 40px;
   padding-bottom: 40px;
-  width: 100%;          /* full width of mega-menu */
-  box-sizing: border-box;
+  max-width: 1200px;      /* keeps columns neat on large screens */
+  margin: 0 auto;         /* centers content */
+  box-sizing: border-box; /* important */
 }
 
-/* Columns styling */
+/* Column styling */
 .mega-col h4 {
   margin-bottom: 12px;
   font-size: 14px;
@@ -539,11 +535,4 @@ header {
 
 .mega-col a:hover {
   text-decoration: underline;
-}
-
-/* Desktop-only hide */
-@media (max-width: 1024px) {
-  .mega-menu {
-    display: none !important;
-  }
 }
