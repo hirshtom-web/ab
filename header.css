@@ -481,14 +481,15 @@ nav a:hover {
 
 /* Mega menu */
 .mega-menu {
-  position: absolute;
-  top: 100%;
+  position: fixed;     /* NOT absolute */
   left: 0;
+  top: 100%;           /* aligns to bottom of header */
   width: 100vw;
   background: #f7f7f7;
   display: none;
-  z-index: 1000;
+  z-index: 999;
 }
+
 
 /* Show on hover (desktop) */
 .has-mega:hover .mega-menu {
@@ -537,3 +538,15 @@ nav a:hover {
 header {
   position: relative;
 }
+
+.mega-menu {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.has-mega:hover .mega-menu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
