@@ -467,45 +467,23 @@ nav a:hover {
 
 
 
-/* Header center */
-.header-center {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-/* Nav item wrapper */
-.nav-item {
-  position: relative;
-}
-
-/* =========================
-   MEGA MENU (DESKTOP)
-========================= */
+/* Wrapper must be relative */
 header {
   position: relative;
 }
 
-/* Full-width dropdown */
+/* Mega menu full-width background */
 .mega-menu {
   position: absolute;
+  top: 100%;       /* directly under header */
   left: 0;
-  right: 0;
-  top: 100%;
-  width: 100vw;
-  background: #fff;
+  width: 100vw;    /* full screen width */
+  background: #f7f7f7;
   display: none;
   z-index: 9999;
 
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-
-  /* animation */
-  opacity: 0;
-  transform: translateX(-50%) translateY(10px);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -516,17 +494,18 @@ header {
   transform: translateY(0);
 }
 
-/* Inner container */
+/* Inner content starting 40px from left */
 .mega-inner {
-  width: 100%;
-  padding: 40px 40px;   /* ← 40px from left & right */
   display: flex;
   gap: 60px;
+  padding-left: 40px;   /* left spacing from screen edge */
+  padding-top: 40px;
+  padding-bottom: 40px;
   box-sizing: border-box;
+  width: 100%;           /* ensures content stays inside mega-menu */
 }
 
-
-/* Columns */
+/* Columns styling */
 .mega-col h4 {
   margin-bottom: 12px;
   font-size: 14px;
@@ -546,17 +525,9 @@ header {
   text-decoration: underline;
 }
 
-/* =========================
-   DESKTOP ONLY
-========================= */
+/* Desktop-only hide */
 @media (max-width: 1024px) {
   .mega-menu {
     display: none !important;
   }
-}
-
-.nav-item {
-  position: relative;
-  display: flex;
-  align-items: center;
 }
