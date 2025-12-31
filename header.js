@@ -92,3 +92,34 @@ document.addEventListener("keydown", (e) => {
   if (mobileHelp) mobileHelp.onclick = () => location.href = "help.html";
 }
 
+
+// Select all mega menus
+  const megaMenus = document.querySelectorAll('.mega-menu');
+
+  // Listen for scroll
+  window.addEventListener('scroll', () => {
+    megaMenus.forEach(menu => {
+      menu.style.display = 'none';
+      menu.style.opacity = '0';
+      menu.style.transform = 'translateY(5px)'; // optional: reset transform
+    });
+  });
+
+  // Optional: also close when mouse leaves nav-item
+  const navItems = document.querySelectorAll('.has-mega');
+  navItems.forEach(item => {
+    item.addEventListener('mouseleave', () => {
+      const menu = item.querySelector('.mega-menu');
+      if (menu) {
+        menu.style.display = 'none';
+        menu.style.opacity = '0';
+        menu.style.transform = 'translateY(5px)';
+      }
+    });
+  });
+
+window.addEventListener('scroll', () => {
+  megaMenus.forEach(menu => {
+    menu.classList.add('hide');
+  });
+});
