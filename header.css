@@ -531,3 +531,15 @@ header {
     display: none !important;
   }
 }
+
+/* Make the nav-item flex and vertically center the link */
+.nav-item {
+  display: flex;
+  align-items: center;
+  position: relative; /* for absolute mega-menu */
+}
+.mega-menu {
+  top: 100%;   /* relative to header/nav-item */
+  left: 0;
+  width: 100vw;
+}
