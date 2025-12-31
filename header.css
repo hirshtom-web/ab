@@ -491,7 +491,7 @@ header {
   z-index: 9999;
 
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateY(0px);
   transition: opacity 0.2s ease, transform 0.2s ease;
 
   box-sizing: border-box; /* ensures padding doesn’t add to width */
@@ -535,4 +535,13 @@ header {
 
 .mega-col a:hover {
   text-decoration: underline;
+}
+
+.has-mega::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;       /* right below the nav link */
+  height: 10px;    /* invisible buffer area */
 }
