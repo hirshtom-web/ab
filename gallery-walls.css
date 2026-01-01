@@ -342,9 +342,7 @@
   background: transparent;
 }
 
-/* =========================
-   Mockup stage fills the card
-   ========================= */
+/* Mockup stage fills the card */
 .mockup-stage {
   position: relative;
   width: 100%;
@@ -353,9 +351,7 @@
   background: transparent;
 }
 
-/* =========================
-   Lifestyle image fills wrapper
-   ========================= */
+/* Lifestyle image fills wrapper */
 .mockup-stage .lifestyle-bg {
   position: absolute;
   inset: 0;
