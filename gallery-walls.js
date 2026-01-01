@@ -24,7 +24,7 @@ function initBundlesPage() {
         lifestyle: (b.lifestyleUrl || b.LifestyleUrl || "").trim(),
       }));
 
-      // Remove bundles that have no lifestyle at all
+      // Keep only bundles that have a lifestyle image
       allBundles = allBundles.filter(b => b.lifestyle);
 
       renderAllBundles();
@@ -94,5 +94,7 @@ function initBundlesPage() {
   }
 }
 
+// =========================
 // INIT
+// =========================
 document.addEventListener("DOMContentLoaded", initBundlesPage);
