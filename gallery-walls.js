@@ -133,7 +133,7 @@ function initBundlesPage() {
   // =========================
   // UPDATE IMAGES (artwork / lifestyle + fade-in)
   // =========================
- function updateGridImages() {
+function updateGridImages() {
   const cards = document.querySelectorAll(".product-card");
 
   cards.forEach(card => {
