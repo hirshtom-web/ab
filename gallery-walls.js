@@ -37,39 +37,37 @@ function initBundlesPage() {
   // =========================
   // RENDER ALL BUNDLES
   // =========================
-  function renderAllBundles() {
-    grid.innerHTML = "";
+ allBundles.forEach(b => {
+  const card = document.createElement("div");
+  card.className = "product-card is-product";
+  card.style.display = "none"; // hidden initially
+  card.dataset.images = JSON.stringify(b.images);
 
-    allBundles.forEach(b => {
-      const card = document.createElement("div");
-      card.className = "product-card is-product";
-      card.style.display = "none"; // hidden initially
-      card.dataset.images = JSON.stringify(b.images);
+  // card content
+  card.innerHTML = `
+    <div class="mockup-stage">
+      <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
+    </div>
+    <div class="product-info">
+      <h3>${b.name}</h3>
+      <div class="price-wrapper">
+        ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
+        <span class="price-new">$${b.price.toFixed(2)}</span>
+      </div>
+    </div>
+  `;
 
-      card.innerHTML = `
-        <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
-        </div>
-        <div class="product-info">
-          <h3>${b.name}</h3>
-          <div class="price-wrapper">
-            ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
-            <span class="price-new">$${b.price.toFixed(2)}</span>
-          </div>
-        </div>
-      `;
+  // ✅ Click to product page
+  card.addEventListener("click", () => {
+    if (!b.id) {
+      console.error("❌ Bundle ID missing for", b.name);
+      return;
+    }
+    window.location.href = `product-page.html?id=${b.id}`;
+  });
 
-card.addEventListener("click", () => {
-  console.log("Bundle clicked:", b.name, "ID:", b.id); // debug
-  if (!b.id) return console.error("❌ Bundle ID missing!");
-  window.location.href = `product-page.html?id=${b.id}`;
+  grid.appendChild(card);
 });
-
-
-
-      grid.appendChild(card);
-    });
-  }
 
   // =========================
   // SHOW MORE BUNDLES
