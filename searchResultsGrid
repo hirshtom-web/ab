@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>combos</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="gallery-walls.css">
+  <link rel="stylesheet" href="grid.css">
+
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div id="header-placeholder"></div>
+
+<div id="searchResultsGrid" class="product-grid"></div>
+
+<script src="header.js"></script>
+<script src="gallery-walls.js"></script>
+<script>
+  // Load header, then initialize
+  fetch("header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header-placeholder").innerHTML = html;
+      initHeader(); // initialize header
+
+      // Render search results
+      const grid = document.getElementById("searchResultsGrid");
+      if (!grid) return console.error("❌ searchResultsGrid not found");
+
+      const results = JSON.parse(sessionStorage.getItem("searchResults") || "[]");
+
+      if (!results.length) {
+        grid.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      results.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card is-product";
+        card.dataset.images = JSON.stringify(p.images);
+
+        const imgSrc = p.images[0] || "";
+
+        card.innerHTML = `
+          <div class="mockup-stage">
+            <img src="${imgSrc}" alt="${p.name}" loading="lazy">
+          </div>
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <div class="price-wrapper">
+              ${p.oldPrice ? `<span class="price-old">$${p.oldPrice.toFixed(2)}</span>` : ""}
+              <span class="price-new">$${p.price.toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          window.location.href = `product-page.html?id=${p.id}`;
+        });
+
+        grid.appendChild(card);
+      });
+    })
+    .catch(err => console.error("Header load failed:", err));
+</script>
+
+  <script src="cart.js"></script>
+
+</body>
+</html>
