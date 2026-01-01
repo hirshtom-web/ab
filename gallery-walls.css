@@ -327,3 +327,30 @@
     display: inline-flex;
   }
 }
+
+
+
+.mockup-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: transparent;
+}
+
+.artwork,
+.lifestyle-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mockup-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* ← fills entire card */
+  object-position: center;
+}
