@@ -23,9 +23,8 @@ function initBundlesPage() {
         name: (b.name || "Unnamed Bundle").trim(),
         price: b.newPrice ? parseFloat(b.newPrice) : 1,
         oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
-        // only keep lifestyle image
-        images: b.lifestyleUrl ? [b.lifestyleUrl.trim()] : []
-      }));
+        lifestyle: b.lifestyleUrl ? b.lifestyleUrl.trim() : null
+      })).filter(b => b.lifestyle); // remove bundles without lifestyle image
 
       console.log("🟢 Bundles parsed:", allBundles);
 
@@ -45,7 +44,6 @@ function initBundlesPage() {
       const card = document.createElement("div");
       card.className = "product-card is-product";
       card.style.display = "none"; // hidden initially
-      card.dataset.images = JSON.stringify(b.images);
 
       card.innerHTML = `
         <div class="mockup-stage">
@@ -66,6 +64,10 @@ function initBundlesPage() {
         window.location.href = `product-page.html?id=${b.id}`;
       });
 
+      // attach lifestyle image immediately
+      const img = card.querySelector(".lifestyle-bg");
+      img.src = b.lifestyle.startsWith("http") ? b.lifestyle : "https://static.wixstatic.com/media/" + b.lifestyle;
+
       grid.appendChild(card);
     });
   }
@@ -78,17 +80,7 @@ function initBundlesPage() {
     const nextCount = visibleCount + ITEMS_PER_LOAD;
 
     for (let i = visibleCount; i < nextCount && i < cards.length; i++) {
-      const card = cards[i];
-      card.style.display = "flex"; // reveal the card
-
-      // set image
-      const imgList = JSON.parse(card.dataset.images || "[]");
-      if (imgList.length) {
-        const lifestyleImg = card.querySelector(".lifestyle-bg");
-        lifestyleImg.src = imgList[0].startsWith("http")
-          ? imgList[0]
-          : "https://static.wixstatic.com/media/" + imgList[0];
-      }
+      cards[i].style.display = "flex"; // reveal the card
     }
 
     visibleCount = nextCount;
