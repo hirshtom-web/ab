@@ -51,19 +51,22 @@ function initHeader() {
   const desktopInput = document.getElementById("searchBar");
   const mobileInput = document.getElementById("mobileSearchBar");
 
-  function doSearch(query) {
-    const q = query.trim().toLowerCase();
-    if (!q) return;
+ function doSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return;
 
-    loadAllProducts().then(() => {
-      const results = window.allProductsGlobal.filter(p =>
-        p.searchText.includes(q)
-      );
+  // ALWAYS load products first (even on home page)
+  loadAllProducts().then(() => {
+    const results = window.allProductsGlobal.filter(p =>
+      p.searchText.includes(q)
+    );
 
-      sessionStorage.setItem("searchResults", JSON.stringify(results));
-      window.location.href = "search-results.html?q=" + encodeURIComponent(q);
-    });
-  }
+    sessionStorage.setItem("searchResults", JSON.stringify(results));
+    window.location.href =
+      "search-results.html?q=" + encodeURIComponent(q);
+  });
+}
+
 
   [desktopInput, mobileInput].forEach(input => {
     if (!input) return;
