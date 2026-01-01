@@ -1,4 +1,5 @@
 async function initProductsPage() {
+  // ---------------- DOM ELEMENTS ----------------
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -10,9 +11,17 @@ async function initProductsPage() {
   const buyBtn = document.querySelector(".buy");
   const categoryEl = document.createElement("div");
   categoryEl.className = "product-category";
+  const galleryWrapper = document.querySelector(".main-image-wrapper");
+  const artworkTypeSelect = document.getElementById("artworkType");
+  const frameWrapper = document.getElementById("frameWrapper");
+  const saleEl = document.getElementById("saleInfo");
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id")?.trim().toLowerCase();
 
-  const csvUrl = "https://hirshtom-web.github.io/ab/product-catalog.csv";
-  const productId = new URLSearchParams(location.search).get("id")?.trim().toLowerCase();
+  if (!productId) {
+    document.body.innerHTML = "<p>Invalid product</p>";
+    return;
+  }
 
   let allImages = [];
   let currentIndex = 0;
@@ -20,28 +29,34 @@ async function initProductsPage() {
   const slugify = str =>
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
+  // ---------------- IMAGE FUNCTIONS ----------------
   function updateImageStyle(index) {
-  const wrapper = document.querySelector(".main-image-wrapper");
-  if (!wrapper) return;
+    if (!galleryWrapper) return;
+    galleryWrapper.classList.remove("artwork", "lifestyle");
+    galleryWrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
+  }
 
-  wrapper.classList.remove("artwork", "lifestyle");
-  wrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
-}
-
-function switchImage(index) {
-  updateImageStyle(index); // ✅ ADD THIS LINE
-
-    if(!allImages.length) return;
+  function switchImage(index) {
+    if (!allImages.length) return;
     currentIndex = index;
+    updateImageStyle(index);
     mainImage.style.opacity = 0;
+
     const img = new Image();
     img.src = allImages[currentIndex];
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-      // Update thumbs & dots
-      thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
-      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
+
+      // Thumbnails
+      thumbsEl?.querySelectorAll("img").forEach((img, idx) =>
+        img.classList.toggle("active", idx === currentIndex)
+      );
+
+      // Dots
+      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) =>
+        dot.classList.toggle("active", idx === currentIndex)
+      );
     };
   }
 
@@ -52,6 +67,7 @@ function switchImage(index) {
     return img;
   }
 
+  // ---------------- ACCORDION ----------------
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
@@ -61,156 +77,116 @@ function switchImage(index) {
         document.querySelectorAll(".accordion-item").forEach(i => {
           i.classList.remove("active");
           const c = i.querySelector(".accordion-content");
-          if(c) c.style.maxHeight = null;
+          if (c) c.style.maxHeight = null;
         });
-        if(!isActive){
+        if (!isActive) {
           item.classList.add("active");
-          if(content) content.style.maxHeight = content.scrollHeight + "px";
+          if (content) content.style.maxHeight = content.scrollHeight + "px";
         }
       });
     });
   }
 
-  // ---------------- LOAD CSV ----------------
- document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
+  // ---------------- LOAD PRODUCT ----------------
+  await loadAllProducts(); // make sure globalProducts.js loaded allProductsGlobal
+  const product = window.allProductsGlobal.find(
+    p => p.id.toLowerCase() === productId.toLowerCase()
+  );
 
-  if (!productId) {
-    document.body.innerHTML = "<p>Invalid product</p>";
+  if (!product) {
+    document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
     return;
   }
 
-  loadAllProducts().then(() => {
-    const item = window.allProductsGlobal.find(
-      p => p.id.toLowerCase() === productId.toLowerCase()
-    );
+  // ---------------- DOM UPDATES ----------------
+  titleEl.innerText = product.name;
+  titleEl.after(categoryEl);
+  categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
+  artistEl.innerText = product.artist;
+  descEl.innerHTML = product.description;
 
-    if (!item) {
-      document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
-      return;
+  // --- Price with discount ---
+  let finalPrice = product.price;
+  if (product.discount) {
+    if (product.discount.includes("%")) {
+      finalPrice = product.price * (1 - parseFloat(product.discount) / 100);
+    } else {
+      finalPrice = product.price - parseFloat(product.discount);
+    }
+  }
+  priceEl.innerText = "$" + finalPrice.toFixed(2);
+
+  if (oldPriceEl) {
+    if (product.discount) {
+      oldPriceEl.innerText = "$" + product.price.toFixed(2);
+      oldPriceEl.style.textDecoration = "line-through";
+    } else oldPriceEl.style.display = "none";
+  }
+
+  // ---------------- IMAGES ----------------
+  allImages = product.images;
+
+  if (allImages.length) {
+    switchImage(0);
+
+    // Thumbnails
+    if (thumbsEl) {
+      thumbsEl.innerHTML = "";
+      allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
     }
 
-    renderSingleProduct(item);
-  });
-});
+    // Dots
+    if (dotsEl) {
+      dotsEl.innerHTML = "";
+      allImages.forEach((_, i) => {
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        dot.addEventListener("click", () => switchImage(i));
+        dotsEl.appendChild(dot);
+      });
+    }
 
-      // ---------------- DOM Updates ----------------
-      titleEl.innerText = product.name;
-      titleEl.after(categoryEl);
-      categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
-      artistEl.innerText = product.artist;
-      descEl.innerHTML = product.description;
-
-      // --- Price ---
-      let finalPrice = product.price;
-      if(product.discount){
-        if(product.discount.includes("%")){
-          finalPrice = product.price*(1 - parseFloat(product.discount)/100);
-        } else {
-          finalPrice = product.price - parseFloat(product.discount);
-        }
-      }
-      priceEl.innerText = "$"+finalPrice.toFixed(2);
-      if(oldPriceEl){
-        if(product.discount){
-          oldPriceEl.innerText = "$"+product.price.toFixed(2);
-          oldPriceEl.style.textDecoration = "line-through";
-        } else oldPriceEl.style.display="none";
-      }
-
-     // --- Images ---
-// --- Images Setup ---
-allImages = product.images;
-
-if(allImages.length){
-
-  // --- Set initial image ---
-  switchImage(0);
-
-  // --- Thumbnails (desktop only) ---
-  if(thumbsEl){
-    thumbsEl.innerHTML = "";
-    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+    // Mobile swipe
+    if (allImages.length > 1 && galleryWrapper) {
+      let startX = 0;
+      let endX = 0;
+      galleryWrapper.addEventListener("touchstart", e => (startX = e.touches[0].clientX));
+      galleryWrapper.addEventListener("touchmove", e => (endX = e.touches[0].clientX));
+      galleryWrapper.addEventListener("touchend", () => {
+        if (startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
+        else if (endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+      });
+    }
   }
 
-  // --- Dots ---
-  if(dotsEl){
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.addEventListener("click", () => switchImage(i));
-      dotsEl.appendChild(dot);
-    });
-  }
-
-  function updateDots(){
-    if(!dotsEl) return;
-    const dots = Array.from(dotsEl.querySelectorAll(".dot"));
-    dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
-  }
-
-  // Update dots inside switchImage
-  const originalSwitchImage = switchImage;
-  switchImage = function(index){
-    originalSwitchImage(index);
-    updateDots();
+  // ---------------- BUY BUTTON ----------------
+  buyBtn.onclick = () => {
+    if (product.downloadLink) window.open(product.downloadLink, "_blank");
+    else alert("Download not available");
   };
 
-  // --- Mobile swipe ---
-  const galleryWrapper = document.querySelector(".main-image-wrapper");
-  if(allImages.length > 1 && galleryWrapper){
-    let startX = 0;
-    let endX = 0;
+  // ---------------- ACCORDION ----------------
+  initAccordion();
 
-    galleryWrapper.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchmove", (e) => { endX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchend", () => {
-      if(startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
-      else if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    });
-  }
-
-  // --- Initialize dots on load ---
-  updateDots();
-}
-
-      // Buy button
-      buyBtn.onclick = () => {
-        if(product.downloadLink) window.open(product.downloadLink,"_blank");
-        else alert("Download not available");
-      };
-
-      // Accordion
-      initAccordion();
-    },
-    error: err => console.error("CSV load failed:", err)
-  });
-}
-
-// Sale countdown
-const saleEl = document.getElementById("saleInfo");
-if(saleEl){
-  let seconds = 36000; // 10 hours
-  function updateTimer() {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    if(seconds > 0){
-      seconds--;
-      setTimeout(updateTimer, 1000);
+  // ---------------- SALE COUNTDOWN ----------------
+  if (saleEl) {
+    let seconds = 36000; // 10 hours
+    function updateTimer() {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      if (seconds > 0) {
+        seconds--;
+        setTimeout(updateTimer, 1000);
+      }
     }
+    updateTimer();
   }
-  updateTimer();
-}
 
-// Tabs
-document.addEventListener("DOMContentLoaded", () => {
+  // ---------------- TABS ----------------
   const tabs = document.querySelectorAll(".artwork-tabs .tab");
   const panels = document.querySelectorAll(".tab-panel");
-
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
       tabs.forEach(t => t.classList.remove("active"));
@@ -220,34 +196,19 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById(tab.dataset.tab).classList.add("active");
     });
   });
-});
 
-// Artwork type select
-const artworkTypeSelect = document.getElementById("artworkType");
-const frameWrapper = document.getElementById("frameWrapper");
+  // ---------------- ARTWORK TYPE ----------------
+  function updateArtworkOptions() {
+    const value = artworkTypeSelect.value;
+    frameWrapper.style.display = value.startsWith("print") ? "block" : "none";
+  }
+  updateArtworkOptions();
+  artworkTypeSelect.addEventListener("change", updateArtworkOptions);
 
-function updateArtworkOptions() {
-  const value = artworkTypeSelect.value;
-  frameWrapper.style.display = value.startsWith("print") ? "block" : "none";
+  // ---------------- BREADCRUMBS ----------------
+  const currentEl = document.querySelector(".breadcrumbs .current");
+  if (currentEl) currentEl.textContent = product.name;
 }
 
-updateArtworkOptions();
-artworkTypeSelect.addEventListener("change", updateArtworkOptions);
-
-// Get the current product ID from URL
-document.addEventListener("DOMContentLoaded", () => {
-  const currentProductId = new URLSearchParams(window.location.search).get("id");
-
-  fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
-    .then(res => res.text())
-    .then(csvText => {
-      const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-      const currentProduct = data.find(p => p.productId === currentProductId);
-
-      if (currentProduct) {
-        const currentEl = document.querySelector(".breadcrumbs .current");
-        if (currentEl) currentEl.textContent = currentProduct.name;
-      }
-    })
-    .catch(err => console.error("Failed to load product for breadcrumbs:", err));
-});
+// INIT
+document.addEventListener("DOMContentLoaded", initProductsPage);
