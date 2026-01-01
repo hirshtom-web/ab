@@ -23,10 +23,8 @@ function initBundlesPage() {
         name: (b.name || "Unnamed Bundle").trim(),
         price: b.newPrice ? parseFloat(b.newPrice) : 1,
         oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
-        images: [
-          ...(b.mainImageUrl ? b.mainImageUrl.split(";").map(i => i.trim()) : []),
-          ...(b.lifestyleUrl ? [b.lifestyleUrl.trim()] : [])
-        ].filter(Boolean)
+        // only keep lifestyle image
+        images: b.lifestyleUrl ? [b.lifestyleUrl.trim()] : []
       }));
 
       console.log("🟢 Bundles parsed:", allBundles);
@@ -38,7 +36,7 @@ function initBundlesPage() {
   });
 
   // =========================
-  // RENDER ALL BUNDLES (hidden initially)
+  // RENDER ALL BUNDLES
   // =========================
   function renderAllBundles() {
     grid.innerHTML = "";
@@ -47,12 +45,11 @@ function initBundlesPage() {
       const card = document.createElement("div");
       card.className = "product-card is-product";
       card.style.display = "none"; // hidden initially
-
-      card.dataset.images = JSON.stringify(b.images); // keep images in dataset just in case
+      card.dataset.images = JSON.stringify(b.images);
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="${b.name}" loading="lazy" style="opacity:0; transition:opacity 0.5s">
+          <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
         </div>
 
         <div class="product-info">
@@ -64,7 +61,6 @@ function initBundlesPage() {
         </div>
       `;
 
-      // click redirect
       card.addEventListener("click", () => {
         if (!b.id) return console.error("❌ Bundle ID missing!");
         window.location.href = `product-page.html?id=${b.id}`;
@@ -72,9 +68,6 @@ function initBundlesPage() {
 
       grid.appendChild(card);
     });
-
-    // After appending all cards, set their lifestyle images
-    updateLifestyleImages();
   }
 
   // =========================
@@ -87,6 +80,15 @@ function initBundlesPage() {
     for (let i = visibleCount; i < nextCount && i < cards.length; i++) {
       const card = cards[i];
       card.style.display = "flex"; // reveal the card
+
+      // set image
+      const imgList = JSON.parse(card.dataset.images || "[]");
+      if (imgList.length) {
+        const lifestyleImg = card.querySelector(".lifestyle-bg");
+        lifestyleImg.src = imgList[0].startsWith("http")
+          ? imgList[0]
+          : "https://static.wixstatic.com/media/" + imgList[0];
+      }
     }
 
     visibleCount = nextCount;
@@ -94,32 +96,10 @@ function initBundlesPage() {
     if (visibleCount >= cards.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
     }
-
-    // ensure lifestyle images are visible
-    updateLifestyleImages();
   }
 
-  // =========================
-  // SET LIFESTYLE IMAGES
-  // =========================
-  function updateLifestyleImages() {
-    const cards = document.querySelectorAll(".product-card");
-    cards.forEach(card => {
-      const imgList = JSON.parse(card.dataset.images || "[]");
-      if (!imgList.length) return;
-
-      const lifestyleImg = card.querySelector(".lifestyle-bg");
-      if (!lifestyleImg) return;
-
-      // Always pick the last image in the array (lifestyle)
-      const lifestyleUrl = imgList[imgList.length - 1];
-      const url = lifestyleUrl.startsWith("http") ? lifestyleUrl : "https://static.wixstatic.com/media/" + lifestyleUrl;
-
-      if (lifestyleImg.src !== url) {
-        lifestyleImg.src = url;
-        lifestyleImg.onload = () => (lifestyleImg.style.opacity = 1); // fade-in effect
-      }
-    });
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", showNextBatch);
   }
 }
 
