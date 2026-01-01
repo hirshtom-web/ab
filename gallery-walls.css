@@ -62,55 +62,111 @@
 /* ===============================
    PRODUCTS GRID
 ================================ */
-#productGrid {
+.products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  width: 100%;
-  padding: 0 40px;
-  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
 }
 
+/* Desktop layouts: 4 items per row by default */
+.products-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.products-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.products-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.products-grid.cols-1 { grid-template-columns: repeat(1, 1fr); }
+
+/* Mobile overrides */
+@media (max-width: 768px) {
+  .products-grid.cols-4,
+  .products-grid.cols-3,
+  .products-grid.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .products-grid.cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* ===============================
+   PRODUCTS GRID
+================================ */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* each card ~250px wide */
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* ===============================
+   PRODUCT CARD - floating style
+================================ */
 .product-card {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  cursor: pointer;
-  overflow: hidden;
-  background: transparent;
-}
-
-.mockup-stage {
+  align-items: center;
+  text-align: center;
   position: relative;
-  width: 100%;
-  height: 100%;
+  background: transparent; /* no full card background */
+  cursor: pointer;
 }
 
-.mockup-stage img {
+/* Image wrapper */
+.img-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;  /* changed to square */
+  overflow: hidden;
+  border-radius: 16px;
+  margin-bottom: 8px;   /* space between image and text */
+}
+
+.img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: cover; /* ensures image covers the square without distortion */
   display: block;
 }
 
+/* Image wrapper controls size */
+/* Banner video */
+.banner-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Banner cards have NO product info spacing */
+.banner-only .product-info {
+  display: none;
+}
+
+
+/* Product info floating below image */
 .product-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  text-align: center;
 }
 
+/* Product name */
 .product-info h3 {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/* Prices */
 .price-wrapper {
   display: flex;
   justify-content: center;
+  align-items: baseline;
   gap: 6px;
 }
 
@@ -126,7 +182,179 @@
   color: #111;
 }
 
-/* Responsive */
-@media (max-width:1024px) { #productGrid { grid-template-columns: repeat(3,1fr); } }
-@media (max-width:768px)  { #productGrid { grid-template-columns: repeat(2,1fr); padding:0 20px; } }
-@media (max-width:480px)  { #productGrid { grid-template-columns: repeat(1,1fr); padding:0 10px; } }
+/* ===============================
+   MOBILE OVERRIDE
+================================ */
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+
+.product-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ===============================
+   BANNER CARD
+================================ */
+.banner-card {
+  background: #f7f7f7;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  padding: 20px 10px;
+  min-height: 150px;
+}
+
+.banner-card span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ===============================
+   PAGINATION
+================================ */
+.pagination {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.pagination button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ===============================
+   RESPONSIVE CONTROLS
+================================ */
+.mobile-only { display: none; }
+.desktop-only { display: inline-flex; }
+
+@media (max-width: 768px) {
+  .controls-bar { grid-template-columns: 1fr; gap: 10px; }
+  .controls-left,
+  .controls-center,
+  .controls-right { justify-content: center; }
+  .desktop-only { display: none; }
+  .mobile-only { display: inline-flex; }
+}
+
+.banner-card {
+  width: 100%;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 0;
+  min-height: 250px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.banner-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-card span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 250px;
+}
+
+@media (max-width: 768px) {
+  .controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap; /* keep everything in one row */
+  }
+
+  .controls-left {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+    flex: 1;
+  }
+
+  .controls-center {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex: 1;
+  }
+
+  .controls-right {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    flex: 1;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-flex;
+  }
+}
+
+
+
+/* =========================
+   Product card = perfect square
+   ========================= */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* force square */
+  overflow: hidden;
+  background: transparent;
+}
+
+.mockup-stage {
+  position: relative;
+  width: 100%;
+  height: 100%; /* fills the card */
+  overflow: hidden;
+}
+
+.mockup-stage .lifestyle-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* fills the square */
+  object-position: center;
+  display: block;
+}
