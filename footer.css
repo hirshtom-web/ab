@@ -320,8 +320,8 @@
 }
 
 .footer-social img {
-  width: 24px;  /* adjust size here */
-  height: 24px; /* maintain square */
+  width: 18px;  /* adjust size here */
+  height: 18px; /* maintain square */
   display: block;
   object-fit: contain; /* keeps icon proportions */
 }
