@@ -330,38 +330,38 @@
 
 
 
-.mockup-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: transparent;
-}
-
-
-
-
+/* =========================
+   Product card = perfect square
+   ========================= */
 .product-card {
   display: flex;
   flex-direction: column;
-  width: 100%;         /* already full width */
-  aspect-ratio: 1 / 1; /* forces height = width */
+  width: 100%;
+  aspect-ratio: 1 / 1;   /* height = width */
   overflow: hidden;
   background: transparent;
 }
-.mockup-stage,
-.artwork,
-.lifestyle-bg {
+
+/* =========================
+   Mockup stage fills the card
+   ========================= */
+.mockup-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;          /* fills full card height */
+  overflow: hidden;
+  background: transparent;
+}
+
+/* =========================
+   Lifestyle image fills wrapper
+   ========================= */
+.mockup-stage .lifestyle-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-}
-
-.mockup-stage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* fills entire square */
+  object-fit: cover;     /* fills entire square */
   object-position: center;
   display: block;
 }
