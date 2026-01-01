@@ -17,7 +17,7 @@ function initBundlesPage() {
     skipEmptyLines: true,
     complete: res => {
       allBundles = res.data.map(b => ({
-        id: (b.bundleId || "").trim(),      // make sure CSV has this column
+        id: (b.bundleId || "").trim(),
         name: (b.name || "Unnamed Bundle").trim(),
         price: b.newPrice ? parseFloat(b.newPrice) : 1,
         oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
@@ -27,46 +27,38 @@ function initBundlesPage() {
         ].filter(Boolean)
       }));
 
-      renderAllBundles();
-      showNextBatch(); // first batch
+      // ✅ Create all cards AFTER CSV is loaded
+      allBundles.forEach(b => {
+        const card = document.createElement("div");
+        card.className = "product-card is-product";
+        card.style.display = "none"; // hidden initially
+        card.dataset.images = JSON.stringify(b.images);
+
+        card.innerHTML = `
+          <div class="mockup-stage">
+            <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
+          </div>
+          <div class="product-info">
+            <h3>${b.name}</h3>
+            <div class="price-wrapper">
+              ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
+              <span class="price-new">$${b.price.toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          if (!b.id) return console.error("❌ Bundle ID missing for", b.name);
+          window.location.href = `product-page.html?id=${b.id}`;
+        });
+
+        grid.appendChild(card);
+      });
+
+      showNextBatch(); // show first batch
     },
     error: err => console.error("❌ CSV load failed:", err)
   });
-
-  // =========================
-  // RENDER ALL BUNDLES
-  // =========================
-  function renderAllBundles() {
-    grid.innerHTML = "";
-
-    allBundles.forEach(b => {
-      const card = document.createElement("div");
-      card.className = "product-card is-product";
-      card.style.display = "none"; // hidden initially
-      card.dataset.images = JSON.stringify(b.images);
-
-      card.innerHTML = `
-        <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
-        </div>
-        <div class="product-info">
-          <h3>${b.name}</h3>
-          <div class="price-wrapper">
-            ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
-            <span class="price-new">$${b.price.toFixed(2)}</span>
-          </div>
-        </div>
-      `;
-
-      // Click to product page
-      card.addEventListener("click", () => {
-        if (!b.id) return console.error("❌ Bundle ID missing for", b.name);
-        window.location.href = `product-page.html?id=${b.id}`;
-      });
-
-      grid.appendChild(card);
-    });
-  }
 
   // =========================
   // SHOW MORE BUNDLES
