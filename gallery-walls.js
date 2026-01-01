@@ -135,37 +135,32 @@ function initBundlesPage() {
   // =========================
   // UPDATE IMAGES (artwork / lifestyle + fade-in)
   // =========================
-  function updateGridImages() {
-    const cards = document.querySelectorAll(".product-card");
+ function updateGridImages() {
+  const cards = document.querySelectorAll(".product-card");
 
-    cards.forEach(card => {
-      const imgList = JSON.parse(card.dataset.images || "[]");
-      if (!imgList.length) return;
+  cards.forEach(card => {
+    const imgList = JSON.parse(card.dataset.images || "[]");
+    if (!imgList.length) return;
 
-      const artworkImg = card.querySelector(".artwork img");
-      const lifestyleImg = card.querySelector(".lifestyle-bg");
+    const artworkImg = card.querySelector(".artwork img");
+    const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-      const img = imgList[currentImageIndex] || imgList[0];
-      const url = img.startsWith("http")
-        ? img
-        : "https://static.wixstatic.com/media/" + img;
+    // Always show lifestyle if available
+    const lifestyle = imgList.length > 1 ? imgList[1] : imgList[0];
+    const url = lifestyle.startsWith("http")
+      ? lifestyle
+      : "https://static.wixstatic.com/media/" + lifestyle;
 
-      if (currentImageIndex === 1 && lifestyleImg) {
-        lifestyleImg.src = url;
-        lifestyleImg.style.display = "block";
-        artworkImg.style.display = "none";
-        lifestyleImg.classList.remove("loaded");
-        lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
-      } else if (artworkImg) {
-        artworkImg.src = url;
-        artworkImg.style.display = "block";
-        lifestyleImg.style.display = "none";
-        artworkImg.classList.remove("loaded");
-        artworkImg.onload = () => artworkImg.classList.add("loaded");
-      }
-    });
-  }
+    if (lifestyleImg) {
+      lifestyleImg.src = url;
+      lifestyleImg.style.display = "block";
+      artworkImg.style.display = "none";
+      lifestyleImg.classList.remove("loaded");
+      lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
+    }
+  });
 }
+
 
 // INIT
 document.addEventListener("DOMContentLoaded", initBundlesPage);
