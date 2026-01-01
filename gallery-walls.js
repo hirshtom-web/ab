@@ -18,13 +18,19 @@ function initBundlesPage() {
     complete: res => {
       console.log("✅ CSV loaded, total rows:", res.data.length);
 
-      allBundles = res.data.map(b => ({
-        id: (b.bundleId || "").trim(),
-        name: (b.name || "Unnamed Bundle").trim(),
-        price: b.newPrice ? parseFloat(b.newPrice) : 1,
-        oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
-        lifestyle: b.lifestyleUrl ? b.lifestyleUrl.trim() : null
-      })).filter(b => b.lifestyle); // remove bundles without lifestyle image
+      allBundles = res.data.map(b => {
+        // normalize field names
+        const lifestyle = b.lifestyleUrl || b.LifestyleUrl || b.LIFESTYLEURL || b.lifestyleurl;
+        const mainImage = b.mainImageUrl || b.MainImageUrl || b.MAINIMAGEURL || b.mainimageurl;
+        return {
+          id: (b.bundleId || b.BundleId || "").trim(),
+          name: (b.name || b.Name || "Unnamed Bundle").trim(),
+          price: b.newPrice ? parseFloat(b.newPrice) : 1,
+          oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
+          lifestyle: lifestyle ? lifestyle.trim() : null,
+          mainImage: mainImage ? mainImage.trim() : null
+        };
+      }).filter(b => b.lifestyle); // keep bundles with a lifestyle image
 
       console.log("🟢 Bundles parsed:", allBundles);
 
@@ -64,7 +70,7 @@ function initBundlesPage() {
         window.location.href = `product-page.html?id=${b.id}`;
       });
 
-      // attach lifestyle image immediately
+      // attach lifestyle image
       const img = card.querySelector(".lifestyle-bg");
       img.src = b.lifestyle.startsWith("http") ? b.lifestyle : "https://static.wixstatic.com/media/" + b.lifestyle;
 
