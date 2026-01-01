@@ -4,6 +4,20 @@ function initProductsPage() {
   let activeFilters = {};
   let searchQuery = "";
 
+    // --- Initialize filters from URL params ---
+const urlParams = new URLSearchParams(window.location.search);
+
+urlParams.forEach((value, key) => {
+  // Normalize to lowercase to match CSV normalization
+  activeFilters[key] = value.toLowerCase();
+
+  // Highlight matching filter bubble if exists
+  document
+    .querySelectorAll(`[data-filter="${key}"][data-value="${value}"]`)
+    .forEach(el => el.classList.add("active"));
+});
+
+
 function applyFilters() {
   filteredProducts = allProducts.filter(p => {
     // 1️⃣ Taxonomy filters
