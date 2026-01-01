@@ -338,6 +338,18 @@
   background: transparent;
 }
 
+
+
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;         /* already full width */
+  aspect-ratio: 1 / 1; /* forces height = width */
+  overflow: hidden;
+  background: transparent;
+}
+.mockup-stage,
 .artwork,
 .lifestyle-bg {
   position: absolute;
@@ -347,10 +359,9 @@
 }
 
 .mockup-stage img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;     /* ← fills entire card */
+  object-fit: cover;   /* fills entire square */
   object-position: center;
+  display: block;
 }
