@@ -50,22 +50,20 @@ function initBundlesPage() {
       card.style.display = "none"; // hidden initially
       card.dataset.images = JSON.stringify(b.images);
 
-      card.innerHTML = `
-        <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="" loading="lazy" style="display:none">
-          <div class="artwork">
-            <img alt="${b.name}" loading="lazy" style="display:none">
-          </div>
-        </div>
+     card.innerHTML = `
+  <div class="mockup-stage">
+    <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
+  </div>
 
-        <div class="product-info">
-          <h3>${b.name}</h3>
-          <div class="price-wrapper">
-            ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
-            <span class="price-new">$${b.price.toFixed(2)}</span>
-          </div>
-        </div>
-      `;
+  <div class="product-info">
+    <h3>${b.name}</h3>
+    <div class="price-wrapper">
+      ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
+      <span class="price-new">$${b.price.toFixed(2)}</span>
+    </div>
+  </div>
+`;
+
 
      card.addEventListener("click", () => {
   console.log("Redirecting to product-page.html?id=", b.id);
@@ -135,36 +133,24 @@ function initBundlesPage() {
   // =========================
   // UPDATE IMAGES (artwork / lifestyle + fade-in)
   // =========================
-  function updateGridImages() {
-    const cards = document.querySelectorAll(".product-card");
+ function updateGridImages() {
+  const cards = document.querySelectorAll(".product-card");
 
-    cards.forEach(card => {
-      const imgList = JSON.parse(card.dataset.images || "[]");
-      if (!imgList.length) return;
+  cards.forEach(card => {
+    const imgList = JSON.parse(card.dataset.images || "[]");
+    if (!imgList.length) return;
 
-      const artworkImg = card.querySelector(".artwork img");
-      const lifestyleImg = card.querySelector(".lifestyle-bg");
+    const lifestyleImg = card.querySelector(".lifestyle-bg");
+    const img = imgList[currentImageIndex] || imgList[0];
+    const url = img.startsWith("http")
+      ? img
+      : "https://static.wixstatic.com/media/" + img;
 
-      const img = imgList[currentImageIndex] || imgList[0];
-      const url = img.startsWith("http")
-        ? img
-        : "https://static.wixstatic.com/media/" + img;
-
-      if (currentImageIndex === 1 && lifestyleImg) {
-        lifestyleImg.src = url;
-        lifestyleImg.style.display = "block";
-        artworkImg.style.display = "none";
-        lifestyleImg.classList.remove("loaded");
-        lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
-      } else if (artworkImg) {
-        artworkImg.src = url;
-        artworkImg.style.display = "block";
-        lifestyleImg.style.display = "none";
-        artworkImg.classList.remove("loaded");
-        artworkImg.onload = () => artworkImg.classList.add("loaded");
-      }
-    });
-  }
+    lifestyleImg.src = url;
+    lifestyleImg.style.display = "block";
+    lifestyleImg.classList.remove("loaded");
+    lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
+  });
 }
 
 
