@@ -331,29 +331,46 @@
 
 
 /* ===============================
-   PRODUCT GRID - full width with side padding
+   PRODUCTS GRID - full width
 ================================ */
 #productGrid {
   display: grid;
-  gap: 20px;                  /* space between cards */
-  padding: 0 40px;            /* 40px left/right on desktop */
+  gap: 20px;                 /* space between cards */
+  padding: 0 40px;           /* 40px left/right padding */
   width: 100%;
   box-sizing: border-box;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* flexible cards ~200px */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* min 250px per card */
+}
+
+/* Responsive tablet */
+@media (max-width: 1024px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding: 0 20px;       /* less padding on mobile */
+    gap: 12px;
+  }
 }
 
 /* ===============================
    PRODUCT CARD - perfect square
 ================================ */
 .product-card {
+  width: 100%;
+  aspect-ratio: 1 / 1;      /* always square */
   display: flex;
   flex-direction: column;
-  width: 100%;
-  aspect-ratio: 1 / 1;        /* force square */
   overflow: hidden;
   cursor: pointer;
 }
 
+/* Image wrapper fills the card */
 .mockup-stage {
   position: relative;
   width: 100%;
@@ -370,29 +387,35 @@
   display: block;
 }
 
-/* ===============================
-   MOBILE / TABLET OVERRIDE
-================================ */
-@media (max-width: 1024px) {
-  #productGrid {
-    gap: 16px;
-    padding: 0 30px;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
+/* Product info below image */
+.product-info {
+  margin-top: 8px;
+  text-align: center;
 }
 
-@media (max-width: 768px) {
-  #productGrid {
-    gap: 12px;
-    padding: 0 20px;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
+.product-info h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-@media (max-width: 480px) {
-  #productGrid {
-    gap: 10px;
-    padding: 0 10px;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
+.price-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.price-old {
+  font-size: 13px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.price-new {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
 }
