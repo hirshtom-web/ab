@@ -48,15 +48,11 @@ function initBundlesPage() {
       card.className = "product-card is-product";
       card.style.display = "none"; // hidden initially
 
-      // always use lifestyle image (last in images array)
-      const lifestyleUrl = b.images.length > 1 ? b.images[b.images.length - 1] : b.images[0];
-      const url = lifestyleUrl.startsWith("http")
-        ? lifestyleUrl
-        : "https://static.wixstatic.com/media/" + lifestyleUrl;
+      card.dataset.images = JSON.stringify(b.images); // keep images in dataset just in case
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" src="${url}" alt="${b.name}" loading="lazy" style="display:block" class="loaded">
+          <img class="lifestyle-bg" alt="${b.name}" loading="lazy" style="opacity:0; transition:opacity 0.5s">
         </div>
 
         <div class="product-info">
@@ -76,6 +72,9 @@ function initBundlesPage() {
 
       grid.appendChild(card);
     });
+
+    // After appending all cards, set their lifestyle images
+    updateLifestyleImages();
   }
 
   // =========================
@@ -95,10 +94,32 @@ function initBundlesPage() {
     if (visibleCount >= cards.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
     }
+
+    // ensure lifestyle images are visible
+    updateLifestyleImages();
   }
 
-  if (showMoreBtn) {
-    showMoreBtn.addEventListener("click", showNextBatch);
+  // =========================
+  // SET LIFESTYLE IMAGES
+  // =========================
+  function updateLifestyleImages() {
+    const cards = document.querySelectorAll(".product-card");
+    cards.forEach(card => {
+      const imgList = JSON.parse(card.dataset.images || "[]");
+      if (!imgList.length) return;
+
+      const lifestyleImg = card.querySelector(".lifestyle-bg");
+      if (!lifestyleImg) return;
+
+      // Always pick the last image in the array (lifestyle)
+      const lifestyleUrl = imgList[imgList.length - 1];
+      const url = lifestyleUrl.startsWith("http") ? lifestyleUrl : "https://static.wixstatic.com/media/" + lifestyleUrl;
+
+      if (lifestyleImg.src !== url) {
+        lifestyleImg.src = url;
+        lifestyleImg.onload = () => (lifestyleImg.style.opacity = 1); // fade-in effect
+      }
+    });
   }
 }
 
