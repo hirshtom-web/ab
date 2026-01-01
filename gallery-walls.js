@@ -16,39 +16,41 @@ function initBundlesPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      console.log("✅ CSV loaded, total rows:", res.data.length);
-
       allBundles = res.data.map(b => ({
         id: (b.bundleId || b.BundleId || "").trim(),
         name: (b.name || b.Name || "Unnamed Bundle").trim(),
         price: b.newPrice ? parseFloat(b.newPrice) : 1,
         oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
-        // Always prefer lifestyle image
-        lifestyle: (b.lifestyleUrl || b.LifestyleUrl || b.lifestyleurl || "").trim(),
+        lifestyle: (b.lifestyleUrl || b.LifestyleUrl || "").trim(),
       }));
 
-      console.log("🟢 Bundles parsed:", allBundles);
+      // Remove bundles that have no lifestyle at all
+      allBundles = allBundles.filter(b => b.lifestyle);
 
       renderAllBundles();
-      showNextBatch(); // show first batch
+      showNextBatch();
     },
     error: err => console.error("❌ CSV load failed:", err)
   });
 
   // =========================
-  // RENDER ALL BUNDLES
+  // RENDER BUNDLES
   // =========================
   function renderAllBundles() {
     grid.innerHTML = "";
 
     allBundles.forEach(b => {
       const card = document.createElement("div");
-      card.className = "product-card is-product";
-      card.style.display = "none"; // hidden initially
+      card.className = "product-card";
+      card.style.display = "none";
+
+      const imgUrl = b.lifestyle.startsWith("http")
+        ? b.lifestyle
+        : "https://static.wixstatic.com/media/" + b.lifestyle;
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
+          <img class="lifestyle-bg" src="${imgUrl}" alt="${b.name}" loading="lazy">
         </div>
 
         <div class="product-info">
@@ -60,33 +62,24 @@ function initBundlesPage() {
         </div>
       `;
 
-      // Click redirects
       card.addEventListener("click", () => {
         if (!b.id) return console.error("❌ Bundle ID missing!");
         window.location.href = `product-page.html?id=${b.id}`;
       });
-
-      // Set lifestyle image
-      const img = card.querySelector(".lifestyle-bg");
-      if (b.lifestyle) {
-        img.src = b.lifestyle.startsWith("http")
-          ? b.lifestyle
-          : "https://static.wixstatic.com/media/" + b.lifestyle;
-      }
 
       grid.appendChild(card);
     });
   }
 
   // =========================
-  // SHOW MORE ITEMS
+  // SHOW MORE
   // =========================
   function showNextBatch() {
     const cards = document.querySelectorAll(".product-card");
     const nextCount = visibleCount + ITEMS_PER_LOAD;
 
     for (let i = visibleCount; i < nextCount && i < cards.length; i++) {
-      cards[i].style.display = "flex"; // reveal the card
+      cards[i].style.display = "flex";
     }
 
     visibleCount = nextCount;
