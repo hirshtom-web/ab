@@ -336,3 +336,14 @@
     gap: 10px;
   }
 }
+
+
+.mockup-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* 🔥 fills square */
+  object-position: center;
+  display: block;
+}
