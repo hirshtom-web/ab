@@ -145,8 +145,9 @@ function updateGridImages() {
     const artworkImg = card.querySelector(".artwork img");
     const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-    // Pick lifestyle if it exists, otherwise fallback to first image
-    const lifestyle = imgList.length > 1 ? imgList[1] : imgList[0];
+    // Always pick the lifestyle image if it exists, otherwise fallback to first image
+    // We assume lifestyle image is the last one in the array
+    const lifestyle = imgList[imgList.length - 1];
     const url = lifestyle.startsWith("http")
       ? lifestyle
       : "https://static.wixstatic.com/media/" + lifestyle;
@@ -154,15 +155,12 @@ function updateGridImages() {
     if (lifestyleImg) {
       lifestyleImg.src = url;
       lifestyleImg.style.display = "block";
-    }
-    if (artworkImg) {
-      artworkImg.style.display = "none";
-    }
-
-    // Fade-in effect
-    if (lifestyleImg) {
       lifestyleImg.classList.remove("loaded");
       lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
+    }
+
+    if (artworkImg) {
+      artworkImg.style.display = "none";
     }
   });
 }
