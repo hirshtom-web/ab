@@ -47,7 +47,7 @@ function initHeader() {
       if (!open) desktopSearchBar.focus();
     });
   }
-  function initGlobalSearch() {
+ function initGlobalSearch() {
   const desktopInput = document.getElementById("searchBar");
   const mobileInput = document.getElementById("mobileSearchBar");
 
@@ -55,29 +55,25 @@ function initHeader() {
     const q = query.trim().toLowerCase();
     if (!q) return;
 
-    if (!window.allProductsGlobal || !window.allProductsGlobal.length) {
-      console.error("❌ Global products not loaded yet");
-      return;
-    }
+    loadAllProducts().then(() => {
+      const results = window.allProductsGlobal.filter(p =>
+        p.searchText.includes(q)
+      );
 
-    // Filter by searchText
-    const results = window.allProductsGlobal.filter(p => p.searchText.includes(q));
-
-    // Save results to sessionStorage and redirect
-    sessionStorage.setItem("searchResults", JSON.stringify(results));
-    window.location.href = "search-results.html?q=" + encodeURIComponent(q);
+      sessionStorage.setItem("searchResults", JSON.stringify(results));
+      window.location.href = "search-results.html?q=" + encodeURIComponent(q);
+    });
   }
 
   [desktopInput, mobileInput].forEach(input => {
     if (!input) return;
     input.addEventListener("keydown", e => {
-      if (e.key === "Enter") doSearch(e.target.value);
+      if (e.key === "Enter") {
+        doSearch(e.target.value);
+      }
     });
   });
 }
-
-// Call this at the end of initHeader()
-initGlobalSearch();
 
 // ---------- GIFT POPUP ----------
 const giftIcon = document.getElementById("giftIcon");
