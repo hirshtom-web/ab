@@ -337,27 +337,24 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  aspect-ratio: 1 / 1;   /* height = width */
+  aspect-ratio: 1 / 1; /* force square */
   overflow: hidden;
   background: transparent;
 }
 
-/* Mockup stage fills the card */
 .mockup-stage {
   position: relative;
   width: 100%;
-  height: 100%;          /* fills full card height */
+  height: 100%; /* fills the card */
   overflow: hidden;
-  background: transparent;
 }
 
-/* Lifestyle image fills wrapper */
 .mockup-stage .lifestyle-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;     /* fills entire square */
+  object-fit: cover;  /* fills the square */
   object-position: center;
   display: block;
 }
