@@ -135,7 +135,7 @@ function initBundlesPage() {
   // =========================
   // UPDATE IMAGES (artwork / lifestyle + fade-in)
   // =========================
- function updateGridImages() {
+function updateGridImages() {
   const cards = document.querySelectorAll(".product-card");
 
   cards.forEach(card => {
@@ -145,7 +145,7 @@ function initBundlesPage() {
     const artworkImg = card.querySelector(".artwork img");
     const lifestyleImg = card.querySelector(".lifestyle-bg");
 
-    // Always show lifestyle if available
+    // Pick lifestyle if it exists, otherwise fallback to first image
     const lifestyle = imgList.length > 1 ? imgList[1] : imgList[0];
     const url = lifestyle.startsWith("http")
       ? lifestyle
@@ -154,7 +154,13 @@ function initBundlesPage() {
     if (lifestyleImg) {
       lifestyleImg.src = url;
       lifestyleImg.style.display = "block";
+    }
+    if (artworkImg) {
       artworkImg.style.display = "none";
+    }
+
+    // Fade-in effect
+    if (lifestyleImg) {
       lifestyleImg.classList.remove("loaded");
       lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
     }
