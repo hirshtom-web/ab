@@ -1,4 +1,4 @@
-I want always to show the "lifestyle" (interior) version ... function initBundlesPage() {
+function initBundlesPage() {
   const grid = document.getElementById("productGrid");
   const showMoreBtn = document.getElementById("showMoreBtn");
 
