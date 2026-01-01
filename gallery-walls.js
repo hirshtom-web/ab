@@ -32,7 +32,6 @@ function initBundlesPage() {
       console.log("🟢 Bundles parsed:", allBundles);
 
       renderAllBundles();
-      initImageSelector();
       showNextBatch(); // show first batch
     },
     error: err => console.error("❌ CSV load failed:", err)
@@ -48,14 +47,16 @@ function initBundlesPage() {
       const card = document.createElement("div");
       card.className = "product-card is-product";
       card.style.display = "none"; // hidden initially
-      card.dataset.images = JSON.stringify(b.images);
+
+      // always use lifestyle image (last in images array)
+      const lifestyleUrl = b.images.length > 1 ? b.images[b.images.length - 1] : b.images[0];
+      const url = lifestyleUrl.startsWith("http")
+        ? lifestyleUrl
+        : "https://static.wixstatic.com/media/" + lifestyleUrl;
 
       card.innerHTML = `
         <div class="mockup-stage">
-          <img class="lifestyle-bg" alt="" loading="lazy" style="display:none">
-          <div class="artwork">
-            <img alt="${b.name}" loading="lazy" style="display:none">
-          </div>
+          <img class="lifestyle-bg" src="${url}" alt="${b.name}" loading="lazy" style="display:block" class="loaded">
         </div>
 
         <div class="product-info">
@@ -67,12 +68,11 @@ function initBundlesPage() {
         </div>
       `;
 
-     card.addEventListener("click", () => {
-  console.log("Redirecting to product-page.html?id=", b.id);
-  if (!b.id) return console.error("❌ Bundle ID missing!");
-  window.location.href = `product-page.html?id=${b.id}`;
-});
-
+      // click redirect
+      card.addEventListener("click", () => {
+        if (!b.id) return console.error("❌ Bundle ID missing!");
+        window.location.href = `product-page.html?id=${b.id}`;
+      });
 
       grid.appendChild(card);
     });
@@ -92,9 +92,6 @@ function initBundlesPage() {
 
     visibleCount = nextCount;
 
-    // Update images for newly revealed cards
-    updateGridImages();
-
     if (visibleCount >= cards.length && showMoreBtn) {
       showMoreBtn.style.display = "none";
     }
@@ -102,68 +99,6 @@ function initBundlesPage() {
 
   if (showMoreBtn) {
     showMoreBtn.addEventListener("click", showNextBatch);
-  }
-
-  // =========================
-  // IMAGE TOGGLE STATE
-  // =========================
-  let currentImageIndex =
-    parseInt(localStorage.getItem("gridImageIndex")) || 0;
-
-  function initImageSelector() {
-    const imgButtons = document.querySelectorAll(".image-selector .img-btn");
-
-    imgButtons.forEach(btn => {
-      btn.classList.toggle(
-        "active",
-        parseInt(btn.dataset.index) === currentImageIndex
-      );
-
-      btn.addEventListener("click", () => {
-        imgButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        currentImageIndex = parseInt(btn.dataset.index);
-        localStorage.setItem("gridImageIndex", currentImageIndex);
-        updateGridImages();
-      });
-    });
-
-    updateGridImages();
-  }
-
-  // =========================
-  // UPDATE IMAGES (artwork / lifestyle + fade-in)
-  // =========================
-  function updateGridImages() {
-    const cards = document.querySelectorAll(".product-card");
-
-    cards.forEach(card => {
-      const imgList = JSON.parse(card.dataset.images || "[]");
-      if (!imgList.length) return;
-
-      const artworkImg = card.querySelector(".artwork img");
-      const lifestyleImg = card.querySelector(".lifestyle-bg");
-
-      const img = imgList[currentImageIndex] || imgList[0];
-      const url = img.startsWith("http")
-        ? img
-        : "https://static.wixstatic.com/media/" + img;
-
-      if (currentImageIndex === 1 && lifestyleImg) {
-        lifestyleImg.src = url;
-        lifestyleImg.style.display = "block";
-        artworkImg.style.display = "none";
-        lifestyleImg.classList.remove("loaded");
-        lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
-      } else if (artworkImg) {
-        artworkImg.src = url;
-        artworkImg.style.display = "block";
-        lifestyleImg.style.display = "none";
-        artworkImg.classList.remove("loaded");
-        artworkImg.onload = () => artworkImg.classList.add("loaded");
-      }
-    });
   }
 }
 
