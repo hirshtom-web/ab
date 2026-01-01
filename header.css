@@ -701,3 +701,62 @@ header {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
+
+.color-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.color-filters span {
+  position: relative;
+  font-size: 12px;
+  padding: 6px 12px 6px 28px;
+  border-radius: 20px;
+  background: #f4f4f4;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+/* Color dot */
+.color-filters span::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c, #ccc);
+  transform: translateY(-50%);
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+/* Hover */
+.color-filters span:hover {
+  background: #eaeaea;
+  transform: translateY(-1px);
+}
+
+/* Special cases */
+.color-filters .all::before {
+  background: linear-gradient(45deg,#000,#fff);
+}
+
+.color-filters .bw::before {
+  background: linear-gradient(45deg,#000 50%,#fff 50%);
+}
+
+.color-filters .multi::before {
+  background: conic-gradient(red,yellow,green,blue,purple);
+}
+
+.color-filters .other::before {
+  background: repeating-linear-gradient(
+    45deg,
+    #bbb,
+    #bbb 2px,
+    #eee 2px,
+    #eee 4px
+  );
+}
