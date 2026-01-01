@@ -327,22 +327,3 @@
     display: inline-flex;
   }
 }
-
-
-
-.mockup-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: none; /* removes background */
-}
-
-.lifestyle-bg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* 🔑 THIS is the key */
-  object-position: center;
-  display: block;
-  pointer-events: none; /* keep card clickable */
-}
