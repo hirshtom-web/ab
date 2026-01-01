@@ -72,41 +72,28 @@ function switchImage(index) {
   }
 
   // ---------------- LOAD CSV ----------------
-  Papa.parse(csvUrl, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: function(res) {
-      const products = res.data.map(p => {
-        // Handle images
-        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-        let lifestyle = (p.lifestyleUrl || "").trim();
-        if(!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
-        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+ document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
 
-        return {
-          id: (p.productId || "").trim(),
-          name: (p.name || "").trim(),
-          type: (p.type || "").toLowerCase(),
-          price: p.newPrice ? parseFloat(p.newPrice) : 0,
-          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-          discount: p.discount || null,
-          category: (p.category || "").trim(),
-          color: (p.color || "").trim(),
-          artist: (p.artistName || p.artist || "").trim(),
-          description: p.bio || "",
-          downloadLink: (p.downloadLinkUrl || "").trim(),
-          visible: true, // all products visible
-          images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
-        };
-      });
+  if (!productId) {
+    document.body.innerHTML = "<p>Invalid product</p>";
+    return;
+  }
 
-      const product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
+  loadAllProducts().then(() => {
+    const item = window.allProductsGlobal.find(
+      p => p.id.toLowerCase() === productId.toLowerCase()
+    );
 
-      if(!product){
-        document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
-        return;
-      }
+    if (!item) {
+      document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
+      return;
+    }
+
+    renderSingleProduct(item);
+  });
+});
 
       // ---------------- DOM Updates ----------------
       titleEl.innerText = product.name;
