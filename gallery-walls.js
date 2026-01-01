@@ -16,6 +16,8 @@ function initBundlesPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
+      if (!res.data || !res.data.length) return console.error("❌ CSV empty or failed");
+
       allBundles = res.data.map(b => ({
         id: (b.bundleId || "").trim(),
         name: (b.name || "Unnamed Bundle").trim(),
@@ -27,11 +29,11 @@ function initBundlesPage() {
         ].filter(Boolean)
       }));
 
-      // ✅ Create all cards AFTER CSV is loaded
+      // ✅ create cards
       allBundles.forEach(b => {
         const card = document.createElement("div");
         card.className = "product-card is-product";
-        card.style.display = "none"; // hidden initially
+        card.style.display = "none"; // initially hidden
         card.dataset.images = JSON.stringify(b.images);
 
         card.innerHTML = `
@@ -47,15 +49,16 @@ function initBundlesPage() {
           </div>
         `;
 
+        // click to product page
         card.addEventListener("click", () => {
-          if (!b.id) return console.error("❌ Bundle ID missing for", b.name);
+          if (!b.id) return console.error("❌ Bundle ID missing", b.name);
           window.location.href = `product-page.html?id=${b.id}`;
         });
 
         grid.appendChild(card);
       });
 
-      showNextBatch(); // show first batch
+      showNextBatch();
     },
     error: err => console.error("❌ CSV load failed:", err)
   });
@@ -74,9 +77,7 @@ function initBundlesPage() {
     visibleCount = nextCount;
     updateGridImages();
 
-    if (visibleCount >= cards.length && showMoreBtn) {
-      showMoreBtn.style.display = "none";
-    }
+    if (visibleCount >= cards.length && showMoreBtn) showMoreBtn.style.display = "none";
   }
 
   if (showMoreBtn) showMoreBtn.addEventListener("click", showNextBatch);
