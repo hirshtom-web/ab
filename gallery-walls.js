@@ -18,19 +18,14 @@ function initBundlesPage() {
     complete: res => {
       console.log("✅ CSV loaded, total rows:", res.data.length);
 
-      allBundles = res.data.map(b => {
-        // normalize field names
-        const lifestyle = b.lifestyleUrl || b.LifestyleUrl || b.LIFESTYLEURL || b.lifestyleurl;
-        const mainImage = b.mainImageUrl || b.MainImageUrl || b.MAINIMAGEURL || b.mainimageurl;
-        return {
-          id: (b.bundleId || b.BundleId || "").trim(),
-          name: (b.name || b.Name || "Unnamed Bundle").trim(),
-          price: b.newPrice ? parseFloat(b.newPrice) : 1,
-          oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
-          lifestyle: lifestyle ? lifestyle.trim() : null,
-          mainImage: mainImage ? mainImage.trim() : null
-        };
-      }).filter(b => b.lifestyle); // keep bundles with a lifestyle image
+      allBundles = res.data.map(b => ({
+        id: (b.bundleId || b.BundleId || "").trim(),
+        name: (b.name || b.Name || "Unnamed Bundle").trim(),
+        price: b.newPrice ? parseFloat(b.newPrice) : 1,
+        oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
+        // Always prefer lifestyle image
+        lifestyle: (b.lifestyleUrl || b.LifestyleUrl || b.lifestyleurl || "").trim(),
+      }));
 
       console.log("🟢 Bundles parsed:", allBundles);
 
@@ -65,14 +60,19 @@ function initBundlesPage() {
         </div>
       `;
 
+      // Click redirects
       card.addEventListener("click", () => {
         if (!b.id) return console.error("❌ Bundle ID missing!");
         window.location.href = `product-page.html?id=${b.id}`;
       });
 
-      // attach lifestyle image
+      // Set lifestyle image
       const img = card.querySelector(".lifestyle-bg");
-      img.src = b.lifestyle.startsWith("http") ? b.lifestyle : "https://static.wixstatic.com/media/" + b.lifestyle;
+      if (b.lifestyle) {
+        img.src = b.lifestyle.startsWith("http")
+          ? b.lifestyle
+          : "https://static.wixstatic.com/media/" + b.lifestyle;
+      }
 
       grid.appendChild(card);
     });
