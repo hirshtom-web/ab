@@ -361,6 +361,37 @@
 /* ===============================
    PRODUCT CARD - perfect square
 ================================ */
+/* ===============================
+   PRODUCTS GRID - full width
+================================ */
+#productGrid {
+  display: grid;
+  gap: 20px;                 /* space between cards */
+  padding: 0 40px;           /* 40px left/right padding */
+  width: 100%;
+  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* min 250px per card */
+}
+
+/* Responsive tablet */
+@media (max-width: 1024px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding: 0 20px;       /* less padding on mobile */
+    gap: 12px;
+  }
+}
+
+/* ===============================
+   PRODUCT CARD - perfect square
+================================ */
 .product-card {
   width: 100%;
   aspect-ratio: 1 / 1;      /* always square */
