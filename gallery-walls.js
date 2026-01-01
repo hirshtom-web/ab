@@ -4,8 +4,8 @@ function initBundlesPage() {
   if (!grid) return console.error("❌ productGrid not found");
 
   let allBundles = [];
-  const ITEMS_PER_LOAD = 36;
   let visibleCount = 0;
+  const ITEMS_PER_LOAD = 36;
   let currentImageIndex = parseInt(localStorage.getItem("gridImageIndex")) || 0;
 
   // =========================
@@ -17,7 +17,7 @@ function initBundlesPage() {
     skipEmptyLines: true,
     complete: res => {
       allBundles = res.data.map(b => ({
-        id: (b.bundleId || "").trim(),
+        id: (b.bundleId || "").trim(),      // make sure CSV has this column
         name: (b.name || "Unnamed Bundle").trim(),
         price: b.newPrice ? parseFloat(b.newPrice) : 1,
         oldPrice: b.originalPrice ? parseFloat(b.originalPrice) : null,
@@ -27,39 +27,46 @@ function initBundlesPage() {
         ].filter(Boolean)
       }));
 
-      // ✅ Render all bundles AFTER CSV is loaded
-      allBundles.forEach(b => {
-        const card = document.createElement("div");
-        card.className = "product-card is-product";
-        card.style.display = "none"; // hidden initially
-        card.dataset.images = JSON.stringify(b.images);
-
-        card.innerHTML = `
-          <div class="mockup-stage">
-            <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
-          </div>
-          <div class="product-info">
-            <h3>${b.name}</h3>
-            <div class="price-wrapper">
-              ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
-              <span class="price-new">$${b.price.toFixed(2)}</span>
-            </div>
-          </div>
-        `;
-
-        card.addEventListener("click", () => {
-          if (!b.id) return console.error("❌ Bundle ID missing!", b);
-          window.location.href = `product-page.html?id=${b.id}`;
-        });
-
-        grid.appendChild(card);
-      });
-
-      // show first batch
-      showNextBatch();
+      renderAllBundles();
+      showNextBatch(); // first batch
     },
     error: err => console.error("❌ CSV load failed:", err)
   });
+
+  // =========================
+  // RENDER ALL BUNDLES
+  // =========================
+  function renderAllBundles() {
+    grid.innerHTML = "";
+
+    allBundles.forEach(b => {
+      const card = document.createElement("div");
+      card.className = "product-card is-product";
+      card.style.display = "none"; // hidden initially
+      card.dataset.images = JSON.stringify(b.images);
+
+      card.innerHTML = `
+        <div class="mockup-stage">
+          <img class="lifestyle-bg" alt="${b.name}" loading="lazy">
+        </div>
+        <div class="product-info">
+          <h3>${b.name}</h3>
+          <div class="price-wrapper">
+            ${b.oldPrice ? `<span class="price-old">$${b.oldPrice.toFixed(2)}</span>` : ""}
+            <span class="price-new">$${b.price.toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+
+      // Click to product page
+      card.addEventListener("click", () => {
+        if (!b.id) return console.error("❌ Bundle ID missing for", b.name);
+        window.location.href = `product-page.html?id=${b.id}`;
+      });
+
+      grid.appendChild(card);
+    });
+  }
 
   // =========================
   // SHOW MORE BUNDLES
@@ -69,8 +76,7 @@ function initBundlesPage() {
     const nextCount = visibleCount + ITEMS_PER_LOAD;
 
     for (let i = visibleCount; i < nextCount && i < cards.length; i++) {
-      const card = cards[i];
-      card.style.display = "flex"; // reveal card
+      cards[i].style.display = "flex";
     }
 
     visibleCount = nextCount;
@@ -87,19 +93,12 @@ function initBundlesPage() {
   // UPDATE GRID IMAGES
   // =========================
   function updateGridImages() {
-    const cards = document.querySelectorAll(".product-card");
-    cards.forEach(card => {
+    document.querySelectorAll(".product-card").forEach(card => {
       const imgList = JSON.parse(card.dataset.images || "[]");
       if (!imgList.length) return;
-
       const lifestyleImg = card.querySelector(".lifestyle-bg");
       const img = imgList[currentImageIndex] || imgList[0];
-      const url = img.startsWith("http") ? img : 'https://static.wixstatic.com/media/' + img;
-
-      lifestyleImg.src = url;
-      lifestyleImg.style.display = "block";
-      lifestyleImg.classList.remove("loaded");
-      lifestyleImg.onload = () => lifestyleImg.classList.add("loaded");
+      lifestyleImg.src = img.startsWith("http") ? img : 'https://static.wixstatic.com/media/' + img;
     });
   }
 }
