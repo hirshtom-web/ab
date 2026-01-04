@@ -5,32 +5,30 @@
 <meta name="ad.size" content="width=1080,height=1080">
 <title>ArteBarte – New Year Sale</title>
 <style>
-/* Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-/* Container for Meta Ad: fixed size */
 html, body {
   width: 1080px;
   height: 1080px;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  background: #fff;
+  background: #000;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Slider wrapper */
+/* Slider */
 .slider {
   position: relative;
   width: 1080px;
   height: 1080px;
 }
 
-/* All slides (images + hero text) */
+/* All slides */
 .slide, .hero-slide {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 1080px;
   height: 1080px;
+  top: 0;
+  left: 0;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
@@ -50,7 +48,7 @@ html, body {
 
 .slide.active { transform: scale(1); }
 
-/* HERO TEXT SLIDE */
+/* Hero text slide */
 .hero-slide {
   display: flex;
   justify-content: center;
@@ -59,18 +57,21 @@ html, body {
   text-align: center;
 }
 
-/* Hero text wrapper: always perfectly centered */
 .hero-text-only {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   width: 100%;
-  text-align: center;
 }
 
 .text-inner h1 {
   font-size: 72px;
+  font-weight: 700;
   line-height: 1.1;
   color: #fff;
-  font-weight: 700;
-  display: block;
+  margin: 0;
 }
 
 .text-inner h1 span {
@@ -88,6 +89,7 @@ html, body {
 .hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
 
 .text-inner p {
+  margin: 0;
   margin-top: 20px;
   font-size: 28px;
   color: #fff;
@@ -102,7 +104,6 @@ html, body {
 /* Animations */
 @keyframes reveal { to { transform: translateY(0); opacity: 1; } }
 @keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); } }
-
 </style>
 </head>
 <body>
@@ -142,7 +143,6 @@ function cycle() {
   slides[current].classList.add('active');
 
   const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
-
   current = (current + 1) % slides.length;
   setTimeout(cycle, delay);
 }
