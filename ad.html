@@ -11,7 +11,7 @@ html, body {
   width: 1080px;
   height: 1080px;
   overflow: hidden;
-  background: #fff;
+  background: #000;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -45,22 +45,20 @@ html, body {
 
 .slide.active { transform: scale(1); }
 
-/* HERO TEXT */
+/* HERO TEXT CENTERED */
 .hero-slide {
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
+  justify-content: center;
+  align-items: center;
   text-align: center;
   background: #0e0e0e;
-  width: 100%;
-  height: 100%;
 }
 
 .hero-text-only {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* PERFECT CENTER */
 }
 
 .text-inner h1 {
@@ -72,12 +70,11 @@ html, body {
 
 .text-inner h1 span {
   display: block;
-  transform: translateY(120%);
   opacity: 0;
 }
 
 .hero-slide.active .text-inner h1 span {
-  animation: reveal 0.8s ease forwards;
+  animation: fadeIn 0.8s forwards;
 }
 
 .hero-slide.active .text-inner h1 span:nth-child(2) { animation-delay: 0.12s; }
@@ -92,19 +89,24 @@ html, body {
 }
 
 .hero-slide.active .text-inner p {
-  animation: fadeUp 0.7s ease forwards;
+  animation: fadeUp 0.7s forwards;
   animation-delay: 0.55s;
 }
 
-@keyframes reveal { to { transform: translateY(0); opacity: 1; }}
-@keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); }}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(-6px); }
+}
 
 </style>
 </head>
 <body>
 
 <div class="slider">
-  <!-- ORIGINAL IMAGE SLIDES -->
+  <!-- IMAGE SLIDES -->
   <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
 
@@ -123,19 +125,12 @@ html, body {
     </div>
   </div>
 
-  <!-- NEW EXTRA IMAGES -->
+  <!-- MORE IMAGES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_a7fa8cded85d4daba0e7c624ce37d904~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_8ca72e6652114a4c8a33b27ddae57d28~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_f5c1989e87f24e15bad03a55ad05a5e0~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_db7eaeb8606d4fe6a9a3e4e023853699~mv2.jpg')"></div>
-
-  <!-- ORIGINAL LAST IMAGE SLIDES -->
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
 </div>
 
 <script>
-// Meta‑friendly limited auto cycle
 const slides = document.querySelectorAll('.slide, .hero-slide');
 let current = 0;
 let loops = 0;
