@@ -184,4 +184,14 @@
   }
 }
 
+.article-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.article-link:hover .article-card {
+  transform: translateY(-4px);
+  transition: transform 0.3s ease;
+}
 
