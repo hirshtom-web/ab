@@ -11,7 +11,7 @@ html, body {
   width: 1080px;
   height: 1080px;
   overflow: hidden;
-  background: #fff;
+  background: #000;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -58,15 +58,18 @@ html, body {
   align-items: center;
   justify-content: center;
   background: #0e0e0e;
+  text-align: center; /* center text horizontally */
 }
 
 .hero-text-only {
-  text-align: center;
-  padding: 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .text-inner h1 {
-  font-size: 72px;
+  font-size: 64px; /* slightly smaller for better fit */
   line-height: 1.1;
   margin: 0;
   font-weight: 700;
@@ -106,13 +109,6 @@ html, body {
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(-6px); }
 }
-
-/* CLICK AREA */
-.click-area {
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-}
 </style>
 </head>
 <body>
@@ -137,19 +133,14 @@ html, body {
     </div>
   </div>
 
-  <!-- IMAGE SLIDES -->
+  <!-- MORE IMAGE SLIDES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
-
-  <!-- CLICK AREA -->
-  <a class="click-area" href="https://your-site-url.com" target="_blank"></a>
 </div>
 
 <script>
 const slides = document.querySelectorAll('.slide, .hero-slide');
 let current = 0;
-let loops = 0;
-const MAX_LOOPS = 2;
 
 function play() {
   slides.forEach(s => s.classList.remove('active'));
@@ -158,14 +149,9 @@ function play() {
   const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
 
   current++;
-  if (current >= slides.length) {
-    current = 0;
-    loops++;
-  }
+  if (current >= slides.length) current = 0;
 
-  if (loops < MAX_LOOPS) {
-    setTimeout(play, delay);
-  }
+  setTimeout(play, delay);
 }
 
 play();
