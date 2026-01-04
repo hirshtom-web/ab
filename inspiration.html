@@ -86,32 +86,35 @@ fetch('blog-posts.json')
       const titleWords = article.title.split(' ').slice(0, 10).join(' ') + (article.title.split(' ').length > 10 ? ' …' : '');
       const subtitleWords = article.subtitle.split(' ').slice(0, 10).join(' ') + (article.subtitle.split(' ').length > 10 ? ' …' : '');
 
-      const card = document.createElement('article');
-      card.className = 'article-card';
-      card.innerHTML = `
-        <img src="${article.heroImage}" alt="${article.title}">
-        <div class="article-text">
-          <span class="category">${article.category || 'General'}</span>
-          <h3 class="title">${titleWords}</h3>
-          <p class="subtitle">${subtitleWords}</p>
-          
-          <div class="meta-row">
-  <span class="meta-item">
-    <span class="material-symbols-outlined">schedule</span>
-    ${article.readTime || 5} min read
-  </span>
+     const link = document.createElement('a');
+link.href = `blog-post.html?id=${encodeURIComponent(article.id)}`;
+link.className = 'article-link';
 
-  <span class="meta-item">
-    <span class="material-symbols-outlined">visibility</span>
-    ${article.views || 0}
-  </span>
-</div>
+link.innerHTML = `
+  <article class="article-card">
+    <img src="${article.heroImage}" alt="${article.title}">
+    <div class="article-text">
+      <span class="category">${article.category || 'General'}</span>
+      <h3 class="title">${titleWords}</h3>
+      <p class="subtitle">${subtitleWords}</p>
 
+      <div class="meta-row">
+        <span class="meta-item">
+          <span class="material-symbols-outlined">schedule</span>
+          ${article.readTime || 5} min read
+        </span>
 
-          <a href="blog-post.html?id=${encodeURIComponent(article.id)}" class="view-more">View More →</a>
-        </div>
-      `;
-      container.appendChild(card);
+        <span class="meta-item">
+          <span class="material-symbols-outlined">visibility</span>
+          ${article.views || 0}
+        </span>
+      </div>
+    </div>
+  </article>
+`;
+
+container.appendChild(link);
+
     });
   })
   .catch(err => console.error("Error loading blog JSON:", err));
