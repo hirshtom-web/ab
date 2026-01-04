@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="ad.size" content="width=1080,height=1080">
+<title>ArteBarte – New Year Sale</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #000;
+}
+
+/* ============================= */
+/* MAIN AD CONTAINER */
+/* ============================= */
+.slider {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+/* BASE SLIDE */
+.slide,
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.slide.active,
+.hero-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+/* IMAGE SLIDES */
+.slide {
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  transition: opacity 0.8s ease, transform 2s ease;
+}
+
+.slide.active {
+  transform: scale(1);
+}
+
+/* ============================= */
+/* HERO TEXT SLIDE */
+/* ============================= */
+.hero-slide {
+  background: #0e0e0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-text-only {
+  color: #fff;
+  text-align: center;
+  padding: 80px;
+}
+
+.text-inner {
+  overflow: hidden;
+}
+
+.text-inner h1 {
+  font-size: 96px;
+  line-height: 1;
+  margin: 0;
+  font-weight: 700;
+}
+
+.text-inner h1 span {
+  display: block;
+  transform: translateY(120%);
+  opacity: 0;
+}
+
+.hero-slide.active .text-inner h1 span {
+  animation: reveal 0.8s ease forwards;
+}
+
+.hero-slide.active .text-inner h1 span:nth-child(2) { animation-delay: 0.12s; }
+.hero-slide.active .text-inner h1 span:nth-child(3) { animation-delay: 0.24s; }
+.hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
+
+.text-inner p {
+  margin-top: 28px;
+  font-size: 28px;
+  opacity: 0;
+}
+
+.hero-slide.active .text-inner p {
+  animation: fadeUp 0.7s ease forwards;
+  animation-delay: 0.55s;
+}
+
+/* ============================= */
+/* ANIMATIONS */
+/* ============================= */
+@keyframes reveal {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(-6px); }
+}
+
+/* ============================= */
+/* CLICK AREA */
+/* ============================= */
+.click-area {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+</style>
+</head>
+
+<body>
+
+<div class="slider">
+
+  <!-- IMAGE SLIDES -->
+  <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
+
+  <!-- HERO TEXT SLIDE -->
+  <div class="hero-slide">
+    <div class="hero-text-only">
+      <div class="text-inner">
+        <h1>
+          <span>HAPPY</span>
+          <span>NEW YEAR</span>
+          <span>'26</span>
+          <span>SALE</span>
+        </h1>
+        <p>UP TO 80% OFF — LIMITED TIME</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE SLIDES -->
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
+
+  <!-- CLICK THROUGH -->
+  <a class="click-area" href="https://your-site-url.com" target="_blank"></a>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide, .hero-slide');
+let current = 0;
+let loops = 0;
+const MAX_LOOPS = 2;
+
+function play() {
+  slides.forEach(s => s.classList.remove('active'));
+  slides[current].classList.add('active');
+
+  const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
+
+  current++;
+
+  if (current >= slides.length) {
+    current = 0;
+    loops++;
+  }
+
+  if (loops < MAX_LOOPS) {
+    setTimeout(play, delay);
+  }
+}
+
+play();
+</script>
+
+</body>
+</html>
