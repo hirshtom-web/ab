@@ -16,10 +16,14 @@ function initBundlesPage() {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-      allBundles = res.data.map(b => ({
-        id: (b.bundleId || "").trim(),
-        image: (b.mainImageUrl ? b.mainImageUrl.split(";")[0].trim() : "")
-      })).filter(b => b.image); // only keep bundles with images
+      allBundles = res.data
+        .map(b => ({
+          id: (b.bundleId || b.productId || "").trim(), // use bundleId or fallback to productId
+          name: b.name || "Bundle",
+          image: (b.mainImageUrl ? b.mainImageUrl.split(";")[0].trim() : ""),
+          pageUrl: b.productPageUrl || `product-page.html?id=${b.bundleId || b.productId}`
+        }))
+        .filter(b => b.image); // only keep bundles with images
 
       renderAllBundles();
       showNextBatch();
@@ -34,23 +38,20 @@ function initBundlesPage() {
     grid.innerHTML = "";
 
     allBundles.forEach(b => {
-      const card = document.createElement("div");
-      card.className = "bundle-card";
-      card.style.display = "none";
+      // Use <a> so links work natively
+      const link = document.createElement("a");
+      link.href = b.pageUrl;
+      link.className = "bundle-card";
+      link.style.display = "none";
+      link.title = b.name;
 
-      // make image itself clickable
       const img = document.createElement("img");
       img.src = b.image.startsWith("http") ? b.image : "https://static.wixstatic.com/media/" + b.image;
-      img.alt = "";
+      img.alt = b.name;
       img.loading = "lazy";
 
-      img.addEventListener("click", () => {
-        if (!b.id) return console.error("❌ Bundle ID missing!");
-        window.location.href = `product-page.html?id=${b.id}`;
-      });
-
-      card.appendChild(img);
-      grid.appendChild(card);
+      link.appendChild(img);
+      grid.appendChild(link);
     });
   }
 
