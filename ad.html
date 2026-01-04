@@ -11,7 +11,7 @@ html, body {
   width: 1080px;
   height: 1080px;
   overflow: hidden;
-  background: #000;
+  background: #fff;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -48,21 +48,20 @@ html, body {
 /* HERO TEXT */
 .hero-slide {
   display: flex;
-  justify-content: center; /* centers horizontally */
-  align-items: center;     /* centers vertically */
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
   text-align: center;
   background: #0e0e0e;
   width: 100%;
   height: 100%;
-  padding: 0;              /* remove extra padding */
 }
 
 .hero-text-only {
-  max-width: 80%;          /* keeps text from stretching too wide */
-  width: fit-content;      /* shrink wrap content */
-  margin: 0 auto;          /* center horizontally */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-
 
 .text-inner h1 {
   font-size: 72px;
@@ -99,6 +98,7 @@ html, body {
 
 @keyframes reveal { to { transform: translateY(0); opacity: 1; }}
 @keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); }}
+
 </style>
 </head>
 <body>
@@ -126,14 +126,12 @@ html, body {
   <!-- NEW EXTRA IMAGES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_a7fa8cded85d4daba0e7c624ce37d904~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_8ca72e6652114a4c8a33b27ddae57d28~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0b0727e41865491e8636e5dcab41cb5b~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_f5c1989e87f24e15bad03a55ad05a5e0~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_db7eaeb8606d4fe6a9a3e4e023853699~mv2.jpg')"></div>
 
   <!-- ORIGINAL LAST IMAGE SLIDES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
-
 </div>
 
 <script>
