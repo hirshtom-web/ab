@@ -1,6 +1,6 @@
-// --- NEW IN SLIDER ---
-function initNewInSlider() {
-  const sliderContainer = document.getElementById("newInSlider");
+// --- GENERIC SLIDER BUILDER ---
+function buildSlider(sliderId, filterFn) {
+  const sliderContainer = document.getElementById(sliderId);
   if (!sliderContainer) return;
 
   fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
@@ -11,10 +11,10 @@ function initNewInSlider() {
         skipEmptyLines: true
       }).data;
 
-      // 1️⃣ Take last 10 products (newest first)
-      const newProducts = data.slice(-10).reverse();
+      // Apply custom filter/sort logic
+      const products = filterFn(data).slice(0, 10);
 
-      newProducts.forEach(p => {
+      products.forEach(p => {
         const mainImages = (p.mainImageUrl || "")
           .split(";")
           .map(i => i.trim())
@@ -26,7 +26,6 @@ function initNewInSlider() {
               : "https://static.wixstatic.com/media/" + mainImages[0])
           : "";
 
-        // --- Price logic ---
         const newPrice = parseFloat(p.newPrice || 0);
         const oldPrice = parseFloat(p.originalPrice || 0);
         const hasDiscount = oldPrice > newPrice;
@@ -60,7 +59,6 @@ function initNewInSlider() {
           </div>
         `;
 
-        // Link to product page
         item.addEventListener("click", () => {
           window.location.href = `product-page.html?id=${p.productId}`;
         });
@@ -68,8 +66,17 @@ function initNewInSlider() {
         sliderContainer.appendChild(item);
       });
     })
-    .catch(err => console.error("New In slider failed:", err));
+    .catch(err => console.error(`${sliderId} slider failed:`, err));
 }
 
-// Init
-initNewInSlider();
+/* ---------- NEW IN ---------- */
+buildSlider("newInSlider", data =>
+  data.slice(-10).reverse()
+);
+
+/* ---------- BESTSELLERS ---------- */
+buildSlider("bestsellersSlider", data =>
+  [...data]
+    // TEMP bestseller logic – change later
+    .sort((a, b) => (b.views || 0) - (a.views || 0))
+);
