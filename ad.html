@@ -5,9 +5,11 @@
 <meta name="ad.size" content="width=1080,height=1080">
 <title>ArteBarte – New Year Sale</title>
 <style>
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Container for Meta Ad: fixed size */
 html, body {
-  margin: 0;
-  padding: 0;
   width: 1080px;
   height: 1080px;
   overflow: hidden;
@@ -15,32 +17,30 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* MAIN SLIDER */
+/* Slider wrapper */
 .slider {
   position: relative;
   width: 1080px;
   height: 1080px;
 }
 
-/* BASE SLIDE */
-.slide,
-.hero-slide {
+/* All slides (images + hero text) */
+.slide, .hero-slide {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 1080px;
+  height: 1080px;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 
-.slide.active,
-.hero-slide.active {
+.slide.active, .hero-slide.active {
   opacity: 1;
   z-index: 1;
 }
 
-/* IMAGE SLIDES */
+/* Image slides */
 .slide {
   background-size: cover;
   background-position: center;
@@ -48,9 +48,7 @@ html, body {
   transition: opacity 0.8s ease, transform 2s ease;
 }
 
-.slide.active {
-  transform: scale(1);
-}
+.slide.active { transform: scale(1); }
 
 /* HERO TEXT SLIDE */
 .hero-slide {
@@ -59,20 +57,20 @@ html, body {
   align-items: center;
   background: #0e0e0e;
   text-align: center;
-  width: 100%;
-  height: 100%;
 }
 
+/* Hero text wrapper: always perfectly centered */
 .hero-text-only {
-  display: inline-block; /* important: shrink to text size */
+  width: 100%;
+  text-align: center;
 }
 
 .text-inner h1 {
-  font-size: 64px;
+  font-size: 72px;
   line-height: 1.1;
-  margin: 0;
-  font-weight: 700;
   color: #fff;
+  font-weight: 700;
+  display: block;
 }
 
 .text-inner h1 span {
@@ -90,8 +88,8 @@ html, body {
 .hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
 
 .text-inner p {
-  font-size: 28px;
   margin-top: 20px;
+  font-size: 28px;
   color: #fff;
   opacity: 0;
 }
@@ -101,23 +99,21 @@ html, body {
   animation-delay: 0.55s;
 }
 
-/* ANIMATIONS */
-@keyframes reveal {
-  to { transform: translateY(0); opacity: 1; }
-}
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(-6px); }
-}
+/* Animations */
+@keyframes reveal { to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); } }
+
 </style>
 </head>
 <body>
 
 <div class="slider">
-  <!-- IMAGE SLIDES -->
+
+  <!-- Image slides -->
   <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
 
-  <!-- HERO TEXT SLIDE -->
+  <!-- Hero text slide -->
   <div class="hero-slide">
     <div class="hero-text-only">
       <div class="text-inner">
@@ -132,26 +128,26 @@ html, body {
     </div>
   </div>
 
-  <!-- MORE IMAGE SLIDES -->
+  <!-- More image slides -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5.jpg')"></div>
 </div>
 
 <script>
 const slides = document.querySelectorAll('.slide, .hero-slide');
 let current = 0;
 
-function play() {
+function cycle() {
   slides.forEach(s => s.classList.remove('active'));
   slides[current].classList.add('active');
 
   const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
 
   current = (current + 1) % slides.length;
-  setTimeout(play, delay);
+  setTimeout(cycle, delay);
 }
 
-play();
+cycle();
 </script>
 
 </body>
