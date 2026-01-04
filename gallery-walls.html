@@ -23,7 +23,9 @@
   <!-- HEADER -->
   <div id="header-placeholder"></div>
 
- 
+   <!-- TITLE -->
+ <h2 class="product-grid-title">Our Products</h2>
+  
   <!-- PRODUCTS GRID -->
 <div id="productGrid" class="products-grid"></div>
 <button id="showMoreBtn">Show More</button>
@@ -31,21 +33,37 @@
 
 
 
-  <!-- Scripts -->
-  <script src="header.js"></script>
-  <script src="gallery-walls.js"></script>
-  <script>
-    // Load header, then initialize
-    fetch("header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header-placeholder").innerHTML = html;
-        initHeader();          // initialize header
-        initProductsPage();    // initialize products after header exists
-      })
-      .catch(err => console.error("Header load failed:", err));
-  </script>
-  <script src="cart.js"></script>
+<!-- Scripts -->
+<script src="header.js"></script>
+<script src="gallery-walls.js"></script>
+<script src="cart.js"></script>
+<script>
+  // Load header, then initialize
+  fetch("header.html")
+    .then(res => res.text())
+    .then(html => {
+      // Insert the header HTML
+      document.getElementById("header-placeholder").innerHTML = html;
+
+      // Initialize header
+      if (typeof initHeader === "function") initHeader();
+
+      // Initialize products
+      if (typeof initProductsPage === "function") initProductsPage();
+
+      // Ensure all bundle-card links open normally
+      document.querySelectorAll(".bundle-card").forEach(card => {
+        card.addEventListener("click", function(e) {
+          // Only navigate if the link has a valid href
+          if (card.href) {
+            window.location.href = card.href;
+          }
+        });
+      });
+    })
+    .catch(err => console.error("Header load failed:", err));
+</script>
+
 
 </body>
 </html>
