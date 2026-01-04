@@ -112,5 +112,44 @@ function initRelatedSlider() {
     .catch(err => console.error("Related slider failed:", err));
 }
 
+// --- Initialize the bundle inspiration slider ---
+function initBundleSlider() {
+  const container = document.getElementById("bundleSlider");
+  if (!container) return;
+
+  fetch("https://hirshtom-web.github.io/ab/bundles.csv")
+    .then(res => res.text())
+    .then(csvText => {
+      const bundles = Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true
+      }).data;
+
+      bundles.slice(0, 10).forEach(b => {
+        const imgSrc = b.image
+          ? (b.image.includes("http")
+              ? b.image
+              : "https://static.wixstatic.com/media/" + b.image)
+          : "";
+
+        const item = document.createElement("div");
+        item.className = "new-in-slider-item";
+
+        item.innerHTML = `<img src="${imgSrc}" alt="">`;
+
+        // Optional: click to go to bundle page
+        item.addEventListener("click", () => {
+          window.location.href = `bundle-page.html?id=${b.bundleId}`;
+        });
+
+        container.appendChild(item);
+      });
+    })
+    .catch(err => console.error("Bundle slider failed:", err));
+}
+
 // --- Auto-init on page load ---
-document.addEventListener("DOMContentLoaded", initRelatedSlider);
+document.addEventListener("DOMContentLoaded", () => {
+  initRelatedSlider();
+  initBundleSlider(); // ✅ Init bundle inspiration
+});
