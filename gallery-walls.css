@@ -1,8 +1,21 @@
 /* Title above the grid */
 .product-grid-title {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 20px; /* default for mobile */
+  margin-bottom: 15px;
+}
+
+@media (min-width: 480px) {
+  .product-grid-title {
+    font-size: 22px; /* slightly bigger on larger phones */
+  }
+}
+
+@media (min-width: 768px) {
+  .product-grid-title {
+    font-size: 24px; /* desktop/tablet */
+    margin-bottom: 20px;
+  }
 }
 
 /* Grid container */
@@ -10,12 +23,19 @@
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* mobile default */
-  padding: 0 10px; /* small padding to prevent overflow */
+  padding: 0 10px; /* prevents horizontal overflow */
+  justify-content: center; /* center the grid */
+}
+
+@media (min-width: 480px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* larger phones */
+  }
 }
 
 @media (min-width: 768px) {
   #productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* desktop/tablet */
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* tablet/desktop */
   }
 }
 
@@ -37,6 +57,7 @@
   transition: transform 0.3s ease;
   display: block;
   border-radius: 12px; /* matches card rounding */
+  cursor: pointer;
 }
 
 .bundle-card img:hover {
