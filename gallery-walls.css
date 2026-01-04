@@ -1,13 +1,14 @@
 #productGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* min 400px, max 1fr */
   gap: 10px;
 }
 
 .bundle-card {
   position: relative;
-  aspect-ratio: 1/1; /* square */
+  aspect-ratio: 1/1; /* keeps it square */
   overflow: hidden;
+  border-radius: 12px; /* rounded corners */
 }
 
 .bundle-card img {
@@ -17,8 +18,9 @@
   transition: transform 0.3s ease;
   display: block;
   cursor: pointer;
+  border-radius: 12px; /* makes the image corners match the card */
 }
 
 .bundle-card img:hover {
-  transform: scale(1.05); /* 5% zoom on hover */
+  transform: scale(1.05);
 }
