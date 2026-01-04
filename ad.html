@@ -5,24 +5,22 @@
 <meta name="ad.size" content="width=1080,height=1080">
 <title>ArteBarte – New Year Sale</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 html, body {
   width: 1080px;
   height: 1080px;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
   background: #000;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Slider */
 .slider {
   position: relative;
   width: 1080px;
   height: 1080px;
 }
 
-/* All slides */
 .slide, .hero-slide {
   position: absolute;
   width: 1080px;
@@ -38,7 +36,6 @@ html, body {
   z-index: 1;
 }
 
-/* Image slides */
 .slide {
   background-size: cover;
   background-position: center;
@@ -48,7 +45,7 @@ html, body {
 
 .slide.active { transform: scale(1); }
 
-/* Hero text slide */
+/* HERO TEXT */
 .hero-slide {
   display: flex;
   justify-content: center;
@@ -58,11 +55,6 @@ html, body {
 }
 
 .hero-text-only {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
   width: 100%;
 }
 
@@ -71,7 +63,6 @@ html, body {
   font-weight: 700;
   line-height: 1.1;
   color: #fff;
-  margin: 0;
 }
 
 .text-inner h1 span {
@@ -89,9 +80,8 @@ html, body {
 .hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
 
 .text-inner p {
-  margin: 0;
-  margin-top: 20px;
   font-size: 28px;
+  margin-top: 20px;
   color: #fff;
   opacity: 0;
 }
@@ -101,20 +91,18 @@ html, body {
   animation-delay: 0.55s;
 }
 
-/* Animations */
-@keyframes reveal { to { transform: translateY(0); opacity: 1; } }
-@keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); } }
+@keyframes reveal { to { transform: translateY(0); opacity: 1; }}
+@keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); }}
 </style>
 </head>
 <body>
 
 <div class="slider">
-
-  <!-- Image slides -->
+  <!-- ORIGINAL IMAGE SLIDES -->
   <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
 
-  <!-- Hero text slide -->
+  <!-- HERO TEXT SLIDE -->
   <div class="hero-slide">
     <div class="hero-text-only">
       <div class="text-inner">
@@ -129,25 +117,44 @@ html, body {
     </div>
   </div>
 
-  <!-- More image slides -->
+  <!-- NEW EXTRA IMAGES -->
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_a7fa8cded85d4daba0e7c624ce37d904~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_8ca72e6652114a4c8a33b27ddae57d28~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0b0727e41865491e8636e5dcab41cb5b~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_f5c1989e87f24e15bad03a55ad05a5e0~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_db7eaeb8606d4fe6a9a3e4e023853699~mv2.jpg')"></div>
+
+  <!-- ORIGINAL LAST IMAGE SLIDES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4a01f642c0a948c7878f87cfeae2bc45~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_fd2906b6b3724d7997d3ec2eb113fd5b~mv2.jpg')"></div>
+
 </div>
 
 <script>
+// Meta‑friendly limited auto cycle
 const slides = document.querySelectorAll('.slide, .hero-slide');
 let current = 0;
+let loops = 0;
+const MAX_LOOPS = 2;
 
-function cycle() {
+function play() {
   slides.forEach(s => s.classList.remove('active'));
   slides[current].classList.add('active');
 
   const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
-  current = (current + 1) % slides.length;
-  setTimeout(cycle, delay);
+
+  current++;
+  if (current >= slides.length) {
+    current = 0;
+    loops++;
+  }
+
+  if (loops < MAX_LOOPS) {
+    setTimeout(play, delay);
+  }
 }
 
-cycle();
+play();
 </script>
 
 </body>
