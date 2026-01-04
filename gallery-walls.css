@@ -1,12 +1,18 @@
 #productGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* min 400px, max 1fr */
   gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* mobile default */
+}
+
+@media (min-width: 768px) {
+  #productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* desktop/tablet */
+  }
 }
 
 .bundle-card {
   position: relative;
-  aspect-ratio: 1/1; /* keeps it square */
+  aspect-ratio: 1/1; /* square */
   overflow: hidden;
   border-radius: 12px; /* rounded corners */
 }
@@ -18,7 +24,7 @@
   transition: transform 0.3s ease;
   display: block;
   cursor: pointer;
-  border-radius: 12px; /* makes the image corners match the card */
+  border-radius: 12px;
 }
 
 .bundle-card img:hover {
