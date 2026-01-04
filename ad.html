@@ -26,10 +26,10 @@ html, body {
 .slide,
 .hero-slide {
   position: absolute;
-  width: 1080px;
-  height: 1080px;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
@@ -55,21 +55,20 @@ html, body {
 /* HERO TEXT SLIDE */
 .hero-slide {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   background: #0e0e0e;
-  text-align: center; /* center text horizontally */
+  text-align: center;
+  width: 100%;
+  height: 100%;
 }
 
 .hero-text-only {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: inline-block; /* important: shrink to text size */
 }
 
 .text-inner h1 {
-  font-size: 64px; /* slightly smaller for better fit */
+  font-size: 64px;
   line-height: 1.1;
   margin: 0;
   font-weight: 700;
@@ -148,9 +147,7 @@ function play() {
 
   const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
 
-  current++;
-  if (current >= slides.length) current = 0;
-
+  current = (current + 1) % slides.length;
   setTimeout(play, delay);
 }
 
