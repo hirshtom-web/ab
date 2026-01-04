@@ -1,7 +1,16 @@
+/* Title above the grid */
+.product-grid-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Grid container */
 #productGrid {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* mobile default */
+  padding: 0 10px; /* small padding to prevent overflow */
 }
 
 @media (min-width: 768px) {
@@ -10,21 +19,24 @@
   }
 }
 
+/* Card styling */
 .bundle-card {
   position: relative;
-  aspect-ratio: 1/1; /* square */
+  aspect-ratio: 1/1; /* keeps card square */
   overflow: hidden;
   border-radius: 12px; /* rounded corners */
+  display: block; /* ensures <a> fills grid cell */
+  text-decoration: none; /* removes underline */
 }
 
+/* Image inside the card */
 .bundle-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
   display: block;
-  cursor: pointer;
-  border-radius: 12px;
+  border-radius: 12px; /* matches card rounding */
 }
 
 .bundle-card img:hover {
