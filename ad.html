@@ -2,46 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="ad.size" content="width=1080,height=1080">
+<meta name="ad.size" content="width=600,height=600">
 <title>ArteBarte – New Year Sale</title>
-
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 html, body {
-  width: 1080px;
-  height: 1080px;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background: #000;
   font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .slider {
   position: relative;
-  width: 1080px;
-  height: 1080px;
+  width: 600px;
+  height: 600px;
+  background: #000;
 }
 
-/* SLIDES */
-.slide,
-.hero-slide {
+.slide, .hero-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 
-.slide.active,
-.hero-slide.active {
+.slide.active, .hero-slide.active {
   opacity: 1;
   z-index: 1;
 }
 
-/* IMAGE SLIDES */
 .slide {
   background-size: cover;
   background-position: center;
@@ -49,106 +43,100 @@ html, body {
   transition: opacity 0.8s ease, transform 2s ease;
 }
 
-.slide.active {
-  transform: scale(1);
-}
+.slide.active { transform: scale(1); }
 
-/* HERO TEXT SLIDE – TRUE CENTER */
 .hero-slide {
   display: flex;
   justify-content: center;
   align-items: center;
   background: #0e0e0e;
-}
-
-/* TEXT WRAP */
-.hero-text-only {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* OPTICAL CENTER FIX */
-.text-inner {
   text-align: center;
-  transform: translateX(-1px);
 }
 
-/* HEADLINE */
+.hero-text-only {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .text-inner h1 {
-  font-size: 72px;
+  font-size: 48px;
   font-weight: 700;
   line-height: 1.1;
   color: #fff;
 }
 
-/* LINE ANIMATION */
-.text-inner h1 span {
-  display: block;
-  opacity: 0;
-}
+.text-inner h1 span { display: block; opacity: 0; }
 
-.hero-slide.active .text-inner h1 span {
-  animation: fadeIn 0.7s forwards;
-}
-
+.hero-slide.active .text-inner h1 span { animation: fadeIn 0.8s forwards; }
 .hero-slide.active .text-inner h1 span:nth-child(2) { animation-delay: 0.12s; }
 .hero-slide.active .text-inner h1 span:nth-child(3) { animation-delay: 0.24s; }
 .hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
 
-/* SUBTEXT */
 .text-inner p {
-  margin-top: 20px;
-  font-size: 28px;
+  font-size: 18px;
+  margin-top: 14px;
   color: #fff;
   opacity: 0;
 }
 
 .hero-slide.active .text-inner p {
-  animation: fadeUp 0.6s forwards;
+  animation: fadeUp 0.7s forwards;
   animation-delay: 0.55s;
 }
 
-/* ANIMATIONS */
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(-6px);
-  }
-}
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(-6px); } }
 </style>
 </head>
-
 <body>
 
 <div class="slider">
 
-  <!-- IMAGE SLIDES -->
-  <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
+  <!-- Image 1 & 2 -->
+  <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_5ed5c06705904962acae071f68f80e5d~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_48fb6fb04a164a979d7f4002d9b4834d~mv2.jpg')"></div>
 
-  <!-- HERO TEXT SLIDE -->
+  <!-- Text Slide 1 -->
   <div class="hero-slide">
     <div class="hero-text-only">
       <div class="text-inner">
-        <h1>
-          <span>HAPPY</span>
-          <span>NEW YEAR</span>
-          <span>'26</span>
-          <span>SALE</span>
-        </h1>
-        <p>UP TO 80% OFF — LIMITED TIME</p>
+        <h1><span>בלי שיפוץ.</span><span>בלי בלגן.</span></h1>
+        <p>שדרוג מהיר לאווירה בבית.</p>
       </div>
     </div>
   </div>
 
-  <!-- MORE IMAGES -->
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_a7fa8cded85d4daba0e7c624ce37d904~mv2.jpg')"></div>
-  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_8ca72e6652114a4c8a33b27ddae57d28~mv2.jpg')"></div>
+  <!-- Image 3 & 4 -->
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_4e59eb689308456abf626f5cc93d111a~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_6a8a520481f64273a0cc12dfc5a20b62~mv2.jpg')"></div>
+
+  <!-- Text Slide 2 -->
+  <div class="hero-slide">
+    <div class="hero-text-only">
+      <div class="text-inner">
+        <h1><span>אמנות שבאמת</span><span>עושה וואו.</span></h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image 5 & 6 -->
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_dc17d078333b448b9424abe071b3ba44~mv2.jpg')"></div>
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_d180893268624c3a821e5fbdc5bdc0ef~mv2.jpg')"></div>
+
+  <!-- Text Slide 3 -->
+  <div class="hero-slide">
+    <div class="hero-text-only">
+      <div class="text-inner">
+        <h1><span>בלי שיפוץ.</span><span>בלי בלגן.</span></h1>
+        <p>שדרוג מהיר לאווירה בבית.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image 7 -->
+  <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_957ddf9d8f85489981d856d1744ca1d3~mv2.jpg')"></div>
 
 </div>
 
@@ -162,7 +150,7 @@ function play() {
   slides.forEach(s => s.classList.remove('active'));
   slides[current].classList.add('active');
 
-  const delay = slides[current].classList.contains('hero-slide') ? 3000 : 2000;
+  const delay = slides[current].classList.contains('hero-slide') ? 3000 : 1200;
 
   current++;
   if (current >= slides.length) {
