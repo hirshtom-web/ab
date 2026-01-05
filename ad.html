@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <meta name="ad.size" content="width=1080,height=1080">
 <title>ArteBarte – New Year Sale</title>
+
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 html, body {
   width: 1080px;
@@ -21,21 +26,22 @@ html, body {
   height: 1080px;
 }
 
-.slide, .hero-slide {
+/* SLIDES */
+.slide,
+.hero-slide {
   position: absolute;
-  width: 1080px;
-  height: 1080px;
-  top: 0;
-  left: 0;
+  inset: 0;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 
-.slide.active, .hero-slide.active {
+.slide.active,
+.hero-slide.active {
   opacity: 1;
   z-index: 1;
 }
 
+/* IMAGE SLIDES */
 .slide {
   background-size: cover;
   background-position: center;
@@ -43,24 +49,32 @@ html, body {
   transition: opacity 0.8s ease, transform 2s ease;
 }
 
-.slide.active { transform: scale(1); }
+.slide.active {
+  transform: scale(1);
+}
 
-/* HERO TEXT CENTERED */
+/* HERO TEXT SLIDE – TRUE CENTER */
 .hero-slide {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
   background: #0e0e0e;
 }
 
+/* TEXT WRAP */
 .hero-text-only {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* PERFECT CENTER */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* OPTICAL CENTER FIX */
+.text-inner {
+  text-align: center;
+  transform: translateX(-1px);
+}
+
+/* HEADLINE */
 .text-inner h1 {
   font-size: 72px;
   font-weight: 700;
@@ -68,44 +82,51 @@ html, body {
   color: #fff;
 }
 
+/* LINE ANIMATION */
 .text-inner h1 span {
   display: block;
   opacity: 0;
 }
 
 .hero-slide.active .text-inner h1 span {
-  animation: fadeIn 0.8s forwards;
+  animation: fadeIn 0.7s forwards;
 }
 
 .hero-slide.active .text-inner h1 span:nth-child(2) { animation-delay: 0.12s; }
 .hero-slide.active .text-inner h1 span:nth-child(3) { animation-delay: 0.24s; }
 .hero-slide.active .text-inner h1 span:nth-child(4) { animation-delay: 0.36s; }
 
+/* SUBTEXT */
 .text-inner p {
-  font-size: 28px;
   margin-top: 20px;
+  font-size: 28px;
   color: #fff;
   opacity: 0;
 }
 
 .hero-slide.active .text-inner p {
-  animation: fadeUp 0.7s forwards;
+  animation: fadeUp 0.6s forwards;
   animation-delay: 0.55s;
 }
 
+/* ANIMATIONS */
 @keyframes fadeIn {
   to { opacity: 1; }
 }
 
 @keyframes fadeUp {
-  to { opacity: 1; transform: translateY(-6px); }
+  to {
+    opacity: 1;
+    transform: translateY(-6px);
+  }
 }
-
 </style>
 </head>
+
 <body>
 
 <div class="slider">
+
   <!-- IMAGE SLIDES -->
   <div class="slide active" style="background-image:url('https://static.wixstatic.com/media/1799ca_327176d284664d49a33bcd61665dcd37~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_0c5dcdcf3918494db522b0990b9ad45e~mv2.jpg')"></div>
@@ -128,6 +149,7 @@ html, body {
   <!-- MORE IMAGES -->
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_a7fa8cded85d4daba0e7c624ce37d904~mv2.jpg')"></div>
   <div class="slide" style="background-image:url('https://static.wixstatic.com/media/1799ca_8ca72e6652114a4c8a33b27ddae57d28~mv2.jpg')"></div>
+
 </div>
 
 <script>
