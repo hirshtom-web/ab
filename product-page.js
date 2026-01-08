@@ -55,7 +55,7 @@ function switchImage(index) {
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
-      const content = btn.nextElementSibling;
+const content = item.querySelector(".accordion-content");
       btn.addEventListener("click", () => {
         const isActive = item.classList.contains("active");
         document.querySelectorAll(".accordion-item").forEach(i => {
