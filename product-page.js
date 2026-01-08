@@ -202,26 +202,22 @@ if(allImages.length){
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initProductsPage();
-
-  // --- Sale countdown ---
-  const saleEl = document.getElementById("saleInfo");
-  if(saleEl){
-    let seconds = 36000; // 10 hours
-    function updateTimer() {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-      if(seconds > 0){
-        seconds--;
-        setTimeout(updateTimer, 1000);
-      }
+// Sale countdown
+const saleEl = document.getElementById("saleInfo");
+if(saleEl){
+  let seconds = 36000; // 10 hours
+  function updateTimer() {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    if(seconds > 0){
+      seconds--;
+      setTimeout(updateTimer, 1000);
     }
-    updateTimer();
   }
-});
+  updateTimer();
+}
 
 // Tabs
 document.addEventListener("DOMContentLoaded", () => {
