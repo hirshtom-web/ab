@@ -52,24 +52,30 @@ function switchImage(index) {
     return img;
   }
 
-  function initAccordion() {
-    document.querySelectorAll(".accordion-header").forEach(btn => {
-      const item = btn.closest(".accordion-item");
-const content = item.querySelector(".accordion-content");
-      btn.addEventListener("click", () => {
-        const isActive = item.classList.contains("active");
-        document.querySelectorAll(".accordion-item").forEach(i => {
-          i.classList.remove("active");
-          const c = i.querySelector(".accordion-content");
-          if(c) c.style.maxHeight = null;
-        });
-        if(!isActive){
-          item.classList.add("active");
-          if(content) content.style.maxHeight = content.scrollHeight + "px";
-        }
+function initAccordion() {
+  document.querySelectorAll(".accordion-header").forEach(btn => {
+    const item = btn.closest(".accordion-item");
+    const content = item.querySelector(".accordion-content");
+    const inner = item.querySelector(".accordion-inner");
+
+    btn.addEventListener("click", () => {
+      const isActive = item.classList.contains("active");
+
+      // Close all
+      document.querySelectorAll(".accordion-item").forEach(i => {
+        i.classList.remove("active");
+        const c = i.querySelector(".accordion-content");
+        if (c) c.style.maxHeight = null;
       });
+
+      // Open clicked
+      if (!isActive) {
+        item.classList.add("active");
+        content.style.maxHeight = inner.scrollHeight + "px";
+      }
     });
-  }
+  });
+}
 
   // ---------------- LOAD CSV ----------------
   Papa.parse(csvUrl, {
