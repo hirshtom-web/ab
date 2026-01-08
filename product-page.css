@@ -235,8 +235,13 @@
   max-height: 0;
   overflow: hidden;
   padding: 0 32px;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.3s ease, padding 0.3s ease;
 }
+
+.accordion-item.active .accordion-content {
+  padding: 0 32px 14px;
+}
+
 
 .accordion-content p {
   font-size: 12px;
