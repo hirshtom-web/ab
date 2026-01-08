@@ -21,17 +21,16 @@ async function initProductsPage() {
     str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
   function updateImageStyle(index) {
-  const wrapper = document.querySelector(".main-image-wrapper");
-  if (!wrapper) return;
+    const wrapper = document.querySelector(".main-image-wrapper");
+    if (!wrapper) return;
+    wrapper.classList.remove("artwork", "lifestyle");
+    wrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
+  }
 
-  wrapper.classList.remove("artwork", "lifestyle");
-  wrapper.classList.add(index === 0 ? "artwork" : "lifestyle");
-}
+  function switchImage(index) {
+    updateImageStyle(index);
 
-function switchImage(index) {
-  updateImageStyle(index); // ✅ ADD THIS LINE
-
-    if(!allImages.length) return;
+    if (!allImages.length) return;
     currentIndex = index;
     mainImage.style.opacity = 0;
     const img = new Image();
@@ -39,7 +38,7 @@ function switchImage(index) {
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-      // Update thumbs & dots
+
       thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
       dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
@@ -52,30 +51,43 @@ function switchImage(index) {
     return img;
   }
 
-function initAccordion() {
-  document.querySelectorAll(".accordion-header").forEach(btn => {
-    const item = btn.closest(".accordion-item");
-    const content = item.querySelector(".accordion-content");
-    const inner = item.querySelector(".accordion-inner");
+  function initAccordion() {
+    document.querySelectorAll(".accordion-header").forEach(btn => {
+      const item = btn.closest(".accordion-item");
+      const content = item.querySelector(".accordion-content");
 
-    btn.addEventListener("click", () => {
-      const isActive = item.classList.contains("active");
+      btn.addEventListener("click", () => {
+        const isActive = item.classList.contains("active");
 
-      // Close all
-      document.querySelectorAll(".accordion-item").forEach(i => {
-        i.classList.remove("active");
-        const c = i.querySelector(".accordion-content");
-        if (c) c.style.maxHeight = null;
+        document.querySelectorAll(".accordion-item").forEach(i => {
+          i.classList.remove("active");
+          const c = i.querySelector(".accordion-content");
+          if (c) c.style.maxHeight = null;
+        });
+
+        if (!isActive) {
+          item.classList.add("active");
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
       });
-
-      // Open clicked
-      if (!isActive) {
-        item.classList.add("active");
-        content.style.maxHeight = inner.scrollHeight + "px";
-      }
     });
-  });
-}
+  }
+
+  function initTabs() {
+    const tabs = document.querySelectorAll(".artwork-tabs .tab");
+    const panels = document.querySelectorAll(".tab-panel");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        panels.forEach(p => p.classList.remove("active"));
+
+        tab.classList.add("active");
+        const panel = document.getElementById(tab.dataset.tab);
+        if (panel) panel.classList.add("active");
+      });
+    });
+  }
 
   // ---------------- LOAD CSV ----------------
   Papa.parse(csvUrl, {
@@ -84,10 +96,9 @@ function initAccordion() {
     skipEmptyLines: true,
     complete: function(res) {
       const products = res.data.map(p => {
-        // Handle images
         const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
         let lifestyle = (p.lifestyleUrl || "").trim();
-        if(!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
+        if(!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
         const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
 
         return {
@@ -102,7 +113,7 @@ function initAccordion() {
           artist: (p.artistName || p.artist || "").trim(),
           description: p.bio || "",
           downloadLink: (p.downloadLinkUrl || "").trim(),
-          visible: true, // all products visible
+          visible: true,
           images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
         };
       });
@@ -138,62 +149,54 @@ function initAccordion() {
         } else oldPriceEl.style.display="none";
       }
 
-     // --- Images ---
-// --- Images Setup ---
-allImages = product.images;
+      // --- Images ---
+      allImages = product.images;
 
-if(allImages.length){
+      if(allImages.length){
+        switchImage(0);
 
-  // --- Set initial image ---
-  switchImage(0);
+        if(thumbsEl){
+          thumbsEl.innerHTML = "";
+          allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+        }
 
-  // --- Thumbnails (desktop only) ---
-  if(thumbsEl){
-    thumbsEl.innerHTML = "";
-    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
-  }
+        if(dotsEl){
+          dotsEl.innerHTML = "";
+          allImages.forEach((_, i) => {
+            const dot = document.createElement("div");
+            dot.className = "dot";
+            dot.addEventListener("click", () => switchImage(i));
+            dotsEl.appendChild(dot);
+          });
+        }
 
-  // --- Dots ---
-  if(dotsEl){
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.addEventListener("click", () => switchImage(i));
-      dotsEl.appendChild(dot);
-    });
-  }
+        function updateDots(){
+          if(!dotsEl) return;
+          const dots = Array.from(dotsEl.querySelectorAll(".dot"));
+          dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
+        }
 
-  function updateDots(){
-    if(!dotsEl) return;
-    const dots = Array.from(dotsEl.querySelectorAll(".dot"));
-    dots.forEach((dot, index) => dot.classList.toggle("active", index === currentIndex));
-  }
+        const originalSwitchImage = switchImage;
+        switchImage = function(index){
+          originalSwitchImage(index);
+          updateDots();
+        };
 
-  // Update dots inside switchImage
-  const originalSwitchImage = switchImage;
-  switchImage = function(index){
-    originalSwitchImage(index);
-    updateDots();
-  };
+        const galleryWrapper = document.querySelector(".main-image-wrapper");
+        if(allImages.length > 1 && galleryWrapper){
+          let startX = 0;
+          let endX = 0;
 
-  // --- Mobile swipe ---
-  const galleryWrapper = document.querySelector(".main-image-wrapper");
-  if(allImages.length > 1 && galleryWrapper){
-    let startX = 0;
-    let endX = 0;
+          galleryWrapper.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
+          galleryWrapper.addEventListener("touchmove", (e) => { endX = e.touches[0].clientX; });
+          galleryWrapper.addEventListener("touchend", () => {
+            if(startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
+            else if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+          });
+        }
 
-    galleryWrapper.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchmove", (e) => { endX = e.touches[0].clientX; });
-    galleryWrapper.addEventListener("touchend", () => {
-      if(startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
-      else if(endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    });
-  }
-
-  // --- Initialize dots on load ---
-  updateDots();
-}
+        updateDots();
+      }
 
       // Buy button
       buyBtn.onclick = () => {
@@ -201,8 +204,9 @@ if(allImages.length){
         else alert("Download not available");
       };
 
-      // Accordion
+      // --- Initialize Accordion & Tabs ---
       initAccordion();
+      initTabs();
     },
     error: err => console.error("CSV load failed:", err)
   });
@@ -225,22 +229,6 @@ if(saleEl){
   updateTimer();
 }
 
-// Tabs
-document.addEventListener("DOMContentLoaded", () => {
-  const tabs = document.querySelectorAll(".artwork-tabs .tab");
-  const panels = document.querySelectorAll(".tab-panel");
-
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      panels.forEach(p => p.classList.remove("active"));
-
-      tab.classList.add("active");
-      document.getElementById(tab.dataset.tab).classList.add("active");
-    });
-  });
-});
-
 // Artwork type select
 const artworkTypeSelect = document.getElementById("artworkType");
 const frameWrapper = document.getElementById("frameWrapper");
@@ -253,22 +241,18 @@ function updateArtworkOptions() {
 updateArtworkOptions();
 artworkTypeSelect.addEventListener("change", updateArtworkOptions);
 
-// Get the current product ID from URL
-document.addEventListener("DOMContentLoaded", () => {
-  const currentProductId = new URLSearchParams(window.location.search).get("id");
+// Breadcrumbs
+const currentProductId = new URLSearchParams(window.location.search).get("id");
+fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
+  .then(res => res.text())
+  .then(csvText => {
+    const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+    const currentProduct = data.find(p => p.productId === currentProductId);
+    if(currentProduct){
+      const currentEl = document.querySelector(".breadcrumbs .current");
+      if(currentEl) currentEl.textContent = currentProduct.name;
+    }
+  })
+  .catch(err => console.error("Failed to load product for breadcrumbs:", err));
 
-  fetch("https://hirshtom-web.github.io/ab/product-catalog.csv")
-    .then(res => res.text())
-    .then(csvText => {
-      const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-      const currentProduct = data.find(p => p.productId === currentProductId);
-
-      if (currentProduct) {
-        const currentEl = document.querySelector(".breadcrumbs .current");
-        if (currentEl) currentEl.textContent = currentProduct.name;
-      }
-    })
-    .catch(err => console.error("Failed to load product for breadcrumbs:", err));
-});
-
-document.addEventListener("DOMContentLoaded", initProductsPage);
+initProductsPage();
