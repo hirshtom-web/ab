@@ -1,4 +1,4 @@
-function initProductsPage() {
+async function initProductsPage() {
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -52,26 +52,30 @@ function switchImage(index) {
     return img;
   }
 
-// After updating DOM for product
-initAccordion(); // Accordion
-initTabs();      // Tabs
+function initAccordion() {
+  document.querySelectorAll(".accordion-header").forEach(btn => {
+    const item = btn.closest(".accordion-item");
+    const content = item.querySelector(".accordion-content");
+    const inner = item.querySelector(".accordion-inner");
 
-function initTabs() {
-  const tabs = document.querySelectorAll(".artwork-tabs .tab");
-  const panels = document.querySelectorAll(".tab-panel");
+    btn.addEventListener("click", () => {
+      const isActive = item.classList.contains("active");
 
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      panels.forEach(p => p.classList.remove("active"));
+      // Close all
+      document.querySelectorAll(".accordion-item").forEach(i => {
+        i.classList.remove("active");
+        const c = i.querySelector(".accordion-content");
+        if (c) c.style.maxHeight = null;
+      });
 
-      tab.classList.add("active");
-      const panel = document.getElementById(tab.dataset.tab);
-      if(panel) panel.classList.add("active");
+      // Open clicked
+      if (!isActive) {
+        item.classList.add("active");
+        content.style.maxHeight = inner.scrollHeight + "px";
+      }
     });
   });
 }
-
 
   // ---------------- LOAD CSV ----------------
   Papa.parse(csvUrl, {
