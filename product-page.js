@@ -264,5 +264,3 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => console.error("Failed to load product for breadcrumbs:", err));
 });
-
-document.addEventListener("DOMContentLoaded", initProductsPage);
