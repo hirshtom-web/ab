@@ -81,69 +81,65 @@ async function initProductsPage() {
   }
 
   // ---------------- LOAD CSV ----------------
-  Papa.parse(csvUrl, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: res => {
-      let allProducts = res.data.map(p => {
-        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-        let lifestyle = (p.lifestyleUrl || "").trim();
-        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean).map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
+ // --- Load CSV and initialize products ---
+Papa.parse("https://hirshtom-web.github.io/ab/product-catalog.csv", {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  complete: res => {
+    allProducts = res.data.map(p => {
+      // --- Images ---
+      const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+      let lifestyle = (p.lifestyleUrl || "").trim();
+      if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
 
-        const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0;
-        const productRef = { id: (p.productId || "").trim(), category: (p.category || "").trim() };
-        const sale = getSaleForProduct(productRef, sales);
-        const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
-
-        return {
-          id: (p.productId || "").trim(),
-          name: (p.name || "Unnamed Product").trim(),
-          type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
-          images,
-          artist: (p.artistName || p.artist || "").trim(),
-          category: (p.category || "").trim(),
-          color: (p.color || "").trim(),
-          description: p.bio || "",
-          downloadLink: (p.downloadLinkUrl || "").trim(),
-          price: finalPrice,
-          oldPrice: sale ? basePrice : null,
-          sale
-        };
-      });
-
-      const product = allProducts.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || {
-        id: "temp",
-        name: "Sample Product",
-        images: ["https://via.placeholder.com/500x500?text=Product"],
-        price: 99.99,
-        oldPrice: 129.99,
-        artist: "Anonymous",
-        category: "Art Prints",
-        color: "Default",
-        description: "<p>This is a fallback product.</p>",
-        downloadLink: ""
+      // --- Price handling ---
+      const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0; // use originalPrice as base
+      const productRef = {
+        id: (p.productId || "").trim(),
+        category: (p.category || "").trim()
       };
+      const sale = getSaleForProduct(productRef, sales);
+      const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
 
-      renderProduct(product);
-    },
-    error: err => {
-      console.error("CSV load failed:", err);
-      renderProduct({
-        id: "temp",
-        name: "Sample Product",
-        images: ["https://via.placeholder.com/500x500?text=Product"],
-        price: 99.99,
-        oldPrice: 129.99,
-        artist: "Anonymous",
-        category: "Art Prints",
-        color: "Default",
-        description: "<p>This is a fallback product.</p>",
-        downloadLink: ""
-      });
-    }
-  });
+      return {
+        type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+        id: (p.productId || "").trim(),
+        name: (p.name || "Unnamed Product").trim(),
+        images: [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)),
+        video: (p["video/s"] || "").trim(),
+        price: finalPrice,                  // current price (sale applied)
+        oldPrice: sale ? basePrice : null,  // only show old price if sale
+        sale: sale,                          // sale object for discount bubble
+        searchText: [
+          p.name,
+          p.collection,
+          p.category,
+          p.style,
+          p.color,
+          p.room,
+          p.keywords
+        ].join(" ").toLowerCase(),
+        filters: {
+          collection: normalizeList(p.collection),
+          category: normalizeList(p.category),
+          color: normalizeList(p.color),
+          style: normalizeList(p.style),
+          room: normalizeList(p.room),
+          artist: normalizeList(p.artist),
+          keywords: normalizeList(p.keywords)
+        }
+      };
+    });
+
+    // --- Initial load after allProducts is ready ---
+    filteredProducts = allProducts; // start with everything
+    currentIndex = 0;
+    loadMoreProducts();
+  },
+  error: err => console.error("CSV load failed:", err)
+});
+
 
   // ---------------- RENDER PRODUCT ----------------
   function renderProduct(product) {
