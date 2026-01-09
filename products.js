@@ -162,34 +162,32 @@ if (titleEl) {
     header: true,
     skipEmptyLines: true,
     complete: res => {
-    allProducts = res.data.map(p => {
+allProducts = res.data.map(p => {
   const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
   let lifestyle = (p.lifestyleUrl || "").trim();
   if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
 
-const basePrice = p.newPrice ? parseFloat(p.newPrice) : 1;
+  // ✅ Correct price handling
+  const basePrice = p.price ? parseFloat(p.price) : 0;                // regular price
+  const originalPrice = p.originalPrice ? parseFloat(p.originalPrice) : basePrice; // fallback
 
-const productRef = {
-  id: (p.productId || "").trim(),
-  category: (p.category || "").trim()
-};
+  const productRef = {
+    id: (p.productId || "").trim(),
+    category: (p.category || "").trim()
+  };
 
-const sale = getSaleForProduct(productRef, sales);
-const finalPrice = applySale(basePrice, sale);
+  const sale = getSaleForProduct(productRef, sales);
+  const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
 
   return {
     type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
     id: (p.productId || "").trim(),
     name: (p.name || "Unnamed Product").trim(),
-    images: [
-      mainImages[0] || "",
-      lifestyle
-    ].concat(mainImages.slice(2)),
+    images: [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)),
     video: (p["video/s"] || "").trim(),
-  price: finalPrice,
-oldPrice: sale ? basePrice : null,
-sale: sale,
-
+    price: finalPrice,                  // current price (sale applied if exists)
+    oldPrice: sale ? originalPrice : null, // original price only if sale
+    sale: sale,                         // sale object for discount bubble
     searchText: [
       p.name,
       p.collection,
@@ -210,6 +208,7 @@ sale: sale,
     }
   };
 });
+
 
 // --- Initial load after allProducts is ready ---
 filteredProducts = allProducts; // start with everything
