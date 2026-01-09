@@ -18,8 +18,19 @@ async function initProductsPage() {
   let allImages = [];
   let currentIndex = 0;
 
-  const slugify = str =>
-    str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const fallbackProduct = {
+    id: "temp",
+    name: "Sample Product",
+    type: "artwork",
+    price: 99.99,
+    oldPrice: 129.99,
+    category: "Art Prints",
+    color: "Default",
+    artist: "Anonymous",
+    description: "<p>This is a fallback product.</p>",
+    downloadLink: "",
+    images: ["https://via.placeholder.com/500x500?text=Product"]
+  };
 
   // ---------------- IMAGE FUNCTIONS ----------------
   function updateImageStyle(index) {
@@ -34,7 +45,6 @@ async function initProductsPage() {
     currentIndex = index;
     updateImageStyle(index);
     mainImage.style.opacity = 0;
-
     const img = new Image();
     img.src = allImages[currentIndex];
     img.onload = () => {
@@ -82,105 +92,79 @@ async function initProductsPage() {
     });
   }
 
-  // ---------------- FALLBACK PRODUCT ----------------
-  const fallbackProduct = {
-    id: "temp",
-    name: "Sample Product",
-    type: "art",
-    price: 99.99,
-    oldPrice: 129.99,
-    category: "Art Prints",
-    color: "Default",
-    artist: "Anonymous",
-    description: "<p>This is a fallback product.</p>",
-    downloadLink: "",
-    images: ["https://via.placeholder.com/500x500?text=Product"]
-  };
-
-  // ---------------- LOAD CSV ----------------
+  // ---------------- PARSE CSV LIKE GRID ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
-    complete: async function(res) {
-      let product = fallbackProduct;
-
+    complete: async res => {
       try {
-        const products = res.data.map(p => {
+        const allProducts = res.data.map(p => {
           const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
           let lifestyle = (p.lifestyleUrl || "").trim();
           if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-          const images = [mainImages[0], lifestyle, ...mainImages.slice(1)]
-            .filter(u => u) // remove empty strings
-            .map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
+          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean);
+
+          // Price calculation like grid
+          const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0;
+          const productRef = { id: (p.productId || "").trim(), category: (p.category || "").trim() };
+          const sale = getSaleForProduct(productRef, await loadSalesConfig());
+          const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
+          const oldPrice = sale ? basePrice : null;
 
           return {
             id: (p.productId || "").trim(),
-            name: (p.name || "").trim(),
-            type: (p.type || "").toLowerCase(),
-            price: parseFloat(p.newPrice) || 0,
-            oldPrice: parseFloat(p.originalPrice) || null,
+            name: (p.name || "Unnamed Product").trim(),
+            type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+            images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u),
+            artist: (p.artistName || p.artist || "").trim(),
             category: (p.category || "").trim(),
             color: (p.color || "").trim(),
-            artist: (p.artistName || p.artist || "").trim(),
             description: p.bio || "",
             downloadLink: (p.downloadLinkUrl || "").trim(),
-            images: images
+            price: finalPrice,
+            oldPrice: oldPrice,
+            sale: sale
           };
         });
 
-        // Find product by id OR slugified name
-        product = products.find(p =>
-          p.id.toLowerCase() === productId ||
-          slugify(p.name) === productId
-        ) || fallbackProduct;
-
-        // Load sales config
-        const SALES_CONFIG = await loadSalesConfig();
-        renderProduct(product, SALES_CONFIG);
-
+        const product = allProducts.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || fallbackProduct;
+        renderProduct(product);
       } catch (err) {
         console.error("CSV parsing failed, using fallback product.", err);
-        renderProduct(product, []);
+        renderProduct(fallbackProduct);
       }
     },
     error: err => {
       console.error("CSV load failed, using fallback product.", err);
-      renderProduct(fallbackProduct, []);
+      renderProduct(fallbackProduct);
     }
   });
 
   // ---------------- RENDER PRODUCT ----------------
-  async function renderProduct(product, salesConfig) {
+  function renderProduct(product) {
     titleEl.innerText = product.name;
     titleEl.after(categoryEl);
     categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
     artistEl.innerText = product.artist;
     descEl.innerHTML = product.description;
 
-    const sale = getSaleForProduct(product, salesConfig);
-    const basePrice = product.price;
-    const originalPrice = product.oldPrice || basePrice;
-    const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
-    const hasSale = sale || (originalPrice > finalPrice);
-
-    // Price
-    priceEl.innerText = "$" + finalPrice.toFixed(2);
+    // Price & discount
+    priceEl.innerText = "$" + product.price.toFixed(2);
     if (oldPriceEl) {
-      if (hasSale) {
-        oldPriceEl.innerText = "$" + originalPrice.toFixed(2);
+      if (product.oldPrice && product.oldPrice > product.price) {
+        oldPriceEl.innerText = "$" + product.oldPrice.toFixed(2);
         oldPriceEl.style.display = "inline";
         oldPriceEl.style.textDecoration = "line-through";
       } else oldPriceEl.style.display = "none";
     }
 
-    // Discount bubble
     const discountEl = document.querySelector(".discount-bubble");
     if (discountEl) {
-      if (sale) {
-        discountEl.innerText = sale.discount_type === "percent"
-          ? `${sale.discount_value}% OFF`
-          : `$${sale.discount_value} OFF`;
+      if (product.sale) {
+        discountEl.innerText = product.sale.discount_type === "percent"
+          ? `${product.sale.discount_value}% OFF`
+          : `$${product.sale.discount_value} OFF`;
         discountEl.style.display = "inline-block";
       } else discountEl.style.display = "none";
     }
@@ -188,12 +172,10 @@ async function initProductsPage() {
     // Images
     allImages = product.images;
     if (allImages.length) switchImage(0);
-
     if (thumbsEl) {
       thumbsEl.innerHTML = "";
       allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
     }
-
     if (dotsEl) {
       dotsEl.innerHTML = "";
       allImages.forEach((_, i) => {
@@ -208,8 +190,7 @@ async function initProductsPage() {
     // Mobile swipe
     const galleryWrapper = document.querySelector(".main-image-wrapper");
     if (allImages.length > 1 && galleryWrapper) {
-      let startX = 0;
-      let endX = 0;
+      let startX = 0, endX = 0;
       galleryWrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
       galleryWrapper.addEventListener("touchmove", e => endX = e.touches[0].clientX);
       galleryWrapper.addEventListener("touchend", () => {
@@ -235,7 +216,7 @@ async function initProductsPage() {
   // ---------------- SALE COUNTDOWN ----------------
   const saleEl = document.getElementById("saleInfo");
   if (saleEl) {
-    let seconds = 36000; // 10 hours
+    let seconds = 36000;
     function updateTimer() {
       const h = Math.floor(seconds / 3600);
       const m = Math.floor((seconds % 3600) / 60);
@@ -250,4 +231,5 @@ async function initProductsPage() {
   }
 }
 
+// Initialize
 initProductsPage().catch(err => console.error("Product page failed:", err));
