@@ -86,110 +86,92 @@ async function initProductsPage() {
   }
 
   // ---------------- LOAD CSV (GRID STYLE) ----------------
-Papa.parse(csvUrl, {
-  download: true,
-  header: true,
-  skipEmptyLines: true,
-  complete: async res => {
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: res => {
 
-    const products = res.data.map(p => {
-      const mainImages = (p.mainImageUrl || "")
-        .split(";")
-        .map(i => i.trim())
-        .filter(Boolean);
+      const products = res.data.map(p => {
+        const mainImages = (p.mainImageUrl || "")
+          .split(";")
+          .map(i => i.trim())
+          .filter(Boolean);
 
-      let lifestyle = (p.lifestyleUrl || "").trim();
-      if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+        let lifestyle = (p.lifestyleUrl || "").trim();
+        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
 
-      return {
-        id: (p.productId || "").trim(),
-        name: (p.name || "").trim(),
-        price: p.originalPrice ? parseFloat(p.originalPrice) : 0,
-        oldPrice: null,
-        category: (p.category || "").trim(),
-        color: (p.color || "").trim(),
-        artist: (p.artistName || p.artist || "").trim(),
-        description: p.bio || "",
-        downloadLink: (p.downloadLinkUrl || "").trim(),
-        images: [mainImages[0], lifestyle]
-          .concat(mainImages.slice(2))
-          .filter(Boolean)
-          .map(u =>
-            u.startsWith("http")
-              ? u
-              : "https://static.wixstatic.com/media/" + u
-          )
-      };
-    });
-
-    const product = products.find(p =>
-      p.id.toLowerCase() === productId ||
-      slugify(p.name) === productId
-    );
-
-    if (!product) return;
-
-    // ✅ SALES (NOW WORKS)
-    const SALES_CONFIG = await loadSalesConfig();
-
-    const sale = getSaleForProduct(
-      { id: product.id, category: product.category },
-      SALES_CONFIG
-    );
-
-    const basePrice = product.price;
-    product.price = sale ? applySale(basePrice, sale) : basePrice;
-    product.oldPrice = sale ? basePrice : null;
-    product.sale = sale;
-
-    // ---------------- RENDER ----------------
-    titleEl.textContent = product.name;
-    titleEl.after(categoryEl);
-    categoryEl.textContent = [product.category, product.color].filter(Boolean).join(" • ");
-    artistEl.textContent = product.artist;
-    descEl.innerHTML = product.description;
-
-    priceEl.textContent = "$" + product.price.toFixed(2);
-
-    if (oldPriceEl) {
-      if (product.oldPrice) {
-        oldPriceEl.textContent = "$" + product.oldPrice.toFixed(2);
-        oldPriceEl.style.display = "inline";
-        oldPriceEl.style.textDecoration = "line-through";
-      } else {
-        oldPriceEl.style.display = "none";
-      }
-    }
-
-    // Breadcrumbs
-    const bc = document.querySelector(".breadcrumbs .current");
-    if (bc) bc.textContent = product.name;
-
-    // Images
-    allImages = product.images;
-    if (allImages.length) {
-      switchImage(0);
-      thumbsEl.innerHTML = "";
-      dotsEl.innerHTML = "";
-
-      allImages.forEach((src,i) => {
-        thumbsEl?.appendChild(createThumbnail(src,i));
-        if (dotsEl) {
-          const d = document.createElement("div");
-          d.className = "dot";
-          d.onclick = () => switchImage(i);
-          dotsEl.appendChild(d);
-        }
+        return {
+          id: (p.productId || "").trim(),
+          name: (p.name || "").trim(),
+          price: parseFloat(p.newPrice) || 0,
+          oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
+          category: (p.category || "").trim(),
+          color: (p.color || "").trim(),
+          artist: (p.artistName || p.artist || "").trim(),
+          description: p.bio || "",
+          downloadLink: (p.downloadLinkUrl || "").trim(),
+images: [mainImages[0], lifestyle]
+  .concat(mainImages.slice(2))
+  .filter(Boolean)
+  .map(u =>
+    u.startsWith("http")
+      ? u
+      : "https://static.wixstatic.com/media/" + u
+  )
+        };
       });
-      updateDots();
+
+      const product = products.find(p =>
+        p.id.toLowerCase() === productId ||
+        slugify(p.name) === productId
+      );
+
+      if (!product) return;
+
+      // ---------------- RENDER ----------------
+      titleEl.textContent = product.name;
+      titleEl.after(categoryEl);
+      categoryEl.textContent = [product.category, product.color].filter(Boolean).join(" • ");
+      artistEl.textContent = product.artist;
+      descEl.innerHTML = product.description;
+
+      priceEl.textContent = "$" + product.price.toFixed(2);
+      if (oldPriceEl && product.oldPrice) {
+        oldPriceEl.textContent = "$" + product.oldPrice.toFixed(2);
+        oldPriceEl.style.textDecoration = "line-through";
+      }
+
+      // Breadcrumbs
+      const bc = document.querySelector(".breadcrumbs .current");
+      if (bc) bc.textContent = product.name;
+
+      // Images
+      allImages = product.images;
+      if (allImages.length) {
+        switchImage(0);
+        thumbsEl.innerHTML = "";
+        dotsEl.innerHTML = "";
+
+        allImages.forEach((src,i) => {
+          thumbsEl?.appendChild(createThumbnail(src,i));
+          if (dotsEl) {
+            const d = document.createElement("div");
+            d.className = "dot";
+            d.onclick = () => switchImage(i);
+            dotsEl.appendChild(d);
+          }
+        });
+        updateDots();
+      }
+
+      buyBtn.onclick = () => {
+        if (product.downloadLink) window.open(product.downloadLink,"_blank");
+      };
+
+      initAccordion();
     }
-
-    buyBtn.onclick = () => {
-      if (product.downloadLink) window.open(product.downloadLink,"_blank");
-    };
-
-    initAccordion();
-  }
-});
+  });
+}
 
 initProductsPage();
