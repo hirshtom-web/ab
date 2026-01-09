@@ -92,40 +92,35 @@ Papa.parse(csvUrl, {
   skipEmptyLines: true,
   complete: async res => {
 
- const products = res.data.map(p => {
-  const mainImages = (p.mainImageUrl || "")
-    .split(";")
-    .map(i => i.trim())
-    .filter(Boolean);
+    const products = res.data.map(p => {
+      const mainImages = (p.mainImageUrl || "")
+        .split(";")
+        .map(i => i.trim())
+        .filter(Boolean);
 
-  let lifestyle = (p.lifestyleUrl || "").trim();
-  if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+      let lifestyle = (p.lifestyleUrl || "").trim();
+      if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
 
-  // ✅ base price (GRID-COMPATIBLE)
-  const basePrice = p.originalPrice
-    ? parseFloat(p.originalPrice)
-    : parseFloat(p.newPrice) || 0;
-
-  return {
-    id: (p.productId || "").trim(),
-    name: (p.name || "").trim(),
-    price: basePrice,      // ✅ REQUIRED
-    oldPrice: null,        // will be set by sale logic
-    category: (p.category || "").trim(),
-    color: (p.color || "").trim(),
-    artist: (p.artistName || p.artist || "").trim(),
-    description: p.bio || "",
-    downloadLink: (p.downloadLinkUrl || "").trim(),
-    images: [mainImages[0], lifestyle]
-      .concat(mainImages.slice(2))
-      .filter(Boolean)
-      .map(u =>
-        u.startsWith("http")
-          ? u
-          : "https://static.wixstatic.com/media/" + u
-      )
-  };
-});
+      return {
+        id: (p.productId || "").trim(),
+        name: (p.name || "").trim(),
+        price: p.originalPrice ? parseFloat(p.originalPrice) : 0,
+        oldPrice: null,
+        category: (p.category || "").trim(),
+        color: (p.color || "").trim(),
+        artist: (p.artistName || p.artist || "").trim(),
+        description: p.bio || "",
+        downloadLink: (p.downloadLinkUrl || "").trim(),
+        images: [mainImages[0], lifestyle]
+          .concat(mainImages.slice(2))
+          .filter(Boolean)
+          .map(u =>
+            u.startsWith("http")
+              ? u
+              : "https://static.wixstatic.com/media/" + u
+          )
+      };
+    });
 
     const product = products.find(p =>
       p.id.toLowerCase() === productId ||
@@ -134,19 +129,18 @@ Papa.parse(csvUrl, {
 
     if (!product) return;
 
-// ✅ SALES (NOW WORKS)
-const SALES_CONFIG = await loadSalesConfig();
+    // ✅ SALES (NOW WORKS)
+    const SALES_CONFIG = await loadSalesConfig();
 
-const sale = getSaleForProduct(
-  { id: product.id, category: product.category },
-  SALES_CONFIG
-);
+    const sale = getSaleForProduct(
+      { id: product.id, category: product.category },
+      SALES_CONFIG
+    );
 
-const basePrice = product.price;
-product.price = sale ? applySale(basePrice, sale) : basePrice;
-product.oldPrice = sale ? basePrice : null;
-product.sale = sale;
-
+    const basePrice = product.price;
+    product.price = sale ? applySale(basePrice, sale) : basePrice;
+    product.oldPrice = sale ? basePrice : null;
+    product.sale = sale;
 
     // ---------------- RENDER ----------------
     titleEl.textContent = product.name;
