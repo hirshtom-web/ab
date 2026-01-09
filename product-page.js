@@ -116,16 +116,21 @@ function switchImage(index) {
       descEl.innerHTML = product.description;
 
       // --- Price ---
-const hasSale =
-  product.oldPrice &&
-  product.price &&
-  product.oldPrice > product.price;
+const SALES_CONFIG = await loadSalesConfig();
+const sale = getSaleForProduct(product, SALES_CONFIG);
 
-priceEl.innerText = "$" + product.price.toFixed(2);
+// Apply sale if it exists
+let finalPrice = sale ? applySale(product.price, sale) : product.price;
+
+// Determine if we should show old price
+const hasSale = sale || (product.oldPrice && product.oldPrice > product.price);
+
+priceEl.innerText = "$" + finalPrice.toFixed(2);
 
 if (oldPriceEl) {
   if (hasSale) {
-    oldPriceEl.innerText = "$" + product.oldPrice.toFixed(2);
+    // Show original price
+    oldPriceEl.innerText = "$" + (product.oldPrice || product.price).toFixed(2);
     oldPriceEl.style.display = "inline";
     oldPriceEl.style.textDecoration = "line-through";
   } else {
