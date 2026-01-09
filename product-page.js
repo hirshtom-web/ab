@@ -116,24 +116,24 @@ function switchImage(index) {
       descEl.innerHTML = product.description;
 
       // --- Price ---
-      let finalPrice = product.price;
-      if(product.discount){
-        if(product.discount.includes("%")){
-          finalPrice = product.price*(1 - parseFloat(product.discount)/100);
-        } else {
-          finalPrice = product.price - parseFloat(product.discount);
-        }
-      }
-      priceEl.innerText = "$"+finalPrice.toFixed(2);
-      if(oldPriceEl){
-        if(product.discount){
-          oldPriceEl.innerText = "$"+product.price.toFixed(2);
-          oldPriceEl.style.textDecoration = "line-through";
-        } else oldPriceEl.style.display="none";
-      }
+const hasSale =
+  product.oldPrice &&
+  product.price &&
+  product.oldPrice > product.price;
+
+priceEl.innerText = "$" + product.price.toFixed(2);
+
+if (oldPriceEl) {
+  if (hasSale) {
+    oldPriceEl.innerText = "$" + product.oldPrice.toFixed(2);
+    oldPriceEl.style.display = "inline";
+    oldPriceEl.style.textDecoration = "line-through";
+  } else {
+    oldPriceEl.style.display = "none";
+  }
+}
 
      // --- Images ---
-// --- Images Setup ---
 allImages = product.images;
 
 if(allImages.length){
