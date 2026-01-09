@@ -111,7 +111,14 @@ async function initProductsPage() {
           artist: (p.artistName || p.artist || "").trim(),
           description: p.bio || "",
           downloadLink: (p.downloadLinkUrl || "").trim(),
-          images: [mainImages[0], lifestyle].concat(mainImages.slice(2)).filter(Boolean)
+images: [mainImages[0], lifestyle]
+  .concat(mainImages.slice(2))
+  .filter(Boolean)
+  .map(u =>
+    u.startsWith("http")
+      ? u
+      : "https://static.wixstatic.com/media/" + u
+  )
         };
       });
 
