@@ -17,20 +17,9 @@ async function initProductsPage() {
 
   let allImages = [];
   let currentIndex = 0;
+  let allProducts = [];
 
-  const fallbackProduct = {
-    id: "temp",
-    name: "Sample Product",
-    type: "artwork",
-    price: 99.99,
-    oldPrice: 129.99,
-    category: "Art Prints",
-    color: "Default",
-    artist: "Anonymous",
-    description: "<p>This is a fallback product.</p>",
-    downloadLink: "",
-    images: ["https://via.placeholder.com/500x500?text=Product"]
-  };
+  const slugify = str => str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
   // ---------------- IMAGE FUNCTIONS ----------------
   function updateImageStyle(index) {
@@ -50,13 +39,8 @@ async function initProductsPage() {
     img.onload = () => {
       mainImage.src = img.src;
       mainImage.style.opacity = 1;
-
-      thumbsEl?.querySelectorAll("img").forEach((img, idx) =>
-        img.classList.toggle("active", idx === currentIndex)
-      );
-      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) =>
-        dot.classList.toggle("active", idx === currentIndex)
-      );
+      thumbsEl?.querySelectorAll("img").forEach((img, idx) => img.classList.toggle("active", idx === currentIndex));
+      dotsEl?.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
     };
   }
 
@@ -92,39 +76,54 @@ async function initProductsPage() {
     });
   }
 
-  // ---------------- PARSE CSV LIKE GRID ----------------
+  // ---------------- FALLBACK PRODUCT ----------------
+  const fallbackProduct = {
+    id: "temp",
+    name: "Sample Product",
+    type: "artwork",
+    price: 99.99,
+    oldPrice: 129.99,
+    category: "Art Prints",
+    color: "Default",
+    artist: "Anonymous",
+    description: "<p>This is a fallback product.</p>",
+    downloadLink: "",
+    images: ["https://via.placeholder.com/500x500?text=Product"]
+  };
+
+  // ---------------- LOAD CSV (GRID STYLE) ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: async res => {
       try {
-        const allProducts = res.data.map(p => {
+        const sales = await loadSalesConfig();
+
+        allProducts = res.data.map(p => {
           const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
           let lifestyle = (p.lifestyleUrl || "").trim();
           if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean);
+          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean).map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
 
-          // Price calculation like grid
           const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0;
           const productRef = { id: (p.productId || "").trim(), category: (p.category || "").trim() };
-          const sale = getSaleForProduct(productRef, await loadSalesConfig());
+          const sale = getSaleForProduct(productRef, sales);
           const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
-          const oldPrice = sale ? basePrice : null;
 
           return {
             id: (p.productId || "").trim(),
             name: (p.name || "Unnamed Product").trim(),
             type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
-            images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u),
+            images,
             artist: (p.artistName || p.artist || "").trim(),
             category: (p.category || "").trim(),
             color: (p.color || "").trim(),
             description: p.bio || "",
             downloadLink: (p.downloadLinkUrl || "").trim(),
             price: finalPrice,
-            oldPrice: oldPrice,
-            sale: sale
+            oldPrice: sale ? basePrice : null,
+            sale
           };
         });
 
@@ -149,7 +148,6 @@ async function initProductsPage() {
     artistEl.innerText = product.artist;
     descEl.innerHTML = product.description;
 
-    // Price & discount
     priceEl.innerText = "$" + product.price.toFixed(2);
     if (oldPriceEl) {
       if (product.oldPrice && product.oldPrice > product.price) {
@@ -199,16 +197,13 @@ async function initProductsPage() {
       });
     }
 
-    // Buy button
     buyBtn.onclick = () => {
       if (product.downloadLink) window.open(product.downloadLink, "_blank");
       else alert("Download not available");
     };
 
-    // Accordion
     initAccordion();
 
-    // Breadcrumbs
     const currentEl = document.querySelector(".breadcrumbs .current");
     if (currentEl) currentEl.textContent = product.name;
   }
@@ -231,5 +226,5 @@ async function initProductsPage() {
   }
 }
 
-// Initialize
+// ---------------- INIT ----------------
 initProductsPage().catch(err => console.error("Product page failed:", err));
