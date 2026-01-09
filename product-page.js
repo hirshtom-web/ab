@@ -1,6 +1,5 @@
 // ---------------- PRODUCT PAGE INIT ----------------
 async function initProductsPage() {
-  // ----- ELEMENTS -----
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
   const priceEl = document.querySelector(".price");
@@ -82,18 +81,6 @@ async function initProductsPage() {
     });
   }
 
-  function parseCSV(url) {
-    return new Promise((resolve, reject) => {
-      Papa.parse(url, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: res => resolve(res.data),
-        error: err => reject(err)
-      });
-    });
-  }
-
   // ---------------- FALLBACK PRODUCT ----------------
   const fallbackProduct = {
     id: "fallback",
@@ -112,113 +99,141 @@ async function initProductsPage() {
     ]
   };
 
-  // ---------------- LOAD PRODUCT ----------------
-  let product = fallbackProduct;
+  // ---------------- LOAD CSV ----------------
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: async function(res) {
+      let products = [];
+      let product = fallbackProduct;
 
-  try {
-    const data = await parseCSV(csvUrl);
+      try {
+        products = res.data.map(p => {
+          const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+          let lifestyle = (p.lifestyleUrl || "").trim();
+          if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
 
-    const products = data.map(p => {
-      const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-      let lifestyle = (p.lifestyleUrl || "").trim();
-      if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-      const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+          return {
+            id: (p.productId || "").trim(),
+            name: (p.name || "").trim(),
+            type: (p.type || "").toLowerCase(),
+            price: parseFloat(p.newPrice) || 0,
+            oldPrice: parseFloat(p.originalPrice) || null,
+            category: (p.category || "").trim(),
+            color: (p.color || "").trim(),
+            artist: (p.artistName || p.artist || "").trim(),
+            description: p.bio || "",
+            downloadLink: (p.downloadLinkUrl || "").trim(),
+            images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+          };
+        });
 
-      return {
-        id: (p.productId || "").trim(),
-        name: (p.name || "").trim(),
-        type: (p.type || "").toLowerCase(),
-        price: parseFloat(p.newPrice) || 0,
-        oldPrice: parseFloat(p.originalPrice) || null,
-        category: (p.category || "").trim(),
-        color: (p.color || "").trim(),
-        artist: (p.artistName || p.artist || "").trim(),
-        description: p.bio || "",
-        downloadLink: (p.downloadLinkUrl || "").trim(),
-        images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+        const found = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
+        if (found) product = found;
+      } catch (err) {
+        console.warn("CSV parse failed, using fallback product", err);
+      }
+
+      // --- LOAD SALES CONFIG ---
+      const SALES_CONFIG = await loadSalesConfig().catch(() => []);
+      const sale = getSaleForProduct(product, SALES_CONFIG);
+      const basePrice = product.price;
+      const originalPrice = product.oldPrice || basePrice;
+      const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
+      const hasSale = sale || (originalPrice > finalPrice);
+
+      // --- DOM UPDATES ---
+      titleEl.innerText = product.name;
+      titleEl.after(categoryEl);
+      categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
+      artistEl.innerText = product.artist;
+      descEl.innerHTML = product.description;
+
+      priceEl.innerText = "$" + finalPrice.toFixed(2);
+      if (oldPriceEl) {
+        if (hasSale) {
+          oldPriceEl.innerText = "$" + originalPrice.toFixed(2);
+          oldPriceEl.style.display = "inline";
+          oldPriceEl.style.textDecoration = "line-through";
+        } else oldPriceEl.style.display = "none";
+      }
+
+      const discountEl = document.querySelector(".discount-bubble");
+      if (discountEl) {
+        if (sale) {
+          discountEl.innerText = sale.discount_type === "percent"
+            ? `${sale.discount_value}% OFF`
+            : `$${sale.discount_value} OFF`;
+          discountEl.style.display = "inline-block";
+        } else discountEl.style.display = "none";
+      }
+
+      // --- IMAGES ---
+      allImages = product.images.filter(Boolean);
+      if (allImages.length) switchImage(0);
+
+      if (thumbsEl) {
+        thumbsEl.innerHTML = "";
+        allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+      }
+
+      if (dotsEl) {
+        dotsEl.innerHTML = "";
+        allImages.forEach((_, i) => {
+          const dot = document.createElement("div");
+          dot.className = "dot";
+          dot.addEventListener("click", () => switchImage(i));
+          dotsEl.appendChild(dot);
+        });
+        updateDots();
+      }
+
+      // Mobile swipe
+      const galleryWrapper = document.querySelector(".main-image-wrapper");
+      if (allImages.length > 1 && galleryWrapper) {
+        let startX = 0, endX = 0;
+        galleryWrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+        galleryWrapper.addEventListener("touchmove", e => endX = e.touches[0].clientX);
+        galleryWrapper.addEventListener("touchend", () => {
+          if (startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
+          else if (endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+        });
+      }
+
+      // Buy button
+      buyBtn.onclick = () => {
+        if (product.downloadLink) window.open(product.downloadLink, "_blank");
+        else alert("Download not available");
       };
-    });
 
-    const found = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
-    if (found) product = found;
-  } catch (err) {
-    console.warn("Failed to load CSV, using fallback product:", err);
-  }
+      // Accordion
+      initAccordion();
 
-  // --- LOAD SALES CONFIG ---
-  const SALES_CONFIG = await loadSalesConfig().catch(() => []);
-  const sale = getSaleForProduct(product, SALES_CONFIG);
-  const basePrice = product.price;
-  const originalPrice = product.oldPrice || basePrice;
-  const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
-  const hasSale = sale || (originalPrice > finalPrice);
-
-  // --- DOM UPDATES ---
-  titleEl.innerText = product.name;
-  titleEl.after(categoryEl);
-  categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
-  artistEl.innerText = product.artist;
-  descEl.innerHTML = product.description;
-
-  priceEl.innerText = "$" + finalPrice.toFixed(2);
-  if (oldPriceEl) {
-    if (hasSale) {
-      oldPriceEl.innerText = "$" + originalPrice.toFixed(2);
-      oldPriceEl.style.display = "inline";
-      oldPriceEl.style.textDecoration = "line-through";
-    } else oldPriceEl.style.display = "none";
-  }
-
-  const discountEl = document.querySelector(".discount-bubble");
-  if (discountEl) {
-    if (sale) {
-      discountEl.innerText = sale.discount_type === "percent"
-        ? `${sale.discount_value}% OFF`
-        : `$${sale.discount_value} OFF`;
-      discountEl.style.display = "inline-block";
-    } else discountEl.style.display = "none";
-  }
-
-  // --- IMAGES ---
-  allImages = product.images.filter(Boolean);
-  if (allImages.length) switchImage(0);
-
-  if (thumbsEl) {
-    thumbsEl.innerHTML = "";
-    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
-  }
-
-  if (dotsEl) {
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.addEventListener("click", () => switchImage(i));
-      dotsEl.appendChild(dot);
-    });
-    updateDots();
-  }
-
-  // Mobile swipe
-  const galleryWrapper = document.querySelector(".main-image-wrapper");
-  if (allImages.length > 1 && galleryWrapper) {
-    let startX = 0, endX = 0;
-    galleryWrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-    galleryWrapper.addEventListener("touchmove", e => endX = e.touches[0].clientX);
-    galleryWrapper.addEventListener("touchend", () => {
-      if (startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
-      else if (endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    });
-  }
-
-  // Buy button
-  buyBtn.onclick = () => {
-    if (product.downloadLink) window.open(product.downloadLink, "_blank");
-    else alert("Download not available");
-  };
-
-  // Accordion
-  initAccordion();
+      // Breadcrumbs
+      const currentEl = document.querySelector(".breadcrumbs .current");
+      if (currentEl) currentEl.textContent = product.name;
+    },
+    error: err => {
+      console.warn("CSV load failed, using fallback product", err);
+      // Use fallback product
+      titleEl.innerText = fallbackProduct.name;
+      titleEl.after(categoryEl);
+      categoryEl.innerText = [fallbackProduct.category, fallbackProduct.color].filter(Boolean).join(" • ");
+      artistEl.innerText = fallbackProduct.artist;
+      descEl.innerHTML = fallbackProduct.description;
+      priceEl.innerText = "$" + fallbackProduct.price.toFixed(2);
+      if (oldPriceEl) {
+        oldPriceEl.innerText = "$" + fallbackProduct.oldPrice.toFixed(2);
+        oldPriceEl.style.textDecoration = "line-through";
+      }
+      allImages = fallbackProduct.images;
+      if (allImages.length) switchImage(0);
+      const currentEl = document.querySelector(".breadcrumbs .current");
+      if (currentEl) currentEl.textContent = fallbackProduct.name;
+    }
+  });
 }
 
 // ---------------- SALE COUNTDOWN ----------------
@@ -265,29 +280,9 @@ function initTabsAndSelectors() {
   }
 }
 
-// ---------------- BREADCRUMBS ----------------
-async function updateBreadcrumbs() {
-  const currentProductId = new URLSearchParams(window.location.search).get("id");
-  if (!currentProductId) return;
-
-  try {
-    const res = await fetch("https://hirshtom-web.github.io/ab/product-catalog.csv");
-    const csvText = await res.text();
-    const data = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
-    const currentProduct = data.find(p => p.productId === currentProductId);
-    if (currentProduct) {
-      const currentEl = document.querySelector(".breadcrumbs .current");
-      if (currentEl) currentEl.textContent = currentProduct.name;
-    }
-  } catch (err) {
-    console.warn("Breadcrumbs fallback, CSV not loaded:", err);
-  }
-}
-
 // ---------------- INIT ----------------
 document.addEventListener("DOMContentLoaded", () => {
   initProductsPage();
   initSaleCountdown();
   initTabsAndSelectors();
-  updateBreadcrumbs();
 });
