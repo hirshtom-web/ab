@@ -1,4 +1,4 @@
 scope,scope_value,discount_type,discount_value,start_date,end_date,active
-global,,percent,20,2026-01-10T00:00:00,2026-01-15T23:59:59,true
+global,,percent,40,2026-01-10T00:00:00,2026-01-15T23:59:59,true
 category,Art Prints,percent,30,2026-01-11T00:00:00,2026-01-12T23:59:59,true
 product,PAP2502,amount,15,2026-01-10T00:00:00,2026-01-11T23:59:59,true
