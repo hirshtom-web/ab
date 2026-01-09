@@ -118,6 +118,7 @@ async function initProductsPage() {
       };
     });
 
+    // Make sure IDs are lowercase for matching
     const product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId);
     if (!product) {
       document.body.innerHTML = "<p style='text-align:center;margin-top:50px;'>Product not available</p>";
@@ -161,7 +162,7 @@ async function initProductsPage() {
     }
 
     // Images
-    allImages = product.images;
+    allImages = product.images.filter(Boolean);
     if (allImages.length) switchImage(0);
 
     if (thumbsEl) {
