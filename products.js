@@ -251,7 +251,8 @@ const discountBubble = p.sale
         : `$${p.sale.discount_value} OFF`
     }</div>`
   : "";
-     const priceHTML = p.oldPrice && p.oldPrice > p.price
+
+const priceHTML = p.oldPrice && p.oldPrice > p.price
   ? `<span class="price-old">$${p.oldPrice.toFixed(2)}</span> <span class="price-new">$${p.price.toFixed(2)}</span>`
   : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
 
