@@ -98,124 +98,150 @@ async function initProductsPage() {
   };
 
   // ---------------- LOAD CSV ----------------
-  let product = fallbackProduct;
-  let salesConfig = [];
-  try {
-    const res = await fetch(csvUrl);
-    const text = await res.text();
-    const data = Papa.parse(text, { header: true, skipEmptyLines: true }).data;
-    const products = data.map(p => {
-      const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-      let lifestyle = (p.lifestyleUrl || "").trim();
-      if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-      const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: async function(res) {
+      let product = fallbackProduct;
 
-      return {
-        id: (p.productId || "").trim(),
-        name: (p.name || "").trim(),
-        type: (p.type || "").toLowerCase(),
-        price: parseFloat(p.newPrice) || 0,
-        oldPrice: parseFloat(p.originalPrice) || null,
-        category: (p.category || "").trim(),
-        color: (p.color || "").trim(),
-        artist: (p.artistName || p.artist || "").trim(),
-        description: p.bio || "",
-        downloadLink: (p.downloadLinkUrl || "").trim(),
-        images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
-      };
-    });
+      try {
+        const products = res.data.map(p => {
+          const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+          let lifestyle = (p.lifestyleUrl || "").trim();
+          if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
 
-    product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || fallbackProduct;
+          return {
+            id: (p.productId || "").trim(),
+            name: (p.name || "").trim(),
+            type: (p.type || "").toLowerCase(),
+            price: parseFloat(p.newPrice) || 0,
+            oldPrice: parseFloat(p.originalPrice) || null,
+            category: (p.category || "").trim(),
+            color: (p.color || "").trim(),
+            artist: (p.artistName || p.artist || "").trim(),
+            description: p.bio || "",
+            downloadLink: (p.downloadLinkUrl || "").trim(),
+            images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+          };
+        });
 
-    // Load sales config
-    salesConfig = await loadSalesConfig();
+        product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || fallbackProduct;
 
-  } catch (err) {
-    console.error("CSV or sales config failed, using fallback product.", err);
-  }
+        // Load sales config
+        const SALES_CONFIG = await loadSalesConfig();
+        renderProduct(product, SALES_CONFIG);
 
-  // ---------------- DOM UPDATES ----------------
-  titleEl.innerText = product.name;
-  titleEl.after(categoryEl);
-  categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
-  artistEl.innerText = product.artist;
-  descEl.innerHTML = product.description;
+      } catch (err) {
+        console.error("CSV parsing failed, using fallback product.", err);
+        renderProduct(product, []);
+      }
+    },
+    error: err => {
+      console.error("CSV load failed, using fallback product.", err);
+      renderProduct(fallbackProduct, []);
+    }
+  });
 
-  const sale = getSaleForProduct(product, salesConfig);
-  const basePrice = product.price;
-  const originalPrice = product.oldPrice || basePrice;
-  const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
-  const hasSale = sale || (originalPrice > finalPrice);
+  // ---------------- RENDER PRODUCT ----------------
+  async function renderProduct(product, salesConfig) {
+    titleEl.innerText = product.name;
+    titleEl.after(categoryEl);
+    categoryEl.innerText = [product.category, product.color].filter(Boolean).join(" • ");
+    artistEl.innerText = product.artist;
+    descEl.innerHTML = product.description;
 
-  // Price
-  priceEl.innerText = "$" + finalPrice.toFixed(2);
-  if (oldPriceEl) {
-    if (hasSale) {
-      oldPriceEl.innerText = "$" + originalPrice.toFixed(2);
-      oldPriceEl.style.display = "inline";
-      oldPriceEl.style.textDecoration = "line-through";
-    } else oldPriceEl.style.display = "none";
-  }
+    const sale = getSaleForProduct(product, salesConfig);
+    const basePrice = product.price;
+    const originalPrice = product.oldPrice || basePrice;
+    const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
+    const hasSale = sale || (originalPrice > finalPrice);
 
-  // Discount bubble
-  const discountEl = document.querySelector(".discount-bubble");
-  if (discountEl) {
-    if (sale) {
-      discountEl.innerText = sale.discount_type === "percent"
-        ? `${sale.discount_value}% OFF`
-        : `$${sale.discount_value} OFF`;
-      discountEl.style.display = "inline-block";
-    } else discountEl.style.display = "none";
-  }
+    // Price
+    priceEl.innerText = "$" + finalPrice.toFixed(2);
+    if (oldPriceEl) {
+      if (hasSale) {
+        oldPriceEl.innerText = "$" + originalPrice.toFixed(2);
+        oldPriceEl.style.display = "inline";
+        oldPriceEl.style.textDecoration = "line-through";
+      } else oldPriceEl.style.display = "none";
+    }
 
-  // Images
-  allImages = product.images;
-  if (allImages.length) switchImage(0);
+    // Discount bubble
+    const discountEl = document.querySelector(".discount-bubble");
+    if (discountEl) {
+      if (sale) {
+        discountEl.innerText = sale.discount_type === "percent"
+          ? `${sale.discount_value}% OFF`
+          : `$${sale.discount_value} OFF`;
+        discountEl.style.display = "inline-block";
+      } else discountEl.style.display = "none";
+    }
 
-  if (thumbsEl) {
-    thumbsEl.innerHTML = "";
-    allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
-  }
+    // Images
+    allImages = product.images;
+    if (allImages.length) switchImage(0);
 
-  if (dotsEl) {
-    dotsEl.innerHTML = "";
-    allImages.forEach((_, i) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.addEventListener("click", () => switchImage(i));
-      dotsEl.appendChild(dot);
-    });
-    updateDots();
-  }
+    if (thumbsEl) {
+      thumbsEl.innerHTML = "";
+      allImages.forEach((src, i) => thumbsEl.appendChild(createThumbnail(src, i)));
+    }
 
-  // Mobile swipe
-  const galleryWrapper = document.querySelector(".main-image-wrapper");
-  if (allImages.length > 1 && galleryWrapper) {
-    let startX = 0;
-    let endX = 0;
-    galleryWrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-    galleryWrapper.addEventListener("touchmove", e => endX = e.touches[0].clientX);
-    galleryWrapper.addEventListener("touchend", () => {
-      if (startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
-      else if (endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
-    });
-  }
+    if (dotsEl) {
+      dotsEl.innerHTML = "";
+      allImages.forEach((_, i) => {
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        dot.addEventListener("click", () => switchImage(i));
+        dotsEl.appendChild(dot);
+      });
+      updateDots();
+    }
 
-  // Buy button
-  buyBtn.onclick = () => {
-    if (product.downloadLink) window.open(product.downloadLink, "_blank");
-    else alert("Download not available");
-  };
+    // Mobile swipe
+    const galleryWrapper = document.querySelector(".main-image-wrapper");
+    if (allImages.length > 1 && galleryWrapper) {
+      let startX = 0;
+      let endX = 0;
+      galleryWrapper.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+      galleryWrapper.addEventListener("touchmove", e => endX = e.touches[0].clientX);
+      galleryWrapper.addEventListener("touchend", () => {
+        if (startX - endX > 50) switchImage((currentIndex + 1) % allImages.length);
+        else if (endX - startX > 50) switchImage((currentIndex - 1 + allImages.length) % allImages.length);
+      });
+    }
 
-  // Accordion
-  initAccordion();
+    // Buy button
+    buyBtn.onclick = () => {
+      if (product.downloadLink) window.open(product.downloadLink, "_blank");
+      else alert("Download not available");
+    };
 
-  // Breadcrumbs
-  document.addEventListener("DOMContentLoaded", () => {
+    // Accordion
+    initAccordion();
+
+    // Breadcrumbs
     const currentEl = document.querySelector(".breadcrumbs .current");
     if (currentEl) currentEl.textContent = product.name;
-  });
+  }
+
+  // ---------------- SALE COUNTDOWN ----------------
+  const saleEl = document.getElementById("saleInfo");
+  if (saleEl) {
+    let seconds = 36000; // 10 hours
+    function updateTimer() {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      if(seconds > 0){
+        seconds--;
+        setTimeout(updateTimer, 1000);
+      }
+    }
+    updateTimer();
+  }
 }
 
-// Initialize the page
 initProductsPage().catch(err => console.error("Product page failed:", err));
