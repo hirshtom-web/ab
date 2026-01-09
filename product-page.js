@@ -110,7 +110,9 @@ async function initProductsPage() {
           const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
           let lifestyle = (p.lifestyleUrl || "").trim();
           if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2));
+          const images = [mainImages[0], lifestyle, ...mainImages.slice(1)]
+            .filter(u => u) // remove empty strings
+            .map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
 
           return {
             id: (p.productId || "").trim(),
@@ -123,11 +125,15 @@ async function initProductsPage() {
             artist: (p.artistName || p.artist || "").trim(),
             description: p.bio || "",
             downloadLink: (p.downloadLinkUrl || "").trim(),
-            images: images.map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u)
+            images: images
           };
         });
 
-        product = products.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || fallbackProduct;
+        // Find product by id OR slugified name
+        product = products.find(p =>
+          p.id.toLowerCase() === productId ||
+          slugify(p.name) === productId
+        ) || fallbackProduct;
 
         // Load sales config
         const SALES_CONFIG = await loadSalesConfig();
