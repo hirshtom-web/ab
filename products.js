@@ -1,4 +1,13 @@
-function initProductsPage() {
+import {
+  loadSalesConfig,
+  getSaleForProduct,
+  applySale
+} from "./sales-engine.js";
+
+async function initProductsPage() {
+
+    const sales = await loadSalesConfig();
+
     // --- Filter & search state ---
   let filteredProducts = [];
   let activeFilters = {};
@@ -158,6 +167,16 @@ if (titleEl) {
   let lifestyle = (p.lifestyleUrl || "").trim();
   if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1]; // fallback
 
+const basePrice = p.newPrice ? parseFloat(p.newPrice) : 1;
+
+const productRef = {
+  id: (p.productId || "").trim(),
+  category: (p.category || "").trim()
+};
+
+const sale = getSaleForProduct(productRef, sales);
+const finalPrice = applySale(basePrice, sale);
+
   return {
     type: (p.type || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
     id: (p.productId || "").trim(),
@@ -167,9 +186,10 @@ if (titleEl) {
       lifestyle
     ].concat(mainImages.slice(2)),
     video: (p["video/s"] || "").trim(),
-    oldPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-    discount: p.discount ? p.discount.trim() : null,
-    price: p.newPrice ? parseFloat(p.newPrice) : 1,
+  price: finalPrice,
+oldPrice: sale ? basePrice : null,
+sale: sale,
+
     searchText: [
       p.name,
       p.collection,
@@ -228,7 +248,13 @@ loadMoreProducts();
         ? (p.images[currentImageIndex].includes("http") ? p.images[currentImageIndex] : 'https://static.wixstatic.com/media/' + p.images[currentImageIndex])
         : "";
 
-      const discountBubble = p.discount ? `<div class="discount-bubble">${p.discount}</div>` : "";
+const discountBubble = p.sale
+  ? `<div class="discount-bubble">${
+      p.sale.discount_type === "percent"
+        ? `${p.sale.discount_value}% OFF`
+        : `$${p.sale.discount_value} OFF`
+    }</div>`
+  : "";
       const priceHTML = p.oldPrice && p.oldPrice > p.price
         ? `<span class="price-from">$${p.price.toFixed(2)}</span><span class="price-old">$${p.oldPrice.toFixed(2)}</span>`
         : `<span class="price-new">$${p.price.toFixed(2)}</span>`;
@@ -373,3 +399,7 @@ sortBtn.addEventListener("click", () => {
     });
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  initProductsPage();
+});
