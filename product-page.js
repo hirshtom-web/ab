@@ -1,4 +1,3 @@
-// ---------------- SINGLE PRODUCT PAGE JS ----------------
 async function initProductsPage() {
   const titleEl = document.querySelector(".pricing h2");
   const artistEl = document.querySelector(".artist");
@@ -17,11 +16,9 @@ async function initProductsPage() {
 
   let allImages = [];
   let currentIndex = 0;
-  let allProducts = [];
 
   const slugify = str => str.toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-  // ---------------- IMAGE FUNCTIONS ----------------
   function updateImageStyle(index) {
     const wrapper = document.querySelector(".main-image-wrapper");
     if (!wrapper) return;
@@ -56,7 +53,6 @@ async function initProductsPage() {
     dotsEl.querySelectorAll(".dot").forEach((dot, idx) => dot.classList.toggle("active", idx === currentIndex));
   }
 
-  // ---------------- ACCORDION ----------------
   function initAccordion() {
     document.querySelectorAll(".accordion-header").forEach(btn => {
       const item = btn.closest(".accordion-item");
@@ -76,67 +72,76 @@ async function initProductsPage() {
     });
   }
 
-  // ---------------- FALLBACK PRODUCT ----------------
-  const fallbackProduct = {
-    id: "temp",
-    name: "Sample Product",
-    type: "artwork",
-    price: 99.99,
-    oldPrice: 129.99,
-    category: "Art Prints",
-    color: "Default",
-    artist: "Anonymous",
-    description: "<p>This is a fallback product.</p>",
-    downloadLink: "",
-    images: ["https://via.placeholder.com/500x500?text=Product"]
-  };
+  // ---------------- LOAD SALES FIRST ----------------
+  let sales = [];
+  try {
+    sales = await loadSalesConfig();
+  } catch(err) {
+    console.error("Failed to load sales:", err);
+  }
 
-  // ---------------- LOAD CSV (GRID STYLE) ----------------
+  // ---------------- LOAD CSV ----------------
   Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
-    complete: async res => {
-      try {
-        const sales = await loadSalesConfig();
+    complete: res => {
+      let allProducts = res.data.map(p => {
+        const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
+        let lifestyle = (p.lifestyleUrl || "").trim();
+        if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
+        const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean).map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
 
-        allProducts = res.data.map(p => {
-          const mainImages = (p.mainImageUrl || "").split(";").map(i => i.trim()).filter(Boolean);
-          let lifestyle = (p.lifestyleUrl || "").trim();
-          if (!lifestyle && mainImages.length > 1) lifestyle = mainImages[1];
-          const images = [mainImages[0] || "", lifestyle].concat(mainImages.slice(2)).filter(Boolean).map(u => u.startsWith("http") ? u : 'https://static.wixstatic.com/media/' + u);
+        const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0;
+        const productRef = { id: (p.productId || "").trim(), category: (p.category || "").trim() };
+        const sale = getSaleForProduct(productRef, sales);
+        const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
 
-          const basePrice = p.originalPrice ? parseFloat(p.originalPrice) : 0;
-          const productRef = { id: (p.productId || "").trim(), category: (p.category || "").trim() };
-          const sale = getSaleForProduct(productRef, sales);
-          const finalPrice = sale ? applySale(basePrice, sale) : basePrice;
+        return {
+          id: (p.productId || "").trim(),
+          name: (p.name || "Unnamed Product").trim(),
+          type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
+          images,
+          artist: (p.artistName || p.artist || "").trim(),
+          category: (p.category || "").trim(),
+          color: (p.color || "").trim(),
+          description: p.bio || "",
+          downloadLink: (p.downloadLinkUrl || "").trim(),
+          price: finalPrice,
+          oldPrice: sale ? basePrice : null,
+          sale
+        };
+      });
 
-          return {
-            id: (p.productId || "").trim(),
-            name: (p.name || "Unnamed Product").trim(),
-            type: (p["single/bundle"] || "").toLowerCase() === "single" ? "artwork" : "lifestyle",
-            images,
-            artist: (p.artistName || p.artist || "").trim(),
-            category: (p.category || "").trim(),
-            color: (p.color || "").trim(),
-            description: p.bio || "",
-            downloadLink: (p.downloadLinkUrl || "").trim(),
-            price: finalPrice,
-            oldPrice: sale ? basePrice : null,
-            sale
-          };
-        });
+      const product = allProducts.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || {
+        id: "temp",
+        name: "Sample Product",
+        images: ["https://via.placeholder.com/500x500?text=Product"],
+        price: 99.99,
+        oldPrice: 129.99,
+        artist: "Anonymous",
+        category: "Art Prints",
+        color: "Default",
+        description: "<p>This is a fallback product.</p>",
+        downloadLink: ""
+      };
 
-        const product = allProducts.find(p => p.id.toLowerCase() === productId || slugify(p.name) === productId) || fallbackProduct;
-        renderProduct(product);
-      } catch (err) {
-        console.error("CSV parsing failed, using fallback product.", err);
-        renderProduct(fallbackProduct);
-      }
+      renderProduct(product);
     },
     error: err => {
-      console.error("CSV load failed, using fallback product.", err);
-      renderProduct(fallbackProduct);
+      console.error("CSV load failed:", err);
+      renderProduct({
+        id: "temp",
+        name: "Sample Product",
+        images: ["https://via.placeholder.com/500x500?text=Product"],
+        price: 99.99,
+        oldPrice: 129.99,
+        artist: "Anonymous",
+        category: "Art Prints",
+        color: "Default",
+        description: "<p>This is a fallback product.</p>",
+        downloadLink: ""
+      });
     }
   });
 
@@ -185,7 +190,6 @@ async function initProductsPage() {
       updateDots();
     }
 
-    // Mobile swipe
     const galleryWrapper = document.querySelector(".main-image-wrapper");
     if (allImages.length > 1 && galleryWrapper) {
       let startX = 0, endX = 0;
@@ -207,24 +211,6 @@ async function initProductsPage() {
     const currentEl = document.querySelector(".breadcrumbs .current");
     if (currentEl) currentEl.textContent = product.name;
   }
-
-  // ---------------- SALE COUNTDOWN ----------------
-  const saleEl = document.getElementById("saleInfo");
-  if (saleEl) {
-    let seconds = 36000;
-    function updateTimer() {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-      saleEl.innerText = `Sale ends in ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-      if(seconds > 0){
-        seconds--;
-        setTimeout(updateTimer, 1000);
-      }
-    }
-    updateTimer();
-  }
 }
 
-// ---------------- INIT ----------------
 initProductsPage().catch(err => console.error("Product page failed:", err));
